@@ -11,6 +11,7 @@ function SideBar(props) {
       <Link to={`${url}`}>Dashboard</Link>
       <Link to={`${url}/others`}>Others</Link>
       <hr />
+      <hr />
     </div>
   )
 }
