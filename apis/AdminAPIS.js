@@ -15,6 +15,23 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/admin/login', async (req, res) => {
+        const { email, password } = req.body
+        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
+        if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
+        getConnection(
+            res,
+            `SELECT id, email, role FROM users WHERE email = '${email}' AND password = '${password}'`,
+            null,
+            (data) => {
+                if (data[0])
+                    return res.send(data[0])
+                else
+                    return res.status(422).send({ 'msg': 'Invalid credentials provided!' })
+            }
+        )
+    })
 }
 
 function decrypt(token) {
