@@ -1,6 +1,6 @@
 import { combineEpics } from 'redux-observable';
-import { defaultEpic } from './defaultEpic'
+import { loginEpic } from './admin/loginEpic'
 
 export const epics = combineEpics(
-    defaultEpic.default,
+    loginEpic.login,
 );

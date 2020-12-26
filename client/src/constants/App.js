@@ -1,6 +1,9 @@
-export const SIGN_IN = 'SIGN_IN'
-export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
-export const SIGN_IN_FAILURE = 'SIGN_IN_FAILURE'
+export const ADMIN_SIGN_IN = 'ADMIN_SIGN_IN'
+export const ADMIN_SIGN_IN_FAILURE = 'SIGN_IN_FAILURE'
+export const ADMIN_LOGOUT = 'ADMIN_LOGOUT'
+
+export const SET_SESSION = 'SET_SESSION'
+export const SESSION_CHECK_DONE = 'SESSION_CHECK_DONE'
 
 export const SIGN_UP = 'SIGN_UP'
 export const SIGN_UP_SUCCESS = 'SIGN_UP_SUCCESS'
@@ -9,7 +12,9 @@ export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE'
 export const GET_PROFILE_SUCCESS = 'GET_PROFILE_SUCCESS'
 export const GET_PROFILE_FAILURE = 'GET_PROFILE_FAILURE'
 
-export const SET_SESSION = 'SET_SESSION'
-
 export const SET_TOAST = 'SET_TOAST'
 export const RESET_TOAST = 'RESET_TOAST'
+
+export const SIGN_IN = 'SIGN_IN'
+export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
+export const SIGN_IN_FAILURE = 'SIGN_IN_FAILURE'

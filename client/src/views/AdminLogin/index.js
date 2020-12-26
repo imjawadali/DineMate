@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../redux/actions'
-import { SET_SESSION } from '../../constants/App'
+import { ADMIN_SIGN_IN } from '../../constants/App'
 
 function AdminLogin(props) {
 
@@ -17,7 +17,9 @@ function AdminLogin(props) {
   return (
     <div>
       <p>AdminLogin</p>
-      <button onClick={() => dispatch(customisedAction(SET_SESSION, { admin: "Ahad" }))}>Login</button>
+      <button onClick={() => dispatch(customisedAction(ADMIN_SIGN_IN, { 
+        email: 'ahads62426@gmail.com', password: 'ahad1234' 
+      }))}>Login</button>
     </div>
   )
 }
