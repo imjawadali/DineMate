@@ -4,7 +4,6 @@ function Restaurants(props) {
   return (
     <div>
       <p>Restaurants</p>
-      <button onClick={async () => props.history.push('/admin')}>Admin</button>
     </div>
   )
 }

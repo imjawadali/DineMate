@@ -27,11 +27,15 @@ export class loginEpic {
               setItem('admin', resObj);
               return customisedAction(SET_SESSION, { admin: resObj });
             }
+            console.log(response)
             if (status && (status === 401 || status === 422 || status === 503)) {
               return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: resObj.msg, type: 'error' })
             }
             if (problem && problem === 'NETWORK_ERROR') {
               return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Network Error while Signing-In Admin!', type: 'error' })
+            }
+            if (problem && problem === 'TIMEOUT_ERROR') {
+              return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Timeout Error while Signing-In Admin!', type: 'error' })
             }
             return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Unknown Error while Signing-In Admin!', type: 'error' })
           } catch (error) {
