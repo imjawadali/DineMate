@@ -32,6 +32,9 @@ export class defaultEpic {
             if (problem && problem === 'NETWORK_ERROR') {
               return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Network Error while Signing-In Admin!', type: 'error' })
             }
+            if (problem && problem === 'TIMEOUT_ERROR') {
+              return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Timeout Error while Signing-In Admin!', type: 'error' })
+            }
             return customisedAction(ADMIN_SIGN_IN_FAILURE, { message: 'Unknown Error while Signing-In Admin!', type: 'error' })
           } catch (error) {
             console.log('ADMIN_SIGN_IN Unknown Error', error)
