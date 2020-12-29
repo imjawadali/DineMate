@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Switch, Route, useRouteMatch } from 'react-router-dom'
 
-import NavBar from './NavBar'
 import SideBar from './SideBar'
+import NavBar from './NavBar'
+
 import Dashboard from './Dashboard'
 import Others from './Others'
 import NoRoute from '../NoRoute'
+
+import './styles.css'
 
 function Admin(props) {
 
@@ -23,13 +26,15 @@ function Admin(props) {
 
   return (
     <div className="container">
-      <NavBar openSidebar={openSidebar} />
-      <Switch>
-        <Route exact path={path} component={Dashboard} />
-        <Route path={`${path}/others`} component={Others} />
-        <Route component={NoRoute} />
-      </Switch>
       <SideBar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
+      <NavBar openSidebar={openSidebar} />
+      <main>
+        <Switch>
+          <Route exact path={path} component={Dashboard} />
+          <Route path={`${path}/others`} component={Others} />
+          <Route component={NoRoute} />
+        </Switch>
+      </main>
     </div>
   )
 }

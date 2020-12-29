@@ -23,12 +23,7 @@
 .sidebar__title > div > img {
     width: 75px;
     object-fit: contain;
-}
-
-.sidebar__title > div > h1 {
-    margin-left: 10px;
-    font-size: 18px;
-    display: inline;
+    margin-right: 10px;
 }
 
 .sidebar__title > i {
@@ -88,7 +83,19 @@
         padding: 15px;
     }
 
+    .sidebar__title > div > img {
+        width: 65px;
+        margin-right: 7px;
+    }
+
     .sidebar__title > i {
         display: inline;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .sidebar__title > div > img {
+        width: 55px;
+        margin-right: 5px;
     }
 }

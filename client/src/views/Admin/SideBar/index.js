@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, useRouteMatch } from 'react-router-dom'
 
+import { DineMateTitle } from '../../../components'
+
 import logo from '../../../assets/logo.png'
 import './styles.css'
 
@@ -13,7 +15,7 @@ function SideBar(props) {
         <div className="sidebar__title">
             <div className="sidebar__img">
                 <img src={logo} alt="logo" />
-                <h1>DineMate</h1>
+                <DineMateTitle/>
             </div>
             <i className="fa fa-times" id="sidebarIcon" onClick={() => closeSidebar()}/>
         </div>

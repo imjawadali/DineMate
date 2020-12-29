@@ -1,0 +1,54 @@
+.OrangeButton {
+    padding: 7px 30px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #3ae175;
+    background-color: #3ae175;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 5px;
+}
+
+.OrangeButtonText {
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+}
+
+.OrangeButton:hover {
+    border-color: #3ae175;
+    background-color: white;
+    outline: none !important;
+}
+
+.OrangeButton:hover .OrangeButtonText {
+    color: #3ae175;
+}
+
+.OrangeButton:focus {
+    outline: none !important;
+}
+
+@media only screen and (max-width: 978px) {
+    .OrangeButton {
+        padding: 6px 25px;
+    }
+
+    .OrangeButtonText {
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .OrangeButton {
+        padding: 5px 20px;
+    }
+
+    .OrangeButtonText {
+        font-size: 14px;
+    }
+}

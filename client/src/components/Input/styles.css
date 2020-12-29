@@ -1,0 +1,30 @@
+.Input {
+    width: 100%;
+    border: 1px solid #3ae175;
+    border-radius: 2px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 80%;
+    box-sizing: content-box;
+}
+
+.Input:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+@media screen and (max-width: 978px) {
+    .Input {
+        padding: 10px;
+        font-size: 75%;
+        margin: 7px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .Input {
+        padding: 7px;
+        font-size: 60%;
+        margin: 5px 0;
+    }
+}
