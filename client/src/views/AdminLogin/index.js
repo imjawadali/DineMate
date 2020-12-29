@@ -15,7 +15,7 @@ function AdminLogin(props) {
   }, [admin])
 
   return (
-    <div>
+    <div className="full-screen-container">
       <p>AdminLogin</p>
       <button onClick={() => dispatch(customisedAction(ADMIN_SIGN_IN, { 
         email: 'ahads62426@gmail.com', password: 'ahad1234' 

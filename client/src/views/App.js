@@ -14,6 +14,7 @@ import Restaurants from './Restaurants'
 import NoRoute from './NoRoute'
 
 import logo from '../assets/logo.png';
+import './styles.css'
 
 export default function App() {
 
@@ -66,22 +67,8 @@ export default function App() {
                 </Switch>
             </Router>
         </ToastProvider> :
-        <div style={styles.loaderContainer}>
+        <div className="full-screen-container" style={{ background: 'rgba(62, 161, 117, 0.3)'}}>
             <img src={logo} style={{ width: '100px', height: '100px' }} alt="logo" />
         </div>
     )
-}
-
-const styles = {
-    loaderContainer: {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'black',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
 }
