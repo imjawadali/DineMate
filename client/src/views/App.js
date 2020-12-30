@@ -59,7 +59,9 @@ export default function App() {
             <Router>
                 <Toaster />
                 <Switch>
-                    <CustomerLanding exact path='/' component={Restaurants} />
+                    <Route exact path='/'>
+                        <Redirect to='/admin' />
+                    </Route>
                     <AdminLanding path='/admin' component={Admin} />
                     <CustomerLanding exact path='/restaurant' component={Restaurants} />
                     <Route path='/adminLogin' component={AdminLogin} />

@@ -4,7 +4,7 @@
     border-radius: 2px;
     padding: 10px 20px;
     margin: 10px 0;
-    font-size: 80%;
+    font-size: 15px;
     box-sizing: content-box;
 }
 
@@ -16,7 +16,6 @@
 @media screen and (max-width: 978px) {
     .Input {
         padding: 10px;
-        font-size: 75%;
         margin: 7px 0;
     }
 }
@@ -24,7 +23,7 @@
 @media screen and (max-width: 480px) {
     .Input {
         padding: 7px;
-        font-size: 60%;
+        font-size: 13px;
         margin: 5px 0;
     }
 }

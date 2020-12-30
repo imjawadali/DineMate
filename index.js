@@ -5,7 +5,7 @@ const path = require('path')
 
 const app = express()
 
-var corsOptions = { origin: "http://localhost:3000" }
+var corsOptions = { origin: "*" }
 app.use(cors(corsOptions))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
