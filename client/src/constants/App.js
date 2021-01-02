@@ -14,6 +14,7 @@ export const GET_PROFILE_FAILURE = 'GET_PROFILE_FAILURE'
 
 export const SET_TOAST = 'SET_TOAST'
 export const RESET_TOAST = 'RESET_TOAST'
+export const SET_TOAST_DISMISSING = 'SET_TOAST_DISMISSING'
 
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'

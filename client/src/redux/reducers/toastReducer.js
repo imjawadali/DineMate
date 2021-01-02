@@ -1,9 +1,9 @@
 import { 
-  SET_TOAST, RESET_TOAST,
+  SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
   ADMIN_SIGN_IN_FAILURE
 } from '../../constants'
 
-export default (state = { toast: null }, { type, payload }) => {
+export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
   switch (type) {
     case SET_TOAST:
       return { ...state, toast: payload }
@@ -11,6 +11,8 @@ export default (state = { toast: null }, { type, payload }) => {
       return { ...state, toast: null }
     case ADMIN_SIGN_IN_FAILURE:
       return { ...state, toast: payload }
+    case SET_TOAST_DISMISSING:
+      return { ...state, toastSetDismiss: payload }
     default:
       return state;
   }

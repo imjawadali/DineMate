@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../redux/actions'
-import { ADMIN_SIGN_IN } from '../../constants/App'
+import { ADMIN_SIGN_IN, SET_TOAST_DISMISSING } from '../../constants'
 
 import { DineMateTitle, Title, Input, Button } from '../../components'
 
@@ -25,10 +25,6 @@ function AdminLogin(props) {
 
   return (
     <div className="full-screen-container login-screen">
-      {/* <p>AdminLogin</p>
-      <button onClick={() => dispatch(customisedAction(ADMIN_SIGN_IN, { 
-        email: 'ahads62426@gmail.com', password: 'ahad1234' 
-      }))}>Login</button> */}
       <div className="login-logo-container">
           <img src={logo} alt="logo" />
           <DineMateTitle />
@@ -51,7 +47,10 @@ function AdminLogin(props) {
         />
         <div className="login-button-container">
           <Button
-            onClick={() => dispatch(customisedAction(ADMIN_SIGN_IN, { email, password }))}
+            onClick={() => {
+              dispatch(customisedAction(SET_TOAST_DISMISSING, true))
+              dispatch(customisedAction(ADMIN_SIGN_IN, { email, password }))
+            }}
             text="Login"
           />
         </div>
