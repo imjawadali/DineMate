@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import { ToastProvider } from 'react-toast-notifications';
 
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_SESSION } from '../constants/App'
+import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
 import { getItem } from '../helpers';
 
 import Toaster from './Toaster'
@@ -70,7 +70,7 @@ export default function App() {
             </Router>
         </ToastProvider> :
         <div className="full-screen-container" style={{ background: 'rgba(62, 161, 117, 0.3)'}}>
-            <img src={logo} style={{ width: '100px', height: '100px' }} alt="logo" />
+            <img src={logo} style={{ width: '120px' }} alt="logo" />
         </div>
     )
 }
