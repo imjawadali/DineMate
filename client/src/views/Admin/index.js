@@ -24,6 +24,8 @@ function Admin(props) {
 
   let { path } = useRouteMatch();
 
+  props.history.listen(() => closeSidebar())
+
   return (
     <div className="container">
       <SideBar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
