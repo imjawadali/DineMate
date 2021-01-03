@@ -224,7 +224,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT R.restaurantId, R.restaurantName, R.cuisine, R.primaryContactId, R.secondaryContactId, 
-            R.createdAt, RA.address, RA.city, RA.country, RA.latitude, RA.longitude, U.adminName
+            RA.address, RA.city, RA.country, RA.latitude, RA.longitude, U.adminName
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId
             JOIN users U on U.id = R.primaryContactId
