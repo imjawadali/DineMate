@@ -224,8 +224,10 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT R.restaurantId, R.logoUrl, R.restaurantName, R.cuisine, R.primaryContactId, R.secondaryContactId, 
-            RA.address, RA.city, RA.country, RA.latitude, RA.longitude, U.adminName
+            `SELECT R.restaurantId, R.logoUrl, R.restaurantName, U.adminName, 
+            R.cuisine, R.primaryContactId, R.secondaryContactId, 
+            RA.address, RA.city, RA.country, RA.latitude, RA.longitude,
+            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId
             JOIN users U on U.id = R.primaryContactId
