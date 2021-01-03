@@ -34,6 +34,10 @@ exports.getConnection = function (res, query, data, callBack) {
     })
 };
 
+exports.getTransactionalConnection = function () {
+    return db
+};
+
 function uniqueFetchResponse (tempDb, token, error, result, res, callBack) {
     if (!!error) {
         console.log('TableError', error)
