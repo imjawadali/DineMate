@@ -1,4 +1,4 @@
-const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySql');
+const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySql')
 
 module.exports = app => {
     app.get('/secureTest', async (req, res) => {

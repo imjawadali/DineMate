@@ -4,4 +4,4 @@ exports.mySQLConfig = {
     user: 'sql12383964',
     password: 'XEnGbpq3Aw',
     database: 'sql12383964'
-};
+}

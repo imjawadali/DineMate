@@ -22,7 +22,7 @@ function Admin(props) {
       setSidebarOpen(false)
   }
 
-  let { path } = useRouteMatch();
+  let { path } = useRouteMatch()
 
   props.history.listen(() => closeSidebar())
 

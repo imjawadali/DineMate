@@ -23,13 +23,13 @@ export class loginEpic {
             API_ENDPOINTS.admin.login,
             { email, password },
             (resObj) => {
-              setItem('admin', resObj);
-              RestClient.setHeader('Authorization', resObj.id);
-              return customisedAction(SET_SESSION, { admin: resObj });
+              setItem('admin', resObj)
+              RestClient.setHeader('Authorization', resObj.id)
+              return customisedAction(SET_SESSION, { admin: resObj })
             },
             ADMIN_SIGN_IN_FAILURE
           )
         }
       )
-    );
+    )
 }

@@ -7,7 +7,7 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         if (method === 'get') {
             response = await RestClient.get(url)
         } else response = await RestClient.post(url, data)
-        const { status, data: resObj, problem } = response;
+        const { status, data: resObj, problem } = response
         if (status && status === 200) {
           return successCallback(resObj)
         }
@@ -25,4 +25,4 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         console.log('ADMIN_SIGN_IN Unknown Error', error)
         return customisedAction(failureAction, { message: error.message, type: 'error' })
     }
-};
+}

@@ -8,8 +8,8 @@ import './styles.css'
 
 function SideBar(props) {
 
-    let { url } = useRouteMatch();
-    let { sidebarOpen, closeSidebar } = props;
+    let { url } = useRouteMatch()
+    let { sidebarOpen, closeSidebar } = props
 
     return (<div className={sidebarOpen ? "sidebar-responsive" : ""} id="sidebar">
         <div className="sidebar__title">

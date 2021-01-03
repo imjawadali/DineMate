@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-const { mySQLConfig } = require('../config');
+const { mySQLConfig } = require('../config')
 
 const db = mysql.createPool(mySQLConfig)
 
@@ -17,7 +17,7 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
             })
         }
     })
-};
+}
 
 exports.getConnection = function (res, query, data, callBack) {
     db.getConnection(function (error, tempDb) {
@@ -32,11 +32,11 @@ exports.getConnection = function (res, query, data, callBack) {
             })
         }
     })
-};
+}
 
 exports.getTransactionalConnection = function () {
     return db
-};
+}
 
 function uniqueFetchResponse (tempDb, token, error, result, res, callBack) {
     if (!!error) {

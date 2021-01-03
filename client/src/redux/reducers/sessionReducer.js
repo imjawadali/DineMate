@@ -9,6 +9,6 @@ export default (state = { checkingSignIn: true, user: null, admin: null }, { typ
     case ADMIN_LOGOUT:
       return { ...state, admin: null }
     default:
-      return state;
+      return state
   }
-};
+}

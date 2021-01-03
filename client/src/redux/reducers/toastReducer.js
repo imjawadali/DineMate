@@ -14,6 +14,6 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
     default:
-      return state;
+      return state
   }
-};
+}

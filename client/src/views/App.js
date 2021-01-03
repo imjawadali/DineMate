@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastProvider } from 'react-toast-notifications'
 
 import { customisedAction } from '../redux/actions'
 import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
 import { RestClient } from '../services/network'
-import { getItem } from '../helpers';
+import { getItem } from '../helpers'
 
 import Toaster from './Toaster'
 import Admin from './Admin'
@@ -14,7 +14,7 @@ import AdminLogin from './AdminLogin'
 import Restaurants from './Restaurants'
 import NoRoute from './NoRoute'
 
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.png'
 import './styles.css'
 
 export default function App() {
@@ -25,10 +25,10 @@ export default function App() {
 
     useEffect(() => {
         if (!admin) {
-        const storedAdmin = getItem('admin');
+        const storedAdmin = getItem('admin')
         if (storedAdmin)
             setTimeout(() => {
-                RestClient.setHeader('Authorization', storedAdmin.id);
+                RestClient.setHeader('Authorization', storedAdmin.id)
                 dispatch(customisedAction(SET_SESSION, { admin: storedAdmin }))
             }, 500)
         else
@@ -44,14 +44,14 @@ export default function App() {
             !!admin ? 
             <Component {...props} /> : <Redirect to={{ pathname: '/adminLogin', state: { from: props.location.pathname } }} />
         )} />
-    );
+    )
 
     const CustomerLanding = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
             !admin ? 
             <Component {...props} /> : <Redirect to={{ pathname: '/admin' }} />
         )} />
-    );
+    )
 
     return (!checkingSignIn ?
         <ToastProvider

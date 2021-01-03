@@ -13,8 +13,8 @@ function NavBar(props) {
 
     const dispatch = useDispatch()
 
-    let { url } = useRouteMatch();
-    let { openSidebar } = props;
+    let { url } = useRouteMatch()
+    let { openSidebar } = props
 
     return (
         <nav className="navbar">
