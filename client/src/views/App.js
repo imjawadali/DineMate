@@ -5,6 +5,7 @@ import { ToastProvider } from 'react-toast-notifications';
 
 import { customisedAction } from '../redux/actions'
 import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
+import { RestClient } from '../services/network'
 import { getItem } from '../helpers';
 
 import Toaster from './Toaster'
@@ -26,10 +27,10 @@ export default function App() {
         if (!admin) {
         const storedAdmin = getItem('admin');
         if (storedAdmin)
-            setTimeout(() =>
-                dispatch(customisedAction(SET_SESSION, { admin: storedAdmin })),
-                500
-            )
+            setTimeout(() => {
+                RestClient.setHeader('Authorization', storedAdmin.id);
+                dispatch(customisedAction(SET_SESSION, { admin: storedAdmin }))
+            }, 500)
         else
             setTimeout(() =>
                 dispatch(customisedAction(SESSION_CHECK_DONE)),

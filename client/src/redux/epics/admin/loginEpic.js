@@ -25,6 +25,7 @@ export class loginEpic {
             const { status, data: resObj, problem } = response;
             if (status && status === 200) {
               setItem('admin', resObj);
+              RestClient.setHeader('Authorization', resObj.id);
               return customisedAction(SET_SESSION, { admin: resObj });
             }
             console.log(response)
