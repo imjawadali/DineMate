@@ -34,7 +34,7 @@ module.exports = app => {
 
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
+        const { restaurantId, logoUrl, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Slug is required!' })
         if (!restaurantName) return res.status(422).send({ 'msg': 'Restaurant Name is required!' })
@@ -68,6 +68,7 @@ module.exports = app => {
                         }
                         const restaurant = {}
                         restaurant.restaurantId = restaurantId
+                        restaurant.logoUrl = logoUrl
                         restaurant.restaurantName = restaurantName
                         if (cuisine)
                             restaurant.cuisine = cuisine
@@ -223,7 +224,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT R.restaurantId, R.restaurantName, R.cuisine, R.primaryContactId, R.secondaryContactId, 
+            `SELECT R.restaurantId, R.logoUrl, R.restaurantName, R.cuisine, R.primaryContactId, R.secondaryContactId, 
             RA.address, RA.city, RA.country, RA.latitude, RA.longitude, U.adminName
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId
