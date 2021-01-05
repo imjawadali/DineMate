@@ -251,7 +251,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT id, value FROM restaurantsQrs WHERE restaurantId = '${restaurantId}'`,
+            `SELECT id, value, active FROM restaurantsQrs WHERE restaurantId = '${restaurantId}'`,
             null,
             (data) => {
                 if (data.length) {
