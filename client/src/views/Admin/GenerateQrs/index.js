@@ -14,6 +14,7 @@ function GenerateQrs(props) {
   const [qrCounts, setqrCounts] = useState(0)
 
   const generatingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.generatingQrs)
+  const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
   const dispatch = useDispatch()
 
@@ -39,7 +40,7 @@ function GenerateQrs(props) {
         values: []
       }
       for (let index = qrCounts; index < Number(qrCounts)+Number(generateQrInput); index++) {
-        generatedQrData.values.push(`https://dinemateapp.herokuapp.com/restaurant/${state.restaurantId}/${index+1}`)
+        generatedQrData.values.push(`${state.restaurantId}/${index+1}`)
       }
       setgenerateQrInput('')
       dispatch(customisedAction(GENERATE_QRS, generatedQrData))
@@ -60,7 +61,7 @@ function GenerateQrs(props) {
         <div className="TopButtonContainer" style={{ justifyContent: 'flex-start' }}>
           <Button
             text="Generate"
-            disabled={generatingQrs}
+            disabled={generatingQrs || fetchingQrs}
             disabledAction={() => null}
             onClick={() => generateQrs()}
           />

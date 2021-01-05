@@ -64,7 +64,8 @@ export default function App() {
                         <Redirect to='/admin' />
                     </Route>
                     <AdminLanding path='/admin' component={Admin} />
-                    <CustomerLanding exact path='/restaurant' component={Restaurants} />
+                    <CustomerLanding exact path='/abc_restaurant/menu/' component={AdminLogin} />
+                    <CustomerLanding exact path='/:restaurantId/:tableId' component={Restaurants} />
                     <Route path='/adminLogin' component={AdminLogin} />
                     <Route component={NoRoute} />
                 </Switch>
