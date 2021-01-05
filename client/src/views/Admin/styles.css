@@ -1,9 +1,82 @@
 main {
     padding: 20px;
+    width: 300%;
+    box-sizing: border-box;
+}
+
+.loadingContainer {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.TopOptionsContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0px;
+}
+
+.TopInputContainer {
+    display: flex;
+    width: 85%;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+.TopButtonContainer {
+    width: 15%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.RowContainer {
+    background: rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 10px;
+    padding-bottom: 0;
+    box-sizing: border-box;
 }
 
 @media only screen and (max-width: 978px) {
     main {
         padding: 15px 10px;
+        width: 100%;
+    }
+    
+    .loadingContainer {
+        width: 100%;
+    }
+
+    .TopOptionsContainer {
+        flex-direction: column;
+    }
+
+    .TopInputContainer {
+        width: 100%;
+        padding-right: 0px;
+    }
+    
+    .TopButtonContainer {
+        width: 100%;
+    }
+    
+    .RowContainer {
+        margin-bottom: 10px;
+        padding: 5px;
+        flex-direction: column;
     }
 }

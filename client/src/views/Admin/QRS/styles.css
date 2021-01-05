@@ -1,0 +1,19 @@
+.SectionsContainer {
+    width: 15%;
+    padding-bottom: 5px 0px;
+    box-sizing: border-box;
+}
+
+.DoubleSectionsContainer {
+    width: 70%;
+}
+
+@media only screen and (max-width: 978px) {
+    .SectionsContainer {
+        width: 100%;
+    }
+
+    .QRDataSectionContainer {
+        display: none;
+    }
+}

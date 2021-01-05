@@ -1,5 +1,5 @@
-.OrangeButton {
-    padding: 7px 30px;
+.SmallButton {
+    padding: 5px 15px;
     border-style: solid;
     border-width: 2px;
     border-color: #3ae175;
@@ -10,45 +10,46 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    box-shadow: 1px 1px 3px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 
-.OrangeButtonText {
-    font-weight: 500;
+.SmallButtonText {
+    font-family: sans-serif;
+    font-weight: 100;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
 }
 
-.OrangeButton:hover {
+.SmallButton:hover {
     border-color: #3ae175;
     background-color: white;
     outline: none !important;
 }
 
-.OrangeButton:hover .OrangeButtonText {
+.SmallButton:hover .SmallButtonText {
     color: #3ae175;
 }
 
-.OrangeButton:focus {
+.SmallButton:focus {
     outline: none !important;
 }
 
 @media only screen and (max-width: 978px) {
-    .OrangeButton {
-        padding: 6px 25px;
+    .SmallButton {
+        padding: 4px 10px;
     }
 
-    .OrangeButtonText {
-        font-size: 16px;
+    .SmallButtonText {
+        font-size: 14px;
     }
 }
 
 @media only screen and (max-width: 480px) {
-    .OrangeButton {
-        padding: 5px 20px;
+    .SmallButton {
+        padding: 3px 5px;
     }
 
-    .OrangeButtonText {
-        font-size: 14px;
+    .SmallButtonText {
+        font-size: 12px;
     }
 }

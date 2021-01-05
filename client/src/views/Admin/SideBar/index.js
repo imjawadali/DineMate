@@ -25,17 +25,17 @@ function SideBar(props) {
                 <i className="fa fa-home" onClick={() => null}/>
                 <Link to={`${url}`}>Dashboard</Link>
             </div>
-            <h2>MNG</h2>
-            <div className="sidebar__link">
-                <i className="fa fa-user-secret" onClick={() => null}/>
-                <Link to={`${url}/others`}>Admin Management</Link>
-            </div>
+            <h2>Super Admin</h2>
             <div className="sidebar__link">
                 <i className="fa fa-building-o" onClick={() => null}/>
-                <Link to={`${url}/others`}>Company Management</Link>
+                <Link to={`${url}/restaurants`}>Restaurants Management</Link>
             </div>
             <div className="sidebar__link">
                 <i className="fa fa-wrench" onClick={() => null}/>
+                <Link to={`${url}/others`}>Company Management</Link>
+            </div>
+            <div className="sidebar__link">
+                <i className="fa fa-user-secret" onClick={() => null}/>
                 <Link to={`${url}/adc`}>Employee Management</Link>
             </div>
             <div className="sidebar__link">
