@@ -24,7 +24,7 @@ module.exports = app => {
             `SELECT id, adminName, email, role, restaurantId FROM users WHERE email = BINARY '${email}' AND password = BINARY '${password}'`,
             null,
             (data) => {
-                if (data[0])
+                if (data.length)
                     return res.send(data[0])
                 else
                     return res.status(422).send({ 'msg': 'Invalid credentials provided!' })
@@ -234,7 +234,7 @@ module.exports = app => {
             ORDER BY R.createdAt DESC`,
             null,
             (data) => {
-                if (data[0]) {
+                if (data.length) {
                     return res.send(data)
                 } else {
                     return res.status(422).send({ 'msg': 'No reastaurants available!' })
@@ -255,7 +255,11 @@ module.exports = app => {
             `SELECT id, value FROM restaurantsQrs WHERE restaurantId = '${restaurantId}'`,
             null,
             (data) => {
-                return res.send(data)
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No QRs available!' })
+                }
             }
         )
     })
