@@ -245,10 +245,9 @@ module.exports = app => {
 
     app.post('/admin/getExistingQrs', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, qrCounts } = req.body
+        const { restaurantId } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
-        if (!qrCounts) return res.status(401).send({ 'msg': 'No QRs available!' })
         getSecureConnection(
             res,
             adminId,
