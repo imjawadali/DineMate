@@ -231,7 +231,7 @@ module.exports = app => {
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId
             JOIN users U on U.id = R.primaryContactId
-            ORDER BY R.createdAt ASC`,
+            ORDER BY R.createdAt DESC`,
             null,
             (data) => {
                 if (data[0]) {
@@ -239,6 +239,23 @@ module.exports = app => {
                 } else {
                     return res.status(422).send({ 'msg': 'No reastaurants available!' })
                 }
+            }
+        )
+    })
+
+    app.post('/admin/getExistingQrs', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, qrCounts } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
+        if (!qrCounts) return res.status(401).send({ 'msg': 'No QRs available!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT id, value FROM restaurantsQrs WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (data) => {
+                return res.send(data)
             }
         )
     })
