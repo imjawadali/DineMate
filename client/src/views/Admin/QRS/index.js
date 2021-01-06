@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import QRCode from "qrcode.react";
 
 import { customisedAction } from '../../../redux/actions'
-import { GET_EXISTING_QRS, PUBLIC_URL } from '../../../constants'
+import { GET_EXISTING_QRS, CUSTOMER_APP_URL } from '../../../constants'
 
 import { SmallTitle, SmallButton } from '../../../components'
 import './styles.css'
@@ -44,7 +44,7 @@ function QRS(props) {
             <div className="SectionsContainer" style={{ padding: '5px 0px' }}>
               <QRCode
                 id={qr.id}
-                value={PUBLIC_URL+qr.value}
+                value={CUSTOMER_APP_URL+qr.value}
                 size={100}
               />
             </div>
