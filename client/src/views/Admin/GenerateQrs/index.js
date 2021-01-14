@@ -6,7 +6,7 @@ import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS } from '../../../constant
 
 import { Button, Input } from '../../../components'
 
-import QRS from '../QRS'
+import QrsList from './QrsList'
 
 function GenerateQrs(props) {
 
@@ -67,7 +67,12 @@ function GenerateQrs(props) {
           />
         </div>
       </div>
-      <QRS restaurantId={state.restaurantId} />
+      {fetchingQrs ?
+        <div className="loadingContainer">
+          <p>Fetching Qrs!</p>
+        </div> :
+        <QrsList restaurantId={state && state.restaurantId} />
+      }
     </div>
   )
 }

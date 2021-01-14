@@ -60,13 +60,22 @@ body {
 }
 
 .container {
-    display: grid;
+    display: flex;
+    width: 100vw;
     height: 100vh;
-    grid-template-columns: 0.8fr 1fr 1fr 1fr;
-    grid-template-rows: 0.2fr 3fr;
-    grid-template-areas:
-        "sidebar nav nav nav"
-        "sidebar main main main";
+    overflow: hidden;
+}
+
+.sidebarContainer {
+    width: 20%;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.mainContainer {
+    width: 80%;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
 .full-screen-container {
@@ -82,12 +91,11 @@ body {
 }
 
 @media only screen and (max-width: 978px) {
+    .sidebarContainer {
+        width: 0%;
+    }
 
-    .container {
-        grid-template-columns: 1fr;
-        grid-template-rows: 0.2fr 3fr;
-        grid-template-areas:
-            "nav"
-            "main";
+    .mainContainer {
+        width: 100%;
     }
 }

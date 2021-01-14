@@ -33,37 +33,35 @@ function Restaurants(props) {
         || restaurant.cuisine.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.adminName.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.city.toLowerCase().includes(filterKey.toLowerCase())
+        || restaurant.qrCounts == filterKey
       )
     }
     return filteredRestaurants
   }
 
   return (
-    <div className="loadingContainer">
-      {
-        fetchingRestaurants ? 
-        <div className="">
-          <p>Fetching Restaurants . . .</p>
-        </div> : 
-        <div className="Container">
-          <h2>Restaurants Management</h2>
-          <div className="TopOptionsContainer">
-            <div className="TopInputContainer">
-              <Input 
-                placeholder="Search Restaurants"
-                value={filterKey}
-                onChange={({ target: { value } }) => setfilterKey(value)}
-              />
-            </div>
-            <div className="TopButtonContainer">
-              <Button
-                text="+ Add New"
-                onClick={() => null}
-              />
-            </div>
-          </div>
-          <RestaurantsList history={props.history} restaurants={getFilterRestaurants()} />
+    <div className="Container">
+      <h3>Restaurants Management</h3>
+      <div className="TopOptionsContainer">
+        <div className="TopInputContainer">
+          <Input 
+            placeholder="Search Restaurants"
+            value={filterKey}
+            onChange={({ target: { value } }) => setfilterKey(value)}
+          />
         </div>
+        <div className="TopButtonContainer">
+          <Button
+            text="+ Add New"
+            onClick={() => props.history.push('/admin/addRestaurants')}
+          />
+        </div>
+      </div>
+      {fetchingRestaurants ?
+        <div className="loadingContainer">
+          <p>Fetching Restaurants . . .</p>
+        </div> :
+        <RestaurantsList history={props.history} restaurants={getFilterRestaurants()} />
       }
     </div>
   )

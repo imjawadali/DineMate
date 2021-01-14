@@ -7,6 +7,7 @@ import NavBar from './NavBar'
 
 import Dashboard from './Dashboard'
 import Restaurants from './Restaurants'
+import AddRestaurants from './AddRestaurants'
 import GenerateQrs from './GenerateQrs'
 import Others from './Others'
 import NoRoute from '../NoRoute'
@@ -40,17 +41,22 @@ function Admin(props) {
 
   return (
     <div className="container">
-      <SideBar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
-      <NavBar openSidebar={openSidebar} />
-      <main>
-        <Switch>
-          <Route exact path={path} component={Dashboard} />
-          <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
-          <SuperAdminRoutes path={`${path}/generateQrs`} component={GenerateQrs} />
-          <Route path={`${path}/others`} component={Others} />
-          <Route component={NoRoute} />
-        </Switch>
-      </main>
+      <div className="sidebarContainer">
+        <SideBar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
+      </div>
+      <div className="mainContainer">
+        <NavBar openSidebar={openSidebar} />
+        <div className="Main">
+          <Switch>
+            <Route exact path={path} component={Dashboard} />
+            <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
+            <SuperAdminRoutes path={`${path}/addRestaurants`} component={AddRestaurants} />
+            <SuperAdminRoutes path={`${path}/generateQrs`} component={GenerateQrs} />
+            <Route path={`${path}/others`} component={Others} />
+            <Route component={NoRoute} />
+          </Switch>
+        </div>
+      </div>
     </div>
   )
 }
