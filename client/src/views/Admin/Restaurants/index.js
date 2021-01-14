@@ -41,7 +41,7 @@ function Restaurants(props) {
 
   return (
     <div className="Container">
-      <h3>Restaurants Management</h3>
+      <h2>Restaurants Management</h2>
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 

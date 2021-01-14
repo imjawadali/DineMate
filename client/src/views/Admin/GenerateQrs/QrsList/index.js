@@ -1,24 +1,16 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import QRCode from "qrcode.react";
 
-import { customisedAction } from '../../../../redux/actions'
-import { GET_EXISTING_QRS, CUSTOMER_APP_URL } from '../../../../constants'
+import { CUSTOMER_APP_URL } from '../../../../constants'
 
-import { SmallTitle, SmallButton } from '../../../../components'
+import { SmallButton } from '../../../../components'
 
 function QrsList(props) {
 
-  const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
-  const dispatch = useDispatch()
 
   const { restaurantId } = props
-
-  useEffect(() => {
-    if (!fetchingQrs && !qrs)
-      dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
-  }, [])
 
   const downloadQR = (id) => {
     const canvas = document.getElementById(id);

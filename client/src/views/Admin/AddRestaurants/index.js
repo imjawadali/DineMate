@@ -9,7 +9,7 @@ import { SmallButton } from '../../../components'
 function AddRestaurants(props) {
   return (
     <div className="Container">
-      <h3>Add Restaurants</h3>
+      <h2>Add Restaurants</h2>
     </div>
   )
 }

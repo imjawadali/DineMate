@@ -22,7 +22,7 @@ function NavBar(props) {
                 <i className="fa fa-bars" />
             </div>
             <div className="navbar__left">
-                <h2>Welcome to Admin</h2>
+                <h3>Welcome to Admin</h3>
             </div>
             <div className="navbar__right">
                 <i className="fa fa-search" />

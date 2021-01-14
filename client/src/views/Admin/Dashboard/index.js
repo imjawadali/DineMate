@@ -2,8 +2,8 @@ import React from 'react'
 
 function Dashboard(props) {
   return (
-    <div>
-      <p>Dashboard</p>
+    <div className="Container">
+      <h2>Dashboard</h2>
     </div>
   )
 }
