@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../redux/actions'
-import { SET_TOAST } from '../../constants/App'
+import { SET_TOAST } from '../../constants'
 
 import './styles.css'
 
