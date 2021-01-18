@@ -5,7 +5,6 @@ import { DineMateTitle } from '../../../components'
 
 import logo from '../../../assets/logo.png'
 import './styles.css'
-import { ADMIN_SIGN_IN } from '../../../constants'
 
 function SideBar(props) {
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 import { customisedAction } from '../../redux/actions'
 import { CREATE_PASSWORD, SET_TOAST_DISMISSING } from '../../constants'
@@ -9,20 +9,16 @@ import { DineMateTitle, Title, Input, Button } from '../../components'
 
 import logo from '../../assets/logo.png'
 
-import './styles.css'
-
 function CreatePassword(props) {
-
-  const [email, setemail] = useState('')
+  
   const [password, setpassword] = useState('')
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const dispatch = useDispatch()
 
-  let { restaurantId, adminEmail } = useParams();
+  let { restaurantId, email, hashString } = useParams();
 
   useEffect(() => {
-    setemail(adminEmail)
     if (admin)
       props.history.replace('/admin')
   }, [admin])
@@ -41,7 +37,7 @@ function CreatePassword(props) {
           <h4>Restaurant ID:</h4>
           <p style={{ marginBottom: '10px' }}>{restaurantId}</p>
           <h4>Email:</h4>
-          <p style={{ marginBottom: '5px' }}>{adminEmail}</p>
+          <p style={{ marginBottom: '5px' }}>{email}</p>
         </div>
         <Input 
           style={{ width: '80%' }}
@@ -53,11 +49,12 @@ function CreatePassword(props) {
           <Button
             onClick={() => {
               dispatch(customisedAction(SET_TOAST_DISMISSING, true))
-              dispatch(customisedAction(CREATE_PASSWORD, { restaurantId, email, password }))
+              dispatch(customisedAction(CREATE_PASSWORD, { restaurantId, email, password, hashString }))
             }}
             text="Submit"
           />
         </div>
+        <Link style={{ marginTop: '10px' }} to="/adminLogin">Go to Login ?</Link>
       </div>
     </div>
   )

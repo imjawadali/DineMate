@@ -15,11 +15,11 @@ export class createPasswordEpic {
     action$.pipe(
       ofType(CREATE_PASSWORD),
       switchMap(
-        async ({ payload: { restaurantId, email, password } }) => {
+        async ({ payload: { restaurantId, email, password, hashString } }) => {
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.admin.createPassword,
-            { restaurantId, email, password },
+            { restaurantId, email, password, hashString },
             () => {
               return customisedAction(ADMIN_SIGN_IN, { email, password })
             },

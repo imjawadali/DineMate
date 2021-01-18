@@ -1,6 +1,8 @@
 import { 
   SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
   ADMIN_SIGN_IN_FAILURE,
+  FORGOT_PASSWORD_SUCCESS,
+  FORGOT_PASSWORD_FAILURE,
   CREATE_PASSWORD_FAILURE,
   GET_ALL_RESTAURANTS_FAILURE,
   ADD_RESTAURANT_SUCCESS,
@@ -21,6 +23,10 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
     case ADMIN_SIGN_IN_FAILURE:
+      return { ...state, toast: payload }
+    case FORGOT_PASSWORD_SUCCESS:
+      return { ...state, toast: payload }
+    case FORGOT_PASSWORD_FAILURE:
       return { ...state, toast: payload }
     case CREATE_PASSWORD_FAILURE:
       return { ...state, toast: payload }

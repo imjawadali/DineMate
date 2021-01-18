@@ -65,6 +65,7 @@ module.exports = app => {
                             console.log('TransactionError', error)
                             return res.status(422).send({ 'msg': error.sqlMessage })
                         }
+                        let hashString = Math.random().toString(36).substring(2);
                         const restaurant = {}
                         restaurant.restaurantId = restaurantId
                         restaurant.logoUrl = logoUrl
@@ -86,6 +87,7 @@ module.exports = app => {
                                 restaurant.addressId = result.insertId
                                 data = primaryContact
                                 data.restaurantId = restaurantId
+                                data.hashString = hashString
                                 tempDb.query('INSERT INTO users SET ?', data, function(error, result) {
                                     if (!!error) {
                                         console.log('TableError', error)
@@ -97,6 +99,8 @@ module.exports = app => {
                                         if (secondaryContact) {
                                             data = secondaryContact
                                             data.restaurantId = restaurantId
+                                            hashString = Math.random().toString(36).substring(2);
+                                            data.hashString = hashString
                                             tempDb.query('INSERT INTO users SET ?', data, function(error, result) {
                                                 if (!!error) {
                                                     console.log('TableError', error)
@@ -160,16 +164,40 @@ module.exports = app => {
         })
     })
 
+    app.post('/admin/forgotPassword', async (req, res) => {
+        const { email } = req.body
+        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
+        const hashString = Math.random().toString(36).substring(2);
+        getConnection(
+            res,
+            `UPDATE users SET ? WHERE email = BINARY '${email}'`,
+            { passwordForgotten: 1, hashString },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Password Reset Link Sent!' })
+                else return res.status(422).send({ 'msg': 'Link Expired!' })
+            }
+        )
+    })
+
     app.post('/admin/createPassword', async (req, res) => {
-        const { restaurantId, email, password } = req.body
+        const { restaurantId, email, password, hashString } = req.body
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
+        if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
         getConnection(
             res,
-            `UPDATE users SET ? WHERE email = BINARY '${email}' AND restaurantId = BINARY '${restaurantId}'`,
-            { password },
-            () => res.send({ 'msg': 'QRs Generated Successfully!' })
+            `UPDATE users SET ? WHERE email = BINARY '${email}' 
+            AND restaurantId = BINARY '${restaurantId}' 
+            AND passwordForgotten = 1 
+            AND hashString = '${hashString}'`,
+            { password, passwordForgotten: 0 },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Password Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Link Expired!' })
+            }
         )
     })
 

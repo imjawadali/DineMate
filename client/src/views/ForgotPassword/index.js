@@ -1,28 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { customisedAction } from '../../redux/actions'
-import { ADMIN_SIGN_IN, SET_TOAST_DISMISSING } from '../../constants'
+import { FORGOT_PASSWORD, SET_TOAST_DISMISSING } from '../../constants'
 
 import { DineMateTitle, Title, Input, Button } from '../../components'
 
 import logo from '../../assets/logo.png'
 
-import './styles.css'
-
-function AdminLogin(props) {
+function ForgotPassword(props) {
 
   const [email, setemail] = useState('')
-  const [password, setpassword] = useState('')
-
-  const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (admin)
-      props.history.replace('/admin')
-  }, [admin])
 
   return (
     <div className="full-screen-container login-screen">
@@ -32,7 +22,12 @@ function AdminLogin(props) {
       </div>
       <div className="login-container">
         <div className="login-title-container">
-          <Title text="Admin Login" />
+          <Title text="Forgot Password" />
+        </div>
+        <div style={{ width: '80%', textAlign: 'center' }}>
+          <p>Enter your registered email here</p>
+          <p>and you will be sent a link to</p>
+          <p style={{ marginBottom: '10px' }}>reset your password</p>
         </div>
         <Input 
           style={{ width: '80%' }}
@@ -40,25 +35,19 @@ function AdminLogin(props) {
           value={email}
           onChange={({ target: { value } }) => setemail(value)}
         />
-        <Input 
-          style={{ width: '80%' }}
-          placeholder="Enter Password"
-          value={password}
-          onChange={({ target: { value } }) => setpassword(value)}
-        />
         <div className="login-button-container">
           <Button
             onClick={() => {
               dispatch(customisedAction(SET_TOAST_DISMISSING, true))
-              dispatch(customisedAction(ADMIN_SIGN_IN, { email, password }))
+              dispatch(customisedAction(FORGOT_PASSWORD, { email }))
             }}
-            text="Login"
+            text="Submit"
           />
         </div>
-        <Link style={{ marginTop: '10px' }} to="/forgotPassword">Forgot Password ?</Link>
+        <Link style={{ marginTop: '10px' }} to="/adminLogin">Go to Login ?</Link>
       </div>
     </div>
   )
 }
 
-export default AdminLogin
+export default ForgotPassword
