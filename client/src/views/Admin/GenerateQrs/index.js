@@ -7,9 +7,11 @@ import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS, GET_EXISTING_QRS } from 
 import { Button, Input } from '../../../components'
 
 import QrsList from './QrsList'
+import Qr from './Qr'
 
 function GenerateQrs(props) {
 
+  const [selectedQr, setselectedQr] = useState(null)
   const [qrsFetchCalled, setqrsFetchCalled] = useState(false)
   const [generateQrInput, setgenerateQrInput] = useState('')
   const [qrCounts, setqrCounts] = useState(0)
@@ -36,6 +38,10 @@ function GenerateQrs(props) {
     }
   }, [qrs, qrsFetchCalled])
 
+  const selectQR = (qr) => {
+    setselectedQr(qr)
+  }
+
   const generateQrs = () => {
     if (!generateQrInput || generateQrInput < 1 || isNaN(generateQrInput)) {
       dispatch(customisedAction(SET_TOAST_DISMISSING, true))
@@ -54,6 +60,7 @@ function GenerateQrs(props) {
   }
 
   return (
+    !selectedQr ?
     <div className="Container">
       <h2>QRs Management</h2>
       <div className="TopOptionsContainer">
@@ -77,9 +84,10 @@ function GenerateQrs(props) {
         <div className="loadingContainer">
           <p>Fetching Qrs!</p>
         </div> :
-        <QrsList restaurantId={state && state.restaurantId} />
+        <QrsList selectQR={selectQR} restaurantId={state && state.restaurantId} />
       }
-    </div>
+    </div> :
+    <Qr qr={selectedQr} onBack={() => selectQR(null)} />
   )
 }
 

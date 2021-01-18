@@ -14,6 +14,7 @@ import AdminLogin from './AdminLogin'
 import ForgotPassword from './ForgotPassword'
 import CreatePassword from './CreatePassword'
 import Restaurants from './Restaurants'
+import Menu from './Menu'
 import NoRoute from './NoRoute'
 
 import logo from '../assets/logo.png'
@@ -66,8 +67,9 @@ export default function App() {
                         <Redirect to='/admin' />
                     </Route>
                     <AdminLanding path='/admin' component={Admin} />
-                    <CustomerLanding exact path='/:restaurantId/menu/' component={AdminLogin} />
-                    <CustomerLanding exact path='/:restaurantId/:tableId' component={Restaurants} />
+                    <CustomerLanding path='/restaurants' component={Restaurants} />
+                    <CustomerLanding exact path='/restaurant/:restaurantId/menu/' component={Menu} />
+                    <CustomerLanding exact path='/restaurant/:restaurantId/:tableId' component={Menu} />
                     <CustomerLanding path='/adminLogin' component={AdminLogin} />
                     <CustomerLanding path='/forgotPassword' component={ForgotPassword} />
                     <CustomerLanding path='/createPassword/:restaurantId/:email/:hashString' component={CreatePassword} />

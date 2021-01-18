@@ -10,20 +10,7 @@ function QrsList(props) {
 
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
 
-  const { restaurantId } = props
-
-  const downloadQR = (id) => {
-    const canvas = document.getElementById(id);
-    const pngUrl = canvas
-      .toDataURL("image/png")
-      .replace("image/png", "image/octet-stream");
-    let downloadLink = document.createElement("a");
-    downloadLink.href = pngUrl;
-    downloadLink.download = `${id}.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
+  const { selectQR, restaurantId } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -46,7 +33,7 @@ function QrsList(props) {
                   <td>
                     <QRCode
                       id={id}
-                      value={CUSTOMER_APP_URL+value}
+                      value={CUSTOMER_APP_URL+"restaurant/"+value}
                       size={40}
                     />
                   </td>
@@ -63,7 +50,7 @@ function QrsList(props) {
                     <SmallButton
                       style={{ width: '100%' }}
                       text="View"
-                      onClick={() => downloadQR(id)}
+                      onClick={() => selectQR(qr)}
                     />
                   </td>
                 </tr>
