@@ -11,7 +11,7 @@ import RestaurantsList from './RestaurantsList'
 function Restaurants(props) {
 
   const [restaurantsFetchCalled, setrestaurantsFetchCalled] = useState(false)
-  const [filterKey, setfilterKey] = useState([])
+  const [filterKey, setfilterKey] = useState('')
 
   const fetchingRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.fetchingRestaurants)
   const restaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurants)

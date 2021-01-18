@@ -48,7 +48,6 @@ module.exports = app => {
         if (secondaryContact) {
             if (!secondaryContact.adminName) return res.status(422).send({ 'msg': 'Secondary Contact\'s Name is required!' })
             if (!secondaryContact.email) return res.status(422).send({ 'msg': 'Secondary Contact\'s Email is required!' })
-            if (!secondaryContact.role) return res.status(422).send({ 'msg': 'Secondary Contact\'s Role is required!' })
         }
 
         getTransactionalConnection()

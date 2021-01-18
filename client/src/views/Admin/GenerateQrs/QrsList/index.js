@@ -33,8 +33,8 @@ function QrsList(props) {
             <th>QR Codes</th>
             <th>Table ID</th>
             <th>Status</th>
-            <th>Edit</th>
             <th>Action</th>
+            <th>Print</th>
           </tr>
         </thead>
         <tbody>
@@ -55,15 +55,14 @@ function QrsList(props) {
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="View"
+                      text="Delete"
                       disabled
-                      disabledAction={() => null}
                     />
                   </td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Download"
+                      text="View"
                       onClick={() => downloadQR(id)}
                     />
                   </td>

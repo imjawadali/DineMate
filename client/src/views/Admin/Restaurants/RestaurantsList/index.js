@@ -19,8 +19,8 @@ function RestaurantsList(props) {
             <th>Name</th>
             <th>QR Codes Assigned</th>
             <th>Payment Received</th>
-            <th>Edit</th>
-            <th>View</th>
+            <th>Edit / View</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -35,15 +35,14 @@ function RestaurantsList(props) {
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Edit"
+                      text="Edit Details"
                       disabled
-                      disabledAction={() => null}
                     />
                   </td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Details"
+                      text="Manage Qrs"
                       onClick={() => {
                         dispatch(customisedAction(RESTAURANT_CHANGED))
                         history.push({
