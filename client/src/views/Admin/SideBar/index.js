@@ -5,11 +5,12 @@ import { DineMateTitle } from '../../../components'
 
 import logo from '../../../assets/logo.png'
 import './styles.css'
+import { ADMIN_SIGN_IN } from '../../../constants'
 
 function SideBar(props) {
 
     let { url } = useRouteMatch()
-    let { sidebarOpen, closeSidebar } = props
+    let { admin, sidebarOpen, closeSidebar } = props
 
     return (<div className={sidebarOpen ? "sidebar-responsive" : ""} id="sidebar">
         <div className="sidebar__title">
@@ -25,11 +26,14 @@ function SideBar(props) {
                 <i className="fa fa-home" onClick={() => null}/>
                 <Link to={`${url}`}>Dashboard</Link>
             </div>
-            <h2>Super Admin</h2>
-            <div className="sidebar__link">
-                <i className="fa fa-building-o" onClick={() => null}/>
-                <Link to={`${url}/restaurants`}>Restaurants Management</Link>
-            </div>
+            {admin.role === "SuperAdmin" ? <h2>Super Admin</h2> : null}
+            {admin.role === "SuperAdmin" ?
+                <div className="sidebar__link">
+                    <i className="fa fa-building-o" onClick={() => null}/>
+                    <Link to={`${url}/restaurants`}>Restaurants Management</Link>
+                </div>
+                : null }
+            <h2>LEAVE</h2>
             <div className="sidebar__link">
                 <i className="fa fa-wrench" onClick={() => null}/>
                 <Link to={`${url}/others`}>Company Management</Link>
@@ -45,19 +49,6 @@ function SideBar(props) {
             <div className="sidebar__link">
                 <i className="fa fa-handshake-o" onClick={() => null}/>
                 <Link to={`${url}/adc`}>Contracts</Link>
-            </div>
-            <h2>LEAVE</h2>
-            <div className="sidebar__link">
-                <i className="fa fa-question" onClick={() => null}/>
-                <Link to={`${url}/adc`}>Requests</Link>
-            </div>
-            <div className="sidebar__link">
-                <i className="fa fa-sign-out" onClick={() => null}/>
-                <Link to={`${url}/adc`}>Leave Policy</Link>
-            </div>
-            <div className="sidebar__link">
-                <i className="fa fa-files-o" onClick={() => null}/>
-                <Link to={`${url}/adc`}>Apply for Leaves</Link>
             </div>
             <h2>PAYROLL</h2>
             <div className="sidebar__link">

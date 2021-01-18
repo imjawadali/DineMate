@@ -42,7 +42,7 @@ function Admin(props) {
   return (
     <div className="container">
       <div className="sidebarContainer">
-        <SideBar sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
+        <SideBar admin={admin} sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       </div>
       <div className="mainContainer">
         <NavBar openSidebar={openSidebar} />
@@ -50,7 +50,7 @@ function Admin(props) {
           <Switch>
             <Route exact path={path} component={Dashboard} />
             <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
-            <SuperAdminRoutes path={`${path}/addRestaurants`} component={AddRestaurants} />
+            <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurants} />
             <SuperAdminRoutes path={`${path}/generateQrs`} component={GenerateQrs} />
             <Route path={`${path}/others`} component={Others} />
             <Route component={NoRoute} />

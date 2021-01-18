@@ -53,7 +53,7 @@ function Restaurants(props) {
         <div className="TopButtonContainer">
           <Button
             text="+ Add New"
-            onClick={() => props.history.push('/admin/addRestaurants')}
+            onClick={() => props.history.push('/admin/addRestaurant')}
           />
         </div>
       </div>
