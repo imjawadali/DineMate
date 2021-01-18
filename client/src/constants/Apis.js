@@ -6,6 +6,7 @@ export const BASE_URL = PUBLIC_URL
 export const API_ENDPOINTS = {
     admin: {
         login: 'admin/login',
+        createPassword: 'admin/createPassword',
         addRestuarant: 'admin/addRestuarant',
         generateQrs: 'admin/generateQrs',
         getAllRestaurants: 'admin/getAllRestaurants',

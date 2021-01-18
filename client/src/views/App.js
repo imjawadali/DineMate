@@ -11,6 +11,7 @@ import { getItem } from '../helpers'
 import Toaster from './Toaster'
 import Admin from './Admin'
 import AdminLogin from './AdminLogin'
+import CreatePassword from './CreatePassword'
 import Restaurants from './Restaurants'
 import NoRoute from './NoRoute'
 
@@ -67,6 +68,7 @@ export default function App() {
                     <CustomerLanding exact path='/:restaurantId/menu/' component={AdminLogin} />
                     <CustomerLanding exact path='/:restaurantId/:tableId' component={Restaurants} />
                     <CustomerLanding path='/adminLogin' component={AdminLogin} />
+                    <CustomerLanding path='/createPassword/:restaurantId/:adminEmail' component={CreatePassword} />
                     <Route component={NoRoute} />
                 </Switch>
             </Router>

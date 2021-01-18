@@ -160,6 +160,19 @@ module.exports = app => {
         })
     })
 
+    app.post('/admin/createPassword', async (req, res) => {
+        const { restaurantId, email, password } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
+        if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
+        getConnection(
+            res,
+            `UPDATE users SET ? WHERE email = BINARY '${email}' AND restaurantId = BINARY '${restaurantId}'`,
+            { password },
+            () => res.send({ 'msg': 'QRs Generated Successfully!' })
+        )
+    })
+
     app.post('/admin/generateQrs', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, values } = req.body

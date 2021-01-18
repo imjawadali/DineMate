@@ -15,14 +15,14 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
           return customisedAction(failureAction, { message: resObj.msg, type: 'error' })
         }
         if (problem && problem === 'NETWORK_ERROR') {
-          return customisedAction(failureAction, { message: `Network Error while ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
+          return customisedAction(failureAction, { message: `Network Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
         }
         if (problem && problem === 'TIMEOUT_ERROR') {
-          return customisedAction(failureAction, { message: `Timeout Error while ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
+          return customisedAction(failureAction, { message: `Timeout Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
         }
-        return customisedAction(failureAction, { message: `Unknown Error while ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
+        return customisedAction(failureAction, { message: `Unknown Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
     } catch (error) {
-        console.log('ADMIN_SIGN_IN Unknown Error', error)
+        console.log(`${failureAction.replace('_FAILURE', '')} Unknown Error`, error)
         return customisedAction(failureAction, { message: error.message, type: 'error' })
     }
 }
