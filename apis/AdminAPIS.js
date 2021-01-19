@@ -21,7 +21,7 @@ module.exports = app => {
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         getConnection(
             res,
-            `SELECT id, adminName, email, role, restaurantId FROM users WHERE email = BINARY '${email}' AND password = BINARY '${password}'`,
+            `SELECT id, adminName, email, role, restaurantId FROM users WHERE email = '${email}' AND password = BINARY '${password}'`,
             null,
             (data) => {
                 if (data.length)
