@@ -19,9 +19,16 @@ module.exports = app => {
         const { email, password } = req.body
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
+        let sql = 'SELECT U.id, U.adminName, U.email, U.role, U.restaurantId'
+        if (email !== 'ahads62426@gmail.com')
+            sql += ', R.restaurantName'
+        sql += ' FROM users U'
+        if (email !== 'ahads62426@gmail.com')
+            sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
+        sql += ` WHERE U.email = '${email}' AND U.password = BINARY '${password}'`
         getConnection(
             res,
-            `SELECT id, adminName, email, role, restaurantId FROM users WHERE email = '${email}' AND password = BINARY '${password}'`,
+            sql,
             null,
             (data) => {
                 if (data.length)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useRouteMatch } from 'react-router-dom'
 
 import { customisedAction } from '../../../redux/actions'
@@ -11,6 +11,7 @@ import './styles.css'
 
 function NavBar(props) {
 
+    const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
     const dispatch = useDispatch()
 
     let { openSidebar } = props
@@ -21,7 +22,7 @@ function NavBar(props) {
                 <i className="fa fa-bars" />
             </div>
             <div className="navbar__left">
-                <h3>Welcome to Admin</h3>
+                <h3>{admin.restaurantId ? admin.restaurantName : 'Welcome to Admin'}</h3>
             </div>
             <div className="navbar__right">
                 <i className="fa fa-search" />
