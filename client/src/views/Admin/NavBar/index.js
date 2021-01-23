@@ -1,9 +1,8 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useRouteMatch } from 'react-router-dom'
 
 import { customisedAction } from '../../../redux/actions'
-import { ADMIN_LOGOUT } from '../../../constants'
+import { ADMIN_LOGOUT, SESSION_CHECK_DONE } from '../../../constants'
 import { removeItem } from '../../../helpers'
 
 import avatar from '../../../assets/avatar.svg'
@@ -29,6 +28,7 @@ function NavBar(props) {
                 <i className="fa fa-power-off" onClick={() => {
                     removeItem('admin')
                     dispatch(customisedAction(ADMIN_LOGOUT))
+                    dispatch(customisedAction(SESSION_CHECK_DONE))
                 }}/>
                 <img src={avatar} width="30" alt="avatar" />
             </div>

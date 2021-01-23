@@ -16,8 +16,6 @@ function SideBar(props) {
     const { admin, sidebarOpen, closeSidebar, location } = props
     const { pathname } = location
 
-    useEffect(() => {}, [admin])
-
     return (<div className={sidebarOpen ? "sidebar-responsive" : ""} id="sidebar">
         <div className="sidebar__title">
             <div className="sidebar__img">
@@ -43,17 +41,21 @@ function SideBar(props) {
                         <i className="fa fa-building-o"/>
                         <Link to={`${url}/restaurants`}>Restaurants Management</Link>
                     </div>
-                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-edit"/>
-                        <Link to={pathname}>Edit Restaurant</Link>
-                    </div>
                     <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-qrcode"/>
                         <Link to={pathname}>QRs Management</Link>
                     </div>
+                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-edit"/>
+                        <Link to={pathname}>Edit Restaurant</Link>
+                    </div>
                 </> :
                 <>
                     <h2>Restaurant Admin</h2>
+                    <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-building-o" />
+                        <Link to={`${url}/tablesManagement`}>Tables Management</Link>
+                    </div>
                     <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-wrench" />
                         <Link to={`${url}/others`}>Company Management</Link>

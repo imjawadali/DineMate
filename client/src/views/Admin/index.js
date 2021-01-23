@@ -10,6 +10,7 @@ import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
 import EditRestaurant from './EditRestaurant'
 import GenerateQrs from './GenerateQrs'
+import Tables from './Tables'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -61,6 +62,7 @@ function Admin(props) {
             <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
             <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <SuperAdminRoutes path={`${path}/qrsManagement`} component={GenerateQrs} />
+            <RestaurantAdminRoutes path={`${path}/tablesManagement`} component={Tables} />
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
             <RestaurantAdminRoutes component={NoRoute} />
           </Switch>

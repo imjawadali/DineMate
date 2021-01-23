@@ -3,6 +3,7 @@ import {
   GET_EXISTING_QRS_SUCCESS,
   GET_EXISTING_QRS_FAILURE,
   RESTAURANT_CHANGED,
+  SET_RESTAURANT,
   GENERATE_QRS,
   GENERATE_QRS_SUCCESS,
   GENERATE_QRS_FAILURE
@@ -23,6 +24,8 @@ export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null },
     case GENERATE_QRS_FAILURE:
       return { ...state, generatingQrs: false }
     case RESTAURANT_CHANGED:
+      return { ...state, qrs: null }
+    case SET_RESTAURANT:
       return { ...state, qrs: null }
     default:
       return state
