@@ -6,8 +6,9 @@ import SideBar from './SideBar'
 import NavBar from './NavBar'
 
 import Dashboard from './Dashboard'
+import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
-import AddRestaurants from './AddRestaurants'
+import EditRestaurant from './EditRestaurant'
 import GenerateQrs from './GenerateQrs'
 import Others from './Others'
 import NoRoute from '../NoRoute'
@@ -56,8 +57,9 @@ function Admin(props) {
         <div className="Main">
           <Switch>
             <Route exact path={path} component={Dashboard} />
-            <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurants} />
+            <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
             <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
+            <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <SuperAdminRoutes path={`${path}/qrsManagement`} component={GenerateQrs} />
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
             <RestaurantAdminRoutes component={NoRoute} />

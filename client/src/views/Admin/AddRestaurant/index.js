@@ -7,7 +7,7 @@ import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../consta
 import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
 import './styles.css'
 
-function AddRestaurants(props) {
+function AddRestaurant(props) {
 
   const [restaurantId, setrestaurantId] = useState('')
   const [restaurantName, setrestaurantName] = useState('')
@@ -98,7 +98,7 @@ function AddRestaurants(props) {
 
   return (
     <div className="Container">
-      <h2>Add Restaurants</h2>
+      <h2>Add Restaurant</h2>
       <div className="FormContainer">
         <div className="FormInnerContainer">
           <SectionHeading text="Restaurant Information" />
@@ -234,4 +234,4 @@ function AddRestaurants(props) {
   )
 }
 
-export default AddRestaurants
+export default AddRestaurant
