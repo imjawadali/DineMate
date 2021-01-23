@@ -6,24 +6,28 @@ import { SET_TOAST } from '../../constants'
 
 import './styles.css'
 
-function Button ({ onClick, text, style, disabled, disabledAction, children }) {
+function Button ({ onClick, text, style, light, lightAction, iconLeft, iconRight }) {
   
   const dispatch = useDispatch()
 
   return (
     <div>
-      {disabled ?
+      {light ?
         <button 
-          className="OrangeButton"
-          onClick={disabledAction ? disabledAction : () => dispatch(customisedAction(SET_TOAST, { message: 'Button is disable!', type: 'warning'}))}
+          className="Button"
+          onClick={lightAction ? lightAction : () => dispatch(customisedAction(SET_TOAST, { message: 'Button is disable!', type: 'warning'}))}
           style={{ backgroundColor: 'rgba(62, 161, 117, 0.3)', borderColor: 'rgba(62, 161, 117, 0.3)', ...style }}>
-          <p className="OrangeButtonText" style={{ color: 'white' }}>{text} {children}</p>
+          {iconLeft && <p className="ButtonText" style={{ color: 'white', paddingRight: '5px' }}>{iconLeft}</p>}
+          <p className="ButtonText" style={{ color: 'white' }}>{text}</p>
+          {iconRight && <p className="ButtonText" style={{ color: 'white', paddingLeft: '5px' }}>{iconRight}</p>}
         </button>
         : <button 
-          className="OrangeButton"
+          className="Button"
           style={style || {}}
           onClick={onClick}>
-          <p className="OrangeButtonText">{text} {children}</p>
+          {iconLeft && <p className="ButtonText" style={{ paddingRight: '5px' }}>{iconLeft}</p>}
+          <p className="ButtonText">{text}</p>
+          {iconRight && <p className="ButtonText" style={{ paddingLeft: '5px' }}>{iconRight}</p>}
         </button>
       }
     </div>

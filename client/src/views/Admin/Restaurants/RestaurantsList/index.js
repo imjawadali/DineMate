@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../redux/actions'
-import { RESTAURANT_CHANGED } from '../../../../constants'
+import { RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
 
 import { SmallButton } from '../../../../components'
 
@@ -19,8 +19,8 @@ function RestaurantsList(props) {
             <th>Name</th>
             <th>QR Codes Assigned</th>
             <th>Payment Received</th>
-            <th>Edit / View</th>
-            <th>Action</th>
+            <th>Visit</th>
+            <th>Manage</th>
           </tr>
         </thead>
         <tbody>
@@ -35,18 +35,22 @@ function RestaurantsList(props) {
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Edit Details"
-                      disabled
+                      text="Select"
+                      light
+                      lightAction={() => {
+                        dispatch(customisedAction(SET_RESTAURANT, restaurant))
+                        history.push('/admin')
+                      }}
                     />
                   </td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Manage Qrs"
+                      text="Details"
                       onClick={() => {
                         dispatch(customisedAction(RESTAURANT_CHANGED))
                         history.push({
-                          pathname: `/admin/generateQrs`, state: { restaurantId, qrCounts }
+                          pathname: `/admin/qrsManagement`, state: { restaurantId, qrCounts }
                         })
                       }}
                     />

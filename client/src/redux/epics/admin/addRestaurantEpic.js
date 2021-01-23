@@ -15,12 +15,13 @@ export class addRestaurantEpic {
     action$.pipe(
       ofType(ADD_RESTAURANT),
       switchMap(
-        async ({ payload }) => {
+        async ({ payload, extras: { history } }) => {
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.admin.addRestuarant,
             payload,
             () => {
+              history.push('/admin/restaurants')
               return customisedAction(ADD_RESTAURANT_SUCCESS)
             },
             ADD_RESTAURANT_FAILURE

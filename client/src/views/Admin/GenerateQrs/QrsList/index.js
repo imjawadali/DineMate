@@ -43,7 +43,7 @@ function QrsList(props) {
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Delete"
-                      disabled
+                      light
                     />
                   </td>
                   <td>

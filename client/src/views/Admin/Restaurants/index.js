@@ -24,7 +24,7 @@ function Restaurants(props) {
     }
   }, [])
 
-  const getFilterRestaurants = () => {
+  const getFilteredRestaurants = () => {
     let filteredRestaurants = restaurants
     if (filterKey && filterKey.length && restaurants) {
       filteredRestaurants = restaurants.filter(
@@ -52,17 +52,17 @@ function Restaurants(props) {
         </div>
         <div className="TopButtonContainer">
           <Button
-            text="+ Add New"
-            onClick={() => props.history.push('/admin/addRestaurant')}
-          />
+            text="Refresh"
+            iconLeft={<i className="fa fa-refresh" />}
+            onClick={() => dispatch(customisedAction(GET_ALL_RESTAURANTS))} />
         </div>
       </div>
       {fetchingRestaurants ?
         <div className="loadingContainer">
-          <p>Fetching Restaurants . . .</p>
-        </div> :
-        <RestaurantsList history={props.history} restaurants={getFilterRestaurants()} />
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Restaurants . . .</p>
+        </div> : null
       }
+      <RestaurantsList history={props.history} restaurants={getFilteredRestaurants()} />
     </div>
   )
 }

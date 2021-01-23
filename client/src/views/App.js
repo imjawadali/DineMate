@@ -33,12 +33,9 @@ export default function App() {
             setTimeout(() => {
                 RestClient.setHeader('Authorization', storedAdmin.id)
                 dispatch(customisedAction(SET_SESSION, { admin: storedAdmin }))
-            }, 500)
+            }, 300)
         else
-            setTimeout(() =>
-                dispatch(customisedAction(SESSION_CHECK_DONE)),
-                500
-            )
+            setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
         }
     }, [dispatch])
 

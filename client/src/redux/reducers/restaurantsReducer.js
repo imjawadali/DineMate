@@ -4,14 +4,12 @@ import {
   GET_ALL_RESTAURANTS_FAILURE,
   ADD_RESTAURANT,
   ADD_RESTAURANT_SUCCESS,
-  ADD_RESTAURANT_FAILURE,
-  RESTAURANT_ADDED_UPDATED
+  ADD_RESTAURANT_FAILURE
 } from '../../constants'
 
 export default (state = {
   fetchingRestaurants: false,
   addingUpdatingRestaurant: false,
-  restaurantAddedUpdated: false,
   restaurants: null
 }, { type, payload }) => {
   switch (type) {
@@ -24,11 +22,9 @@ export default (state = {
     case ADD_RESTAURANT:
       return { ...state, addingUpdatingRestaurant: true }
     case ADD_RESTAURANT_SUCCESS:
-      return { ...state, addingUpdatingRestaurant: false, restaurantAddedUpdated: true }
+      return { ...state, addingUpdatingRestaurant: false }
     case ADD_RESTAURANT_FAILURE:
       return { ...state, addingUpdatingRestaurant: false }
-    case RESTAURANT_ADDED_UPDATED:
-      return { ...state, restaurantAddedUpdated: false }
     default:
       return state
   }

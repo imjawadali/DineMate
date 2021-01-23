@@ -1,4 +1,4 @@
-.OrangeButton {
+.Button {
     padding: 7px 30px;
     border-style: solid;
     border-width: 2px;
@@ -13,42 +13,42 @@
     box-shadow: 1px 1px 3px;
 }
 
-.OrangeButtonText {
+.ButtonText {
     font-weight: 500;
     color: white;
     font-size: 18px;
 }
 
-.OrangeButton:hover {
+.Button:hover {
     border-color: #3ae175;
-    background-color: white;
+    background-color: white !important;
     outline: none !important;
 }
 
-.OrangeButton:hover .OrangeButtonText {
-    color: #3ae175;
+.Button:hover .ButtonText {
+    color: #3ae175 !important;
 }
 
-.OrangeButton:focus {
+.Button:focus {
     outline: none !important;
 }
 
 @media only screen and (max-width: 978px) {
-    .OrangeButton {
+    .Button {
         padding: 6px 25px;
     }
 
-    .OrangeButtonText {
+    .ButtonText {
         font-size: 16px;
     }
 }
 
 @media only screen and (max-width: 480px) {
-    .OrangeButton {
+    .Button {
         padding: 5px 20px;
     }
 
-    .OrangeButtonText {
+    .ButtonText {
         font-size: 14px;
     }
 }

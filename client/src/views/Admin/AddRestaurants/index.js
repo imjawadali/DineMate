@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT, RESTAURANT_ADDED_UPDATED } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../constants'
 
 import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
 import './styles.css'
@@ -25,16 +25,7 @@ function AddRestaurants(props) {
   const [sPhoneNumber, setsPhoneNumber] = useState('')
 
   const addingUpdatingRestaurant = useSelector(({ restaurantsReducer }) => restaurantsReducer.addingUpdatingRestaurant)
-  const restaurantAddedUpdated = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurantAddedUpdated)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-    if (restaurantAddedUpdated) {
-      dispatch(customisedAction(SET_TOAST_DISMISSING))
-      dispatch(customisedAction(RESTAURANT_ADDED_UPDATED))
-      props.history.goBack()
-    }
-  }, [restaurantAddedUpdated])
 
   const setRestaurantNameAndId = (name) => {
     let tempRestaurantId
@@ -102,7 +93,7 @@ function AddRestaurants(props) {
       }
     }
     dispatch(customisedAction(SET_TOAST_DISMISSING))
-    dispatch(customisedAction(ADD_RESTAURANT, payload))
+    dispatch(customisedAction(ADD_RESTAURANT, payload, { history: props.history }))
   }
 
   return (
@@ -229,8 +220,8 @@ function AddRestaurants(props) {
       <div className="ButtonContainer">
         <Button
           text="Add Restaurant"
-          disabled={!!validate() || addingUpdatingRestaurant}
-          disabledAction={() => {
+          light={!!validate() || addingUpdatingRestaurant}
+          lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
             dispatch(customisedAction(SET_TOAST, {
             message: validate() || 'Adding restaurant in progress',

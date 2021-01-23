@@ -74,18 +74,18 @@ function GenerateQrs(props) {
         <div className="TopButtonContainer" style={{ justifyContent: 'flex-start' }}>
           <Button
             text="Generate"
-            disabled={generatingQrs || fetchingQrs}
-            disabledAction={() => null}
+            light={generatingQrs || fetchingQrs}
+            lightAction={() => null}
             onClick={() => generateQrs()}
           />
         </div>
       </div>
       {fetchingQrs ?
         <div className="loadingContainer">
-          <p>Fetching Qrs!</p>
-        </div> :
-        <QrsList selectQR={selectQR} restaurantId={state && state.restaurantId} />
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Qrs!</p>
+        </div> : null
       }
+      <QrsList selectQR={selectQR} restaurantId={state && state.restaurantId} />
     </div> :
     <Qr qr={selectedQr} onBack={() => selectQR(null)} />
   )

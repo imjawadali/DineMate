@@ -1,9 +1,9 @@
-.SmallButton {
+.SmallButtonRed {
     padding: 5px 15px;
     border-style: solid;
     border-width: 2px;
-    border-color: #3ae175;
-    background-color: #3ae175;
+    border-color: rgba(255, 0, 0, 0.5);
+    background-color: rgba(255, 0, 0, 0.5);;
     border-radius: 5px;
     box-sizing: border-box;
     display: flex;
@@ -13,43 +13,43 @@
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 }
 
-.SmallButtonText {
+.SmallButtonRedText {
     font-family: sans-serif;
     font-weight: 100;
     color: white;
     font-size: 16px;
 }
 
-.SmallButton:hover {
-    border-color: #3ae175;
+.SmallButtonRed:hover {
+    border-color: rgba(255, 0, 0, 0.5);
     background-color: white !important;
     outline: none !important;
 }
 
-.SmallButton:hover .SmallButtonText {
-    color: #3ae175 !important;
+.SmallButtonRed:hover .SmallButtonRedText {
+    color: rgba(255, 0, 0, 0.5) !important;
 }
 
-.SmallButton:focus {
+.SmallButtonRed:focus {
     outline: none !important;
 }
 
 @media only screen and (max-width: 978px) {
-    .SmallButton {
+    .SmallButtonRed {
         padding: 4px 10px;
     }
 
-    .SmallButtonText {
+    .SmallButtonRedText {
         font-size: 14px;
     }
 }
 
 @media only screen and (max-width: 480px) {
-    .SmallButton {
+    .SmallButtonRed {
         padding: 3px 5px;
     }
 
-    .SmallButtonText {
+    .SmallButtonRedText {
         font-size: 12px;
     }
 }

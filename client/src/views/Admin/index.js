@@ -39,6 +39,13 @@ function Admin(props) {
       )} />
   )
 
+  const RestaurantAdminRoutes = ({ component: Component, ...rest }) => (
+      <Route {...rest} render={(props) => (
+          admin.restaurantId ? 
+          <Component {...props} /> : <Redirect to={{ pathname: '/admin', state: { from: props.location.pathname } }} />
+      )} />
+  )
+
   return (
     <div className="container">
       <div className="sidebarContainer">
@@ -49,11 +56,11 @@ function Admin(props) {
         <div className="Main">
           <Switch>
             <Route exact path={path} component={Dashboard} />
-            <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurants} />
-            <SuperAdminRoutes path={`${path}/generateQrs`} component={GenerateQrs} />
-            <Route path={`${path}/others`} component={Others} />
-            <Route component={NoRoute} />
+            <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
+            <SuperAdminRoutes path={`${path}/qrsManagement`} component={GenerateQrs} />
+            <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
+            <RestaurantAdminRoutes component={NoRoute} />
           </Switch>
         </div>
       </div>

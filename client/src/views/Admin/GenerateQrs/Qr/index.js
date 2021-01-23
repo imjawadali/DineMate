@@ -40,8 +40,8 @@ function Qr(props) {
       <Button
         style={{ width: '100%', marginTop: '15px' }}
         text="Back"
-        disabled
-        disabledAction={() => onBack()}
+        light
+        lightAction={() => onBack()}
       />
       <Button
         style={{ width: '100%', marginTop: '15px' }}
@@ -51,8 +51,8 @@ function Qr(props) {
       <Button
         style={{ width: '100%', marginTop: '15px' }}
         text="Print"
-        disabled
-        disabledAction={() => window.print()}
+        light
+        lightAction={() => window.print()}
       />
     </div>
   )

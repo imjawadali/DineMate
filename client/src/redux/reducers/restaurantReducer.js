@@ -19,7 +19,7 @@ export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null },
     case GENERATE_QRS:
       return { ...state, generatingQrs: true }
     case GENERATE_QRS_SUCCESS:
-      return { ...state, generatingQrs: false }
+      return { ...state, generatingQrs: false, fetchingQrs: true }
     case GENERATE_QRS_FAILURE:
       return { ...state, generatingQrs: false }
     case RESTAURANT_CHANGED:

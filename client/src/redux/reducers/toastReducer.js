@@ -43,9 +43,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_RESTAURANT:
       return { ...state, toast: { message: 'Adding Restaurant', type: 'success' } }
     case ADD_RESTAURANT_SUCCESS:
-      return { ...state, toast: { message: 'Restaurant Added Successfully', type: 'success' } }
+      return { ...state, toastSetDismiss: true }
     case ADD_RESTAURANT_FAILURE:
-      return { ...state, toast: payload }
+      return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state
   }
