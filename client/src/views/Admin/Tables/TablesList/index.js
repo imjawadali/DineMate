@@ -32,7 +32,7 @@ function TablesList(props) {
                       style={{ width: '100%' }}
                       text="Details"
                       onClick={() => history.push({
-                        pathname: `/admin/tablesManagement/tableDetails`, state: { table }
+                        pathname: `/admin/tablesManagement/tableDetails`, state: { table, restaurantId }
                       })}
                     />
                   </td>

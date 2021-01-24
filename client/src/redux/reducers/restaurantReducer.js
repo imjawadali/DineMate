@@ -6,13 +6,15 @@ import {
   SET_RESTAURANT,
   GENERATE_QRS,
   GENERATE_QRS_SUCCESS,
-  GENERATE_QRS_FAILURE
+  GENERATE_QRS_FAILURE,
+  SET_TABLE_NAME,
+  SET_TABLE_NAME_FAILURE
 } from '../../constants'
 
-export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null }, { type, payload }) => {
+export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null, settingTableName: false }, { type, payload }) => {
   switch (type) {
     case GET_EXISTING_QRS:
-      return { ...state, fetchingQrs: true }
+      return { ...state, fetchingQrs: true, settingTableName: false }
     case GET_EXISTING_QRS_SUCCESS:
       return { ...state, fetchingQrs: false, qrs: payload }
     case GET_EXISTING_QRS_FAILURE:
@@ -27,6 +29,10 @@ export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null },
       return { ...state, qrs: null }
     case SET_RESTAURANT:
       return { ...state, qrs: null }
+    case SET_TABLE_NAME:
+      return { ...state, settingTableName: true }
+    case SET_TABLE_NAME_FAILURE:
+      return { ...state, settingTableName: false }
     default:
       return state
   }

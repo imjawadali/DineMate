@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
         addRestuarant: 'admin/addRestuarant',
         generateQrs: 'admin/generateQrs',
         getAllRestaurants: 'admin/getAllRestaurants',
-        getExistingQrs: 'admin/getExistingQrs'
+        getExistingQrs: 'admin/getExistingQrs',
+        setTableName: '/admin/setTableName'
     }
 }

@@ -1,18 +1,54 @@
-.QrContainer {
+.TableContainer {
+    width: 100%;
     display: flex;
-    height: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
     box-sizing: border-box;
 }
 
-.QrInnerContainer {
+.TableDetailsContainer {
+    width: 100%;
+    padding-right: 20px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+}
+
+.TableDetailsSections {
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 15px 50px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    box-sizing: border-box;
+    padding: 10px 0px;
+}
+
+.TableDetailsSections > h4 {
+    width: 20%;
+}
+
+.TableNameContainer {
+    width: 80%;
+}
+
+.TableNameButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media only screen and (max-width: 480px) {
+    .TableContainer {
+        padding-top: 10px;
+        flex-direction: column;
+    }
+
+    .TableDetailsContainer {
+        padding-bottom: 10px;
+        padding-right: 0px;
+    }
+
+    .TableDetailsSections > h4 {
+        width: 35%;
+    }
+
+    .TableNameContainer {
+        width: 65%;
+    }
 }

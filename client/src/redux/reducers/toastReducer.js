@@ -11,7 +11,10 @@ import {
   GENERATE_QRS_SUCCESS,
   GENERATE_QRS_FAILURE,
   GET_EXISTING_QRS_FAILURE,
-  ADD_RESTAURANT
+  ADD_RESTAURANT,
+  SET_TABLE_NAME,
+  GET_EXISTING_QRS,
+  SET_TABLE_NAME_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -45,6 +48,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_RESTAURANT_SUCCESS:
       return { ...state, toastSetDismiss: true }
     case ADD_RESTAURANT_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case SET_TABLE_NAME:
+      return { ...state, toast: { message: 'Updating Table Name', type: 'success' } }
+    case GET_EXISTING_QRS:
+      return { ...state, toastSetDismiss: true }
+    case SET_TABLE_NAME_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state

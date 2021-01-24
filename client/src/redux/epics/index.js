@@ -6,6 +6,7 @@ import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
 import { addRestaurantEpic } from './admin/addRestaurantEpic'
 import { generateQrsEpic } from './admin/generateQrsEpic'
 import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
+import { setTableNameEpic } from './admin/setTableNameEpic'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -14,5 +15,6 @@ export const epics = combineEpics(
     getAllRestaurantsEpic.getAllRestaurants,
     addRestaurantEpic.addRestaurant,
     generateQrsEpic.generateQrs,
-    getExistingQrsEpic.getExistingQrs
+    getExistingQrsEpic.getExistingQrs,
+    setTableNameEpic.setTableName
 )
