@@ -1,15 +1,10 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-
-import { customisedAction } from '../../../../redux/actions'
-import { RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
 
 import { SmallButton } from '../../../../components'
 
 function TablesList(props) {
   
-  const { restaurantId, tables } = props
-  const dispatch = useDispatch()
+  const { history, restaurantId, tables } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -18,7 +13,6 @@ function TablesList(props) {
           <tr>
             <th>Table No</th>
             <th>Table Name</th>
-            <th>Check No</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -32,13 +26,14 @@ function TablesList(props) {
                 <tr key={id}>
                   <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>
                   <td>{tableName || '-'}</td>
-                  <td>001</td>
-                  <td>{active ? 'Open' : 'Close'}</td>
+                  <td>{active ? 'Active' : 'In-Active'}</td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Details"
-                      onClick={() => null}
+                      onClick={() => history.push({
+                        pathname: `/admin/tablesManagement/tableDetails`, state: { table }
+                      })}
                     />
                   </td>
                 </tr>

@@ -5,12 +5,15 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import SideBar from './SideBar'
 import NavBar from './NavBar'
 
-import Dashboard from './Dashboard'
+import SuperAdmin from './Dashboard/SuperAdmin'
+import RestaurantAdmin from './Dashboard/RestaurantAdmin'
 import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
-import EditRestaurant from './EditRestaurant'
 import GenerateQrs from './GenerateQrs'
+import ViewQr from './ViewQr'
+import EditRestaurant from './EditRestaurant'
 import Tables from './Tables'
+import TableDetails from './TableDetails'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -57,12 +60,26 @@ function Admin(props) {
         <NavBar openSidebar={openSidebar} />
         <div className="Main">
           <Switch>
-            <Route exact path={path} component={Dashboard} />
+            <Route exact path={path}>
+              <Redirect to={admin.restaurantId ? `${path}/dashboard/restaurantAdmin` : `${path}/dashboard/superAdmin`} />
+            </Route>
+            <Route path={`${path}/dashboard`}>
+              <Switch>
+                <SuperAdminRoutes path={`${path}/dashboard/superAdmin`} component={SuperAdmin} />
+                <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin`} component={RestaurantAdmin} />
+              </Switch>
+            </Route>
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
             <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
-            <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <SuperAdminRoutes path={`${path}/qrsManagement`} component={GenerateQrs} />
-            <RestaurantAdminRoutes path={`${path}/tablesManagement`} component={Tables} />
+            <SuperAdminRoutes path={`${path}/viewQr`} component={ViewQr} />
+            <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
+            <Route path={`${path}/tablesManagement`}>
+              <Switch>
+                <RestaurantAdminRoutes exact path={`${path}/tablesManagement`} component={Tables} />
+                <RestaurantAdminRoutes path={`${path}/tablesManagement/tableDetails`} component={TableDetails} />
+              </Switch>
+            </Route>
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
             <RestaurantAdminRoutes component={NoRoute} />
           </Switch>

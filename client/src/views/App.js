@@ -20,7 +20,7 @@ import NoRoute from './NoRoute'
 import logo from '../assets/logo.png'
 import './styles.css'
 
-export default function App() {
+export default function App(props) {
 
     const checkingSignIn = useSelector(({ sessionReducer }) => sessionReducer.checkingSignIn)
     const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
@@ -37,7 +37,7 @@ export default function App() {
         else
             setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
         }
-    }, [dispatch])
+    }, [])
 
     const AdminLanding = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (

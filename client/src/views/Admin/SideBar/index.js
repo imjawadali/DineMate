@@ -26,7 +26,7 @@ function SideBar(props) {
         </div>
 
         <div className="sidebar__menu">
-            <div className={`sidebar__link ${pathname === '/admin' ? 'active_menu_link' : null}`}>
+            <div className={`sidebar__link ${pathname.includes('/dashboard') ? 'active_menu_link' : null}`}>
                 <i className="fa fa-home"/>
                 <Link to={`${url}`}>Dashboard</Link>
             </div>
@@ -44,6 +44,10 @@ function SideBar(props) {
                     <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-qrcode"/>
                         <Link to={pathname}>QRs Management</Link>
+                    </div>
+                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/viewQr') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-barcode"/>
+                        <Link to={pathname}>View QR</Link>
                     </div>
                     <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-edit"/>
