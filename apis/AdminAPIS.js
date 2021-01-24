@@ -309,6 +309,24 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/admin/setTableName', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, tableName } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(401).send({ 'msg': 'Table Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurantsQrs SET ? WHERE id = ${id}`,
+            { tableName },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Table Name Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Invalid Table ID!' })
+            }
+        )
+    })
 }
 
 function decrypt(token) {
