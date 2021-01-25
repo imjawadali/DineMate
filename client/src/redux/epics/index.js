@@ -7,6 +7,7 @@ import { addRestaurantEpic } from './admin/addRestaurantEpic'
 import { generateQrsEpic } from './admin/generateQrsEpic'
 import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
+import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -16,5 +17,6 @@ export const epics = combineEpics(
     addRestaurantEpic.addRestaurant,
     generateQrsEpic.generateQrs,
     getExistingQrsEpic.getExistingQrs,
-    setTableNameEpic.setTableName
+    setTableNameEpic.setTableName,
+    getSuperAdminDashboardEpic.getSuperAdminDashboard
 )

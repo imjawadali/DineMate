@@ -14,7 +14,8 @@ import {
   ADD_RESTAURANT,
   SET_TABLE_NAME,
   GET_EXISTING_QRS,
-  SET_TABLE_NAME_FAILURE
+  SET_TABLE_NAME_FAILURE,
+  GET_SUPER_ADMIN_DASHBOARD_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -55,6 +56,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case SET_TABLE_NAME_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
+      return { ...state, toast: payload }
     default:
       return state
   }

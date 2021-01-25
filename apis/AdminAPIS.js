@@ -327,6 +327,26 @@ module.exports = app => {
             }
         )
     })
+
+    app.get('/admin/getSuperAdminDashboard', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT (SELECT COUNT(*) FROM restaurants) as restaurants,
+            (SELECT COUNT(*) FROM users WHERE role = 'Admin') as admins
+            FROM users users WHERE id = ${adminId} AND role = 'SuperAdmin'`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data[0])
+                } else {
+                    return res.status(422).send({ 'msg': 'Dashboard data not available!' })
+                }
+            }
+        )
+    })
 }
 
 function decrypt(token) {

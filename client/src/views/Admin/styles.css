@@ -23,6 +23,12 @@
     box-sizing: border-box;
 }
 
+.PageTitleContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 .TopOptionsContainer {
     width: 100%;
     display: flex;
@@ -96,5 +102,16 @@ tbody tr:nth-child(odd) {
     td, th {
         font-size: 12px;
         padding: 7px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .PageTitleContainer {
+        flex-direction: column;
+    }
+
+    .PageTitleButtonContainer {
+        display: flex;
+        justify-content: flex-end;
     }
 }
