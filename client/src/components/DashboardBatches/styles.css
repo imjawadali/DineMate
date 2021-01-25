@@ -1,0 +1,31 @@
+.DashboardBatch {
+    height: 150px;
+    aspect-ratio: 1.3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100%;
+    border: 1px solid grey;
+    box-shadow: 2px 2px 3px;
+    margin: 10px 100px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.DashboardBatch:hover {
+    background: rgba(62, 161, 117, 0.3);
+    border-color: #3ae175;
+}
+
+.DashboardBatch > p {
+    margin-top: 5px;
+    font-weight: 700;
+}
+
+@media only screen and (max-width: 480px) {
+    .DashboardBatch {
+        height: 135px;
+        margin: 10px;
+    }
+}

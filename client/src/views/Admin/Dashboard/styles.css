@@ -1,0 +1,24 @@
+.DashBoardContainer {
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.DashBoardSectionsContainer {
+    display: flex;
+}
+
+@media only screen and (max-width: 480px) {
+    .DashBoardContainer {
+        padding: 10px;
+    }
+
+    .DashBoardSectionsContainer {
+        display: flex;
+        flex-direction: column;
+    }
+}
