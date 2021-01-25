@@ -50,7 +50,7 @@ function SuperAdmin(props) {
           </div>
           <div className="DashBoardSectionsContainer">
             <DashboardBatches
-              text="250 QRS"
+              text={`${adminDashboard.qrs} QRs`}
               iconName="fa fa-qrcode"
               onClick={() => null}
             />

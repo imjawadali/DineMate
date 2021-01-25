@@ -336,6 +336,7 @@ module.exports = app => {
             adminId,
             `SELECT (SELECT COUNT(*) FROM restaurants) as restaurants,
             (SELECT COUNT(*) FROM users WHERE role = 'Admin') as admins
+            (SELECT COUNT(*) FROM restaurantsQrs) as qrs
             FROM users users WHERE id = ${adminId} AND role = 'SuperAdmin'`,
             null,
             (data) => {
