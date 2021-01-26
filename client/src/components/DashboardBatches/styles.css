@@ -1,6 +1,6 @@
 .DashboardBatch {
     height: 150px;
-    aspect-ratio: 1.3;
+    width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -20,12 +20,12 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         let sql = 'SELECT U.id, U.adminName, U.email, U.role, U.restaurantId'
-        if (email !== 'ahads62426@gmail.com')
+        if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ', R.restaurantName'
         sql += ' FROM users U'
-        if (email !== 'ahads62426@gmail.com')
+        if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
-        sql += ` WHERE U.email = '${email}' AND U.password = BINARY '${password}'`
+        sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}'`
         getConnection(
             res,
             sql,
@@ -93,6 +93,7 @@ module.exports = app => {
                             } else {
                                 restaurant.addressId = result.insertId
                                 data = primaryContact
+                                data.email = lowerCased(primaryContact.email)
                                 data.restaurantId = restaurantId
                                 data.hashString = hashString
                                 tempDb.query('INSERT INTO users SET ?', data, function(error, result) {
@@ -105,6 +106,7 @@ module.exports = app => {
                                         restaurant.primaryContactId = result.insertId
                                         if (secondaryContact) {
                                             data = secondaryContact
+                                            data.email = lowerCased(secondaryContact.email)
                                             data.restaurantId = restaurantId
                                             hashString = Math.random().toString(36).substring(2);
                                             data.hashString = hashString
@@ -177,7 +179,7 @@ module.exports = app => {
         const hashString = Math.random().toString(36).substring(2);
         getConnection(
             res,
-            `UPDATE users SET ? WHERE email = BINARY '${email}'`,
+            `UPDATE users SET ? WHERE email = '${lowerCased(email)}'`,
             { passwordForgotten: 1, hashString },
             (result) => {
                 if (result.changedRows)
@@ -195,7 +197,7 @@ module.exports = app => {
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
         getConnection(
             res,
-            `UPDATE users SET ? WHERE email = BINARY '${email}' 
+            `UPDATE users SET ? WHERE email = '${lowerCased(email)}' 
             AND restaurantId = BINARY '${restaurantId}' 
             AND passwordForgotten = 1 
             AND hashString = '${hashString}'`,
@@ -353,4 +355,8 @@ module.exports = app => {
 function decrypt(token) {
     const decryptedToken = token
     return decryptedToken
+}
+
+function lowerCased(string) {
+    return string.toLowerCase()
 }
