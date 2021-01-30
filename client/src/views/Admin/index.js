@@ -71,8 +71,12 @@ function Admin(props) {
             </Route>
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
             <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
-            <SuperAdminRoutes path={`${path}/qrsManagement`} component={GenerateQrs} />
-            <SuperAdminRoutes path={`${path}/viewQr`} component={ViewQr} />
+            <Route path={`${path}/qrsManagement`}>
+              <Switch>
+                <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
+                <SuperAdminRoutes path={`${path}/qrsManagement/viewQr`} component={ViewQr} />
+              </Switch>
+            </Route>
             <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <Route path={`${path}/tablesManagement`}>
               <Switch>
@@ -81,7 +85,10 @@ function Admin(props) {
               </Switch>
             </Route>
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
-            <RestaurantAdminRoutes component={NoRoute} />
+            {admin.restaurantId ?
+              <SuperAdminRoutes component={NoRoute} />
+              : <RestaurantAdminRoutes component={NoRoute} />
+            }
           </Switch>
         </div>
       </div>

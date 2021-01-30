@@ -46,7 +46,7 @@ function QrsList(props) {
                       style={{ width: '100%' }}
                       text="View"
                       onClick={() => history.push({
-                        pathname: `/admin/viewQr`, state: { qr }
+                        pathname: `/admin/qrsManagement/viewQr`, state: { qr }
                       })}
                     />
                   </td>
