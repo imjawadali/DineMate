@@ -56,13 +56,13 @@ function SideBar(props) {
                         <i className="fa fa-building-o" />
                         <Link to={`${url}/tablesManagement`}>Tables Management</Link>
                     </div>
+                    <div className={`sidebar__link ${pathname.includes('/categoriesManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-list-alt" />
+                        <Link to={`${url}/categoriesManagement`}>Categories Management</Link>
+                    </div>
                     <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-wrench" />
                         <Link to={`${url}/others`}>Company Management</Link>
-                    </div>
-                    <div className="sidebar__link">
-                        <i className="fa fa-user-secret" />
-                        <Link to={`${url}/adc`}>Employee Management</Link>
                     </div>
                     <div className="sidebar__link">
                         <i className="fa fa-archive" />
@@ -88,6 +88,7 @@ function SideBar(props) {
                         <div className="LeaveButtonContainer">
                             <SmallButtonRed
                                 text="Leave Restaurant"
+                                iconLeft={<i className="fa fa-backward" />}
                                 onClick={() => {
                                     dispatch(customisedAction(RESET_RESTAURANT))
                                     props.history.push('/admin')

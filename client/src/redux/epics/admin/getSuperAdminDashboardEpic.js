@@ -1,10 +1,11 @@
-import { switchMap } from 'rxjs/operators'
-import { ofType } from 'redux-observable'
+import { switchMap, filter } from 'rxjs/operators'
 
 import { customisedAction } from '../../actions'
 import { generalizedEpic } from '../generalizedEpic'
 import {
   GET_SUPER_ADMIN_DASHBOARD,
+  GENERATE_QRS_SUCCESS,
+  ADD_RESTAURANT_SUCCESS,
   GET_SUPER_ADMIN_DASHBOARD_SUCCESS,
   GET_SUPER_ADMIN_DASHBOARD_FAILURE,
   API_ENDPOINTS
@@ -13,7 +14,18 @@ import {
 export class getSuperAdminDashboardEpic {
   static getSuperAdminDashboard = action$ =>
     action$.pipe(
-      ofType(GET_SUPER_ADMIN_DASHBOARD),
+      filter(({ type }) => {
+        switch (type) {
+          case GET_SUPER_ADMIN_DASHBOARD:
+            return true;
+          case GENERATE_QRS_SUCCESS:
+            return true;
+          case ADD_RESTAURANT_SUCCESS:
+            return true;
+          default:
+            return false;
+        }
+      }),
       switchMap(
         async () => {
           return generalizedEpic(

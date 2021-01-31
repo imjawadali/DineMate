@@ -77,6 +77,7 @@ function TableDetails(props) {
                   text="Update"
                   light={settingTableName}
                   lightAction={() => null}
+                  iconLeft={<i className="fa fa-check-circle" />}
                   onClick={() => dispatch(customisedAction(SET_TABLE_NAME, { 
                     id: selectedTable.id, 
                     tableName, 
@@ -101,10 +102,12 @@ function TableDetails(props) {
         text="Back"
         light
         lightAction={() => history.goBack()}
+        iconLeft={<i className="fa fa-arrow-circle-left" />}
       />
       <Button
         style={{ width: '100%', marginTop: '15px' }}
         text="Download"
+        iconLeft={<i className="fa fa-download" />}
         onClick={() => downloadQR()}
       />
       <Button
@@ -112,6 +115,7 @@ function TableDetails(props) {
         text="Print"
         light
         lightAction={() => window.print()}
+        iconLeft={<i className="fa fa-print" />}
       />
     </div>
   )

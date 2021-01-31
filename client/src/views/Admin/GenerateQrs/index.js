@@ -69,6 +69,7 @@ function GenerateQrs(props) {
             text="Generate"
             light={generatingQrs || fetchingQrs}
             lightAction={() => null}
+            iconLeft={<i className="fa fa-plus-circle" />}
             onClick={() => generateQrs()}
           />
         </div>

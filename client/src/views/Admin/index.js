@@ -14,6 +14,7 @@ import ViewQr from './ViewQr'
 import EditRestaurant from './EditRestaurant'
 import Tables from './Tables'
 import TableDetails from './TableDetails'
+import Categories from './Categories'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -84,6 +85,7 @@ function Admin(props) {
                 <RestaurantAdminRoutes path={`${path}/tablesManagement/tableDetails`} component={TableDetails} />
               </Switch>
             </Route>
+            <RestaurantAdminRoutes path={`${path}/categoriesManagement`} component={Categories} />
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
             {admin.restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

@@ -219,7 +219,7 @@ function AddRestaurant(props) {
       </div>
       <div className="ButtonContainer">
         <Button
-          text="Add Restaurant"
+          text="Submit"
           light={!!validate() || addingUpdatingRestaurant}
           lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
@@ -227,6 +227,7 @@ function AddRestaurant(props) {
             message: validate() || 'Adding restaurant in progress',
             type: validate() ? 'error' : 'success'
           }))}}
+          iconLeft={<i class="fa fa-paper-plane" />}
           onClick={() => addRestuarant()}
         />
       </div>

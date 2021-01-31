@@ -39,6 +39,43 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/forgotPassword', async (req, res) => {
+        const { email } = req.body
+        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
+        const hashString = Math.random().toString(36).substring(2);
+        getConnection(
+            res,
+            `UPDATE users SET ? WHERE email = '${lowerCased(email)}'`,
+            { passwordForgotten: 1, hashString },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Password Reset Link Sent!' })
+                else return res.status(422).send({ 'msg': 'Link Expired!' })
+            }
+        )
+    })
+
+    app.post('/admin/createPassword', async (req, res) => {
+        const { restaurantId, email, password, hashString } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
+        if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
+        if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
+        getConnection(
+            res,
+            `UPDATE users SET ? WHERE email = '${lowerCased(email)}' 
+            AND restaurantId = BINARY '${restaurantId}' 
+            AND passwordForgotten = 1 
+            AND hashString = '${hashString}'`,
+            { password, passwordForgotten: 0 },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Password Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Link Expired!' })
+            }
+        )
+    })
+
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, logoUrl, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
@@ -171,43 +208,6 @@ module.exports = app => {
                 else return res.status(401).send({ 'msg': 'Invalid Token!' })
             })
         })
-    })
-
-    app.post('/admin/forgotPassword', async (req, res) => {
-        const { email } = req.body
-        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
-        const hashString = Math.random().toString(36).substring(2);
-        getConnection(
-            res,
-            `UPDATE users SET ? WHERE email = '${lowerCased(email)}'`,
-            { passwordForgotten: 1, hashString },
-            (result) => {
-                if (result.changedRows)
-                    return res.send({ 'msg': 'Password Reset Link Sent!' })
-                else return res.status(422).send({ 'msg': 'Link Expired!' })
-            }
-        )
-    })
-
-    app.post('/admin/createPassword', async (req, res) => {
-        const { restaurantId, email, password, hashString } = req.body
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
-        if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
-        if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
-        if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
-        getConnection(
-            res,
-            `UPDATE users SET ? WHERE email = '${lowerCased(email)}' 
-            AND restaurantId = BINARY '${restaurantId}' 
-            AND passwordForgotten = 1 
-            AND hashString = '${hashString}'`,
-            { password, passwordForgotten: 0 },
-            (result) => {
-                if (result.changedRows)
-                    return res.send({ 'msg': 'Password Updated Successfully!' })
-                else return res.status(422).send({ 'msg': 'Link Expired!' })
-            }
-        )
     })
 
     app.post('/admin/generateQrs', async (req, res) => {
@@ -347,6 +347,83 @@ module.exports = app => {
                 } else {
                     return res.status(422).send({ 'msg': 'Dashboard data not available!' })
                 }
+            }
+        )
+    })
+
+    app.post('/admin/addCategory', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, name } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
+        if (!name) return res.status(401).send({ 'msg': 'Category Name is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `INSERT INTO categories SET ?`,
+            { restaurantId, name },
+            (result) => {
+                if (result.affectedRows)
+                    return res.send({ 'msg': 'Category Added Successfully!' })
+                else
+                    return res.status(422).send({ 'msg': 'Failed to add category!' })
+            }
+        )
+    })
+
+    app.post('/admin/getCategories', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, name } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT id, name FROM categories WHERE restaurantId = '${restaurantId}'`,
+            { restaurantId, name },
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No categories available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/updateCategory', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, name } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(401).send({ 'msg': 'Category Id is required!' })
+        if (!name) return res.status(401).send({ 'msg': 'Category name is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE categories SET ? WHERE id = ${id}`,
+            { name },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Category Name Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Category already exists' })
+            }
+        )
+    })
+
+    app.post('/admin/deleteCategory', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, name } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(401).send({ 'msg': 'Category Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM categories WHERE id = ${id}`,
+            { name },
+            (result) => {
+                if (result.affectedRows)
+                    return res.send({ 'msg': 'Category Deleted Successfully!' })
+                else return res.status(422).send({ 'msg': 'Invalid category ID' })
             }
         )
     })

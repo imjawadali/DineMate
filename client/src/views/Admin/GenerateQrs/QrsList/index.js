@@ -45,6 +45,7 @@ function QrsList(props) {
                     <SmallButton
                       style={{ width: '100%' }}
                       text="View"
+                      iconLeft={<i className="fa fa-eye" />}
                       onClick={() => history.push({
                         pathname: `/admin/qrsManagement/viewQr`, state: { qr }
                       })}

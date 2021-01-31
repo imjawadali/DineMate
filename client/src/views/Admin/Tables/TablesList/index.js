@@ -31,6 +31,7 @@ function TablesList(props) {
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Details"
+                      iconLeft={<i className="fa fa-info-circle" />}
                       onClick={() => history.push({
                         pathname: `/admin/tablesManagement/tableDetails`, state: { table, restaurantId }
                       })}

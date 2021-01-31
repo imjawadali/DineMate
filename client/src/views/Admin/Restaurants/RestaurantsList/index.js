@@ -41,12 +41,14 @@ function RestaurantsList(props) {
                         dispatch(customisedAction(SET_RESTAURANT, restaurant))
                         history.push('/admin')
                       }}
+                      iconLeft={<i className="fa fa-mouse-pointer" />}
                     />
                   </td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Details"
+                      iconLeft={<i className="fa fa-info-circle" />}
                       onClick={() => {
                         dispatch(customisedAction(RESTAURANT_CHANGED))
                         history.push({

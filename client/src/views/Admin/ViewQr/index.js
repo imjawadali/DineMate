@@ -37,6 +37,7 @@ function ViewQr(props) {
       <Button
         style={{ marginTop: '15px' }}
         text="Back"
+        iconLeft={<i className="fa fa-arrow-circle-left" />}
         onClick={() => history.goBack()}
       />
       </div>

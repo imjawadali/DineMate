@@ -15,7 +15,14 @@ import {
   SET_TABLE_NAME,
   GET_EXISTING_QRS,
   SET_TABLE_NAME_FAILURE,
-  GET_SUPER_ADMIN_DASHBOARD_FAILURE
+  GET_SUPER_ADMIN_DASHBOARD_FAILURE,
+  ADD_CATEGORY,
+  UPDATE_CATEGORY,
+  DELETE_CATEGORY,
+  GET_CATEGORIES,
+  ADD_CATEGORY_FAILURE,
+  UPDATE_CATEGORY_FAILURE,
+  DELETE_CATEGORY_FAILURE,
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -58,6 +65,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
       return { ...state, toast: payload }
+    case ADD_CATEGORY:
+      return { ...state, toast: { message: 'Adding Category', type: 'success' } }
+    case UPDATE_CATEGORY:
+      return { ...state, toast: { message: 'Updating Category', type: 'warning' } }
+    case DELETE_CATEGORY:
+      return { ...state, toast: { message: 'Deleting Category', type: 'error' } }
+    case GET_CATEGORIES:
+      return { ...state, toastSetDismiss: true }
+    case ADD_CATEGORY_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_CATEGORY_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_CATEGORY_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state
   }
