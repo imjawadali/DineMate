@@ -78,7 +78,7 @@ module.exports = app => {
 
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, logoUrl, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
+        const { restaurantId, imageUrl, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Slug is required!' })
         if (!restaurantName) return res.status(422).send({ 'msg': 'Restaurant Name is required!' })
@@ -112,7 +112,7 @@ module.exports = app => {
                         let hashString = Math.random().toString(36).substring(2);
                         const restaurant = {}
                         restaurant.restaurantId = restaurantId
-                        restaurant.logoUrl = logoUrl
+                        restaurant.imageUrl = imageUrl
                         restaurant.restaurantName = restaurantName
                         if (cuisine)
                             restaurant.cuisine = cuisine
