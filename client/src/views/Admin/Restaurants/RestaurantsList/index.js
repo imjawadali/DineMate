@@ -17,6 +17,8 @@ function RestaurantsList(props) {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Cuisine</th>
+            <th>City</th>
             <th>QR Codes Assigned</th>
             <th>Payment Received</th>
             <th>Visit</th>
@@ -26,10 +28,12 @@ function RestaurantsList(props) {
         <tbody>
           {restaurants && restaurants.length ?
             restaurants.map((restaurant) => {
-              const { restaurantId, restaurantName, qrCounts } = restaurant
+              const { restaurantId, restaurantName, cuisine, city, qrCounts } = restaurant
               return (
                 <tr key={restaurantId}>
                   <td>{restaurantName}</td>
+                  <td>{cuisine}</td>
+                  <td>{city}</td>
                   <td>{qrCounts} QR Code(s)</td>
                   <td>$ {0}</td>
                   <td>
@@ -61,7 +65,7 @@ function RestaurantsList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="7" style={{ textAlign: 'center' }}>No Data Found!</td>
             </tr>
           }
         </tbody>
