@@ -52,6 +52,8 @@ function Restaurants(props) {
         <div className="TopButtonContainer">
           <Button
             text="Refresh"
+            light={fetchingRestaurants}
+            lightAction={() => null}
             iconLeft={<i className="fa fa-refresh" />}
             onClick={() => dispatch(customisedAction(GET_ALL_RESTAURANTS))} />
         </div>

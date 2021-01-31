@@ -13,10 +13,11 @@ import RestaurantAdmin from './Dashboard/RestaurantAdmin'
 import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
-import ViewQr from './ViewQr'
+import ViewQr from './GenerateQrs/ViewQr'
 import Tables from './Tables'
-import TableDetails from './TableDetails'
+import TableDetails from './Tables/TableDetails'
 import Categories from './Categories'
+import Menu from './Menu'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -78,12 +79,15 @@ function Admin(props) {
             </Route>
             <Route path={`${path}/dashboard`}>
               <Switch>
+                <Route exact path={`${path}/dashboard`}>
+                  <Redirect to={restaurantId ? `${path}/dashboard/restaurantAdmin` : `${path}/dashboard/superAdmin`} />
+                </Route>
                 <SuperAdminRoutes path={`${path}/dashboard/superAdmin`} component={SuperAdmin} />
                 <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin`} component={RestaurantAdmin} />
               </Switch>
             </Route>
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
-            <SuperAdminRoutes exact path={`${path}/restaurants`} component={Restaurants} />
+            <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
             <Route path={`${path}/qrsManagement`}>
               <Switch>
                 <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
@@ -98,6 +102,12 @@ function Admin(props) {
               </Switch>
             </Route>
             <RestaurantAdminRoutes path={`${path}/categoriesManagement`} component={Categories} />
+            <Route path={`${path}/menuManagement`}>
+              <Switch>
+                <RestaurantAdminRoutes exact path={`${path}/menuManagement`} component={Menu} />
+                <RestaurantAdminRoutes path={`${path}/menuManagement/addFoodItem`} component={AddRestaurant} />
+              </Switch>
+            </Route>
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

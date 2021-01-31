@@ -7,9 +7,9 @@ import { capitalizeFirstLetter } from '../../../helpers'
 
 import { Button, Input } from '../../../components'
 
-import CategoriesList from './CategoriesList'
+import MenuList from './MenuList'
 
-function Categories() {
+function Menu(props) {
 
   const [categoryName, setcategoryName] = useState('')
   const [selectedCategory, setselectedCategory] = useState(null)
@@ -62,7 +62,15 @@ function Categories() {
 
   return (
     <div className="Container">
-      <h2>Categories Management</h2>
+      <div className="PageTitleContainer">
+        <h2>Menu Management</h2>
+        <div className="PageTitleButtonContainer">
+          <Button
+            text="Add Food Item"
+            iconLeft={<i className="fa fa fa-plus-circle" />}
+            onClick={() => props.history.push('/admin/menuManagement/addFoodItem')} />
+        </div>
+      </div>
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 
@@ -71,29 +79,21 @@ function Categories() {
             onChange={({ target: { value } }) => setcategoryName(value)}
           />
         </div>
-        <div className="TopButtonContainer" style={{ justifyContent: 'flex-start' }}>
-          {selectedCategory ?
-            <Button
-              text="Update Category"
-              light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
-              lightAction={() => null}
-              iconLeft={<i className="fa fa-check-circle" />}
-              onClick={() => UpdateCategory()} />
-            :  <Button
-                text="Add Category"
-                light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
-                lightAction={() => null}
-                iconLeft={<i className="fa fa-plus-circle" />}
-                onClick={() => addCategory()} />
-          }
+        <div className="TopButtonContainer">
+          <Button
+            text="Refresh"
+            light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
+            lightAction={() => null}
+            iconLeft={<i className="fa fa-refresh" />}
+            onClick={() => null} />
         </div>
       </div>
       {fetchingCategories ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Categories . . .</p>
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Food Items . . .</p>
         </div> : null
       }
-      <CategoriesList 
+      <MenuList 
         onSelect={onSelect}
         onDelete={onDelete}
         reset={reset}
@@ -103,4 +103,4 @@ function Categories() {
   )
 }
 
-export default Categories
+export default Menu

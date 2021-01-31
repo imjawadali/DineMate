@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import QRCode from "qrcode.react";
 
-import { CUSTOMER_APP_URL, SET_TABLE_NAME } from '../../../constants'
-import { customisedAction } from '../../../redux/actions';
-import { Button, Input } from '../../../components'
+import { CUSTOMER_APP_URL, SET_TABLE_NAME } from '../../../../constants'
+import { customisedAction } from '../../../../redux/actions';
+import { Button, Input } from '../../../../components'
 import './styles.css'
 
 function TableDetails(props) {

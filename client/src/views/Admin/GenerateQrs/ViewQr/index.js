@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import QRCode from "qrcode.react";
 
-import { CUSTOMER_APP_URL } from '../../../constants'
+import { CUSTOMER_APP_URL } from '../../../../constants'
 
-import { Button } from '../../../components'
+import { Button } from '../../../../components'
 import './styles.css'
 
 function ViewQr(props) {

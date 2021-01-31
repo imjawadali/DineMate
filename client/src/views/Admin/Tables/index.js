@@ -52,6 +52,8 @@ function Tables(props) {
         <div className="TopButtonContainer">
           <Button
             text="Refresh"
+            light={fetchingQrs}
+            lightAction={() => null}
             iconLeft={<i className="fa fa-refresh" />}
             onClick={() => dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))} />
         </div>

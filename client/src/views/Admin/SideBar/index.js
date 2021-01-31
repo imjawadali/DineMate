@@ -57,8 +57,12 @@ function SideBar(props) {
                         <Link to={`${url}/tablesManagement`}>Tables Management</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/categoriesManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-list-alt" />
+                        <i className="fa fa-list" />
                         <Link to={`${url}/categoriesManagement`}>Categories Management</Link>
+                    </div>
+                    <div className={`sidebar__link ${pathname.includes('/menuManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-cutlery" />
+                        <Link to={`${url}/menuManagement`}>Menu Management</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-wrench" />
