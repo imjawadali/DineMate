@@ -6,6 +6,7 @@ import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../consta
 
 import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
 import './styles.css'
+import { capitalizeFirstLetter } from '../../../helpers'
 
 function AddRestaurant(props) {
 
@@ -77,7 +78,7 @@ function AddRestaurant(props) {
     const payload = {
       restaurantId,
       restaurantName,
-      cuisine,
+      cuisine: capitalizeFirstLetter(cuisine),
       address: {
         address,
         city,
