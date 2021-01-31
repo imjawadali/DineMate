@@ -25,6 +25,8 @@ function SuperAdmin(props) {
         <div className="PageTitleButtonContainer">
           <Button
             text="Refresh"
+            light={fetchingDashboard}
+            lightAction={() => null}
             iconLeft={<i className="fa fa-refresh" />}
             onClick={() => dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))} />
         </div>

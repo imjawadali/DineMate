@@ -2,19 +2,27 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Button, DashboardBatches } from '../../../../components'
-import { GET_SUPER_ADMIN_DASHBOARD } from '../../../../constants'
+import { GET_CATEGORIES, GET_SUPER_ADMIN_DASHBOARD } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 function RestaurantAdmin(props) {
 
   const fetchingDashboard = useSelector(({ sessionReducer }) => sessionReducer.fetchingDashboard)
   const restaurantDashboard = useSelector(({ sessionReducer }) => sessionReducer.restaurantDashboard)
+  const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+
+  const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
+  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
   const dispatch = useDispatch()
 
-  // useEffect(() => {
-  //   if (!restaurantDashboard)
-  //     dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))
-  // }, [])
+  const { restaurantId } = admin
+
+  useEffect(() => {
+    // if (!restaurantDashboard)
+    //   dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))
+    if (fetchingCategories && !categories)
+      dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
+  }, [])
 
   return (
     <div className="Container">
@@ -23,6 +31,8 @@ function RestaurantAdmin(props) {
         <div className="PageTitleButtonContainer">
           <Button
             text="Refresh"
+            light={fetchingDashboard}
+            lightAction={() => null}
             iconLeft={<i className="fa fa-refresh" />}
             onClick={() => dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))} />
         </div>

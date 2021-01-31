@@ -214,8 +214,8 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, values } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
-        if (!values || !values.length) return res.status(401).send({ 'msg': 'QR values required!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!values || !values.length) return res.status(422).send({ 'msg': 'QR values required!' })
 
         getTransactionalConnection()
         .getConnection(function (error, tempDb) {
@@ -292,7 +292,7 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         getSecureConnection(
             res,
             adminId,
@@ -312,7 +312,7 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { id, tableName } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!id) return res.status(401).send({ 'msg': 'Table Id is required!' })
+        if (!id) return res.status(422).send({ 'msg': 'Table Id is required!' })
         getSecureConnection(
             res,
             adminId,
@@ -351,8 +351,8 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, name } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
-        if (!name) return res.status(401).send({ 'msg': 'Category Name is required!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!name) return res.status(422).send({ 'msg': 'Category Name is required!' })
         getSecureConnection(
             res,
             adminId,
@@ -371,7 +371,7 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, name } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(401).send({ 'msg': 'Restaurant Id is required!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         getSecureConnection(
             res,
             adminId,
@@ -391,8 +391,8 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { id, name } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!id) return res.status(401).send({ 'msg': 'Category Id is required!' })
-        if (!name) return res.status(401).send({ 'msg': 'Category name is required!' })
+        if (!id) return res.status(422).send({ 'msg': 'Category Id is required!' })
+        if (!name) return res.status(422).send({ 'msg': 'Category name is required!' })
         getSecureConnection(
             res,
             adminId,
@@ -410,7 +410,7 @@ module.exports = app => {
         const adminId = decrypt(req.header('authorization'))
         const { id, name } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!id) return res.status(401).send({ 'msg': 'Category Id is required!' })
+        if (!id) return res.status(422).send({ 'msg': 'Category Id is required!' })
         getSecureConnection(
             res,
             adminId,
