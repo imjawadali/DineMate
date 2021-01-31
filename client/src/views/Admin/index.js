@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
+
+import { customisedAction } from '../../redux/actions'
+import { GET_CATEGORIES } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -24,6 +27,16 @@ function Admin(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
+  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
+  const dispatch = useDispatch()
+
+  const { restaurantId } = admin
+
+  useEffect(() => {
+    if (restaurantId && !fetchingCategories && !categories)
+      dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
+  }, [restaurantId])
 
   const openSidebar = () => {
       setSidebarOpen(true)
@@ -46,7 +59,7 @@ function Admin(props) {
 
   const RestaurantAdminRoutes = ({ component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
-          admin.restaurantId ? 
+          restaurantId ? 
           <Component {...props} /> : <Redirect to={{ pathname: '/admin', state: { from: props.location.pathname } }} />
       )} />
   )
@@ -61,7 +74,7 @@ function Admin(props) {
         <div className="Main">
           <Switch>
             <Route exact path={path}>
-              <Redirect to={admin.restaurantId ? `${path}/dashboard/restaurantAdmin` : `${path}/dashboard/superAdmin`} />
+              <Redirect to={restaurantId ? `${path}/dashboard/restaurantAdmin` : `${path}/dashboard/superAdmin`} />
             </Route>
             <Route path={`${path}/dashboard`}>
               <Switch>
@@ -86,7 +99,7 @@ function Admin(props) {
             </Route>
             <RestaurantAdminRoutes path={`${path}/categoriesManagement`} component={Categories} />
             <RestaurantAdminRoutes path={`${path}/others`} component={Others} />
-            {admin.restaurantId ?
+            {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />
               : <RestaurantAdminRoutes component={NoRoute} />
             }

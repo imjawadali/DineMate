@@ -9,19 +9,11 @@ function RestaurantAdmin(props) {
 
   const fetchingDashboard = useSelector(({ sessionReducer }) => sessionReducer.fetchingDashboard)
   const restaurantDashboard = useSelector(({ sessionReducer }) => sessionReducer.restaurantDashboard)
-  const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
-
-  const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
-  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
   const dispatch = useDispatch()
-
-  const { restaurantId } = admin
 
   useEffect(() => {
     // if (!restaurantDashboard)
     //   dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))
-    if (fetchingCategories && !categories)
-      dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
   }, [])
 
   return (

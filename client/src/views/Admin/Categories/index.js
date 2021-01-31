@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES, SET_TOAST, SET_TOAST_DISMISSING, UPDATE_CATEGORY } from '../../../constants'
+import { ADD_CATEGORY, DELETE_CATEGORY, SET_TOAST, SET_TOAST_DISMISSING, UPDATE_CATEGORY } from '../../../constants'
 import { capitalizeFirstLetter } from '../../../helpers'
 
 import { Button, Input } from '../../../components'
 
 import CategoriesList from './CategoriesList'
 
-function Categories(props) {
+function Categories() {
 
-  const [categoriesFetchCalled, setcategoriesFetchCalled] = useState(false)
   const [categoryName, setcategoryName] = useState('')
   const [selectedCategory, setselectedCategory] = useState(null)
 
@@ -26,11 +25,6 @@ function Categories(props) {
   const { restaurantId } = admin
 
   useEffect(() => {
-    if (!categoriesFetchCalled && !fetchingCategories && !categories) {
-      setcategoriesFetchCalled(true)
-      dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
-    }
-
     if (fetchingCategories) reset()
   }, [fetchingCategories])
 
