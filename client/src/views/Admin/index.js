@@ -11,7 +11,6 @@ import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
 import ViewQr from './ViewQr'
-import EditRestaurant from './EditRestaurant'
 import Tables from './Tables'
 import TableDetails from './TableDetails'
 import Categories from './Categories'
@@ -78,7 +77,7 @@ function Admin(props) {
                 <SuperAdminRoutes path={`${path}/qrsManagement/viewQr`} component={ViewQr} />
               </Switch>
             </Route>
-            <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
+            <SuperAdminRoutes path={`${path}/editRestaurant`} component={AddRestaurant} />
             <Route path={`${path}/tablesManagement`}>
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/tablesManagement`} component={Tables} />

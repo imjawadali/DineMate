@@ -238,7 +238,6 @@ module.exports = app => {
                                 if (i !== (values.length - 1))
                                     query = query + ','
                             }
-                            console.log(query)
                             tempDb.query(query, function(error) {
                                 if (!!error) {
                                     console.log('TableError', error)
@@ -273,13 +272,10 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT R.restaurantId, R.logoUrl, R.restaurantName, U.adminName, 
-            R.cuisine, R.primaryContactId, R.secondaryContactId, 
-            RA.address, RA.city, RA.country, RA.latitude, RA.longitude,
-            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts
+            `SELECT R.restaurantId, R.restaurantName, R.cuisine,  RA.city, 
+            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts 
             FROM restaurants R 
-            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId
-            JOIN users U on U.id = R.primaryContactId
+            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
             ORDER BY R.createdAt DESC`,
             null,
             (data) => {

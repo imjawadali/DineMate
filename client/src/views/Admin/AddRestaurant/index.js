@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
@@ -26,6 +26,13 @@ function AddRestaurant(props) {
 
   const addingUpdatingRestaurant = useSelector(({ restaurantsReducer }) => restaurantsReducer.addingUpdatingRestaurant)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    const { pathname, state } = props.location
+    if (pathname.includes('/editRestaurant')) {
+      if (!state) props.history.push('/')
+    }
+  }, [])
 
   const setRestaurantNameAndId = (name) => {
     let tempRestaurantId
@@ -227,7 +234,7 @@ function AddRestaurant(props) {
             message: validate() || 'Adding restaurant in progress',
             type: validate() ? 'error' : 'success'
           }))}}
-          iconLeft={<i class="fa fa-paper-plane" />}
+          iconLeft={<i className="fa fa-paper-plane" />}
           onClick={() => addRestuarant()}
         />
       </div>

@@ -31,7 +31,6 @@ function Restaurants(props) {
         (restaurant) => restaurant.restaurantName.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.restaurantId.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.cuisine.toLowerCase().includes(filterKey.toLowerCase())
-        || restaurant.adminName.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.city.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.qrCounts == filterKey
       )
@@ -45,7 +44,7 @@ function Restaurants(props) {
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 
-            placeholder="Search Restaurants"
+            placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
             value={filterKey}
             onChange={({ target: { value } }) => setfilterKey(value)}
           />
