@@ -37,7 +37,7 @@ function AddOnsList(props) {
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Select"
+                      text="Edit"
                       iconLeft={<i className="fa fa-edit" />}
                       onClick={() => null} />
                   </td>
