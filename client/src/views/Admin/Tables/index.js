@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
@@ -10,7 +10,6 @@ import TablesList from './TablesList'
 
 function Tables(props) {
 
-  const [qrFetchCalled, setqrFetchCalled] = useState(false)
   const [filterKey, setfilterKey] = useState('')
 
   const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
@@ -20,19 +19,11 @@ function Tables(props) {
 
   const { restaurantId } = admin
 
-  useEffect(() => {
-    if (!qrFetchCalled && !fetchingQrs && !qrs) {
-      setqrFetchCalled(true)
-      dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
-    }
-  }, [])
-
-  const getFilteredQrs = () => {
+  const getFilteredList = () => {
     let filteredQrs = qrs
     if (filterKey && filterKey.length && qrs) {
       filteredQrs = qrs.filter(
         (qr) => qr.value.toLowerCase().includes(filterKey.toLowerCase())
-        || qr.active == filterKey
       )
     }
     return filteredQrs
@@ -44,7 +35,7 @@ function Tables(props) {
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 
-            placeholder="Search Restaurants"
+            placeholder="Search Table (by Table No.)"
             value={filterKey}
             onChange={({ target: { value } }) => setfilterKey(value)}
           />
@@ -63,7 +54,7 @@ function Tables(props) {
           <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Tables . . .</p>
         </div> : null
       }
-      <TablesList history={props.history} restaurantId={restaurantId} tables={getFilteredQrs()} />
+      <TablesList history={props.history} restaurantId={restaurantId} tables={getFilteredList()} />
     </div>
   )
 }

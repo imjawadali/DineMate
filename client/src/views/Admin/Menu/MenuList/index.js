@@ -1,49 +1,63 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 
-import { SmallButton, SmallButtonRed } from '../../../../components'
+import { Separator, SmallButton } from '../../../../components'
+import { getNameById } from '../../../../helpers'
 
 function MenuList(props) {
+
+  const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
+  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
   
-  const { categories, selectedCategory, onSelect, onDelete, reset } = props
+  const { menu, history } = props
 
   return (
     <div className="HorizontalScrollContainer">
       <table>
         <thead>
           <tr>
-            <th>Category Name</th>
+            <th>Item Name</th>
+            <th>Short  Description</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th>Add-ons</th>
             <th>Action</th>
-            <th>Edit</th>
           </tr>
         </thead>
         <tbody>
-          {categories && categories.length ?
-            categories.map((category) => {
-              const { id, name } = category
+          {menu && menu.length ?
+            menu.map((item) => {
+              const { id, name, shortDescription, price, addOns, categoryId } = item
               return (
                 <tr key={id}>
                   <td>{name}</td>
-                  <td>
-                    <SmallButtonRed
-                      style={{ width: '100%' }}
-                      text="Delete"
-                      iconLeft={<i className="fa fa-trash" />}
-                      onClick={() => onDelete(id)} />
-                  </td>
+                  <td>{shortDescription || '-'}</td>
+                  <td>$ {price}</td>
+                  <td>{!fetchingCategories && categories ?
+                      getNameById(categories, categoryId)
+                    : 'No Category'
+                  }</td>
+                  <td>{addOns && addOns.length ?
+                      addOns.map((addOn, index) => <div key={addOn.id}>
+                        <p>{addOn.name}</p>
+                        {index !== (addOns.length - 1) ? <Separator /> : null}
+                      </div>)
+                    : 'No Add-ons'
+                  }</td>
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Select"
-                      light={selectedCategory && selectedCategory.id === id}
-                      lightAction={() => reset()}
-                      iconLeft={<i className="fa fa-edit" />}
-                      onClick={() => onSelect(category)} />
+                      text="Details"
+                      iconLeft={<i className="fa fa-info" />}
+                      onClick={() => history.push({
+                        pathname: `/admin/menuManagement/itemDetails`, state: { item }
+                      })} />
                   </td>
                 </tr>
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="6" style={{ textAlign: 'center' }}>No Data Found!</td>
             </tr>
           }
         </tbody>

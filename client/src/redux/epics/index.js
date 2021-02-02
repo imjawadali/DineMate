@@ -11,6 +11,7 @@ import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getCategoriesEpic } from './admin/getCategoriesEpic'
 import { addCategoryEpic } from './admin/addCategoryEpic'
 import { updateCategoryEpic } from './admin/updateCategoryEpic'
+import { getMenuEpic } from './admin/getMenuEpic'
 import { deleteCategoryEpic } from './admin/deleteCategoryEpic'
 
 export const epics = combineEpics(
@@ -26,5 +27,6 @@ export const epics = combineEpics(
     getCategoriesEpic.getCategories,
     addCategoryEpic.addCategory,
     updateCategoryEpic.updateCategory,
-    deleteCategoryEpic.deleteCategory
+    deleteCategoryEpic.deleteCategory,
+    getMenuEpic.getMenu
 )

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
 import { customisedAction } from '../../redux/actions'
-import { GET_CATEGORIES } from '../../constants'
+import { GET_CATEGORIES, GET_EXISTING_QRS, GET_MENU } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -18,6 +18,7 @@ import Tables from './Tables'
 import TableDetails from './Tables/TableDetails'
 import Categories from './Categories'
 import Menu from './Menu'
+import ItemDetails from './Menu/ItemDetails'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -28,15 +29,25 @@ function Admin(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
+  const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
   const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
   const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
+  const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
+  const menu = useSelector(({ menuReducer }) => menuReducer.menu)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
 
   useEffect(() => {
-    if (restaurantId && !fetchingCategories && !categories)
-      dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
+    if (restaurantId && !fetchingCategories && !categories) {
+      if (!fetchingQrs && !qrs)
+        dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
+      if (!fetchingCategories && !categories)
+        dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
+      if (!fetchingMenu && !menu)
+        dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
+    }
   }, [restaurantId])
 
   const openSidebar = () => {
@@ -105,6 +116,7 @@ function Admin(props) {
             <Route path={`${path}/menuManagement`}>
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/menuManagement`} component={Menu} />
+                <RestaurantAdminRoutes path={`${path}/menuManagement/itemDetails`} component={ItemDetails} />
                 <RestaurantAdminRoutes path={`${path}/menuManagement/addFoodItem`} component={AddRestaurant} />
               </Switch>
             </Route>

@@ -10,7 +10,6 @@ import QrsList from './QrsList'
 
 function GenerateQrs(props) {
   
-  const [qrsFetchCalled, setqrsFetchCalled] = useState(false)
   const [generateQrInput, setgenerateQrInput] = useState('')
   const [qrCounts, setqrCounts] = useState(0)
 
@@ -22,19 +21,14 @@ function GenerateQrs(props) {
   const { location: { state }, history } = props
 
   useEffect(() => {
-    if (!state) {
-      history.push('/')
+    if (!state || history.action === 'POP') {
+      history.goBack()
     } else if (qrs && qrs.length) {
       setqrCounts(qrs.length)
     } else {
       setqrCounts(state.qrCounts)
     }
-
-    if (state && !qrsFetchCalled && !fetchingQrs && !qrs) {
-      setqrsFetchCalled(true)
-      dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId: state.restaurantId }))
-    }
-  }, [qrs, qrsFetchCalled])
+  }, [qrs])
 
   const generateQrs = () => {
     if (!generateQrInput || generateQrInput < 1 || isNaN(generateQrInput)) {

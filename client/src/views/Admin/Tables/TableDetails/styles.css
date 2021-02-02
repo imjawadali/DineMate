@@ -24,6 +24,10 @@
     width: 20%;
 }
 
+.TableDetailsSections > p {
+    width: 80%;
+}
+
 .TableNameContainer {
     width: 80%;
 }
@@ -46,6 +50,10 @@
 
     .TableDetailsSections > h4 {
         width: 35%;
+    }
+
+    .TableDetailsSections > p {
+        width: 65%;
     }
 
     .TableNameContainer {

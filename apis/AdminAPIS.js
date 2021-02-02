@@ -97,7 +97,7 @@ module.exports = app => {
         getTransactionalConnection()
         .getConnection(function (error, tempDb) {
             if (!!error) {
-                console.log('DbConnectionError', error)
+                console.log('DbConnectionError', error.sqlMessage)
                 return res.status(503).send({ 'msg': 'Unable to reach database!' })
             }
             
@@ -106,7 +106,7 @@ module.exports = app => {
                 if (authResult.length) {
                     tempDb.beginTransaction(function (error) {
                         if (!!error) {
-                            console.log('TransactionError', error)
+                            console.log('TransactionError', error.sqlMessage)
                             return res.status(422).send({ 'msg': error.sqlMessage })
                         }
                         let hashString = Math.random().toString(36).substring(2);
@@ -117,13 +117,12 @@ module.exports = app => {
                         if (cuisine)
                             restaurant.cuisine = cuisine
                         restaurant.city = address.city
-                        restaurant.secondaryContactId = restaurantId
                         
                         let data = address
                         data.restaurantId = restaurantId
                         tempDb.query('INSERT INTO restaurantsAddress SET ?', data, function(error, result) {
                             if (!!error) {
-                                console.log('TableError', error)
+                                console.log('TableError', error.sqlMessage)
                                 tempDb.rollback(function() {
                                     return res.status(422).send({ 'msg': error.sqlMessage })
                                 })
@@ -135,7 +134,7 @@ module.exports = app => {
                                 data.hashString = hashString
                                 tempDb.query('INSERT INTO users SET ?', data, function(error, result) {
                                     if (!!error) {
-                                        console.log('TableError', error)
+                                        console.log('TableError', error.sqlMessage)
                                         tempDb.rollback(function() {
                                             return res.status(422).send({ 'msg': error.sqlMessage })
                                         })
@@ -149,7 +148,7 @@ module.exports = app => {
                                             data.hashString = hashString
                                             tempDb.query('INSERT INTO users SET ?', data, function(error, result) {
                                                 if (!!error) {
-                                                    console.log('TableError', error)
+                                                    console.log('TableError', error.sqlMessage)
                                                     tempDb.rollback(function() {
                                                         return res.status(422).send({ 'msg': error.sqlMessage })
                                                     })
@@ -157,7 +156,7 @@ module.exports = app => {
                                                     restaurant.secondaryContactId = result.insertId
                                                     tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
                                                         if (!!error) {
-                                                            console.log('TableError', error)
+                                                            console.log('TableError', error.sqlMessage)
                                                             tempDb.rollback(function() {
                                                                 return res.status(422).send({ 'msg': error.sqlMessage })
                                                             })
@@ -180,7 +179,7 @@ module.exports = app => {
                                         } else {
                                             tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
                                                 if (!!error) {
-                                                    console.log('TableError', error)
+                                                    console.log('TableError', error.sqlMessage)
                                                     tempDb.rollback(function() {
                                                         return res.status(422).send({ 'msg': error.sqlMessage })
                                                     })
@@ -210,6 +209,28 @@ module.exports = app => {
         })
     })
 
+    app.get('/admin/getAllRestaurants', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT R.restaurantId, R.restaurantName, R.cuisine,  RA.city, 
+            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts 
+            FROM restaurants R 
+            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
+            ORDER BY R.createdAt DESC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No reastaurants available!' })
+                }
+            }
+        )
+    })
+
     app.post('/admin/generateQrs', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, values } = req.body
@@ -220,7 +241,7 @@ module.exports = app => {
         getTransactionalConnection()
         .getConnection(function (error, tempDb) {
             if (!!error) {
-                console.log('DbConnectionError', error)
+                console.log('DbConnectionError', error.sqlMessage)
                 return res.status(503).send({ 'msg': 'Unable to reach database!' })
             } else {
                 tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND role = 'SuperAdmin'`, (error, authResult) => {
@@ -228,7 +249,7 @@ module.exports = app => {
                     if (authResult.length) {
                         tempDb.beginTransaction(function (error) {
                             if (!!error) {
-                                console.log('TransactionError', error)
+                                console.log('TransactionError', error.sqlMessage)
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             }
 
@@ -240,7 +261,7 @@ module.exports = app => {
                             }
                             tempDb.query(query, function(error) {
                                 if (!!error) {
-                                    console.log('TableError', error)
+                                    console.log('TableError', error.sqlMessage)
                                     tempDb.rollback(function() {
                                         return res.status(422).send({ 'msg': error.sqlMessage })
                                     })
@@ -264,28 +285,6 @@ module.exports = app => {
                 })
             }
         })
-    })
-
-    app.get('/admin/getAllRestaurants', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT R.restaurantId, R.restaurantName, R.cuisine,  RA.city, 
-            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts 
-            FROM restaurants R 
-            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
-            ORDER BY R.createdAt DESC`,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': 'No reastaurants available!' })
-                }
-            }
-        )
     })
 
     app.post('/admin/getExistingQrs', async (req, res) => {
@@ -369,14 +368,14 @@ module.exports = app => {
 
     app.post('/admin/getCategories', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, name } = req.body
+        const { restaurantId } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         getSecureConnection(
             res,
             adminId,
             `SELECT id, name FROM categories WHERE restaurantId = '${restaurantId}'`,
-            { restaurantId, name },
+            null,
             (data) => {
                 if (data.length) {
                     return res.send(data)
@@ -423,6 +422,173 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/admin/addMenuItem', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, imageUrl, name, shortDescription, price, categoryId, addOns } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+        if (!price) return res.status(422).send({ 'msg': 'Item price is required!' })
+        if (!categoryId) return res.status(422).send({ 'msg': 'Item category is required!' })
+        if (addOns && addOns.length) {
+            for (var i=0; i<addOns.length; i++) {
+                if (!addOns[i].name) return res.status(422).send({ 'msg': 'AddOns name is required!' })
+            }
+        }
+
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.status(503).send({ 'msg': 'Unable to reach database!' })
+            }
+            
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin')`, (error, authResult) => {
+                if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                if (authResult.length) {
+                    tempDb.beginTransaction(function (error) {
+                        if (!!error) {
+                            console.log('TransactionError', error.sqlMessage)
+                            return res.status(422).send({ 'msg': error.sqlMessage })
+                        }
+                        const menu = {}
+                        menu.restaurantId = restaurantId
+                        menu.name = name
+                        menu.price = price
+                        menu.categoryId = categoryId
+                        if (imageUrl)
+                            menu.imageUrl = imageUrl
+                        if (shortDescription)
+                            menu.shortDescription = shortDescription
+                        tempDb.query('INSERT INTO menu SET ?', menu, function(error, result) {
+                            if (!!error) {
+                                console.log('TableError', error.sqlMessage)
+                                tempDb.rollback(function() {
+                                    return res.status(422).send({ 'msg': error.sqlMessage.includes('Duplicate') ?
+                                        "Duplicate entry" : error.sqlMessage.includes('foreign key') ?
+                                            "Invalid Category" : "Failed to add Menu Item"
+                                    })
+                                })
+                            } else {
+                                if (addOns && addOns.length) {
+                                    for (let i=0; i<addOns.length; i++) {
+                                        const addOn = {}
+                                        addOn.name = addOns[i].name
+                                        addOn.menuId = result.insertId
+                                        if (addOns[i].price)
+                                            addOn.price = addOns[i].price
+                                        if (addOns[i].mandatory)
+                                            addOn.mandatory = addOns[i].mandatory
+                                        tempDb.query('INSERT INTO addOns SET ?', addOn, function(error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function() {
+                                                    return res.status(422).send({ 'msg': "Failed to add Add-on" })
+                                                })
+                                            } else {
+                                                if (addOns[i].variations && addOns[i].variations.length) {
+                                                    tempDb.query("SET FOREIGN_KEY_CHECKS=0;")
+                                                    let query = 'INSERT INTO addOnOptions ( name, addOnID ) VALUES'
+                                                    for (var j=0; j<addOns[i].variations.length; j++) {
+                                                        query = query + ` ( '${addOns[i].variations[j]}', '${result.insertId}' )`
+                                                        if (j !== (addOns[i].variations.length - 1))
+                                                            query = query + ','
+                                                    }
+                                                    tempDb.query(query, function(error) {
+                                                        if (!!error) {
+                                                            console.log('TableError', error.sqlMessage)
+                                                            tempDb.rollback(function() {
+                                                                return res.status(422).send({ 'msg': "Failed to add Add-on Options" })
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                                tempDb.commit(function(error) {
+                                    if (error) { 
+                                        tempDb.rollback(function() {
+                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                        })
+                                    }
+                                    tempDb.query("SET FOREIGN_KEY_CHECKS=1;")
+                                    tempDb.release()
+                                    return res.send({
+                                        'msg': 'Menu Item Added Successfully!'
+                                    })
+                                })
+                            }
+                        })
+                    })
+                }
+                else return res.status(401).send({ 'msg': 'Invalid Token!' })
+            })
+        })
+    })
+
+    app.post('/admin/getMenuItems', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, name } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT m.id, m.imageUrl, m.name, m.shortDescription, m.price, m.categoryId, 
+            ao.id as addOn_id, ao.name as addOn_name, ao.price as addOn_price, ao.mandatory, 
+            aoo.id addOnOption_id, aoo.name addOnOption_name 
+            FROM menu m 
+            LEFT JOIN addOns ao ON ao.menuId = m.id
+            LEFT JOIN addOnOptions aoo ON aoo.addOnID = ao.id
+            WHERE restaurantId = '${restaurantId}'`,
+            { restaurantId, name },
+            (data) => {
+                if (data.length) {
+                    let menu = []
+                    for (let i=0; i<data.length; i++) {
+                        let addOns = []
+                        for (let j=0; j<data.length; j++) {
+                            let addOnOptions = []
+                            for (let k=0; k<data.length; k++) {
+                                if (data[k].addOnOption_id && !includes(addOnOptions, data[k].addOnOption_id) && data[k].addOn_id === data[j].addOn_id) {
+                                    addOnOptions.push({
+                                        id: data[k].addOnOption_id,
+                                        name: data[k].addOnOption_name,
+                                    })
+                                }
+                            }
+                            if (data[j].addOn_id && !includes(addOns, data[j].addOn_id)  && data[j].id === data[i].id) {
+                                addOns.push({
+                                    id: data[j].addOn_id,
+                                    name: data[j].addOn_name,
+                                    price: data[j].addOn_price,
+                                    mandatory: data[j].mandatory,
+                                    addOnOptions
+                                })
+                            }
+                        }
+                        const result = !includes(menu, data[i].id)
+                        if (result) {
+                            menu.push({
+                                id: data[i].id,
+                                imageUrl: data[i].imageUrl,
+                                name: data[i].name,
+                                shortDescription: data[i].shortDescription,
+                                price: data[i].price,
+                                categoryId: data[i].categoryId,
+                                addOns
+                            })
+                        }
+                    }
+                    return res.send(menu)
+                }
+                else return res.status(422).send({ 'msg': 'No menu items available!' })
+            }
+        )
+    })
 }
 
 function decrypt(token) {
@@ -432,4 +598,9 @@ function decrypt(token) {
 
 function lowerCased(string) {
     return string.toLowerCase()
+}
+
+function includes(list, id) {
+    var result = list.filter(item => item.id === id)
+    return result.length
 }

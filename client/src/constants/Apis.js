@@ -17,6 +17,8 @@ export const API_ENDPOINTS = {
         addCategory: 'admin/addCategory',
         getCategories: 'admin/getCategories',
         updateCategory: 'admin/updateCategory',
-        deleteCategory: 'admin/deleteCategory'
+        deleteCategory: 'admin/deleteCategory',
+        addMenuItem: 'admin/addMenuItem',
+        getMenuItems: 'admin/getMenuItems'
     }
 }

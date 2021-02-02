@@ -2,62 +2,34 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { ADD_CATEGORY, DELETE_CATEGORY, SET_TOAST, SET_TOAST_DISMISSING, UPDATE_CATEGORY } from '../../../constants'
-import { capitalizeFirstLetter } from '../../../helpers'
 
 import { Button, Input } from '../../../components'
 
 import MenuList from './MenuList'
+import { GET_MENU } from '../../../constants'
 
 function Menu(props) {
 
-  const [categoryName, setcategoryName] = useState('')
-  const [selectedCategory, setselectedCategory] = useState(null)
+  const [filterKey, setfilterKey] = useState('')
 
-  const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
-  const addingCategory = useSelector(({ categoriesReducer }) => categoriesReducer.addingCategory)
-  const updatingCategory = useSelector(({ categoriesReducer }) => categoriesReducer.updatingCategory)
-  const deletingCategory = useSelector(({ categoriesReducer }) => categoriesReducer.deletingCategory)
-  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
+  const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
+  const menu = useSelector(({ menuReducer }) => menuReducer.menu)
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
 
   useEffect(() => {
-    if (fetchingCategories) reset()
-  }, [fetchingCategories])
+  }, [])
 
-  const reset = () => {
-    setcategoryName('')
-    setselectedCategory(null)
-  }
-
-  const isValid = () => {
-    if (!categoryName || !categoryName.replaceAll(' ', '').replaceAll('\'', '').replaceAll(',', '').replaceAll('.', '')) {
-      dispatch(customisedAction(SET_TOAST_DISMISSING, true))
-      dispatch(customisedAction(SET_TOAST, { message: 'Enter a valid category name!', type: 'error'}))
-      return false
-    } return true
-  }
-
-  const addCategory = () => {
-    if (isValid())
-      dispatch(customisedAction(ADD_CATEGORY, { name: capitalizeFirstLetter(categoryName), restaurantId }))
-  }
-
-  const UpdateCategory = () => {
-    if (isValid())
-      dispatch(customisedAction(UPDATE_CATEGORY, { id: selectedCategory.id, name: capitalizeFirstLetter(categoryName), restaurantId }))
-  }
-
-  const onSelect = (category) => {
-    setselectedCategory(category)
-    setcategoryName(category.name)
-  }
-
-  const onDelete = (id) => {
-    dispatch(customisedAction(DELETE_CATEGORY, { id, restaurantId }))
+  const getFilteredList = () => {
+    let filteredQrs = menu
+    if (filterKey && filterKey.length && menu) {
+      filteredQrs = menu.filter(
+        (item) => item.name.toLowerCase().includes(filterKey.toLowerCase())
+      )
+    }
+    return filteredQrs
   }
 
   return (
@@ -74,31 +46,28 @@ function Menu(props) {
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 
-            placeholder="Enter New Category Name"
-            value={categoryName}
-            onChange={({ target: { value } }) => setcategoryName(value)}
+            placeholder="Search Item (by Name)"
+            value={filterKey}
+            onChange={({ target: { value } }) => setfilterKey(value)}
           />
         </div>
         <div className="TopButtonContainer">
           <Button
             text="Refresh"
-            light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
+            light={fetchingMenu}
             lightAction={() => null}
             iconLeft={<i className="fa fa-refresh" />}
-            onClick={() => null} />
+            onClick={() => dispatch(customisedAction(GET_MENU, { restaurantId }))} />
         </div>
       </div>
-      {fetchingCategories ?
+      {fetchingMenu ?
         <div className="loadingContainer">
           <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Food Items . . .</p>
         </div> : null
       }
       <MenuList 
-        onSelect={onSelect}
-        onDelete={onDelete}
-        reset={reset}
-        selectedCategory={selectedCategory}
-        categories={categories} />
+        history={props.history}
+        menu={getFilteredList()} />
     </div>
   )
 }

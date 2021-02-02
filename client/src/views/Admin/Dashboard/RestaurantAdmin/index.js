@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Button, DashboardBatches } from '../../../../components'
-import { GET_CATEGORIES, GET_SUPER_ADMIN_DASHBOARD } from '../../../../constants'
+import { GET_SUPER_ADMIN_DASHBOARD } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 function RestaurantAdmin(props) {

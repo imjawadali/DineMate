@@ -24,7 +24,7 @@ export default (state = {
     case GET_CATEGORIES_SUCCESS:
       return { ...state, fetchingCategories: false, categories: payload }
     case GET_CATEGORIES_FAILURE:
-      return { ...state, fetchingCategories: false }
+      return { ...state, fetchingCategories: false, categories: null }
     case ADD_CATEGORY:
       return { ...state, addingCategory: true }
     case ADD_CATEGORY_FAILURE:

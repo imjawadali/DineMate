@@ -24,7 +24,7 @@ function Restaurants(props) {
     }
   }, [])
 
-  const getFilteredRestaurants = () => {
+  const getFilteredList = () => {
     let filteredRestaurants = restaurants
     if (filterKey && filterKey.length && restaurants) {
       filteredRestaurants = restaurants.filter(
@@ -63,7 +63,7 @@ function Restaurants(props) {
           <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Restaurants . . .</p>
         </div> : null
       }
-      <RestaurantsList history={props.history} restaurants={getFilteredRestaurants()} />
+      <RestaurantsList history={props.history} restaurants={getFilteredList()} />
     </div>
   )
 }

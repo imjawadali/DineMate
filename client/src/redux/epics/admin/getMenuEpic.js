@@ -4,26 +4,26 @@ import { ofType } from 'redux-observable'
 import { customisedAction } from '../../actions'
 import { generalizedEpic } from '../generalizedEpic'
 import {
-  GET_CATEGORIES,
-  GET_CATEGORIES_SUCCESS,
-  GET_CATEGORIES_FAILURE,
+  GET_MENU,
+  GET_MENU_SUCCESS,
+  GET_MENU_FAILURE,
   API_ENDPOINTS
 } from '../../../constants'
 
-export class getCategoriesEpic {
-  static getCategories = action$ =>
+export class getMenuEpic {
+  static getMenu = action$ =>
     action$.pipe(
-      ofType(GET_CATEGORIES),
+      ofType(GET_MENU),
       switchMap(
         async ({ payload: { restaurantId, noToast } }) => {
           return generalizedEpic(
             'post', 
-            API_ENDPOINTS.admin.getCategories,
+            API_ENDPOINTS.admin.getMenuItems,
             { restaurantId },
             (resObj) => {
-              return customisedAction(GET_CATEGORIES_SUCCESS, resObj)
+              return customisedAction(GET_MENU_SUCCESS, resObj)
             },
-            GET_CATEGORIES_FAILURE,
+            GET_MENU_FAILURE,
             noToast
           )
         }

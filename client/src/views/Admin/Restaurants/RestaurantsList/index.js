@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../redux/actions'
-import { RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
+import { GET_EXISTING_QRS, RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
 
 import { SmallButton } from '../../../../components'
 
@@ -55,6 +55,7 @@ function RestaurantsList(props) {
                       iconLeft={<i className="fa fa-info-circle" />}
                       onClick={() => {
                         dispatch(customisedAction(RESTAURANT_CHANGED))
+                        dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
                         history.push({
                           pathname: `/admin/qrsManagement`, state: { restaurantId, qrCounts }
                         })

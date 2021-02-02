@@ -24,7 +24,7 @@ export class getExistingQrsEpic {
         }
       }),
       switchMap(
-        async ({ payload: { restaurantId } }) => {
+        async ({ payload: { restaurantId, noToast } }) => {
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.admin.getExistingQrs,
@@ -32,7 +32,8 @@ export class getExistingQrsEpic {
             (resObj) => {
               return customisedAction(GET_EXISTING_QRS_SUCCESS, resObj)
             },
-            GET_EXISTING_QRS_FAILURE
+            GET_EXISTING_QRS_FAILURE,
+            noToast
           )
         }
       )
