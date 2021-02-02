@@ -19,7 +19,7 @@ module.exports = app => {
         const { email, password } = req.body
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
-        let sql = 'SELECT U.id, U.adminName, U.email, U.role, U.restaurantId'
+        let sql = 'SELECT U.id, U.name, U.email, U.role, U.restaurantId'
         if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ', R.restaurantName'
         sql += ' FROM users U'
@@ -87,10 +87,10 @@ module.exports = app => {
         if (!address.city) return res.status(422).send({ 'msg': 'City is required!' })
         if (!address.country) return res.status(422).send({ 'msg': 'Country is required!' })
         if (!primaryContact) return res.status(422).send({ 'msg': 'Primary Contact fields are required!' })
-        if (!primaryContact.adminName) return res.status(422).send({ 'msg': 'Primary Contact\'s Name is required!' })
+        if (!primaryContact.name) return res.status(422).send({ 'msg': 'Primary Contact\'s Name is required!' })
         if (!primaryContact.email) return res.status(422).send({ 'msg': 'Primary Contact\'s Email is required!' })
         if (secondaryContact) {
-            if (!secondaryContact.adminName) return res.status(422).send({ 'msg': 'Secondary Contact\'s Name is required!' })
+            if (!secondaryContact.name) return res.status(422).send({ 'msg': 'Secondary Contact\'s Name is required!' })
             if (!secondaryContact.email) return res.status(422).send({ 'msg': 'Secondary Contact\'s Email is required!' })
         }
 

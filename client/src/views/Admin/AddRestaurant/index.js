@@ -87,7 +87,7 @@ function AddRestaurant(props) {
         longitude
       },
       primaryContact: {
-        adminName: pName,
+        name: pName,
         email: pEmail,
         contactNumber: pPhoneNumber
       },
@@ -95,7 +95,7 @@ function AddRestaurant(props) {
     }
     if (sName && sEmail) {
       payload.secondaryContact = {
-        adminName: sName,
+        name: sName,
         email: sEmail,
         contactNumber: sPhoneNumber
       }
