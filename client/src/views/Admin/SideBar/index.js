@@ -16,6 +16,8 @@ function SideBar(props) {
     const { admin, sidebarOpen, closeSidebar, location } = props
     const { pathname } = location
 
+    const { restaurantId, role } = admin
+
     return (<div className={sidebarOpen ? "sidebar-responsive" : ""} id="sidebar">
         <div className="sidebar__title">
             <div className="sidebar__img">
@@ -30,7 +32,7 @@ function SideBar(props) {
                 <i className="fa fa-home"/>
                 <Link to={`${url}`}>Dashboard</Link>
             </div>
-            {!admin.restaurantId ?
+            {!restaurantId ?
                 <>
                     <h2>Super Admin</h2>
                     <div className={`sidebar__link ${pathname.includes('/addRestaurant') ? 'active_menu_link' : null}`}>
@@ -51,19 +53,22 @@ function SideBar(props) {
                     </div>
                 </> :
                 <>
-                    <h2>Restaurant Admin</h2>
-                    <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-building-o" />
-                        <Link to={`${url}/tablesManagement`}>Tables Management</Link>
-                    </div>
-                    <div className={`sidebar__link ${pathname.includes('/categoriesManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-list" />
-                        <Link to={`${url}/categoriesManagement`}>Categories Management</Link>
-                    </div>
-                    <div className={`sidebar__link ${pathname.includes('/menuManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-cutlery" />
-                        <Link to={`${url}/menuManagement`}>Menu Management</Link>
-                    </div>
+                    {role === "SuperAdmin" || role === "Admin" ? <>
+                        <h2>Restaurant Admin</h2>
+                        <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-building-o" />
+                            <Link to={`${url}/tablesManagement`}>Tables Management</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/categoriesManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-list" />
+                            <Link to={`${url}/categoriesManagement`}>Categories Management</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/menuManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-cutlery" />
+                            <Link to={`${url}/menuManagement`}>Menu Management</Link>
+                        </div>
+                        </> : <h2>Kitchen Admin</h2>
+                    }
                     <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-wrench" />
                         <Link to={`${url}/others`}>Company Management</Link>
