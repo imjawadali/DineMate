@@ -16,7 +16,7 @@ function SmallButtonRed ({ onClick, text, style, light, lightAction, iconLeft, i
         <button 
           className="SmallButtonRed"
           onClick={lightAction ? lightAction : () => dispatch(customisedAction(SET_TOAST, { message: 'Button is disable!', type: 'warning'}))}
-          style={{ backgroundColor: 'rgba(62, 161, 117, 0.3)', borderColor: 'rgba(62, 161, 117, 0.3)', ...style }}>
+          style={{ backgroundColor: 'rgba(255, 0, 0, 0.3)', borderColor: 'rgba(255, 0, 0, 0.3)', ...style }}>
           {iconLeft && <p className="SmallButtonRedText" style={{ color: 'white', paddingRight: '5px' }}>{iconLeft}</p>}
           <p className="SmallButtonRedText" style={{ color: 'white' }}>{text}</p>
           {iconRight && <p className="SmallButtonRedText" style={{ color: 'white', paddingLeft: '5px' }}>{iconRight}</p>}

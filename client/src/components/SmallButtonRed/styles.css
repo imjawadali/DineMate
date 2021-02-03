@@ -27,7 +27,7 @@
 }
 
 .SmallButtonRed:hover .SmallButtonRedText {
-    color: rgba(255, 0, 0, 0.5) !important;
+    color: rgba(255, 0, 0, 1) !important;
 }
 
 .SmallButtonRed:focus {
