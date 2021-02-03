@@ -42,12 +42,12 @@ function uniqueFetchResponse (tempDb, token, error, result, res, callBack) {
     if (!!error) {
         console.log('TableError', error)
         return res.status(422).send({ 'msg': error.sqlMessage })
-    } else if (!result.length) {
-        tempDb.query(`SELECT * FROM users WHERE id = '${token}'`, (error, result2) => {
+    } else {
+        tempDb.query(`SELECT * FROM users WHERE id = '${token}' AND active = 1`, (error, result2) => {
             if (result2.length) return callBack(result)
             else return res.status(401).send({ 'msg': 'Invalid Token!' })
         })
-    } else return callBack(result)
+    }
 }
 
 function gerenalFetchResponse (error, result, res, callBack) {

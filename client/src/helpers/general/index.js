@@ -6,6 +6,5 @@ export function capitalizeFirstLetter (string) {
 
 export function getNameById(list, id) {
     var result = list.filter(item => item.id === id)
-    console.log(result)
     return result.length ? result[0].name : null
 }

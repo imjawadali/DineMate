@@ -25,7 +25,7 @@ module.exports = app => {
         sql += ' FROM users U'
         if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
-        sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}'`
+        sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`
         getConnection(
             res,
             sql,
@@ -34,7 +34,7 @@ module.exports = app => {
                 if (data.length)
                     return res.send(data[0])
                 else
-                    return res.status(422).send({ 'msg': 'Invalid credentials provided!' })
+                    return res.status(422).send({ 'msg': `Invalid credentials provided! Or, User is in-active` })
             }
         )
     })
@@ -50,7 +50,7 @@ module.exports = app => {
             (result) => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'Password Reset Link Sent!' })
-                else return res.status(422).send({ 'msg': 'Link Expired!' })
+                else return res.status(422).send({ 'msg': 'Forgot Password request failed!' })
             }
         )
     })
@@ -101,7 +101,7 @@ module.exports = app => {
                 return res.status(503).send({ 'msg': 'Unable to reach database!' })
             }
             
-            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND role = 'SuperAdmin'`, (error, authResult) => {
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND role = 'SuperAdmin' AND active = 1`, (error, authResult) => {
                 if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
                 if (authResult.length) {
                     tempDb.beginTransaction(function (error) {
@@ -244,7 +244,7 @@ module.exports = app => {
                 console.log('DbConnectionError', error.sqlMessage)
                 return res.status(503).send({ 'msg': 'Unable to reach database!' })
             } else {
-                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND role = 'SuperAdmin'`, (error, authResult) => {
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND role = 'SuperAdmin' AND active = 1`, (error, authResult) => {
                     if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
                     if (authResult.length) {
                         tempDb.beginTransaction(function (error) {
@@ -444,7 +444,7 @@ module.exports = app => {
                 return res.status(503).send({ 'msg': 'Unable to reach database!' })
             }
             
-            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin')`, (error, authResult) => {
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin') AND active = 1`, (error, authResult) => {
                 if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
                 if (authResult.length) {
                     tempDb.beginTransaction(function (error) {
