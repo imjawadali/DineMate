@@ -694,7 +694,7 @@ module.exports = app => {
             null,
             (result) => {
                 if (result.length) {
-                    if (primaryContactId === id)
+                    if (result[0].primaryContactId === id)
                         return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s Primary user!' })
                     else 
                         return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s Secondary user!' })
