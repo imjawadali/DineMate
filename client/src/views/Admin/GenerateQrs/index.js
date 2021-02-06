@@ -78,7 +78,7 @@ function GenerateQrs(props) {
       </div>
       {fetchingQrs ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Qrs!</p>
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Qrs!</p>
         </div> : null
       }
       <QrsList restaurantId={state && state.restaurantId} history={history} />

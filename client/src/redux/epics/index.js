@@ -11,8 +11,11 @@ import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getCategoriesEpic } from './admin/getCategoriesEpic'
 import { addCategoryEpic } from './admin/addCategoryEpic'
 import { updateCategoryEpic } from './admin/updateCategoryEpic'
-import { getMenuEpic } from './admin/getMenuEpic'
 import { deleteCategoryEpic } from './admin/deleteCategoryEpic'
+import { getUsersEpic } from './admin/getUsersEpic'
+import { updateUserEpic } from './admin/updateUserEpic'
+import { deleteUserEpic } from './admin/deleteUserEpic'
+import { getMenuEpic } from './admin/getMenuEpic'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -28,5 +31,8 @@ export const epics = combineEpics(
     addCategoryEpic.addCategory,
     updateCategoryEpic.updateCategory,
     deleteCategoryEpic.deleteCategory,
+    getUsersEpic.getUsers,
+    updateUserEpic.updateUser,
+    deleteUserEpic.deleteUser,
     getMenuEpic.getMenu
 )

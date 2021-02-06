@@ -65,6 +65,19 @@ export const GET_MENU_FAILURE = 'GET_MENU_FAILURE'
 export const ADD_MENU = 'ADD_MENU'
 export const ADD_MENU_FAILURE = 'ADD_MENU_FAILURE'
 
+export const GET_USERS = 'GET_USERS'
+export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS'
+export const GET_USERS_FAILURE = 'GET_USERS_FAILURE'
+
+export const ADD_USER = 'ADD_USER'
+export const ADD_USER_FAILURE = 'ADD_USER_FAILURE'
+
+export const UPDATE_USER = 'UPDATE_USER'
+export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
+
+export const DELETE_USER = 'DELETE_USER'
+export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE'
+
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
 export const SIGN_IN_FAILURE = 'SIGN_IN_FAILURE'

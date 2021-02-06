@@ -43,13 +43,17 @@ function SideBar(props) {
                         <i className="fa fa-cutlery"/>
                         <Link to={`${url}/restaurants`}>Restaurants Management</Link>
                     </div>
-                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-qrcode"/>
-                        <Link to={pathname}>QRs Management</Link>
+                    <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-user" />
+                        <Link to={`${url}/usersManagement`}>Users Management</Link>
                     </div>
                     <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-edit"/>
                         <Link to={pathname}>Edit Restaurant</Link>
+                    </div>
+                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-qrcode"/>
+                        <Link to={pathname}>QRs Management</Link>
                     </div>
                 </> :
                 <>
@@ -67,12 +71,12 @@ function SideBar(props) {
                             <i className="fa fa-cutlery" />
                             <Link to={`${url}/menuManagement`}>Menu Management</Link>
                         </div>
+                        <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-users" />
+                            <Link to={`${url}/usersManagement`}>Users Management</Link>
+                        </div>
                         </> : <h2>Kitchen Admin</h2>
                     }
-                    <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-wrench" />
-                        <Link to={`${url}/others`}>Company Management</Link>
-                    </div>
                     <div className="sidebar__link">
                         <i className="fa fa-archive" />
                         <Link to={`${url}/adc`}>Warehouse</Link>
@@ -86,12 +90,12 @@ function SideBar(props) {
                         <Link to={`${url}/adc`}>Requests</Link>
                     </div>
                     <div className="sidebar__link">
-                        <i className="fa fa-sign-out" />
-                        <Link to={`${url}/adc`}>Leave Policy</Link>
-                    </div>
-                    <div className="sidebar__link">
                         <i className="fa fa-files-o" />
                         <Link to={`${url}/adc`}>Apply for Leaves</Link>
+                    </div>
+                    <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-wrench" />
+                        <Link to={`${url}/others`}>Settings</Link>
                     </div>
                     {admin.role === "SuperAdmin" ?
                         <div className="LeaveButtonContainer">

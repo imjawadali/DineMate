@@ -34,7 +34,7 @@ function SuperAdmin(props) {
       <div className="DashBoardContainer">
         {fetchingDashboard ?
           <div className="loadingContainer">
-            <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Dashboard Data . . .</p>
+            <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Dashboard Data . . .</p>
           </div> : null
         }
         {adminDashboard ? <>

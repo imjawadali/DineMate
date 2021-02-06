@@ -53,16 +53,16 @@ function Menu(props) {
         </div>
         <div className="TopButtonContainer">
           <Button
-            text="Refresh"
+            text={filterKey ? "Clear" : "Refresh"}
             light={fetchingMenu}
             lightAction={() => null}
-            iconLeft={<i className="fa fa-refresh" />}
-            onClick={() => dispatch(customisedAction(GET_MENU, { restaurantId }))} />
+            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : 'refresh'}`} />}
+            onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_MENU, { restaurantId }))} />
         </div>
       </div>
       {fetchingMenu ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Food Items . . .</p>
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Food Items . . .</p>
         </div> : null
       }
       <MenuList 

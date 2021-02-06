@@ -90,7 +90,7 @@ function Categories() {
       </div>
       {fetchingCategories ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching Categories . . .</p>
+          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Categories . . .</p>
         </div> : null
       }
       <CategoriesList 

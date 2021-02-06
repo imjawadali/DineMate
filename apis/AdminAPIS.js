@@ -34,7 +34,7 @@ module.exports = app => {
                 if (data.length)
                     return res.send(data[0])
                 else
-                    return res.status(422).send({ 'msg': `Invalid credentials provided! Or, User is in-active` })
+                    return res.status(422).send({ 'msg': `Invalid credentials provided or, User is in-active` })
             }
         )
     })
@@ -204,7 +204,7 @@ module.exports = app => {
                         })
                     })
                 }
-                else return res.status(401).send({ 'msg': 'Invalid Token!' })
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
             })
         })
     })
@@ -281,7 +281,7 @@ module.exports = app => {
                             })
                         })
                     }
-                    else return res.status(401).send({ 'msg': 'Invalid Token!' })
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
                 })
             }
         })
@@ -524,7 +524,7 @@ module.exports = app => {
                         })
                     })
                 }
-                else return res.status(401).send({ 'msg': 'Invalid Token!' })
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
             })
         })
     })
@@ -586,6 +586,127 @@ module.exports = app => {
                     return res.send(menu)
                 }
                 else return res.status(422).send({ 'msg': 'No menu items available!' })
+            }
+        )
+    })
+
+    app.get('/admin/getAllUsers', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT u.id, u.name, u.email, u.contactNumber, u.role, u.active, r.restaurantName
+            FROM users u
+            JOIN restaurants r ON u.restaurantId = r.restaurantId
+            WHERE role <> 'SuperAdmin'
+            ORDER BY r.createdAt DESC, u.createdAt ASC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No users available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getRestaurantUsers', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT u.id, u.name, u.email, u.contactNumber, u.role, u.active,
+            r.primaryContactId, r.secondaryContactId
+            FROM users u
+            JOIN restaurants r ON u.restaurantId = r.restaurantId
+            WHERE u.restaurantId = '${restaurantId}'
+            ORDER BY u.createdAt DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No users available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/addUser', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, name, email, role, contactNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!name) return res.status(422).send({ 'msg': 'User\'s name is required!' })
+        if (!email) return res.status(422).send({ 'msg': 'User\'s email is required!' })
+        if (!role) return res.status(422).send({ 'msg': 'User\'s role is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `INSERT INTO users SET ?`,
+            { restaurantId, name, email, role, contactNumber },
+            (result) => {
+                if (result.affectedRows)
+                    return res.send({ 'msg': 'User Added Successfully!' })
+                else
+                    return res.status(422).send({ 'msg': 'Failed to add user!' })
+            }
+        )
+    })
+
+    app.post('/admin/updateUser', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, userUpdatedData } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'User\'s Id is required!' })
+        if (!userUpdatedData) return res.status(422).send({ 'msg': 'No data to update!' })
+        if (userUpdatedData.id) return res.status(422).send({ 'msg': 'Can\'t update user\'s ID!' })
+        if (userUpdatedData.hashString) return res.status(422).send({ 'msg': 'Can\'t update user\'s hashString!' })
+        if (userUpdatedData.passwordForgotten) return res.status(422).send({ 'msg': 'Key passwordForgotten can\'t be update!' })
+        if (userUpdatedData.restaurantId) return res.status(422).send({ 'msg': 'Can\'t update user\'s restaurantId!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE users SET ? WHERE id = ${id}`,
+            userUpdatedData,
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'User Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Failed to update user' })
+            }
+        )
+    })
+
+    app.post('/admin/deleteUser', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'User Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT primaryContactId from restaurants WHERE primaryContactId = ${id} OR secondaryContactId = ${id}`,
+            null,
+            (result) => {
+                if (result.length)
+                    return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s primary/secondary user!' })
+                else {
+                    getConnection(
+                        res,
+                        `DELETE FROM users WHERE id = ${id}`,
+                        null,
+                        (result) => {
+                            if (result.affectedRows)
+                                return res.send({ 'msg': 'User Deleted Successfully!' })
+                            else return res.status(422).send({ 'msg': 'Failed to delete user' })
+                        }
+                    )
+                }
             }
         )
     })

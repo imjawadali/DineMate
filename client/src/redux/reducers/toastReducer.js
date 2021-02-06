@@ -28,6 +28,14 @@ import {
   GET_MENU_FAILURE,
   ADD_MENU,
   ADD_MENU_FAILURE,
+  GET_USERS,
+  GET_USERS_FAILURE,
+  ADD_USER,
+  UPDATE_USER,
+  DELETE_USER,
+  ADD_USER_FAILURE,
+  UPDATE_USER_FAILURE,
+  DELETE_USER_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -85,6 +93,22 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case UPDATE_CATEGORY_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_CATEGORY_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_USERS:
+      return { ...state, toastSetDismiss: true }
+    case GET_USERS_FAILURE:
+      return { ...state, toast: payload }
+    case ADD_USER:
+      return { ...state, toast: { message: 'Adding Restaurant User', type: 'success' } }
+    case UPDATE_USER:
+      return { ...state, toast: { message: 'Updating Restaurant User', type: 'warning' } }
+    case DELETE_USER:
+      return { ...state, toast: { message: 'Deleting Restaurant User', type: 'error' } }
+    case ADD_USER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_USER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_USER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_MENU:
       return { ...state, toastSetDismiss: true }

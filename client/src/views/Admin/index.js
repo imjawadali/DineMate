@@ -15,11 +15,13 @@ import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
 import ViewQr from './GenerateQrs/ViewQr'
+import AllUsers from './Users/AllUsers'
 import Tables from './Tables'
 import TableDetails from './Tables/TableDetails'
 import Categories from './Categories'
 import Menu from './Menu'
 import ItemDetails from './Menu/ItemDetails'
+import RestaurantUsers from './Users/RestaurantUsers'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -72,7 +74,7 @@ function Admin(props) {
 
   const RestaurantAdminRoutes = ({ component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
-          restaurantId && (role === "SuperAdmin" || role === "Admin") ? 
+          restaurantId && (role !== "Kitchen") ? 
           <Component {...props} /> : <Redirect to={{ pathname: '/admin', state: { from: props.location.pathname } }} />
       )} />
   )
@@ -94,16 +96,13 @@ function Admin(props) {
         <div className="Main">
           <Switch>
             <Route exact path={path}>
-              <Redirect to={restaurantId ? 
-                role === "SuperAdmin" || role === "Admin" ? `${path}/dashboard/restaurantAdmin`
-                  : `${path}/dashboard/kitchenAdmin`
-                : `${path}/dashboard/superAdmin`} />
+              <Redirect to={`${path}/dashboard`} />
             </Route>
             <Route path={`${path}/dashboard`}>
               <Switch>
                 <Route exact path={`${path}/dashboard`}>
                   <Redirect to={restaurantId ? 
-                    role === "SuperAdmin" || role === "Admin" ? `${path}/dashboard/restaurantAdmin`
+                    role !== "Kitchen" ? `${path}/dashboard/restaurantAdmin`
                       : `${path}/dashboard/kitchenAdmin`
                     : `${path}/dashboard/superAdmin`} />
                 </Route>
@@ -114,6 +113,18 @@ function Admin(props) {
             </Route>
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
             <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
+            <Route path={`${path}/usersManagement`}>
+              <Switch>
+                <Route exact path={`${path}/usersManagement`}>
+                  <Redirect to={restaurantId ? 
+                    role !== "Kitchen" ? `${path}/usersManagement/restaurantUsers`
+                      : `${path}`
+                    : `${path}/usersManagement/allUsers`} />
+                </Route>
+                <SuperAdminRoutes path={`${path}/usersManagement/allUsers`} component={AllUsers} />
+                <RestaurantAdminRoutes path={`${path}/usersManagement/restaurantUsers`} component={RestaurantUsers} />
+              </Switch>
+            </Route>
             <Route path={`${path}/qrsManagement`}>
               <Switch>
                 <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />

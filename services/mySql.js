@@ -7,13 +7,18 @@ const db = mysql.createPool(mySQLConfig)
 exports.getSecureConnection = function (res, token, query, data, callBack) {
     db.getConnection(function (error, tempDb) {
         if (!!error) {
-            console.log('DbConnectionError', error)
+            console.log('DbConnectionError', error.sqlMessage)
             return res.status(503).send({ 'msg': 'Unable to reach database!' })
         }
         else {
-            tempDb.query(query, data, (error, result) => {
-                tempDb.release()
-                return uniqueFetchResponse(tempDb, token, error, result, res, callBack)
+            tempDb.query(`SELECT * FROM users WHERE id = '${token}' AND active = 1`, (error, authResult) => {
+                if (authResult.length) {
+                    tempDb.query(query, data, (error, result) => {
+                        tempDb.release()
+                        return response(error, result, res, callBack)
+                    })
+                }
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
             })
         }
     })
@@ -22,13 +27,13 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
 exports.getConnection = function (res, query, data, callBack) {
     db.getConnection(function (error, tempDb) {
         if (!!error) {
-            console.log('DbConnectionError', error)
+            console.log('DbConnectionError', error.sqlMessage)
             return res.status(503).send({ 'msg': 'Unable to reach database!' })
         }
         else {
             tempDb.query(query, data, (error, result) => {
                 tempDb.release()
-                return gerenalFetchResponse(error, result, res, callBack)
+                return response(error, result, res, callBack)
             })
         }
     })
@@ -38,21 +43,9 @@ exports.getTransactionalConnection = function () {
     return db
 }
 
-function uniqueFetchResponse (tempDb, token, error, result, res, callBack) {
+function response (error, result, res, callBack) {
     if (!!error) {
-        console.log('TableError', error)
-        return res.status(422).send({ 'msg': error.sqlMessage })
-    } else {
-        tempDb.query(`SELECT * FROM users WHERE id = '${token}' AND active = 1`, (error, result2) => {
-            if (result2.length) return callBack(result)
-            else return res.status(401).send({ 'msg': 'Invalid Token!' })
-        })
-    }
-}
-
-function gerenalFetchResponse (error, result, res, callBack) {
-    if (!!error) {
-        console.log('TableError', error)
-        return res.status(422).send({ 'msg': error.sqlMessage })
+        console.log('TableError', error.sqlMessage)
+        return res.status(422).send({ 'msg': error.sqlMessage.includes('Duplicate') ? 'Duplicate Entry' : error.sqlMessage })
     } else return callBack(result)
 }

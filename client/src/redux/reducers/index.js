@@ -4,6 +4,7 @@ import restaurantsReducer from './restaurantsReducer'
 import restaurantReducer from './restaurantReducer'
 import categoriesReducer from './categoriesReducer'
 import menuReducer from './menuReducer'
+import usersReducer from './usersReducer'
 import toastReducer from './toastReducer'
 
 export default combineReducers({
@@ -12,5 +13,6 @@ export default combineReducers({
     restaurantReducer,
     categoriesReducer,
     menuReducer,
+    usersReducer,
     toastReducer
 })

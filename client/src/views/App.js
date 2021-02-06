@@ -74,7 +74,7 @@ export default function App(props) {
                 </Switch>
             </Router>
         </ToastProvider> :
-        <div className="full-screen-container" style={{ background: 'rgba(62, 161, 117, 0.3)'}}>
+        <div className="full-screen-container" style={{ background: '#b5c9bf'}}>
             <img src={logo} style={{ width: '120px' }} alt="logo" />
         </div>
     )
