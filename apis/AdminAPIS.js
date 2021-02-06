@@ -690,11 +690,15 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT primaryContactId from restaurants WHERE primaryContactId = ${id} OR secondaryContactId = ${id}`,
+            `SELECT primaryContactId, secondaryContactId from restaurants WHERE primaryContactId = ${id} OR secondaryContactId = ${id}`,
             null,
             (result) => {
-                if (result.length)
-                    return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s primary/secondary user!' })
+                if (result.length) {
+                    if (primaryContactId === id)
+                        return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s Primary user!' })
+                    else 
+                        return res.status(422).send({ 'msg': 'Can\'t delete restaurant\'s Secondary user!' })
+                }
                 else {
                     getConnection(
                         res,
