@@ -1,4 +1,7 @@
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySql')
+const { sendEmail } = require('../services/mailer')
+
+const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
 
 module.exports = app => {
     app.get('/secureTest', async (req, res) => {
@@ -48,9 +51,26 @@ module.exports = app => {
             `UPDATE users SET ? WHERE email = '${lowerCased(email)}'`,
             { passwordForgotten: 1, hashString },
             (result) => {
-                if (result.changedRows)
-                    return res.send({ 'msg': 'Password Reset Link Sent!' })
-                else return res.status(422).send({ 'msg': 'Forgot Password request failed!' })
+                if (result.changedRows) {
+                    getConnection(
+                        res,
+                        `SELECT restaurantId FROM users WHERE email = '${lowerCased(email)}'`,
+                        null,
+                        async (result) => {
+                            if (result && result.length) {
+                                const emailStatus = await sendEmail(
+                                    email,
+                                    'Reset Password Link',
+                                    forgotPasswordMessage(`${URL}/createPassword/${result[0].restaurantId || null}/${email}/${hashString}`)
+                                )
+                                if (emailStatus.accepted.length) return res.send({ 'msg': 'Password Reset Link Sent!' })
+                                else return res.status(422).send({ 'msg': `Email: "${email}" not found!` })
+                            }
+                            else return res.status(422).send({ 'msg': 'Email not registered' })
+                        }
+                    )
+                }
+                else return res.status(422).send({ 'msg': 'Email not registered' })
             }
         )
     })
@@ -61,12 +81,14 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
+        let sql = `UPDATE users SET ? WHERE email = '${lowerCased(email)}' `
+        if (email !== 'ahads62426@gmail.com')
+            sql += `AND restaurantId = BINARY '${restaurantId}' `
+        sql += `AND passwordForgotten = 1 `
+        sql += `AND hashString = '${hashString}'`
         getConnection(
             res,
-            `UPDATE users SET ? WHERE email = '${lowerCased(email)}' 
-            AND restaurantId = BINARY '${restaurantId}' 
-            AND passwordForgotten = 1 
-            AND hashString = '${hashString}'`,
+            sql,
             { password, passwordForgotten: 0 },
             (result) => {
                 if (result.changedRows)
@@ -714,6 +736,81 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/admin/initializeOrder', async (req, res) => {
+        const { restaurantId, tableId, customerId, type } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+        if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
+        getConnection(
+            res,
+            `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
+            null,
+            (result) => {
+                if (result.length)
+                getConnection(
+                    res,
+                    `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
+                    VALUES ( '${restaurantId}', '${tableId}', ${customerId ? `${customerId}` : null}, 
+                    ${type ? `${type}` : `'Dine-In'`}, ${Number(result[0].orderNumber)+1})`,
+                    null,
+                    (result) => {
+                        if (result.affectedRows)
+                            return res.send({ 'msg': 'Order Initialized Successfully!' })
+                        else return res.status(422).send({ 'msg': 'Failed to initialize order' })
+                    }
+                )
+                else return res.status(422).send({ 'msg': 'Failed to initialize order' })
+            }
+        )
+    })
+
+    app.post('/admin/getOpenOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, type } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT * FROM orders WHERE restaurantId = '${restaurantId}'
+            AND ( customerStatus = 1 OR restaurantStatus = 1 )
+            AND type = '${type}'
+            ORDER BY createdAt DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Open ${type} Orders!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getClosedOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, type } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT * FROM orders WHERE restaurantId = '${restaurantId}'
+            AND customerStatus = 0 AND restaurantStatus = 0
+            AND type = '${type}'
+            ORDER BY createdAt DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Closed ${type} Orders!` })
+                }
+            }
+        )
+    })
 }
 
 function decrypt(token) {
@@ -728,4 +825,12 @@ function lowerCased(string) {
 function includes(list, id) {
     var result = list.filter(item => item.id === id)
     return result.length
+}
+
+function setPasswordMessage(name, link) {
+    return `Hi ${name},\nWelcome to DineMate!\n\nVisit the following link to create your login password:\n${link}`
+}
+
+function forgotPasswordMessage(link) {
+    return `Welcome Back!\n\nVisit the following link to reset your login password:\n${link}`
 }
