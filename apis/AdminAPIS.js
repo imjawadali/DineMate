@@ -23,10 +23,10 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         let sql = 'SELECT U.id, U.name, U.email, U.role, U.restaurantId'
-        if (lowerCased(email) !== 'ahads62426@gmail.com')
+        if (lowerCased(email) !== 'ivsdeveloper21@gmail.com')
             sql += ', R.restaurantName'
         sql += ' FROM users U'
-        if (lowerCased(email) !== 'ahads62426@gmail.com')
+        if (lowerCased(email) !== 'ivsdeveloper21@gmail.com')
             sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
         sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`
         getConnection(
@@ -82,7 +82,7 @@ module.exports = app => {
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
         let sql = `UPDATE users SET ? WHERE email = '${lowerCased(email)}' `
-        if (email !== 'ahads62426@gmail.com')
+        if (email !== 'ivsdeveloper21@gmail.com')
             sql += `AND restaurantId = BINARY '${restaurantId}' `
         sql += `AND passwordForgotten = 1 `
         sql += `AND hashString = '${hashString}'`
