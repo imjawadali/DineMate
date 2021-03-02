@@ -24,17 +24,17 @@ function SuperAdmin(props) {
         <h2>Dashboard</h2>
         <div className="PageTitleButtonContainer">
           <Button
-            text="Refresh"
+            text={fetchingDashboard ? "Syncing" : "Refresh"}
             light={fetchingDashboard}
             lightAction={() => null}
-            iconLeft={<i className="fa fa-refresh" />}
+            iconLeft={<i className={`fa fa-refresh ${fetchingDashboard ? 'fa-pulse' : ''}`} />}
             onClick={() => dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))} />
         </div>
       </div>
       <div className="DashBoardContainer">
         {fetchingDashboard ?
           <div className="loadingContainer">
-            <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Dashboard Data . . .</p>
+            <p><i className={`fa fa-refresh ${fetchingDashboard ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Dashboard Data . . .</p>
           </div> : null
         }
         {adminDashboard ? <>

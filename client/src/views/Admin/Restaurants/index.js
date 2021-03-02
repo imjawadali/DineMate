@@ -51,16 +51,16 @@ function Restaurants(props) {
         </div>
         <div className="TopButtonContainer">
           <Button
-            text={filterKey ? "Clear" : "Refresh"}
+            text={filterKey ? "Clear" : fetchingRestaurants ? "Syncing" : "Refresh"}
             light={fetchingRestaurants}
             lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : 'refresh'}`} />}
+            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingRestaurants ? 'refresh fa-pulse' : 'refresh'}`} />}
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))} />
         </div>
       </div>
-      {fetchingRestaurants ?
+      {fetchingRestaurants && !restaurants ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Restaurants . . .</p>
+          <p><i className={`fa fa-refresh ${fetchingRestaurants ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Restaurants . . .</p>
         </div> : null
       }
       <RestaurantsList history={props.history} restaurants={getFilteredList()} />

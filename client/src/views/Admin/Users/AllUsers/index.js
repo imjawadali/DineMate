@@ -50,16 +50,16 @@ function AllUsers(props) {
         </div>
         <div className="TopButtonContainer">
           <Button
-            text={filterKey ? "Clear" : "Refresh"}
+            text={filterKey ? "Clear" : fetchingUsers ? "Syncing" : "Refresh"}
             light={fetchingUsers}
             lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : 'refresh'}`} />}
+            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingUsers ? 'refresh fa-pulse' : 'refresh'}`} />}
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS))} />
         </div>
       </div>
-      {fetchingUsers ?
+      {fetchingUsers && !users ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Users . . .</p>
+          <p><i className={`fa fa-refresh ${fetchingUsers ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Users . . .</p>
         </div> : null
       }
       <UsersList users={getFilteredList()} />

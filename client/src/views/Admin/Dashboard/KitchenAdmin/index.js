@@ -9,8 +9,8 @@ function KitchenAdmin() {
         <h2>Kitchen Admin Dashboard</h2>
         <div className="PageTitleButtonContainer">
           <Button
-            text="Refresh"
-            iconLeft={<i className="fa fa-refresh" />}
+            text={true ? "Syncing" : "Refresh"}
+            iconLeft={<i className={`fa fa-refresh ${true ? 'fa-pulse' : ''}`} />}
             onClick={() => null} />
         </div>
       </div>

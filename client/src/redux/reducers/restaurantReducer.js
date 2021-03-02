@@ -3,7 +3,7 @@ import {
   GET_EXISTING_QRS_SUCCESS,
   GET_EXISTING_QRS_FAILURE,
   RESTAURANT_CHANGED,
-  SET_RESTAURANT,
+  RESET_RESTAURANT,
   GENERATE_QRS,
   GENERATE_QRS_SUCCESS,
   GENERATE_QRS_FAILURE,
@@ -27,7 +27,7 @@ export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null, s
       return { ...state, generatingQrs: false }
     case RESTAURANT_CHANGED:
       return { ...state, qrs: null }
-    case SET_RESTAURANT:
+    case RESET_RESTAURANT:
       return { ...state, qrs: null }
     case SET_TABLE_NAME:
       return { ...state, settingTableName: true }

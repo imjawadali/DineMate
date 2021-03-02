@@ -395,6 +395,34 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/getRestaurantDashboard', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, type } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT rq.tableName, rq.value, rq.mergeId,
+            SUM(o.doNotDisturb) as doNotDisturb,
+            GROUP_CONCAT(o.orderNumber) as occupiedBy
+            FROM restaurantsQrs rq
+            LEFT JOIN orders o ON
+            (o.tableId = rq.value AND o.customerStatus = 1 AND type = 'Dine-In')
+            WHERE rq.restaurantId = '${restaurantId}'
+            GROUP BY rq.value
+            ORDER BY rq.id ASC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Table Data!` })
+                }
+            }
+        )
+    })
+
     app.post('/admin/addCategory', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, name } = req.body

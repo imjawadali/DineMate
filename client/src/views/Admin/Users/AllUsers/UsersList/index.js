@@ -32,7 +32,7 @@ function UsersList(props) {
         <tbody>
           {users && users.length ?
             users.map((user) => {
-              const { id, name, email, contactNumber, role, restaurantName, active } = user
+              const { id, restaurantName, name, email, contactNumber, role, active } = user
               return (
                 <tr key={id}>
                   <td>{restaurantName}</td>

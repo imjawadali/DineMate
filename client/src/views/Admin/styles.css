@@ -113,13 +113,16 @@ tbody tr:nth-child(odd) {
     }
 }
 
+.PageTitleButtonContainer {
+    display: flex;
+}
+
 @media only screen and (max-width: 480px) {
     .PageTitleContainer {
         flex-direction: column;
     }
 
     .PageTitleButtonContainer {
-        display: flex;
         justify-content: flex-end;
     }
 }

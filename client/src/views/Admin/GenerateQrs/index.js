@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS, GET_EXISTING_QRS } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS } from '../../../constants'
 
 import { Button, Input } from '../../../components'
 
@@ -78,7 +78,7 @@ function GenerateQrs(props) {
       </div>
       {fetchingQrs ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Qrs!</p>
+          <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Qrs!</p>
         </div> : null
       }
       <QrsList restaurantId={state && state.restaurantId} history={history} />

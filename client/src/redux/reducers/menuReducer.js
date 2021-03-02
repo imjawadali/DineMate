@@ -4,7 +4,7 @@ import {
   GET_MENU_FAILURE,
   ADD_MENU,
   ADD_MENU_FAILURE,
-  SET_RESTAURANT
+  RESET_RESTAURANT
 } from '../../constants'
 
 export default (state = { 
@@ -23,7 +23,7 @@ export default (state = {
       return { ...state, addingMenu: true }
     case ADD_MENU_FAILURE:
       return { ...state, addingMenu: false }
-    case SET_RESTAURANT:
+    case RESET_RESTAURANT:
       return { ...state, menu: null }
     default:
       return state

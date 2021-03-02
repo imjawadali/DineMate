@@ -88,9 +88,9 @@ function Categories() {
           }
         </div>
       </div>
-      {fetchingCategories ?
+      {fetchingCategories && !categories ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Categories . . .</p>
+          <p><i className={`fa fa-refresh ${fetchingCategories ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Categories . . .</p>
         </div> : null
       }
       <CategoriesList 

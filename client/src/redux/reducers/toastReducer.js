@@ -16,6 +16,7 @@ import {
   GET_EXISTING_QRS,
   SET_TABLE_NAME_FAILURE,
   GET_SUPER_ADMIN_DASHBOARD_FAILURE,
+  GET_RESTAURANT_DASHBOARD_FAILURE,
   GET_CATEGORIES,
   GET_CATEGORIES_FAILURE,
   ADD_CATEGORY,
@@ -77,6 +78,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_TABLE_NAME_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
+      return { ...state, toast: payload }
+    case GET_RESTAURANT_DASHBOARD_FAILURE:
       return { ...state, toast: payload }
     case GET_CATEGORIES:
       return { ...state, toastSetDismiss: true }

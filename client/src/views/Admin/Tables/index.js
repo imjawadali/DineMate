@@ -42,16 +42,16 @@ function Tables(props) {
         </div>
         <div className="TopButtonContainer">
           <Button
-            text={filterKey ? "Clear" : "Refresh"}
+            text={filterKey ? "Clear" : fetchingQrs ? "Syncing" : "Refresh"}
             light={fetchingQrs}
             lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : 'refresh'}`} />}
+            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingQrs ? 'refresh fa-pulse' : 'refresh'}`} />}
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))} />
         </div>
       </div>
-      {fetchingQrs ?
+      {fetchingQrs && !qrs ?
         <div className="loadingContainer">
-          <p><i className="fa fa-refresh" style={{ paddingRight: '5px' }} />Fetching / Syncing Tables . . .</p>
+          <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Tables . . .</p>
         </div> : null
       }
       <TablesList history={props.history} restaurantId={restaurantId} tables={getFilteredList()} />

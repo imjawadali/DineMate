@@ -8,7 +8,7 @@ import {
   UPDATE_CATEGORY_FAILURE,
   DELETE_CATEGORY,
   DELETE_CATEGORY_FAILURE,
-  SET_RESTAURANT
+  RESET_RESTAURANT
 } from '../../constants'
 
 export default (state = { 
@@ -37,7 +37,7 @@ export default (state = {
       return { ...state, deletingCategory: true }
     case DELETE_CATEGORY_FAILURE:
       return { ...state, deletingCategory: false }
-    case SET_RESTAURANT:
+    case RESET_RESTAURANT:
       return { ...state, categories: null }
     default:
       return state

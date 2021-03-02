@@ -34,7 +34,6 @@ function UsersList(props) {
           {users && users.length ?
             users.map((user) => {
               const { id, name, email, contactNumber, role, primaryContactId, secondaryContactId, active } = user
-              console.log(user)
               return (
                 <tr key={id}>
                   <td>{name}</td>
