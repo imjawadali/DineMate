@@ -9,6 +9,7 @@ import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
+import { mergeTablesEpic } from './admin/mergeTablesEpic'
 import { getCategoriesEpic } from './admin/getCategoriesEpic'
 import { addCategoryEpic } from './admin/addCategoryEpic'
 import { updateCategoryEpic } from './admin/updateCategoryEpic'
@@ -29,6 +30,7 @@ export const epics = combineEpics(
     setTableNameEpic.setTableName,
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
+    mergeTablesEpic.mergeTables,
     getCategoriesEpic.getCategories,
     addCategoryEpic.addCategory,
     updateCategoryEpic.updateCategory,

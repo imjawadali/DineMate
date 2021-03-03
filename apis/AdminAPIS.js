@@ -403,7 +403,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT rq.tableName, rq.value, rq.mergeId,
+            `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
             SUM(o.doNotDisturb) as doNotDisturb,
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
@@ -419,6 +419,27 @@ module.exports = app => {
                 } else {
                     return res.status(422).send({ 'msg': `No Table Data!` })
                 }
+            }
+        )
+    })
+
+    app.post('/admin/mergeTables', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { selectedTables, mergeId } = req.body
+        if (!selectedTables || !Array.isArray(selectedTables)) return res.status(401).send({ 'msg': 'Table(s) list required!' })
+        if (!selectedTables.length) return res.status(401).send({ 'msg': 'No Table(s) Selected!' })
+        if (selectedTables.length < 2) return res.status(422).send({ 'msg': 'Select atleast 2 tables!' })
+        if (selectedTables.length > 3) return res.status(422).send({ 'msg': 'Maximum 3 tables could be merged!' })
+        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurantsQrs SET ? WHERE id IN (${selectedTables.join()})`,
+            { mergeId },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Tables Merged Successfully!' })
+                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
             }
         )
     })

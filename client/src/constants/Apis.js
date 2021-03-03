@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
         setTableName: 'admin/setTableName',
         getSuperAdminDashboard: 'admin/getSuperAdminDashboard',
         getRestaurantDashboard: 'admin/getRestaurantDashboard',
+        mergeTables: 'admin/mergeTables',
         addCategory: 'admin/addCategory',
         getCategories: 'admin/getCategories',
         updateCategory: 'admin/updateCategory',
