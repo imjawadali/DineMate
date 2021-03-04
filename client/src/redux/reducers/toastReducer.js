@@ -38,7 +38,11 @@ import {
   UPDATE_USER_FAILURE,
   DELETE_USER_FAILURE,
   GET_RESTAURANT_DASHBOARD,
-  MERGE_TABLES
+  MERGE_TABLES,
+  GET_SERVICES_QUE_FAILURE,
+  UN_MERGE_TABLES,
+  MERGE_TABLES_FAILURE,
+  UN_MERGE_TABLES_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -87,6 +91,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
     case MERGE_TABLES:
       return { ...state, toast: { message: 'Merging Tables', type: 'success' } }
+    case MERGE_TABLES_FAILURE:
+      return { ...state, toast: payload }
+    case UN_MERGE_TABLES:
+      return { ...state, toast: { message: 'Un-Merging Tables', type: 'warning' } }
+    case UN_MERGE_TABLES_FAILURE:
+      return { ...state, toast: payload }
+    case GET_SERVICES_QUE_FAILURE:
+      return { ...state, toast: payload }
     case GET_CATEGORIES:
       return { ...state, toastSetDismiss: true }
     case GET_CATEGORIES_FAILURE:

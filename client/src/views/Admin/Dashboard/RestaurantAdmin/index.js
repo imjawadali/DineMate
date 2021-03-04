@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Button, DashboardGridItem } from '../../../../components'
-import { GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING } from '../../../../constants'
+import { Button, DashboardGridItem, ServiceQueItem } from '../../../../components'
+import { GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 function RestaurantAdmin() {
@@ -14,6 +14,9 @@ function RestaurantAdmin() {
   const fetchingDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingDashboard)
   const restaurantDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.restaurantDashboard)
   const mergingTables = useSelector(({ dashboardReducer }) => dashboardReducer.mergingTables)
+  const unMergingTables = useSelector(({ dashboardReducer }) => dashboardReducer.unMergingTables)
+  const fetchingServicesQue = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingServicesQue)
+  const servicesQue = useSelector(({ dashboardReducer }) => dashboardReducer.servicesQue)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
@@ -127,6 +130,8 @@ function RestaurantAdmin() {
     }
   }
 
+  const unMergeTables = (mergeId) => dispatch(customisedAction(UN_MERGE_TABLES, { mergeId, restaurantId }))
+
   let column = 1, row, unMergedRowCounts=0
   return (
     <div className="Container">
@@ -136,21 +141,20 @@ function RestaurantAdmin() {
           {restaurantDashboard ? 
             <Button
               text={`${merging ? "Cancel " : ""}Merge`}
-              light={merging}
-              lightAction={() => cancelMerge()}
-              iconLeft={<i className={`fa ${merging ? 'fa-times-circle' : 'fa-map'} fa-rotate-90`} />}
+              light={fetchingDashboard || merging || mergingTables || unMergingTables}
+              lightAction={() => merging ? cancelMerge() : null}
+              iconLeft={<i className={`fa ${merging ? 'fa-times-circle' : 'fa-columns'} fa-rotate-90`} />}
               onClick={() => setmerging(true)} /> : null
           }
           <Button
             style={{ marginLeft: '10px' }}
-            text={fetchingDashboard ? "Syncing" : merging ? "Submit" : "Refresh"}
-            light={fetchingDashboard || mergingTables}
+            text={fetchingDashboard || fetchingServicesQue ? "Syncing" : merging ? "Submit" : "Refresh"}
+            light={fetchingDashboard || fetchingServicesQue || mergingTables || unMergingTables}
             lightAction={() => null}
-            iconLeft={<i className={`fa ${merging ? 'fa-send' : 'fa-refresh'} ${fetchingDashboard ? 'fa-pulse' : ''}`} />}
+            iconLeft={<i className={`fa ${merging ? 'fa-send' : 'fa-refresh'} ${fetchingDashboard || fetchingServicesQue ? 'fa-pulse' : ''}`} />}
             onClick={() => {
-              if (merging) {
-                mergeTables()
-              } else dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+              if (merging) mergeTables()
+              else dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
             }} />
         </div>
       </div>
@@ -197,7 +201,7 @@ function RestaurantAdmin() {
                   Object.keys(getGroupedMergedTables()).map((key, groupIndex) => {
                     const mergedTables = getGroupedMergedTables()[key]
                     return mergedTables.map((table, index) => {
-                      const { id, value } = table
+                      const { id, value, mergeId } = table
                       return (<div className="DashboardGridItemContainer" key={id}
                         style={{
                           gridColumn: getMergedColumnCounts() + (groupIndex % 2),
@@ -211,6 +215,17 @@ function RestaurantAdmin() {
                           borderBottom: index === mergedTables.length - 1 ? '1px solid black' : 'none',
                           backgroundColor: merging ? 'white' : ''
                         }}>
+                        <i className="fa fa-times-circle"
+                          style={{
+                            color: 'red',
+                            display: !index && !mergedTables.filter(table => table.occupiedBy).length && !merging ? 'block': 'none',
+                            float: 'right',
+                            position: 'absolute',
+                            top: 5,
+                            right: 5
+                          }}
+                          onClick={() => unMergeTables(mergeId)}
+                        />
                         <DashboardGridItem
                           text={"Table " + value.replace(`${restaurantId}/`, '')}
                           doNotDisturb={mergedTables.filter(table => table.doNotDisturb).length}
@@ -226,6 +241,18 @@ function RestaurantAdmin() {
             </div>
             <div className="DashBoardServicesContainer">
               <p>Services Que</p>
+              <div>
+                {servicesQue ?
+                  servicesQue.map(item => {
+                    return <ServiceQueItem
+                      type={item.type}
+                      tableNumber={item.tableNumber.replace(`${restaurantId}/`, '')}
+                      text={item.text}
+                      onClick={() => null}
+                    />
+                  }) : null
+                }
+              </div>
             </div>
           </div>
         </> : null}

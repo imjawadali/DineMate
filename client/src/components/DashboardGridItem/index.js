@@ -10,6 +10,7 @@ function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMe
             includesMerging ? 'darkslateblue' : 'lightblue'
         : merged ? occupiedBy ? doNotDisturb ? 'rgba(255, 0, 0, 0.5)' : 'lightgreen' : 'lightgrey' 
           : occupiedBy ? doNotDisturb ? 'rgba(255, 0, 0, 0.5)' : 'lightgreen' : 'lightblue',
+        color: includesMerging ? 'white' : '',
         boxShadow: merging && (merged || occupiedBy) ? 'none' : ''
       }}
       onClick={onClick}

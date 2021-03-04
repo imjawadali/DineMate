@@ -10,6 +10,8 @@ import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
 import { mergeTablesEpic } from './admin/mergeTablesEpic'
+import { unMergeTablesEpic } from './admin/unMergeTablesEpic'
+import { getServicesQueEpic } from './admin/getServicesQueEpic'
 import { getCategoriesEpic } from './admin/getCategoriesEpic'
 import { addCategoryEpic } from './admin/addCategoryEpic'
 import { updateCategoryEpic } from './admin/updateCategoryEpic'
@@ -31,6 +33,8 @@ export const epics = combineEpics(
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
     mergeTablesEpic.mergeTables,
+    unMergeTablesEpic.unMergeTables,
+    getServicesQueEpic.getServicesQue,
     getCategoriesEpic.getCategories,
     addCategoryEpic.addCategory,
     updateCategoryEpic.updateCategory,

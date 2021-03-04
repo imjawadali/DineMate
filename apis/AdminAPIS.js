@@ -408,8 +408,8 @@ module.exports = app => {
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
-            (o.tableId = rq.value AND o.customerStatus = 1 AND type = 'Dine-In')
-            WHERE rq.restaurantId = '${restaurantId}'
+            (o.tableId = rq.value AND o.customerStatus = 1 AND o.type = 'Dine-In')
+            WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
             GROUP BY rq.value
             ORDER BY rq.id ASC`,
             null,
@@ -425,6 +425,7 @@ module.exports = app => {
 
     app.post('/admin/mergeTables', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         const { selectedTables, mergeId } = req.body
         if (!selectedTables || !Array.isArray(selectedTables)) return res.status(401).send({ 'msg': 'Table(s) list required!' })
         if (!selectedTables.length) return res.status(401).send({ 'msg': 'No Table(s) Selected!' })
@@ -440,6 +441,46 @@ module.exports = app => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'Tables Merged Successfully!' })
                 else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
+            }
+        )
+    })
+
+    app.post('/admin/unMergeTables', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { mergeId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurantsQrs SET ? WHERE mergeId = '${mergeId}'`,
+            { mergeId: null },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Tables Un-merged Successfully!' })
+                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
+            }
+        )
+    })
+
+    app.post('/admin/getServicesQue', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT id, tableNumber, type, text FROM servicesQue
+            WHERE restaurantId = '${restaurantId}'
+            ORDER BY createdAt ASC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No services in que!' })
+                }
             }
         )
     })
