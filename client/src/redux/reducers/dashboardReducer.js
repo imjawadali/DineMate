@@ -16,7 +16,7 @@ export default (state = {
 }, { type, payload }) => {
   switch (type) {
     case RESET_RESTAURANT:
-      return { ...state, restaurantDashboard: null }
+      return { ...state, restaurantDashboard: null, servicesQue: null }
 
     case GET_RESTAURANT_DASHBOARD:
       return { ...state, fetchingDashboard: true, mergingTables: false, unMergingTables: false }

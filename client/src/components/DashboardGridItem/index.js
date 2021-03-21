@@ -2,7 +2,7 @@ import React from 'react'
 
 import './styles.css'
 
-function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMerging, merged, onClick }) {
+function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMerging, merged, onMouseEnter, onClick }) {
   return (
     <div className="DashboardGridItem"
       style={{ backgroundColor: merging ?
@@ -13,6 +13,7 @@ function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMe
         color: includesMerging ? 'white' : '',
         boxShadow: merging && (merged || occupiedBy) ? 'none' : ''
       }}
+      onMouseEnter={onMouseEnter}
       onClick={onClick}
     >
       <p className="DashboardGridItemText">{text}{!!doNotDisturb && ` - Don't Disturb`}</p>
