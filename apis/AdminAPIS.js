@@ -1,4 +1,4 @@
-const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySql')
+const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
