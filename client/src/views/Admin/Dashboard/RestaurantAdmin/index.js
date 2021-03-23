@@ -9,6 +9,7 @@ function RestaurantAdmin() {
 
   const [merging, setmerging] = useState(false)
   const [selectedTables, setselectedTables] = useState([])
+  const [hoveredTable, sethoveredTable] = useState(null)
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const fetchingDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingDashboard)
@@ -22,9 +23,12 @@ function RestaurantAdmin() {
   const { restaurantId } = admin
 
   useEffect(() => {
-    if (!mergingTables)
+    if (!mergingTables) {
       cancelMerge()
-  }, [mergingTables])
+    }
+    if (!mergingTables && !unMergingTables)
+      sethoveredTable(null)
+  }, [mergingTables, unMergingTables])
 
   const getUnmergedTables = () => {
     let unMergedTables = restaurantDashboard
@@ -65,18 +69,18 @@ function RestaurantAdmin() {
       if (getMergedTables().length > 3) counts = 2
       else counts = 1
     }
-    return (4 - counts) * 4
+    return (4 - counts)
   }
 
   const getMergedColumnCounts = () => {
-    if (getUnmergedColumnCounts() === 12) {
-      if (getUnmergedTables().length > 8) return 4
-      else if (getUnmergedTables().length > 4) return 3
+    if (getUnmergedColumnCounts() === 3) {
+      if (getUnmergedTables().length > 2) return 4
+      else if (getUnmergedTables().length > 1) return 3
       else if (getUnmergedTables().length) return 2
       else return 1
     }
-    else if (getUnmergedColumnCounts() === 8) {
-      if (getUnmergedTables().length > 4) return 3
+    else if (getUnmergedColumnCounts() === 2) {
+      if (getUnmergedTables().length > 1) return 3
       else if (getUnmergedTables().length) return 2
       else return 1
     }
@@ -132,7 +136,7 @@ function RestaurantAdmin() {
 
   const unMergeTables = (mergeId) => dispatch(customisedAction(UN_MERGE_TABLES, { mergeId, restaurantId }))
 
-  let column = 1, row, unMergedRowCounts=0
+  let row=1
   return (
     <div className="Container">
       <div className="PageTitleContainer">
@@ -154,7 +158,10 @@ function RestaurantAdmin() {
             iconLeft={<i className={`fa ${merging ? 'fa-send' : 'fa-refresh'} ${fetchingDashboard || fetchingServicesQue ? 'fa-pulse' : ''}`} />}
             onClick={() => {
               if (merging) mergeTables()
-              else dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+              else {
+                sethoveredTable(null)
+                dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+              }
             }} />
         </div>
       </div>
@@ -173,23 +180,22 @@ function RestaurantAdmin() {
                 {
                   getUnmergedTables().map((table, index) => {
                     const { id, value, doNotDisturb, occupiedBy } = table
-                    if (index > 0 && index % getUnmergedColumnCounts() === 0) {
-                      column = 1
-                      unMergedRowCounts = unMergedRowCounts + 4
+                    if (index >= getUnmergedColumnCounts() && index % getUnmergedColumnCounts() === 0) {
+                      row = row + 1
                     }
-                    if (index > 0 && index % 4 === 0 && index % getUnmergedColumnCounts() !== 0) column = (Math.floor((index % getUnmergedColumnCounts())/4) % 4)+1
-                    row = (index % 4) + unMergedRowCounts + 1
                     return (<div className="DashboardGridItemContainer" key={id}
                       style={{
-                        gridColumn: column, gridRow: row, 
+                        gridColumn: (index % getUnmergedColumnCounts())+1,
+                        gridRow: row, 
                         backgroundColor: merging ? occupiedBy ? 'white' : 'rgb(245, 222, 179)' : ''
-                      }}>
+                        }}>
                         <DashboardGridItem
                           text={"Table " + value.replace(`${restaurantId}/`, '')}
                           doNotDisturb={doNotDisturb}
                           occupiedBy={occupiedBy}
                           merging={merging}
                           includesMerging={selectedTables.includes(id)}
+                          onMouseEnter={() => merging ? null : sethoveredTable(table)}
                           onClick={() => {
                             if (merging) selectTable(id)
                           }}
@@ -214,7 +220,13 @@ function RestaurantAdmin() {
                           borderTop: index === 0 ? '1px solid black' : 'none',
                           borderBottom: index === mergedTables.length - 1 ? '1px solid black' : 'none',
                           backgroundColor: merging ? 'white' : ''
-                        }}>
+                        }}
+                        onMouseEnter={() => merging ? null : sethoveredTable(mergedTables)}
+                        onClick={() => mergedTables.filter(table => table.occupiedBy).length ? 
+                          dispatch(customisedAction(SET_TOAST, { message: 'error!', type: 'error'}))
+                          : null
+                        }
+                      >
                         <i className="fa fa-times-circle"
                           style={{
                             color: 'red',
@@ -237,6 +249,28 @@ function RestaurantAdmin() {
                     })
                   })
                 }
+              </div>
+              <div className="DashboardTableDetailsContainer"
+                style={{
+                  justifyContent: hoveredTable ? '' : 'center'
+                }}>
+                  {hoveredTable ?
+                    <>
+                      <p style={{ flex: 1}}>Amount: $ 0</p>
+                      <p>Table - {
+                        Array.isArray(hoveredTable) ?
+                          hoveredTable.map((table, index) => {
+                            return `
+                              ${index === hoveredTable.length - 1 ? ' & ' : ''}
+                              ${table.value.replace(`${restaurantId}/`, '')}
+                              ${index < hoveredTable.length - 2 ? ', ' : ''}`
+                          })
+                        : hoveredTable.value.replace(`${restaurantId}/`, '')
+                      }</p>
+                      <p style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>Duration: 00:00:00</p>
+                    </>
+                    : <p>Hover on a table to show details!</p>
+                  }
               </div>
             </div>
             <div className="DashBoardServicesContainer">

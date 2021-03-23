@@ -25,9 +25,12 @@
 }
 
 .DashBoardGridsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     width: 80%;
     height: 78vh;
-    overflow-y: auto;
+    overflow: hidden;
     border: 1px solid silver;
     border-radius: 5px;
     box-sizing: border-box;
@@ -35,9 +38,21 @@
 
 .DashBoardGrids {
     display: grid;
+    height: 85%;
     padding: 1px;
     grid-gap: 2px;
-    border: 1px solid black;
+    overflow-y: auto;
+}
+
+.DashboardTableDetailsContainer {
+    flex: auto;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border: 1px solid silver;
+    box-sizing: border-box;
 }
 
 .DashboardGridItemContainer {
@@ -45,7 +60,6 @@
     justify-content: center;
     align-items: center;
     padding: 10px 20px;
-    background-color: rgba(245, 222, 179, 0.5); 
     border-radius: 10px;
     box-sizing: border-box;
     position: relative;

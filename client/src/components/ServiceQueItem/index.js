@@ -8,6 +8,16 @@ function ServiceQueItem({ type, tableNumber, text, onClick }) {
       style={{ backgroundColor: colors[type || 0] || 'rgba(255, 0, 0, 0.5)', margin: '20px 0px' }}
       onClick={onClick}
     >
+      <i className="fa fa-times-circle"
+        style={{
+          display: 'block',
+          float: 'right',
+          position: 'absolute',
+          top: 5,
+          right: 5
+        }}
+        onClick={() => null}
+      />
       <p className="DashboardGridItemText">Table {tableNumber} - {text}</p>
     </div>
   )

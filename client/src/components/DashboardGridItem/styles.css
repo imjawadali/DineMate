@@ -9,6 +9,7 @@
     text-align: center;
     border-radius: 10px;
     padding: 10px;
+    position: relative;
     box-shadow: 1px 1px 3px;
     box-sizing: border-box;
 }
