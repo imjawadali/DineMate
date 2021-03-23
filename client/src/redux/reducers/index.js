@@ -6,6 +6,7 @@ import dashboardReducer from './dashboardReducer'
 import categoriesReducer from './categoriesReducer'
 import menuReducer from './menuReducer'
 import usersReducer from './usersReducer'
+import orderReducer from './orderReducer'
 import toastReducer from './toastReducer'
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
     categoriesReducer,
     menuReducer,
     usersReducer,
+    orderReducer,
     toastReducer
 })

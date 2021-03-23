@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
         getRestaurantUsers: 'admin/getRestaurantUsers',
         addUser: 'admin/addUser',
         updateUser: 'admin/updateUser',
-        deleteUser: 'admin/deleteUser'
+        deleteUser: 'admin/deleteUser',
+        orderManagement:'admin/getOpenOrders'
     }
 }

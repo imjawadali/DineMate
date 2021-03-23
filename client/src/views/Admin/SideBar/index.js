@@ -79,7 +79,7 @@ function SideBar(props) {
                     }
                     <div className="sidebar__link">
                         <i className="fa fa-archive" />
-                        <Link to={`${url}/adc`}>Warehouse</Link>
+                        <Link to={`${url}/orderManagement`}>Order Management</Link>
                     </div>
                     <div className="sidebar__link">
                         <i className="fa fa-handshake-o" />

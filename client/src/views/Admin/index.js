@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
-
+import orderManagement from './OrderManagement'
 import { customisedAction } from '../../redux/actions'
 import { GET_CATEGORIES, GET_EXISTING_QRS, GET_MENU, GET_RESTAURANT_DASHBOARD } from '../../constants'
 
@@ -26,6 +26,7 @@ import Others from './Others'
 import NoRoute from '../NoRoute'
 
 import './styles.css'
+import OrderManagement from './OrderManagement'
 
 function Admin(props) {
 
@@ -117,6 +118,7 @@ function Admin(props) {
                 <RestaurantAdminRoutes path={`${path}/usersManagement/restaurantUsers`} component={RestaurantUsers} />
               </Switch>
             </Route>
+           <RestaurantAdminRoutes path={`${path}/orderManagement`} component={OrderManagement} />
             <Route path={`${path}/qrsManagement`}>
               <Switch>
                 <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />

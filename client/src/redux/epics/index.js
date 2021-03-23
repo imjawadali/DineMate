@@ -20,7 +20,7 @@ import { getUsersEpic } from './admin/getUsersEpic'
 import { updateUserEpic } from './admin/updateUserEpic'
 import { deleteUserEpic } from './admin/deleteUserEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
-
+import {orderManagementEpic} from './admin/orderManagementEpic'
 export const epics = combineEpics(
     loginEpic.login,
     forgotPasswordEpic.forgotPassword,
@@ -42,5 +42,6 @@ export const epics = combineEpics(
     getUsersEpic.getUsers,
     updateUserEpic.updateUser,
     deleteUserEpic.deleteUser,
-    getMenuEpic.getMenu
+    getMenuEpic.getMenu,
+    orderManagementEpic.getOrder
 )
