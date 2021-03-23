@@ -42,7 +42,9 @@ import {
   GET_SERVICES_QUE_FAILURE,
   UN_MERGE_TABLES,
   MERGE_TABLES_FAILURE,
-  UN_MERGE_TABLES_FAILURE
+  UN_MERGE_TABLES_FAILURE,
+  GET_ORDER,  
+  GET_ORDER_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -137,7 +139,11 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
     case ADD_MENU:
       return { ...state, toast: { message: 'Adding Menu Item', type: 'success' } }
-    case ADD_MENU_FAILURE:
+      case ADD_MENU_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_ORDER:
+      return { ...state, toastSetDismiss: true }
+    case GET_ORDER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state
