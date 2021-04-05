@@ -61,7 +61,7 @@ module.exports = app => {
                                 const emailStatus = await sendEmail(
                                     email,
                                     'Reset Password Link',
-                                    forgotPasswordMessage(`${URL}/createPassword/${result[0].restaurantId || null}/${email}/${hashString}`)
+                                    forgotPasswordMessage(`${URL}/client/createPassword/${result[0].restaurantId || null}/${email}/${hashString}`)
                                 )
                                 if (emailStatus && emailStatus.accepted.length) return res.send({ 'msg': 'Password Reset Link Sent!' })
                                 else return res.status(422).send({ 'msg': `Invalid Email: "${email}"!` })
@@ -168,7 +168,7 @@ module.exports = app => {
                                             setPasswordMessage(
                                                 primaryContact.name,
                                                 restaurantName,
-                                                `${URL}/createPassword/${restaurantId}/${primaryContact.email}/${hashString}`
+                                                `${URL}/client/createPassword/${restaurantId}/${primaryContact.email}/${hashString}`
                                             )
                                         )
                                         if (emailStatus && emailStatus.accepted.length) {
@@ -192,7 +192,7 @@ module.exports = app => {
                                                             setPasswordMessage(
                                                                 secondaryContact.name,
                                                                 restaurantName,
-                                                                `${URL}/createPassword/${restaurantId}/${secondaryContact.email}/${hashString}`
+                                                                `${URL}/client/createPassword/${restaurantId}/${secondaryContact.email}/${hashString}`
                                                             )
                                                         )
                                                         if (emailStatus && emailStatus.accepted.length)

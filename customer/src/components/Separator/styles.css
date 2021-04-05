@@ -1,0 +1,12 @@
+.Separator {
+    width: 100%;
+    height: 1%;
+    margin: 5px 0px;
+    border-bottom: 1px solid grey;
+}
+
+@media screen and (max-width: 978px) {
+    .Separator {
+        margin: 3px 0px;
+    }
+}

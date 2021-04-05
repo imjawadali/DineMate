@@ -1,0 +1,54 @@
+.Button {
+    padding: 7px 30px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #3ae175;
+    background-color: #3ae175;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 3px;
+}
+
+.ButtonText {
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+}
+
+.Button:hover {
+    border-color: #3ae175;
+    background-color: white !important;
+    outline: none !important;
+}
+
+.Button:hover .ButtonText {
+    color: #3ae175 !important;
+}
+
+.Button:focus {
+    outline: none !important;
+}
+
+@media only screen and (max-width: 978px) {
+    .Button {
+        padding: 6px 25px;
+    }
+
+    .ButtonText {
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .Button {
+        padding: 5px 20px;
+    }
+
+    .ButtonText {
+        font-size: 14px;
+    }
+}

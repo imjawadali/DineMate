@@ -1,0 +1,41 @@
+.Input {
+    width: 100%;
+    border: 1px solid #3ae175;
+    border-radius: 2px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 15px;
+    box-sizing: content-box;
+}
+
+input.Input {
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+select.Input {
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+}
+
+.Input:focus {
+    outline: none !important;
+    box-shadow: 0 0 10px #719ECE;
+}
+
+@media screen and (max-width: 978px) {
+    .Input {
+        padding: 10px;
+        margin: 7px 0;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .Input {
+        padding: 7px;
+        font-size: 13px;
+        margin: 5px 0;
+    }
+}

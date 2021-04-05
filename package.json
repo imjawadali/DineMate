@@ -7,9 +7,8 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "deploy": "git push -f heroku develop:master",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd client && npm install && npm run build"
+    "customer": "npm run start --prefix customer",
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run customer\""
   },
   "author": "Jawad.ALi",
   "license": "ISC",

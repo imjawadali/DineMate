@@ -1,0 +1,17 @@
+.Title {
+    font-family: sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+}
+
+@media only screen and (max-width: 978px) {
+    .Title {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .Title {
+        font-size: 16px;
+    }
+}

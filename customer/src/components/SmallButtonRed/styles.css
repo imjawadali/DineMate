@@ -1,0 +1,55 @@
+.SmallButtonRed {
+    padding: 5px 15px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(255, 0, 0, 0.6);
+    background-color: rgba(255, 0, 0, 0.6);;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+}
+
+.SmallButtonRedText {
+    font-family: sans-serif;
+    font-weight: 100;
+    color: white;
+    font-size: 16px;
+}
+
+.SmallButtonRed:hover {
+    border-color: rgba(255, 0, 0, 0.6);
+    background-color: white !important;
+    outline: none !important;
+}
+
+.SmallButtonRed:hover .SmallButtonRedText {
+    color: rgba(255, 0, 0, 1) !important;
+}
+
+.SmallButtonRed:focus {
+    outline: none !important;
+}
+
+@media only screen and (max-width: 978px) {
+    .SmallButtonRed {
+        padding: 4px 10px;
+    }
+
+    .SmallButtonRedText {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .SmallButtonRed {
+        padding: 3px 5px;
+    }
+
+    .SmallButtonRedText {
+        font-size: 12px;
+    }
+}

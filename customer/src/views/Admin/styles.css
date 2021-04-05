@@ -1,0 +1,128 @@
+.loadingContainer {
+    padding-bottom: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Main {
+    width: 100%;
+    height: 92%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.Container {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.PageTitleContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.TopOptionsContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0px;
+}
+
+.TopInputContainer {
+    display: flex;
+    flex: 1;
+    padding-right: 20px;
+    box-sizing: border-box;
+}
+
+.TopButtonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.HorizontalScrollContainer {
+    overflow-x: auto;
+    border: 1px solid black;
+    border-radius: 5px;
+    max-height: 70vh;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    text-align: left;
+    padding: 10px;
+}
+
+th {
+    border: 1px solid black;
+    padding: 15px;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #dddddd;
+}
+
+@media only screen and (max-width: 978px) {
+    .loadingContainer {
+        width: 100%;
+    }
+
+    .Container {
+        padding: 10px;
+    }
+
+    .TopOptionsContainer {
+        flex-direction: column;
+    }
+
+    .TopInputContainer {
+        width: 100%;
+        padding-right: 0px;
+    }
+    
+    .TopButtonContainer {
+        width: 100%;
+    }
+
+    .HorizontalScrollContainer {
+        max-height: 65vh;
+    }
+
+    td, th {
+        font-size: 12px;
+        padding: 7px;
+    }
+
+    th {
+        padding: 12px;
+    }
+}
+
+.PageTitleButtonContainer {
+    display: flex;
+}
+
+@media only screen and (max-width: 480px) {
+    .PageTitleContainer {
+        flex-direction: column;
+    }
+
+    .PageTitleButtonContainer {
+        justify-content: flex-end;
+    }
+}

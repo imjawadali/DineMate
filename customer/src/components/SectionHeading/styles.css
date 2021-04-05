@@ -1,0 +1,26 @@
+.SectionHeadingContainer {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid black;
+    border-radius: 5px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.SectionHeading {
+    font-weight: 500;
+    font-size: 18px;
+}
+
+@media only screen and (max-width: 978px) {
+    .SectionHeadingContainer {
+        padding: 5px;
+    }
+    
+    .SectionHeading {
+        font-size: 16px;
+    }
+}

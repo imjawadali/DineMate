@@ -42,14 +42,14 @@ export default function App(props) {
     const AdminLanding = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
             !!admin ? 
-            <Component {...props} /> : <Redirect to={{ pathname: '/adminLogin', state: { from: props.location.pathname } }} />
+            <Component {...props} /> : <Redirect to={{ pathname: '/client/adminLogin', state: { from: props.location.pathname } }} />
         )} />
     )
 
     const CustomerLanding = ({ component: Component, ...rest }) => (
         <Route {...rest} render={(props) => (
             !admin ? 
-            <Component {...props} /> : <Redirect to={{ pathname: '/admin' }} />
+            <Component {...props} /> : <Redirect to={{ pathname: '/client/admin' }} />
         )} />
     )
 
@@ -60,16 +60,16 @@ export default function App(props) {
             <Router>
                 <Toaster />
                 <Switch>
-                    <Route exact path='/'>
-                        <Redirect to='/admin' />
+                    <Route exact path='/client'>
+                        <Redirect to='/client/admin' />
                     </Route>
-                    <AdminLanding path='/admin' component={Admin} />
+                    <AdminLanding path='/client/admin' component={Admin} />
                     <CustomerLanding path='/restaurants' component={Restaurants} />
                     <CustomerLanding exact path='/restaurant/:restaurantId/menu/' component={Menu} />
                     <CustomerLanding exact path='/restaurant/:restaurantId/:tableId' component={Menu} />
-                    <CustomerLanding path='/adminLogin' component={AdminLogin} />
-                    <CustomerLanding path='/forgotPassword' component={ForgotPassword} />
-                    <CustomerLanding path='/createPassword/:restaurantId/:email/:hashString' component={CreatePassword} />
+                    <CustomerLanding path='/client/adminLogin' component={AdminLogin} />
+                    <CustomerLanding path='/client/forgotPassword' component={ForgotPassword} />
+                    <CustomerLanding path='/client/createPassword/:restaurantId/:email/:hashString' component={CreatePassword} />
                     <Route component={NoRoute} />
                 </Switch>
             </Router>
