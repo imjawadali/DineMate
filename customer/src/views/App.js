@@ -49,6 +49,9 @@ export default function App() {
             <Router>
                 <Toaster />
                 <Switch>
+                    <Route exact path='/'>
+                        <Redirect to='/customer/restaurants' />
+                    </Route>
                     <Route exact path='/customer'>
                         <Redirect to='/customer/restaurants' />
                     </Route>
