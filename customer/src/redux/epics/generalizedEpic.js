@@ -2,7 +2,7 @@ import { RestClient } from '../../services/network'
 import { customisedAction } from '../actions'
 
 import store from '../store'
-import { ADMIN_LOGOUT, SESSION_CHECK_DONE } from '../../constants'
+import { LOGOUT, SESSION_CHECK_DONE } from '../../constants'
 import { removeItem } from '../../helpers'
 
 export const generalizedEpic = async (method, url, data, successCallback, failureAction, noToast) => {
@@ -17,8 +17,8 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         }
         if (status && (status === 401 || status === 422 || status === 503)) {
           if (status === 401) {
-            removeItem('admin')
-            store.dispatch(customisedAction(ADMIN_LOGOUT))
+            removeItem('customer')
+            store.dispatch(customisedAction(LOGOUT))
             store.dispatch(customisedAction(SESSION_CHECK_DONE))
           }
           return customisedAction(failureAction, noToast ? null : { message: resObj.msg, type: 'error' })

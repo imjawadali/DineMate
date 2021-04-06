@@ -28,7 +28,7 @@ function ViewQr(props) {
           {selectedQr ? 
             <QRCode
               id={selectedQr.id}
-              value={CUSTOMER_APP_URL+"customer/restaurant/"+selectedQr.value}
+              value={CUSTOMER_APP_URL+"customer/"+selectedQr.value}
               size={200}
             /> : null
           }

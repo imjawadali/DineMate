@@ -91,7 +91,7 @@ function TableDetails(props) {
           <div className="QrInnerContainer">
             <QRCode
               id={selectedTable.id}
-              value={CUSTOMER_APP_URL+"customer/restaurant/"+selectedTable.value}
+              value={CUSTOMER_APP_URL+"customer/"+selectedTable.value}
               size={200}
             />
           </div>

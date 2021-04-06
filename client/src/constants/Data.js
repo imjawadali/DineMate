@@ -4,12 +4,6 @@ export const options = [
   { value: 3, label: 'Website' },
   { value: 4, label: 'Mobile App' },
 ]
-export const franchiseOptions = [
-  { value: 1, label: 'Restaurant' },
-  { value: 2, label: 'Automobile' },
-  { value: 3, label: 'Institute' },
-  { value: 4, label: 'Grocery' },
-]
 export const countryList = [
     "Afghanistan",
     "Albania",
@@ -262,69 +256,3 @@ export const countryList = [
     "Åland Islands"
   ]
 export const states = ['Not Listed ...', 'Alabama, AL','Alaska, Ak','American Samoa, AS','Arizona, AZ','Arkansas, AR','California, CA','Colorado, CO','Connecticut, CT','Delaware, DE','District of Columbia, DC','Federated States of Micronesia, FM','Florida, FL','Georgia, GA','Guam, GU','Hawaii, HI','Idaho, ID','Illinois, IL','Indiana, IN','Iowa, IA','Kansas, KS','Kentucky, KY','Louisiana, LA','Maine, ME','Marshall Islands, MH','Maryland, MD','Massachusetts, MA','Michigan, MI','Minnesota, MN','Mississippi, MS','Missouri, MO','Montana, MT','Nebraska, NE','Nevada, NV','New Hampshire, NH','New Jersey, NJ','New Mexico, NM','New York, NY','North Carolina, NC','North Dakota, ND','Northern Mariana Islands, MP','Ohio, OH','Oklahoma, OK','Oregon, OR','Palau, PW','Pennsylvania, PA','Puerto Rico, PR','Rhode Island, RI','South Carolina, SC','South Dakota, SD','Tennessee, TN','Texas, TX','Utah, UT','Vermont, VT','Virgin Island, VI','Virginia, VA','Washington, WA','West Virginia, WV','Wisconsin, WI','Wyoming, WY']
-export const timesArray = [
-  'Today',
-  'Current Month',
-  'Current Year',
-]
-export const rangeArray = [
-  '$ 10,000',
-  '$ 20,000',
-  '$ 30,000',
-  '$ 40,000',
-  '$ 50,000',
-  '$ 60,000',
-  '$ 70,000',
-  '$ 80,000',
-  '$ 90,000',
-  '$ 100,000',
-  '$ 110,000',
-  '$ 120,000',
-  '$ 130,000',
-  '$ 140,000',
-  '$ 150,000',
-  '$ 160,000',
-  '$ 170,000',
-  '$ 180,000',
-  '$ 190,000',
-  '$ 200,000',
-  '$ 210,000',
-  '$ 220,000',
-  '$ 230,000',
-  '$ 240,000',
-  '$ 250,000',
-  '$ 260,000',
-  '$ 270,000',
-  '$ 280,000',
-  '$ 290,000',
-  '$ 300,000',
-]
-export const memberships = [
-  {
-    id: 1,
-    title: 'MemberShip 1',
-    duration: 'Monthly',
-    postsLimit: 5,
-    contactsLimit: 10,
-    amount: 20,
-    details: 'dggrth grthfg nhrng hdbhg\nergregrg gergert er tret et\ner tgret et wtr et e t re t'
-  },
-  {
-    id: 2,
-    title: 'MemberShip 2',
-    duration: 'Quarterly',
-    postsLimit: 25,
-    contactsLimit: null,
-    amount: 50,
-    details: 'dggrth grthfg nhrng hdbhg\nergregrg gergert er tret et\ner tgret et wtr et e t re t'
-  },
-  {
-    id: 3,
-    title: 'MemberShip 3',
-    duration: 'Annual',
-    postsLimit: null,
-    contactsLimit: null,
-    amount: 200,
-    details: 'dggrth grthfg nhrng hdbhg\nergregrg gergert er tret et\ner tgret et wtr et e t re t'
-  }
-]
