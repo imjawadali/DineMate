@@ -27,7 +27,7 @@ function OrderTable(props) {
         <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>    
         <td>{val.type}</td>
         <td>{val.orderNumber}</td>
-        <td>{val.customerStatus!=1?"Close":"Open"}</td>
+        <td>{val.status ? "Open" : "Close"}</td>
         <td> 
             <p style={{display:'flex'}}>
         <SmallButton

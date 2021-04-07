@@ -116,7 +116,7 @@ module.exports = app => {
             res,
             `SELECT m.id, m.imageUrl, m.name, m.shortDescription, m.price, m.categoryId,
             ao.id as addOn_id, ao.name as addOn_name, ao.price as addOn_price, ao.mandatory,
-            aoo.id addOnOption_id, aoo.name addOnOption_name,
+            aoo.id as addOnOption_id, aoo.name as addOnOption_name, aoo.price as addOnOption_price,
             c.name as categoryName
             FROM menu m 
             LEFT JOIN addOns ao ON ao.menuId = m.id
@@ -136,6 +136,7 @@ module.exports = app => {
                                     addOnOptions.push({
                                         id: data[k].addOnOption_id,
                                         name: data[k].addOnOption_name,
+                                        price: data[k].addOnOption_price,
                                     })
                                 }
                             }
@@ -178,6 +179,392 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/customer/initializeOrder', async (req, res) => {
+        const { restaurantId, tableId, customerId, type } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!tableId) return res.send({
+            status: false,
+            message: 'Table Id is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
+            null,
+            (result) => {
+                getConnection(
+                    res,
+                    `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
+                    VALUES ( '${restaurantId}', '${tableId}', ${customerId ? `${customerId}` : null}, 
+                    ${type ? `${type}` : `'Dine-In'`}, ${Number(result.length ? result[0].orderNumber : 0)+1})`,
+                    null,
+                    (result2) => {
+                        if (result2.affectedRows)
+                            return res.send({
+                                status: false,
+                                message: 'Order Initialized Successfully!',
+                                body: { 
+                                    orderNumber: padding(Number(result.length ? result[0].orderNumber : 0)+1, 9),
+                                    restaurantId,
+                                    tableId
+                                }
+                            })
+                        else return res.send({
+                            status: false,
+                            message: 'Failed to initialize order!',
+                            errorCode: 422
+                        })
+                    }
+                )
+            }
+        )
+    })
+
+    app.post('/customer/addOrderItem', async (req, res) => {
+        const { restaurantId, orderNumber, quantity, name, price, totalPrice, specialInstructions, addOns } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        if (!quantity) return res.send({
+            status: false,
+            message: 'Quantity is required!',
+            errorCode: 422
+        })
+        if (!name) return res.send({
+            status: false,
+            message: 'Item name is required!',
+            errorCode: 422
+        })
+        if (!price) return res.send({
+            status: false,
+            message: 'Item price is required!',
+            errorCode: 422
+        })
+        if (!totalPrice) return res.send({
+            status: false,
+            message: 'Total price is required!',
+            errorCode: 422
+        })
+        if (addOns && addOns.length) {
+            for (var i=0; i<addOns.length; i++) {
+                if (!addOns[i].addOnId) return res.send({
+                    status: false,
+                    message: 'AddOns ID is required!',
+                    errorCode: 422
+                })
+                if (!addOns[i].addOnName) return res.send({
+                    status: false,
+                    message: 'AddOns name is required!',
+                    errorCode: 422
+                })
+                if (addOns[i].addOnOptionId && !addOns[i].addOnOption) return res.send({
+                    status: false,
+                    message: 'AddOn option name is required!',
+                    errorCode: 422
+                })
+                if (!addOns[i].addOnOptionId && addOns[i].addOnOption) return res.send({
+                    status: false,
+                    message: 'AddOns option Id is required!',
+                    errorCode: 422
+                })
+                if (!addOns[i].price && addOns[i].price !== 0) return res.send({
+                    status: false,
+                    message: 'AddOns price is required!',
+                    errorCode: 422
+                })
+            }
+        }
+
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.send({
+                    status: false,
+                    message: 'Unable to reach database!',
+                    errorCode: 503
+                })
+            }
+            tempDb.beginTransaction(function (error) {
+                if (!!error) {
+                    console.log('TransactionError', error.sqlMessage)
+                    return res.send({
+                        status: false,
+                        message: error.sqlMessage,
+                        errorCode: 422
+                    })
+                }
+                const orderItem = {}
+                orderItem.restaurantId = restaurantId
+                orderItem.orderNumber = orderNumber
+                orderItem.quantity = quantity
+                orderItem.name = name
+                orderItem.price = price
+                orderItem.totalPrice = totalPrice
+                if (specialInstructions)
+                    orderItem.specialInstructions = specialInstructions
+                tempDb.query('INSERT INTO orderItems SET ?', orderItem, function(error, result) {
+                    if (!!error) {
+                        console.log('TableError', error.sqlMessage)
+                        tempDb.rollback(function() {
+                            return res.send({
+                                status: false,
+                                message: error.sqlMessage,
+                                errorCode: 422
+                            })
+                        })
+                    } else {
+                        if (addOns && addOns.length) {
+                            let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                            for (var i=0; i<addOns.length; i++) {
+                                query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
+                                if (i !== (addOns.length - 1))
+                                    query = query + ','
+                            }
+                            tempDb.query(query, function(error) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function() {
+                                        return res.send({
+                                            status: false,
+                                            message: 'Failed to add Item Add-ons',
+                                            errorCode: 422
+                                        })
+                                    })
+                                } else tempDb.commit(function(error) {
+                                    if (error) { 
+                                        tempDb.rollback(function() {
+                                            return res.send({
+                                                status: false,
+                                                message: error.sqlMessage,
+                                                errorCode: 422
+                                            })
+                                        })
+                                    }
+                                    tempDb.release()
+                                    return res.send({
+                                        status: true,
+                                        message: 'Order item added successfully!'
+                                    })
+                                })
+                            })
+                        }
+                        else tempDb.commit(function(error) {
+                            if (error) { 
+                                tempDb.rollback(function() {
+                                    return res.send({
+                                        status: false,
+                                        message: error.sqlMessage,
+                                        errorCode: 422
+                                    })
+                                })
+                            }
+                            tempDb.release()
+                            return res.send({
+                                status: true,
+                                message: 'Order item added successfully!'
+                            })
+                        })
+                    }
+                })
+            })
+        })
+    })
+
+    app.post('/customer/getOrderItems', async (req, res) => {
+        const { restaurantId, orderNumber } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT id, quantity, name, totalPrice FROM orderItems
+            WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
+            null,
+            (body) => {
+                if (body.length) {
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No reastaurants available!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
+    app.post('/customer/getOrderItemDetails', async (req, res) => {
+        const { id } = req.body
+        if (!id) return res.send({
+            status: false,
+            message: 'OrderItem Id is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT OI.name, OI.quantity, OI.status, OI.price, OI.totalPrice, OI.specialInstructions
+            FROM orderItems OI
+            WHERE id = ${id}`,
+            null,
+            (body) => {
+                if (body.length) {
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No reastaurants available!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
+    app.post('/customer/closeOrderViaCash', async (req, res) => {
+        const { restaurantId, orderNumber } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { status: false },
+            (result) => {
+                if (result.changedRows) {
+                    return res.send({
+                        status: true,
+                        message: 'Order closed via cash payment'
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'Order closed already!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
+    app.post('/customer/doNotDisturb', async (req, res) => {
+        const { restaurantId, orderNumber, enabled } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        if (enabled === undefined || enabled === null || typeof enabled !== 'boolean') return res.send({
+            status: false,
+            message: 'Boolean value is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { doNotDisturb: enabled },
+            (result) => {
+                if (result.changedRows) {
+                    return res.send({
+                        status: true,
+                        message: 'Do not disturb status changed!'
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'Failed to update do not disturb status',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
+    app.post('/customer/requestService', async (req, res) => {
+        const { restaurantId, tableId, orderNumber, type, text } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!tableId) return res.send({
+            status: false,
+            message: 'Table Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        if (!type && type !== 0) return res.send({
+            status: false,
+            message: 'Service type is required!',
+            errorCode: 422
+        })
+        const data = { restaurantId, tableNumber: tableId, orderNumber, type }
+        if (text && type !== 0)
+            data.text = text
+        getConnection(
+            res,
+            `INSERT INTO servicesQue SET ?`,
+            data,
+            (result) => {
+                if (result.affectedRows) {
+                    return res.send({
+                        status: true,
+                        message: 'Service request added!'
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'Failed to add service request',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
 }
 
 function decrypt(token) {
@@ -204,4 +591,10 @@ function getGroupedList (list, key) {
     }, Object.create(null));
   }
   return groupedList
+}
+
+function padding (num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
 }

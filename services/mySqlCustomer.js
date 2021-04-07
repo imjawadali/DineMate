@@ -35,7 +35,7 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
 exports.getConnection = function (res, query, data, callBack) {
     db.getConnection(function (error, tempDb) {
         if (!!error) {
-            console.log('DbConnectionError', error.sqlMessage)
+            console.log('DbConnectionError', error)
             return res.send({
                 status: false,
                 message: 'Unable to reach database!',
