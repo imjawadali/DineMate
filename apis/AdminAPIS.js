@@ -408,7 +408,7 @@ module.exports = app => {
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
-            (o.tableId = rq.value AND o.customerStatus = 1 AND o.type = 'Dine-In')
+            (o.tableId = rq.value AND o.status = 1 AND o.type = 'Dine-In')
             WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
             GROUP BY rq.value
             ORDER BY rq.id ASC`,
@@ -854,33 +854,6 @@ module.exports = app => {
         )
     })
 
-    app.post('/admin/initializeOrder', async (req, res) => {
-        const { restaurantId, tableId, customerId, type } = req.body
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
-        if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
-        getConnection(
-            res,
-            `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
-            null,
-            (result) => {
-                if (result.length)
-                getConnection(
-                    res,
-                    `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
-                    VALUES ( '${restaurantId}', '${tableId}', ${customerId ? `${customerId}` : null}, 
-                    ${type ? `${type}` : `'Dine-In'`}, ${Number(result[0].orderNumber)+1})`,
-                    null,
-                    (result) => {
-                        if (result.affectedRows)
-                            return res.send({ 'msg': 'Order Initialized Successfully!' })
-                        else return res.status(422).send({ 'msg': 'Failed to initialize order' })
-                    }
-                )
-                else return res.status(422).send({ 'msg': 'Failed to initialize order' })
-            }
-        )
-    })
-
     app.post('/admin/getOpenOrders', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, type } = req.body
@@ -890,8 +863,9 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT * FROM orders WHERE restaurantId = '${restaurantId}'
-            AND ( customerStatus = 1 OR restaurantStatus = 1 )
+            `SELECT * FROM orders WHERE
+            restaurantId = '${restaurantId}'
+            AND status = 1
             AND type = '${type}'
             ORDER BY createdAt DESC `,
             null,
@@ -914,8 +888,9 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT * FROM orders WHERE restaurantId = '${restaurantId}'
-            AND customerStatus = 0 AND restaurantStatus = 0
+            `SELECT * FROM orders WHERE
+            restaurantId = '${restaurantId}'
+            AND status = 0
             AND type = '${type}'
             ORDER BY createdAt DESC `,
             null,

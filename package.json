@@ -8,6 +8,7 @@
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
     "customer": "npm run start --prefix customer",
+    "build": "concurrently \"cd client && yarn build\" \"cd customer && yarn build\"",
     "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run customer\""
   },
   "author": "Jawad.ALi",
