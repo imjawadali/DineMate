@@ -9,7 +9,8 @@
     "client": "npm run start --prefix client",
     "customer": "npm run start --prefix customer",
     "build": "concurrently \"cd client && yarn build\" \"cd customer && yarn build\"",
-    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run customer\""
+    "dev": "concurrently \"npm run server\" \"npm run client\" \"npm run customer\"",
+    "pm2": "pm2 start index.js home.js client.js customer.js"
   },
   "author": "Jawad.ALi",
   "license": "ISC",

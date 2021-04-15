@@ -17,9 +17,9 @@ app.use(express.static('home/build'))
 app.use(express.static('client/build'))
 app.use(express.static('customer/build'))
 
-app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, 'home', 'build', 'index.html')))
-app.get('/client/*', (req, res) => res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html')))
-app.get('/customer/*', (req, res) => res.sendFile(path.resolve(__dirname, 'customer', 'build', 'index.html')))
+// app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, 'home', 'build', 'index.html')))
+// app.get('/client/*', (req, res) => res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html')))
+// app.get('/customer/*', (req, res) => res.sendFile(path.resolve(__dirname, 'customer', 'build', 'index.html')))
 
 const PORT = process.env.PORT || 8000
 app.listen(PORT)

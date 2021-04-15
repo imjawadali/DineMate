@@ -7,9 +7,9 @@ const app = express()
 var corsOptions = { origin: "*" }
 app.use(cors(corsOptions))
 
-app.use(express.static('customer/build'))
+app.use(express.static(__dirname + '/customer/build/'))
 
-app.get('/', (req, res) => res.sendFile(path.resolve(__dirname, 'customer', 'build', 'index.html')))
+app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'customer', 'build', 'index.html')))
 
 const PORT = process.env.PORT || 3002
 app.listen(PORT)
