@@ -397,7 +397,7 @@ module.exports = app => {
 
     app.post('/admin/getRestaurantDashboard', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, type } = req.body
+        const { restaurantId } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         getSecureConnection(
@@ -418,6 +418,46 @@ module.exports = app => {
                     return res.send(data)
                 } else {
                     return res.status(422).send({ 'msg': `No Table Data!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getTableOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, tableId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
+        // GROUP_CONCAT(CONCAT('{"id":', oi.id, ', "name":"', oi.name,'"}')) as items
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT o.orderNumber,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oi.id,
+                        ',"name":"',oi.name,
+                        '","quantity":',oi.quantity,
+                        ',"totalPrice":',oi.totalPrice,
+                        ',"status":"',oi.status,'"}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as items
+            FROM orders o
+            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber
+            WHERE o.restaurantId = '${restaurantId}'
+            AND o.tableId = '${tableId}'
+            AND o.status = 1 AND o.type = 'Dine-In'
+            GROUP BY o.orderNumber
+            ORDER BY o.createdAt DESC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Table Data Available!` })
                 }
             }
         )
