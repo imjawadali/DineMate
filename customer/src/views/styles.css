@@ -60,6 +60,44 @@ body {
     align-items: center;
 }
 
+
+/* header styles */
+.header{
+margin: auto;
+width: 90%;
+border: rgb(43, 43, 43) 0px solid;
+border-bottom-width: 2px;
+height: 150px;
+display: flex;
+flex-direction: row;
+}
+.header-icon{
+height: 100%;
+width: 5%;
+display: flex;
+flex-direction: row;
+align-items: center;
+}
+.header-logo{
+height: 100%;
+width: 15%;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+}
+.header-logo img{
+width: 100px;
+height: 100px;
+}
+
+
+.header-searches{
+height: 100%;
+width: 70%;
+background-color:#10ff94;
+}
+
 @media only screen and (max-width: 978px) {
     .sidebarContainer {
         width: 0%;
