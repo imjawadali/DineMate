@@ -90,8 +90,6 @@ justify-content: center;
 width: 100px;
 height: 100px;
 }
-
-
 .header-searches{
 height: 100%;
 width: 70%;
@@ -107,14 +105,70 @@ padding: 0 20px ;
 border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
-
-
 .header-search-user{
 min-width: 15%;
 height: 50px;
 border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
+
+
+
+/* resturant */
+
+.resturant-searchbar{
+width: 90%;
+height: 150px;
+margin: auto;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+.resturant-searchbar-container{
+width: 100%;
+height: 50px;
+box-shadow: 1px 1px 5px 1px rgb(218, 218, 218);
+border-radius: 10px;
+}
+.image_holder{
+width: 100%;
+height: 80vh;
+}
+.heading-container{
+width: 90%;
+height: 150px;
+margin: auto;
+display: flex;
+align-items: center;
+}
+.heading-container h1{
+font-size: 48px;
+font-weight: 400;
+}
+.resturant-list-container{
+width: 90%;
+/* height: 450px; */
+margin: auto;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
+}
+.resturant-list-component{
+margin:  22px;
+width: 29%;
+/* height: 450px; */
+border-radius: 20px;
+box-shadow: 0px 0px 5px 0px rgb(175, 175, 175);
+overflow: hidden;
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -127,8 +181,6 @@ box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 .header-logo{
 width: 20%;
 }
-
-
 .header-searches{
 width: 80%;
 display: flex;
@@ -143,14 +195,27 @@ padding: 0 10px ;
 border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
-
-
 .header-search-user{
 min-width: 10%;
 height: 45px;
 border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
+
+
+
+/* resturant list */
+
+.resturant-list-container{
+width: 90%;
+height: 300px;
+}
+
+.resturant-list-component{
+margin:  20px;
+/* min-height: 350px; */
+}
+
 
 
 
@@ -219,6 +284,26 @@ border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
 
+
+
+
+/* resturant list */
+
+.resturant-list-container{
+width: 90%;
+/* height: 300px; */
+}
+
+.resturant-list-component{
+margin:  15px;
+width: 45%;
+min-height: 350px;
+}
+
+
+
+
+
 }
 
 
@@ -279,6 +364,24 @@ height: 35px;
 border-radius: 50px;
 box-shadow: 0px 0px 10px 5px rgb(231, 231, 231);
 }
+
+
+.heading-container h1{
+font-size: 40px;
+font-weight: 400;
+}
+.resturant-list-container{
+width: 90%;
+/* height: 300px; */
+}
+
+.resturant-list-component{
+/* margin: ; */
+margin:  15px auto;
+width: 80%;
+min-height: 350px;
+}
+
 
  }
  

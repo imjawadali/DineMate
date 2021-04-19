@@ -16,7 +16,7 @@ const Header = props => {
             </div>
             <div className="header-searches">
                 <div className="header-search-location">
-                    <SearchBar iconName={faMapMarkerAlt} iconSize="2x" text="Missigua, Ontario" />
+                    <SearchBar iconName={faMapMarkerAlt} NOW text="Missigua, Ontario" />
                 </div>
                 <div className="header-search-user" >
                     <SearchBar text="Rayan Levin" />
