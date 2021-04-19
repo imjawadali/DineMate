@@ -7,8 +7,8 @@ const SearchBar = props => {
     const { iconName, iconSize, text, cart, quantity, fontSizeText, fontSizeQuantity } = props
     return (
         <div className="SearchBar" >
-            {cart && <FontAwesomeIcon icon={faShoppingCart} size={iconSize || "2x"} />}
-            {iconName && <FontAwesomeIcon icon={iconName} size={iconSize || "2x"} />}
+            {cart && <FontAwesomeIcon icon={faShoppingCart} className="header-icon-style" />}
+            {iconName && <FontAwesomeIcon icon={iconName} className="header-icon-style" />}
             {text && <h3> {text}</h3>}
             { iconName && <h3>NOW</h3>}
             { quantity && <h3>{quantity}</h3>}

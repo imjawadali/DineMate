@@ -9,7 +9,7 @@ const Header = props => {
     return (
         <div className="header">
             <div className="header-icon">
-                <FontAwesomeIcon icon={faBars} size="2x" />
+                <FontAwesomeIcon className="header-icon-style" icon={faBars} />
             </div>
             <div className="header-logo">
                 <img src={logo} alt="Logo" />
@@ -18,7 +18,7 @@ const Header = props => {
                 <div className="header-search-location">
                     <SearchBar iconName={faMapMarkerAlt} iconSize="2x" text="Missigua, Ontario" />
                 </div>
-                <div className="header-search-user" style={{ paddingLeft: 35, paddingRight: 35 }}>
+                <div className="header-search-user" >
                     <SearchBar text="Rayan Levin" />
                 </div>
                 <div className="header-search-user" style={{ backgroundColor: 'orange', color: 'white', display: 'flex', justifyContent: 'center' }}>
