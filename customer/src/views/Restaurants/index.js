@@ -3,6 +3,7 @@ import React from 'react'
 import ResturantListComponent from '../../components/ResturantListComponent'
 import SearchBar from '../../components/SeachBar'
 import { Title } from '../../components/Title'
+import Footer from '../Footer'
 import Header from '../Header'
 
 const ResturantDATA = [{
@@ -39,6 +40,10 @@ function Restaurants() {
   return (
     <div>
       <Header />
+
+
+
+
       <div className="resturant-searchbar">
         <div className="resturant-searchbar-container">
           <SearchBar iconName={faSearch} text="Missigua, Ontario" />
@@ -48,11 +53,12 @@ function Restaurants() {
       <div className="image_holder">
         <img src={require("../../assets/bgimage.png").default} style={{ width: '100%', height: '100%' }} />
       </div>
+
+
+
       <div className="heading-container">
         <Title text="Resturant" />
       </div>
-
-
       <div className="resturant-list-container">
         {ResturantDATA.map(item => {
           return (
@@ -66,9 +72,18 @@ function Restaurants() {
               />
             </div>)
         })}
-
-
       </div>
+
+
+
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 20, paddingBottom: 20 }}>
+        <button className="resturant-button">Show More</button>
+      </div>
+      <div>
+        <Footer />
+      </div>
+
 
     </div>
   )

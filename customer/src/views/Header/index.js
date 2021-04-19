@@ -21,8 +21,8 @@ const Header = props => {
                 <div className="header-search-user" >
                     <SearchBar text="Rayan Levin" />
                 </div>
-                <div className="header-search-user" style={{ backgroundColor: 'orange', color: 'white', display: 'flex', justifyContent: 'center' }}>
-                    <SearchBar cart text="CART" quantity="0" fontSize="24" fontSizeQuantity="32" />
+                <div className="header-search-user" style={{ backgroundColor: '#EA3936', color: 'white', display: 'flex', justifyContent: 'center' }}>
+                    <SearchBar cart text="CART" quantity="0" fontSize="24" fontSizeQuantity="32" style={{ justifyContent: 'space-between' }} />
                 </div>
             </div>
         </div>
