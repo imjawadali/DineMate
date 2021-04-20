@@ -43,8 +43,18 @@ import {
   UN_MERGE_TABLES,
   MERGE_TABLES_FAILURE,
   UN_MERGE_TABLES_FAILURE,
-  GET_ORDER,  
-  GET_ORDER_FAILURE
+  GET_ORDERS,  
+  GET_ORDERS_FAILURE,
+  GET_TABLE_ORDERS,
+  GET_TABLE_ORDERS_FAILURE,
+  CLOSE_ORDER_FAILURE,
+  CLOSE_ORDER_SUCCESS,
+  GET_ORDER_ITEM_DETAILS,
+  GET_ORDER_ITEM_DETAILS_FAILURE,
+  CLOSE_ORDER,
+  UPLOAD_TO_S3,
+  UPLOAD_TO_S3_SUCCESS,
+  UPLOAD_TO_S3_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -91,6 +101,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case GET_RESTAURANT_DASHBOARD_FAILURE:
       return { ...state, toast: payload }
+    case GET_TABLE_ORDERS:
+      return { ...state, toastSetDismiss: true }
+    case GET_TABLE_ORDERS_FAILURE:
+      return { ...state, toast: payload }
+    case GET_ORDER_ITEM_DETAILS:
+      return { ...state, toastSetDismiss: true }
+    case GET_ORDER_ITEM_DETAILS_FAILURE:
+      return { ...state, toast: payload }
+    case CLOSE_ORDER:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Closing Check', type: 'success' } }
+    case CLOSE_ORDER_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case MERGE_TABLES:
       return { ...state, toast: { message: 'Merging Tables', type: 'success' } }
     case MERGE_TABLES_FAILURE:
@@ -139,11 +163,17 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
     case ADD_MENU:
       return { ...state, toast: { message: 'Adding Menu Item', type: 'success' } }
-      case ADD_MENU_FAILURE:
+    case ADD_MENU_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
-    case GET_ORDER:
+    case GET_ORDERS:
       return { ...state, toastSetDismiss: true }
-    case GET_ORDER_FAILURE:
+    case GET_ORDERS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPLOAD_TO_S3:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Uploading File', type: 'success' } }
+    case UPLOAD_TO_S3_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Image uploaded successfully', type: 'success' } }
+    case UPLOAD_TO_S3_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state

@@ -8,3 +8,5 @@ exports.mySQLConfig = {
     password: 'DineMateDB',
     database: 'DineMateDev'
 }
+
+exports.awsConfig = {}

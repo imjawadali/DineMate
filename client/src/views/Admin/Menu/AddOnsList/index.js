@@ -25,11 +25,11 @@ function AddOnsList(props) {
               return (
                 <tr key={id}>
                   <td>{name}</td>
-                  <td>$ {price}</td>
+                  <td>{!addOnOptions.length ? `$ ${price}` : '-'}</td>
                   <td>{mandatory ? 'Mandatory' : 'Optional'}</td>
                   <td>{addOnOptions && addOnOptions.length ?
                       addOnOptions.map((option, index) => <div key={option.id}>
-                        <p>{option.name}</p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>{option.name}</p><p>$ {option.price}</p></div>
                         {index !== (addOnOptions.length - 1) ? <Separator /> : null}
                       </div>)
                     : 'No Options'

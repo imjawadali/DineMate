@@ -15,6 +15,9 @@ export const API_ENDPOINTS = {
         setTableName: 'admin/setTableName',
         getSuperAdminDashboard: 'admin/getSuperAdminDashboard',
         getRestaurantDashboard: 'admin/getRestaurantDashboard',
+        getTableOrders: 'admin/getTableOrders',
+        getOrderItemDetails: 'admin/getOrderItemDetails',
+        closeOrder: 'admin/closeOrder',
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',
         getServicesQue: 'admin/getServicesQue',
@@ -29,6 +32,7 @@ export const API_ENDPOINTS = {
         addUser: 'admin/addUser',
         updateUser: 'admin/updateUser',
         deleteUser: 'admin/deleteUser',
-        orderManagement:'admin/getOpenOrders'
+        getOpenOrders:'admin/getOpenOrders',
+        uploadToS3:'admin/uploadToS3'
     }
 }

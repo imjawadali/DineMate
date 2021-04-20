@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Button, DashboardGridItem, ServiceQueItem } from '../../../../components'
-import { GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
+import { CLEAR_TABLE_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
-function RestaurantAdmin() {
+function RestaurantAdmin(props) {
 
   const [merging, setmerging] = useState(false)
   const [selectedTables, setselectedTables] = useState([])
@@ -198,6 +198,13 @@ function RestaurantAdmin() {
                           onMouseEnter={() => merging ? null : sethoveredTable(table)}
                           onClick={() => {
                             if (merging) selectTable(id)
+                            else if (occupiedBy) {
+                              dispatch(customisedAction(CLEAR_TABLE_ORDERS))
+                              props.history.push({
+                                pathname: '/client/admin/dashboard/restaurantAdmin/orderDetails',
+                                state: { restaurantId, tableId: value }
+                              })
+                            }
                           }}
                         />
                     </div>)
@@ -219,13 +226,19 @@ function RestaurantAdmin() {
                           borderBottomRightRadius: index === mergedTables.length - 1 ? '10px' : '0px',
                           borderTop: index === 0 ? '1px solid black' : 'none',
                           borderBottom: index === mergedTables.length - 1 ? '1px solid black' : 'none',
-                          backgroundColor: merging ? 'white' : ''
+                          backgroundColor: merging ? 'white' : '',
+                          cursor: 'pointer'
                         }}
                         onMouseEnter={() => merging ? null : sethoveredTable(mergedTables)}
-                        onClick={() => mergedTables.filter(table => table.occupiedBy).length ? 
-                          dispatch(customisedAction(SET_TOAST, { message: 'error!', type: 'error'}))
-                          : null
-                        }
+                        onClick={() => {
+                          if (mergedTables.filter(table => table.occupiedBy).length) {
+                            dispatch(customisedAction(CLEAR_TABLE_ORDERS))
+                            props.history.push({
+                              pathname: '/client/admin/dashboard/restaurantAdmin/orderDetails',
+                              state: { restaurantId, tableId: table.mergeId, mergedTables }
+                            })
+                          }
+                        }}
                       >
                         <i className="fa fa-times-circle"
                           style={{
@@ -279,6 +292,7 @@ function RestaurantAdmin() {
                 {servicesQue ?
                   servicesQue.map(item => {
                     return <ServiceQueItem
+                      id={item.id}
                       type={item.type}
                       tableNumber={item.tableNumber.replace(`${restaurantId}/`, '')}
                       text={item.text}

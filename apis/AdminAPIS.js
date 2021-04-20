@@ -1,5 +1,6 @@
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
+const { uploader } = require('../services/uploader')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
 
@@ -429,7 +430,6 @@ module.exports = app => {
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
-        // GROUP_CONCAT(CONCAT('{"id":', oi.id, ', "name":"', oi.name,'"}')) as items
         getSecureConnection(
             res,
             adminId,
@@ -459,6 +459,52 @@ module.exports = app => {
                 } else {
                     return res.status(422).send({ 'msg': `No Table Data Available!` })
                 }
+            }
+        )
+    })
+
+    app.post('/admin/getOrderItemDetails', async (req, res) => {
+        const { id } = req.body
+        if (!id) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getConnection(
+            res,
+            `SELECT oi.name, oi.quantity, oi.status, oi.price, oi.totalPrice, oi.specialInstructions,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oia.id,
+                        ',"name":"',oia.addOnName,
+                        '","option":"',oia.addOnOption,
+                        '","price":',oia.price,'}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as addOns
+            FROM orderItems oi
+            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+            WHERE oi.id = ${id}
+            GROUP BY oi.id`,
+            null,
+            (result) => {
+                if (result.length) return res.send(result[0])
+                else return res.status(422).send({ 'msg': 'No item details available!' })
+            }
+        )
+    })
+
+    app.post('/admin/closeOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { status: false },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!'})
+                else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
     })
@@ -718,7 +764,7 @@ module.exports = app => {
             adminId,
             `SELECT m.id, m.imageUrl, m.name, m.shortDescription, m.price, m.categoryId, 
             ao.id as addOn_id, ao.name as addOn_name, ao.price as addOn_price, ao.mandatory, 
-            aoo.id addOnOption_id, aoo.name addOnOption_name 
+            aoo.id addOnOption_id, aoo.name addOnOption_name, aoo.price as addOnOption_price
             FROM menu m 
             LEFT JOIN addOns ao ON ao.menuId = m.id
             LEFT JOIN addOnOptions aoo ON aoo.addOnID = ao.id
@@ -736,6 +782,7 @@ module.exports = app => {
                                     addOnOptions.push({
                                         id: data[k].addOnOption_id,
                                         name: data[k].addOnOption_name,
+                                        price: data[k].addOnOption_price
                                     })
                                 }
                             }
@@ -767,6 +814,22 @@ module.exports = app => {
                 else return res.status(422).send({ 'msg': 'No menu items available!' })
             }
         )
+    })
+
+    app.post('/admin/uploadToS3', uploader, async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { fileName, mimeType, data } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!fileName) return res.status(422).send({ 'msg': 'File name is required!' })
+        if (!mimeType) return res.status(422).send({ 'msg': 'File mime-type is required!' })
+        if (!data) return res.status(422).send({ 'msg': 'File data is required!' })
+        const file = {
+            fileName,
+            mimeType,
+            buffer: new Buffer.from(data, 'base64')
+        }
+        console.log(file)
+        return res.send({ 'msg': 'File received!' })
     })
 
     app.get('/admin/getAllUsers', async (req, res) => {

@@ -42,12 +42,12 @@ function SuperAdmin(props) {
             <DashboardBatches
               text={`${adminDashboard.restaurants} Restaurants`}
               iconName="fa fa-cutlery"
-              onClick={() => props.history.push('/admin/restaurants')}
+              onClick={() => props.history.push('/client/admin/restaurants')}
             />
             <DashboardBatches
               text={`${adminDashboard.admins} Admins`}
               iconName="fa fa-user"
-              onClick={() => null}
+              onClick={() => props.history.push('/client/admin/usersManagement/allUsers')}
             />
           </div>
           <div className="DashBoardSectionsContainer">

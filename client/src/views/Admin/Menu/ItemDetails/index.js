@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Separator } from '../../../../components'
+import { TitleWithAction } from '../../../../components'
 import { getNameById } from '../../../../helpers'
 
 import AddOnsList from '../AddOnsList'
@@ -12,7 +12,6 @@ function ItemDetails(props) {
 
   const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
   const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
-  
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
@@ -27,7 +26,14 @@ function ItemDetails(props) {
 
   return (
     <div className="Container">
-      <h2>Food Item Details</h2>
+      <TitleWithAction
+        text="Food Item Details"
+        icon={<i
+          className="fa fa-arrow-left fa-lg"
+          style={{ cursor: 'pointer', marginRight: '10px' }}
+          onClick={() => history.goBack()}
+        />}
+      />
       {selectedItem ? <>
         <div className="ItemContainer">
           <div className="ItemDetailsContainer">

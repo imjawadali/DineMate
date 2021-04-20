@@ -78,7 +78,7 @@ module.exports = app => {
     app.get('/customer/getAllRestaurants', async (req, res) => {
         getConnection(
             res,
-            `SELECT R.restaurantId, R.restaurantName, R.cuisine, R.rating,
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating,
             RA.city, RA.address,
             GROUP_CONCAT(c.name) as categories
             FROM restaurants R 
@@ -136,7 +136,7 @@ module.exports = app => {
                                     addOnOptions.push({
                                         id: data[k].addOnOption_id,
                                         name: data[k].addOnOption_name,
-                                        price: data[k].addOnOption_price,
+                                        price: data[k].addOnOption_price
                                     })
                                 }
                             }

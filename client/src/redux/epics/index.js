@@ -9,6 +9,9 @@ import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
+import { getTableOrdersEpic } from './admin/getTableOrdersEpic'
+import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
+import { closeOrderEpic } from './admin/closeOrderEpic'
 import { mergeTablesEpic } from './admin/mergeTablesEpic'
 import { unMergeTablesEpic } from './admin/unMergeTablesEpic'
 import { getServicesQueEpic } from './admin/getServicesQueEpic'
@@ -20,7 +23,8 @@ import { getUsersEpic } from './admin/getUsersEpic'
 import { updateUserEpic } from './admin/updateUserEpic'
 import { deleteUserEpic } from './admin/deleteUserEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
-import {orderManagementEpic} from './admin/orderManagementEpic'
+import { uploadToS3Epic } from './admin/uploadToS3Epic'
+import { getOpenOrdersEpic } from './admin/getOpenOrdersEpic'
 export const epics = combineEpics(
     loginEpic.login,
     forgotPasswordEpic.forgotPassword,
@@ -32,6 +36,9 @@ export const epics = combineEpics(
     setTableNameEpic.setTableName,
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
+    getTableOrdersEpic.getTableOrders,
+    getOrderItemDetailsEpic.getOrderItemDetails,
+    closeOrderEpic.closeOrder,
     mergeTablesEpic.mergeTables,
     unMergeTablesEpic.unMergeTables,
     getServicesQueEpic.getServicesQue,
@@ -43,5 +50,6 @@ export const epics = combineEpics(
     updateUserEpic.updateUser,
     deleteUserEpic.deleteUser,
     getMenuEpic.getMenu,
-    orderManagementEpic.getOrder
+    uploadToS3Epic.uploadToS3,
+    getOpenOrdersEpic.getOpenOrders
 )

@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from 'react'
-import { Button,SmallButton,Separator ,Input} from '../../../components'
-import OrderTable from './OderTable'
-import {customisedAction} from '../../../redux/actions'
-import {  GET_ORDER } from '../../../constants'
+import React, { useState } from 'react'
 import { useSelector,useDispatch } from 'react-redux'
-function OrderManagement ()
-{   const[search,setSearch]=useState("");
-const[type,setType]=useState('Dine-In');
-const fetchingOrder = useSelector(({ orderReducer }) => orderReducer.fetchingOrder)
-const order = useSelector(({ orderReducer }) => orderReducer.order)
-const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
-const dispatch = useDispatch()
-const { restaurantId } = admin
 
+import { Button, Input} from '../../../components'
+import {customisedAction} from '../../../redux/actions'
+import {  GET_ORDERS } from '../../../constants'
 
-const getFilteredList = () => {
+import OrderTable from './OderTable'
  
+function OrderManagement () {
+  const[search, setSearch] = useState("");
+
+  const fetchingOrder = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrder)
+  const order = useSelector(({ ordersReducer }) => ordersReducer.order)
+  const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const dispatch = useDispatch()
+
+  const { restaurantId } = admin
+
+  const getFilteredList = () => {
     let filteredQrs = order
     if (search && search.length && order) {
       filteredQrs = order.filter(
@@ -25,48 +27,45 @@ const getFilteredList = () => {
           ord.type.toLowerCase().includes(search.toLowerCase()
           ) 
       )}
-  
     return filteredQrs
- 
-}
-    return(
-        <div className="Container">
-            <div className="PageTitleContainer">
-            <h2>Order Management</h2>
-                <div className="PageTitleButtonContainer">
-                    <Button
-                        text="Add Table"
-                        iconLeft={<i className="fa fa fa-plus-circle" />}
-                         />
-                </div>
-                </div>
-                <div className="TopOptionsContainer">
-                <div className="TopInputContainer">
-                    <Input
-                        placeholder="Search Order (by Table No,Type)"
-                        value={search}
-                        onChange={({ target: { value } }) => setSearch(value)}
-                    />
-                </div>
-            <div className="TopButtonContainer">
-                    <Button
-                        text={search ? "Clear" : "Search"}
-                    // light={fetchingOrder}
-                    // lightAction={() => null}
+  }
+
+  return(
+      <div className="Container">
+          <div className="PageTitleContainer">
+          <h2>Order Management</h2>
+              <div className="PageTitleButtonContainer">
+                  <Button
+                      text="Add Table"
+                      iconLeft={<i className="fa fa fa-plus-circle" />}
+                        />
+              </div>
+              </div>
+              <div className="TopOptionsContainer">
+              <div className="TopInputContainer">
+                  <Input
+                      placeholder="Search Order (by Table No,Type)"
+                      value={search}
+                      onChange={({ target: { value } }) => setSearch(value)}
+                  />
+              </div>
+          <div className="TopButtonContainer">
+                  <Button
+                    text={search ? "Clear" : "Search"}
                     iconLeft={<i className={`fa fa-${search ? 'times-circle' : 'refresh'}`} />}
-                    onClick={() => search ? setSearch('') :dispatch(customisedAction(GET_ORDER,{restaurantId,type}))} 
-                    />
-                </div>
-      </div>
-      {fetchingOrder && !order ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingOrder ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Food Items . . .</p>
-        </div> : null
-      }
-      <OrderTable
-        order={getFilteredList()}
-        restaurantId={restaurantId} />
-     </div>
-    )
+                    onClick={() => search ? setSearch('') :dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In' }))} 
+                  />
+              </div>
+    </div>
+    {fetchingOrder && !order ?
+      <div className="loadingContainer">
+        <p><i className={`fa fa-refresh ${fetchingOrder ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Food Items . . .</p>
+      </div> : null
+    }
+    <OrderTable
+      order={getFilteredList()}
+      restaurantId={restaurantId} />
+    </div>
+  )
 }
 export default OrderManagement

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
-import orderManagement from './OrderManagement'
 import { customisedAction } from '../../redux/actions'
 import { GET_CATEGORIES, GET_EXISTING_QRS, GET_MENU, GET_RESTAURANT_DASHBOARD } from '../../constants'
 
@@ -10,6 +9,8 @@ import NavBar from './NavBar'
 
 import SuperAdmin from './Dashboard/SuperAdmin'
 import RestaurantAdmin from './Dashboard/RestaurantAdmin'
+import OrderDetails from './Dashboard/RestaurantAdmin/OrderDetails'
+import OrderItemDetails from './Dashboard/RestaurantAdmin/OrderDetails/ItemDetails'
 import KitchenAdmin from './Dashboard/KitchenAdmin'
 import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
@@ -21,12 +22,13 @@ import TableDetails from './Tables/TableDetails'
 import Categories from './Categories'
 import Menu from './Menu'
 import ItemDetails from './Menu/ItemDetails'
+import AddMenuItem from './AddMenuItem'
 import RestaurantUsers from './Users/RestaurantUsers'
+import OrderManagement from './OrderManagement'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
 import './styles.css'
-import OrderManagement from './OrderManagement'
 
 function Admin(props) {
 
@@ -100,6 +102,17 @@ function Admin(props) {
                     : `${path}/dashboard/superAdmin`} />
                 </Route>
                 <SuperAdminRoutes path={`${path}/dashboard/superAdmin`} component={SuperAdmin} />
+                <Route path={`${path}/dashboard/restaurantAdmin`}>
+                  <Switch>
+                    <RestaurantAdminRoutes exact path={`${path}/dashboard/restaurantAdmin`} component={RestaurantAdmin} />
+                    <Route path={`${path}/dashboard/restaurantAdmin/orderDetails`}>
+                      <Switch>
+                        <RestaurantAdminRoutes exact path={`${path}/dashboard/restaurantAdmin/orderDetails`} component={OrderDetails} />
+                        <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin/orderDetails/itemDetails`} component={OrderItemDetails} />
+                      </Switch>
+                    </Route>
+                  </Switch>
+                </Route>
                 <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin`} component={RestaurantAdmin} />
                 <KitchenAdminRoutes path={`${path}/dashboard/kitchenAdmin`} component={KitchenAdmin} />
               </Switch>
@@ -137,7 +150,7 @@ function Admin(props) {
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/menuManagement`} component={Menu} />
                 <RestaurantAdminRoutes path={`${path}/menuManagement/itemDetails`} component={ItemDetails} />
-                <RestaurantAdminRoutes path={`${path}/menuManagement/addFoodItem`} component={AddRestaurant} />
+                <RestaurantAdminRoutes path={`${path}/menuManagement/addFoodItem`} component={AddMenuItem} />
               </Switch>
             </Route>
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />

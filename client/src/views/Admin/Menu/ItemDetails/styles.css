@@ -1,6 +1,6 @@
 .ItemContainer {
     width: 100%;
-    padding: 15px  0px;
+    padding: 0px 0px 15px  0px;
     display: flex;
     flex-direction: row;
     box-sizing: border-box;
@@ -49,7 +49,7 @@
 
 @media only screen and (max-width: 480px) {
     .ItemContainer {
-        padding: 10px  0px;
+        padding: 0px 0px 10px  0px;
         flex-direction: column;
     }
 
