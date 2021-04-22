@@ -54,7 +54,10 @@ import {
   CLOSE_ORDER,
   UPLOAD_TO_S3,
   UPLOAD_TO_S3_SUCCESS,
-  UPLOAD_TO_S3_FAILURE
+  UPLOAD_TO_S3_FAILURE,
+  DELETE_FROM_S3,
+  DELETE_FROM_S3_SUCCESS,
+  DELETE_FROM_S3_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -170,10 +173,16 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_ORDERS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case UPLOAD_TO_S3:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Uploading File', type: 'success' } }
+      return { ...state, toastSetDismiss: true }
     case UPLOAD_TO_S3_SUCCESS:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Image uploaded successfully', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case UPLOAD_TO_S3_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_FROM_S3:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Deleting File', type: 'warning' } }
+    case DELETE_FROM_S3_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_FROM_S3_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state

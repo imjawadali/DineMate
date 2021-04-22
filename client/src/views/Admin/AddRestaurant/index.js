@@ -29,10 +29,6 @@ function AddRestaurant(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const { pathname, state } = props.location
-    if (pathname.includes('/editRestaurant')) {
-      if (!state) props.history.push('/client/admin/')
-    }
   }, [])
 
   const setRestaurantNameAndId = (name) => {

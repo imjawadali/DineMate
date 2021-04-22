@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { TitleWithAction } from '../../../../components'
+import { Picker, TitleWithAction } from '../../../../components'
 import { getNameById } from '../../../../helpers'
 
 import AddOnsList from '../AddOnsList'
@@ -58,7 +58,10 @@ function ItemDetails(props) {
             </div>
           </div>
           <div className="ItemImageContainer">
-            Image
+            <Picker
+              style={{ width: '100%' }}
+              imageUrl={selectedItem.imageUrl}
+            />
           </div>
         </div>
         <div className="ItemDetailsSections">
