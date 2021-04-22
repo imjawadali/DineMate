@@ -2,29 +2,47 @@ import { switchMap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 import { customisedAction } from '../../actions'
-import { generalizedEpic } from '../generalizedEpic'
 import {
   UPLOAD_TO_S3,
   UPLOAD_TO_S3_SUCCESS,
   UPLOAD_TO_S3_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  BASE_URL
 } from '../../../constants'
+
+import store from '../../store'
+import { removeItem } from '../../../helpers'
 
 export class uploadToS3Epic {
   static uploadToS3 = action$ =>
     action$.pipe(
       ofType(UPLOAD_TO_S3),
       switchMap(
-        async ({ payload: { fileName, mimeType, data } }) => {
-          return generalizedEpic(
-            'post', 
-            API_ENDPOINTS.admin.uploadToS3,
-            { fileName, mimeType, data },
-            (resObj) => {
-              return customisedAction(UPLOAD_TO_S3_SUCCESS, { imageUrl: resObj.imageUrl })
-            },
-            UPLOAD_TO_S3_FAILURE
-          )
+        async ({ payload: { file }}) => {
+          try {
+            const response = await fetch(BASE_URL+API_ENDPOINTS.admin.uploadToS3, {
+              method: 'POST',
+              headers: new Headers({ 'Authorization': store.getState().sessionReducer.admin.id }),
+              body: file
+            })
+            const data = await response.json()
+            const { status } = response
+            if (status && status === 200) {
+              return customisedAction(UPLOAD_TO_S3_SUCCESS, { imageUrl: data.imageUrl, toast: { message: data.msg, type: 'success' } })
+            }
+            if (status && (status === 401 || status === 422 || status === 503)) {
+              if (status === 401) {
+                removeItem('admin')
+                store.dispatch(customisedAction(ADMIN_LOGOUT))
+                store.dispatch(customisedAction(SESSION_CHECK_DONE))
+              }
+              return customisedAction(UPLOAD_TO_S3_FAILURE, { message: data.msg, type: 'error' })
+            }
+            return customisedAction(UPLOAD_TO_S3_FAILURE, { message: `Unknown Error at ${UPLOAD_TO_S3}!`, type: 'error' })
+          } catch (error) {
+              console.log(`${UPLOAD_TO_S3} Unknown Error`, error)
+              return customisedAction(UPLOAD_TO_S3_FAILURE, { message: 'Failed to upload file', type: 'error' })
+          }
         }
       )
     )

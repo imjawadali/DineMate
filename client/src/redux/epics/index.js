@@ -24,6 +24,7 @@ import { updateUserEpic } from './admin/updateUserEpic'
 import { deleteUserEpic } from './admin/deleteUserEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
+import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
 import { getOpenOrdersEpic } from './admin/getOpenOrdersEpic'
 export const epics = combineEpics(
     loginEpic.login,
@@ -51,5 +52,6 @@ export const epics = combineEpics(
     deleteUserEpic.deleteUser,
     getMenuEpic.getMenu,
     uploadToS3Epic.uploadToS3,
+    deleteFromS3Epic.deleteFromS3,
     getOpenOrdersEpic.getOpenOrders
 )

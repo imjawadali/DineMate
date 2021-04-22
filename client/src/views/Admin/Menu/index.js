@@ -36,12 +36,6 @@ function Menu(props) {
     <div className="Container">
       <div className="PageTitleContainer">
         <h2>Menu Management</h2>
-        <div className="PageTitleButtonContainer">
-          <Button
-            text="Add Food Item"
-            iconLeft={<i className="fa fa fa-plus-circle" />}
-            onClick={() => props.history.push('/client/admin/menuManagement/addFoodItem')} />
-        </div>
       </div>
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">

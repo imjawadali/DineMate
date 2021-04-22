@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT, UPLOAD_TO_S3, REMOVE_FILE } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT, UPLOAD_TO_S3, DELETE_FROM_S3, BUCKET_URL, BUCKET_URL_2 } from '../../../constants'
 
 import { Button, Input, Picker, SectionHeading, SmallTitle } from '../../../components'
 import './styles.css'
@@ -33,19 +33,19 @@ function AddMenuItem(props) {
   useEffect(() => {
   }, [])
 
-  const uploadImage = async (file, stringArray) => {
+  const uploadImage = async (image, stringArray) => {
     if (stringArray.length) {
       try {
         const parts = stringArray[0].split(';')
-        const mimeType = parts[0].split(':')[1]
         const fileName = parts[1].split('=')[1]
-        const data = parts[2].split(',')[1]
-        dispatch(customisedAction(UPLOAD_TO_S3, { fileName, mimeType, data }))
+        const file = new FormData();
+        file.append('file', image[0]);
+        file.append('filename', fileName);
+        dispatch(customisedAction(UPLOAD_TO_S3, { file }))
       } catch (error) {
         console.log('error', error.message)
-        dispatch(customisedAction(REMOVE_FILE))
       }
-    } else dispatch(customisedAction(REMOVE_FILE))
+    }
   }
 
   const validate = () => {
@@ -151,8 +151,13 @@ function AddMenuItem(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Item Image" />
               <Picker
+                height={'200px'}
+                imageUrl={imageUrl}
+                uploading={uploading}
+                showCancel
                 extension={['.jpg', '.jpeg', '.gif', '.png']}
                 onChange={uploadImage}
+                onCancel={() => dispatch(customisedAction(DELETE_FROM_S3, { fileName: imageUrl.replace(BUCKET_URL, '').replace(BUCKET_URL_2, '')}))}
               />
             </div>
             <div className="InputsInnerContainer">

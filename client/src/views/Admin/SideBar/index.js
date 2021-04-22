@@ -47,13 +47,13 @@ function SideBar(props) {
                         <i className="fa fa-user" />
                         <Link to={`${url}/usersManagement`}>Users Management</Link>
                     </div>
-                    <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-edit"/>
-                        <Link to={pathname}>Edit Restaurant</Link>
-                    </div>
                     <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-qrcode"/>
                         <Link to={pathname}>QRs Management</Link>
+                    </div>
+                    <div className="sidebar__link sidebar_disabled_link">
+                        <i className="fa fa-files-o" />
+                        <Link to={pathname}>Registration Requests</Link>
                     </div>
                 </> :
                 <>
@@ -71,13 +71,29 @@ function SideBar(props) {
                             <i className="fa fa-cutlery" />
                             <Link to={`${url}/menuManagement`}>Menu Management</Link>
                         </div>
+                        <div className={`sidebar__link ${pathname.includes('/addFoodItem') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-plus" />
+                            <Link to={`${url}/addFoodItem`}>Add Food Item</Link>
+                        </div>
                         <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-users" />
                             <Link to={`${url}/usersManagement`}>Users Management</Link>
                         </div>
-                        </> : <h2>Kitchen Admin</h2>
+                        <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/addUsers') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-user-plus" />
+                            <Link to={pathname}>Add Users</Link>
+                        </div>
+                        <div className="sidebar__link sidebar_disabled_link">
+                            <i className="fa fa-list" />
+                            <Link to={`${pathname}`}>Schedule Management</Link>
+                        </div>
+                        <div className={`sidebar__link sidebar_disabled_link`}>
+                            <i className="fa fa-wrench" />
+                            <Link to={pathname}>Settings</Link>
+                        </div>
+                        </> : null // <h2>Kitchen Admin</h2>
                     }
-                    <div className="sidebar__link">
+                    {/* <div className="sidebar__link">
                         <i className="fa fa-archive" />
                         <Link to={`${url}/orderManagement`}>Orders Management</Link>
                     </div>
@@ -96,7 +112,7 @@ function SideBar(props) {
                     <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-wrench" />
                         <Link to={`${url}/others`}>Settings</Link>
-                    </div>
+                    </div> */}
                     {admin.role === "SuperAdmin" ?
                         <div className="LeaveButtonContainer">
                             <SmallButtonRed
