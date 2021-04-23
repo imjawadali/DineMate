@@ -15,6 +15,7 @@ import NoRoute from './NoRoute'
 
 import logo from '../assets/logo.png'
 import './styles.css'
+import MenuListing from './MenuListing'
 
 export default function App() {
 
@@ -55,8 +56,8 @@ export default function App() {
                     <Route exact path='/customer'>
                         <Redirect to='/customer/restaurants' />
                     </Route>
-                    <Route path='/customer/restaurants' component={Restaurants} />
-                    <Route exact path='/customer/:restaurantId/menu/' component={Menu} />
+                    <Route path='/customer/restaurants'  component={Restaurants} />
+                    <Route exact path='/customer/:restaurantId/menu/' component={MenuListing} />
                     <Route exact path='/customer/:restaurantId/:tableId' component={Menu} />
                     <Route component={NoRoute} />
                 </Switch>
