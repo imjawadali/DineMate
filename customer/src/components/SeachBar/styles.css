@@ -53,3 +53,16 @@ font-size: 12px;
     font-size: 20px;
 }
 }
+
+@media all and (max-width: 480px) {
+    .SearchBar{
+        padding: 0 5px;
+        }
+        .SearchBar h3{
+        /* margin:  0  ; */
+        font-size: 12px;
+        }
+        .header-icon-style{
+            font-size: 20px;
+        }
+}

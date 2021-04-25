@@ -50,7 +50,7 @@ function Restaurants() {
       </div>
 
       <div className="image_holder">
-        <img src={require("../../assets/bgimage.png").default} style={{ width: '100%', height: '100%' }} />
+        <img src={require("../../assets/bgimage.png").default} style={{ width: '100%',marginTop:-60 }} />
       </div>
 
 
