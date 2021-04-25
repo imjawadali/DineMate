@@ -200,14 +200,19 @@ padding-bottom: 50px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.466),rgba(0, 0, 0, 0.466)),url("../assets/listingbg.png");
+    /* background-image: linear-gradient(rgba(0, 0, 0, 0.466),rgba(0, 0, 0, 0.466)),url("../assets/listingbg.png"); */
     background-position: center;
     background-repeat: no-repeat;
-    background-size: cover;
+    overflow: hidden;
+    /* z-index: 999; */
 }
 .menuListingImagewithTextContainer{
     width: 90%;
     height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* justify-content: center; */
 }
 .menuListingImagewithTextContainer h2{
     font-size: 40px;
@@ -290,7 +295,7 @@ padding-bottom: 50px;
  
 .selectedItemContainer{
     /* box-shadow: 0px  0px 10px 1px #35c8b8 !important; */
-    box-shadow: #35c8b79d 0px 0px 10px 1px !important;
+    box-shadow: #35c8b79d 0px 0px 15px 5px !important;
 }
 
 .MenuListingContainer h1{
@@ -312,7 +317,7 @@ font-size: 40px;
     min-height: 300px;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0px  0px 10px 1px rgb(212, 212, 212);
+    box-shadow: 0px  0px 15px 5px rgb(212, 212, 212);
     margin: 50px 0;
 }
 

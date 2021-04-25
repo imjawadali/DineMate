@@ -3,9 +3,9 @@ import "./styles.css"
 
 
 const MenuListItemComponent = props => {
-    const { heading, subHeading, image, price, addToCart, cartValue } = props;
+    const { heading, subHeading,onClick, image, price, addToCart, cartValue } = props;
     return (
-        <div className="MLIComponent">
+        <a className="MLIComponent" onClick={onClick}>
             <div className="MLIComponent-Left">
                 <div className="MLIComponent-Left-top">
                     <h2>{heading}</h2>
@@ -29,7 +29,7 @@ const MenuListItemComponent = props => {
                 </div>
 
             </div>
-        </div>
+        </a>
     )
 }
 
