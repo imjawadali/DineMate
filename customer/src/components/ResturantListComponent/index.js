@@ -5,11 +5,11 @@ import React from 'react'
 import './styles.css'
 
 const ResturantListComponent = props => {
-    const { title, price, cuisines, stars, image,favourite } = props
+    const { title, price, cuisines, stars, image, favourite, onClick } = props
     return (
-        <div>
+        <div onClick={onClick}>
             <div className="resturantListComponent-image">
-                <img src={image} style={{ width: '100%', height: '100%' }} />
+                <img src={image} style={{ height: '100%' }} />
             </div>
             <div className="resturantListComponent-info">
                 <div className="resturantListComponent-info-left">

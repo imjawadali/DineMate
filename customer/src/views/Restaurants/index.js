@@ -10,32 +10,37 @@ const ResturantDATA = [{
   price: "$$",
   cuisines: "• Breakfast and Brunch • American • Sandwiches",
   stars: "4.1",
+  imageUrl: require("../../assets/listingbg.png")
 },
 {
   title: "secondR esturatn",
   price: "$$",
   cuisines: "• Breakfast and Brunch • American • Sandwiches",
   stars: "4.1",
+  imageUrl: require("../../assets/bgimage.png")
 }, {
   title: "secondRe Hortons",
   price: "$$",
   cuisines: "• Breakfast and Brunch • American • Sandwiches",
   stars: "4.1",
+  imageUrl: require("../../assets/listingbg.png")
 }, {
   title: "Tim  turatn",
   price: "$$",
   cuisines: "• Breakfast and Brunch • American • Sandwiches",
   stars: "4.1",
+  imageUrl: require("../../assets/bgimage.png")
 }, {
   title: "secondRes  Hortons",
   price: "$$",
   cuisines: "• Breakfast and Brunch • American • Sandwiches",
   stars: "4.1",
+  imageUrl: require("../../assets/listingbg.png")
 }
 ]
 
 
-function Restaurants() {
+function Restaurants(props) {
   return (
     <div>
       <Header />
@@ -67,7 +72,8 @@ function Restaurants() {
                 price={item.price}
                 cuisines={item.cuisines}
                 stars={item.stars}
-                image={require("../../assets/bgimage.png").default}
+                image={item.imageUrl.default}
+                onClick={() => props.history.push('/customer/tim_hortons/menu')}
               />
             </div>)
         })}
