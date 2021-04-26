@@ -1,8 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {faStar} from '@fortawesome/free-solid-svg-icons'
+
 import React from 'react'
 import './styles.css'
 
 const ResturantListComponent = props => {
-    const { title, price, cuisines, stars, image } = props
+    const { title, price, cuisines, stars, image,favourite } = props
     return (
         <div>
             <div className="resturantListComponent-image">
@@ -18,8 +21,9 @@ const ResturantListComponent = props => {
                 <div className="resturantListComponent-info-right">
                     <div className="resturantListComponent-info-right-star">
                         <h3>
-                            {stars}
+                            {stars }
                         </h3>
+                        <FontAwesomeIcon icon={faStar} className="icon-star"/>
                     </div>
                 </div>
             </div>

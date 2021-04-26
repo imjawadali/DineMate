@@ -8,15 +8,37 @@ display: flex;
 justify-content: 'center';
 align-items: center;
 }
+.SearchBarLeft{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.SearchBarRight{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
 .SearchBar h3{
 margin:  0 10px ;
 font-weight: 400;
 font-size: 16px;
 }
 
+.header-icon-style{
+    font-size: 24px;
+    font-weight: 400;
+}
 
 
+@media all and (min-width: 768px) and (max-width: 1024px) {
 
+    
+.header-icon-style{
+    font-size: 16px;
+}
+}
 
 @media all and (min-width: 480px) and (max-width: 768px) {
 
@@ -24,10 +46,23 @@ font-size: 16px;
 padding: 0 5px;
 }
 .SearchBar h3{
-margin:  0 10px ;
+/* margin:  0  ; */
 font-size: 12px;
 }
+.header-icon-style{
+    font-size: 20px;
+}
+}
 
-
-
+@media all and (max-width: 480px) {
+    .SearchBar{
+        padding: 0 5px;
+        }
+        .SearchBar h3{
+        /* margin:  0  ; */
+        font-size: 12px;
+        }
+        .header-icon-style{
+            font-size: 20px;
+        }
 }

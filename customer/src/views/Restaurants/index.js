@@ -1,4 +1,3 @@
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import ResturantListComponent from '../../components/ResturantListComponent'
 import SearchBar from '../../components/SeachBar'
@@ -45,19 +44,19 @@ function Restaurants() {
 
 
       <div className="resturant-searchbar">
-        <div className="resturant-searchbar-container">
-          <SearchBar iconName={faSearch} text="Missigua, Ontario" />
-        </div>
+        {/* <div className="resturant-searchbar-container"> */}
+          {/* <SearchBar iconName={faSearch} text="Missigua, Ontario" /> */}
+        {/* </div> */}
       </div>
 
       <div className="image_holder">
-        <img src={require("../../assets/bgimage.png").default} style={{ width: '100%', height: '100%' }} />
+        <img src={require("../../assets/bgimage.png").default} style={{ width: '100%',marginTop:-60 }} />
       </div>
 
 
 
       <div className="heading-container">
-        <Title text="Resturant" />
+        <Title text="All Resturants" />
       </div>
       <div className="resturant-list-container">
         {ResturantDATA.map(item => {
@@ -77,7 +76,7 @@ function Restaurants() {
 
 
 
-      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 20, paddingBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'center',  }} className="button-container-resturant">
         <button className="resturant-button">Show More</button>
       </div>
       <div>
