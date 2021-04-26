@@ -9,4 +9,7 @@ exports.mySQLConfig = {
     database: 'DineMateDev'
 }
 
-exports.awsConfig = {}
+exports.awsConfig = {
+    accessKeyId: 'AKIA2QRB7JECKOH4HF7L',
+    secretAccessKey: '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'
+}

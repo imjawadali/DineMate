@@ -51,7 +51,7 @@ function RestaurantsList(props) {
                   <td>
                     <SmallButton
                       style={{ width: '100%' }}
-                      text="Details"
+                      text="Manage"
                       iconLeft={<i className="fa fa-info-circle" />}
                       onClick={() => {
                         dispatch(customisedAction(RESTAURANT_CHANGED))
