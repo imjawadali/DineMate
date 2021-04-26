@@ -51,12 +51,6 @@ function GenerateQrs(props) {
     <div className="Container">
       <div className="PageTitleContainer">
         <h2>QRs Management</h2>
-        <div className="PageTitleButtonContainer">
-          <Button
-            text="Edit Restaurant"
-            iconLeft={<i className="fa fa-edit" />}
-            onClick={() => history.push('/client/admin/editRestaurant')} />
-        </div>
       </div>
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">

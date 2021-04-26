@@ -1,29 +1,14 @@
-// const aws = require('aws-sdk')
+const aws = require('aws-sdk')
 const multer = require('multer')
-// const multerS3 = require('multer-s3')
 
 const { awsConfig } = require('../config')
 
-// aws.config.update(awsConfig)
-
-// const s3 = new aws.S3({ /* ... */ })
- 
-// exports.uploader = multer({
-//   storage: multerS3({
-//     s3: s3,
-//     bucket: 'some-bucket',
-//     metadata: function (req, file, cb) {
-//       cb(null, { fieldName: file.fieldname });
-//     },
-//     key: function (req, file, cb) {
-//       cb(null, Date.now().toString())
-//     }
-//   })
-// })
+exports.s3 = new aws.S3(awsConfig)
 
 const storage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    cb(null, { fieldName: file.fieldname });
+    console.log('multer', file)
+    cb(null, '');
   }
 })
 

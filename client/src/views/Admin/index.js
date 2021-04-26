@@ -138,7 +138,6 @@ function Admin(props) {
                 <SuperAdminRoutes path={`${path}/qrsManagement/viewQr`} component={ViewQr} />
               </Switch>
             </Route>
-            <SuperAdminRoutes path={`${path}/editRestaurant`} component={AddRestaurant} />
             <Route path={`${path}/tablesManagement`}>
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/tablesManagement`} component={Tables} />
@@ -150,9 +149,9 @@ function Admin(props) {
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/menuManagement`} component={Menu} />
                 <RestaurantAdminRoutes path={`${path}/menuManagement/itemDetails`} component={ItemDetails} />
-                <RestaurantAdminRoutes path={`${path}/menuManagement/addFoodItem`} component={AddMenuItem} />
               </Switch>
             </Route>
+            <RestaurantAdminRoutes path={`${path}/addFoodItem`} component={AddMenuItem} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

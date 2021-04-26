@@ -30,14 +30,7 @@
 }
 
 .ItemImageContainer {
-    width: 20%;
-    height: 150px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    width: 25%;
     box-sizing: border-box;
 }
 

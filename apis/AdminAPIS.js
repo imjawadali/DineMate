@@ -1,6 +1,7 @@
+const uuid = require('uuid').v4
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
-const { uploader } = require('../services/uploader')
+const { uploader, s3 } = require('../services/uploader')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
 
@@ -24,10 +25,10 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         let sql = 'SELECT U.id, U.name, U.email, U.role, U.restaurantId'
-        if (lowerCased(email) !== 'ivsdeveloper21@gmail.com')
+        if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ', R.restaurantName'
         sql += ' FROM users U'
-        if (lowerCased(email) !== 'ivsdeveloper21@gmail.com')
+        if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
         sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`
         getConnection(
@@ -83,7 +84,7 @@ module.exports = app => {
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
         let sql = `UPDATE users SET ? WHERE email = '${lowerCased(email)}' `
-        if (email !== 'ivsdeveloper21@gmail.com')
+        if (email !== 'ahads62426@gmail.com')
             sql += `AND restaurantId = BINARY '${restaurantId}' `
         sql += `AND passwordForgotten = 1 `
         sql += `AND hashString = '${hashString}'`
@@ -653,6 +654,7 @@ module.exports = app => {
         const { restaurantId, imageUrl, name, shortDescription, price, categoryId, addOns } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!imageUrl) return res.status(422).send({ 'msg': 'Item imaage is required!' })
         if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
         if (!price) return res.status(422).send({ 'msg': 'Item price is required!' })
         if (!categoryId) return res.status(422).send({ 'msg': 'Item category is required!' })
@@ -682,8 +684,7 @@ module.exports = app => {
                         menu.name = name
                         menu.price = price
                         menu.categoryId = categoryId
-                        if (imageUrl)
-                            menu.imageUrl = imageUrl
+                        menu.imageUrl = imageUrl
                         if (shortDescription)
                             menu.shortDescription = shortDescription
                         tempDb.query('INSERT INTO menu SET ?', menu, function(error, result) {
@@ -814,22 +815,6 @@ module.exports = app => {
                 else return res.status(422).send({ 'msg': 'No menu items available!' })
             }
         )
-    })
-
-    app.post('/admin/uploadToS3', uploader, async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { fileName, mimeType, data } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!fileName) return res.status(422).send({ 'msg': 'File name is required!' })
-        if (!mimeType) return res.status(422).send({ 'msg': 'File mime-type is required!' })
-        if (!data) return res.status(422).send({ 'msg': 'File data is required!' })
-        const file = {
-            fileName,
-            mimeType,
-            buffer: new Buffer.from(data, 'base64')
-        }
-        console.log(file)
-        return res.send({ 'msg': 'File received!' })
     })
 
     app.get('/admin/getAllUsers', async (req, res) => {
@@ -1005,6 +990,47 @@ module.exports = app => {
                 }
             }
         )
+    })
+
+    app.post('/admin/uploadToS3', uploader, async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { file } = req
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!file) return res.status(422).send({ 'msg': 'File is required!' })
+
+        const name = file.originalname.split('.')
+        const fileType = name[name.length - 1]
+        const fileName = `${uuid()}.${fileType}`
+
+        const params = {
+            Bucket: 'dinematebucket',
+            Key: fileName,
+            Body: file.buffer
+        }
+
+        s3.upload(params, (error, data) => {
+            if (error)
+                return res.status(422).send({ 'msg': error.message })
+            else res.send({ imageUrl: data.Location, msg: 'File uploaded successfully!' })
+        })
+    })
+
+    app.post('/admin/deleteFromS3', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { fileName } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!fileName) return res.status(422).send({ 'msg': 'File name is required!' })
+
+        const params = {
+            Bucket: 'dinematebucket',
+            Key: fileName,
+        }
+
+        s3.deleteObject(params, (error) => {
+            if (error)
+                return res.status(422).send({ 'msg': error.message })
+            else res.send({ msg: 'Deleted successfully!' })
+        })
     })
 }
 

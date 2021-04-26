@@ -2,18 +2,18 @@ import {
   UPLOAD_TO_S3,
   UPLOAD_TO_S3_SUCCESS,
   UPLOAD_TO_S3_FAILURE,
-  REMOVE_FILE
+  DELETE_FROM_S3_SUCCESS
 } from '../../constants'
   
-export default (state = { uploading: false, imageUrl: null }, { type, payload }) => {
+export default (state = { imageUrl: null, uploading: false }, { type, payload }) => {
   switch (type) {
     case UPLOAD_TO_S3:
-      return { ...state, uploading: true, imageUrl: null }
+      return { ...state, uploading: true }
     case UPLOAD_TO_S3_SUCCESS:
       return { ...state, uploading: false, imageUrl: payload.imageUrl }
     case UPLOAD_TO_S3_FAILURE:
-      return { ...state, uploading: false, imageUrl: null }
-    case REMOVE_FILE:
+      return { ...state, uploading: false }
+    case DELETE_FROM_S3_SUCCESS:
       return { ...state, imageUrl: null }
     default:
       return state
