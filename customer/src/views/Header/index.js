@@ -48,25 +48,29 @@ const Header = props => {
                 <div className="global-header-left">
                     <div className="header-icon-logo-container">
                         <div className="header-icon">
-                            <FontAwesomeIcon className="header-icon-style menu-icon" icon={faBars} style={{ fontSize: 36 }} />
+                            <div className="sidebar-logo">
+                                <img src={require("../../assets/hamburger.png").default} alt="Logo" style={{width:'100%',height:'100%'}} />
+                            </div>
+
+                            {/* <FontAwesomeIcon className="header-icon-style menu-icon" icon={faBars} style={{ fontSize: 36 }} /> */}
                         </div>
                         <div className="header-logo">
                             <img src={logo} alt="Logo" />
                         </div>
                     </div>
                     <div className="global-header-search-user global-location-bar" >
-                        <SearchBar iconName={faMapMarkerAlt} NOW text="Missigua, Ontario" />
+                        <SearchBar  NOW text="Missigua, Ontario" image={require("../../assets/marker.png").default} />
                     </div>
 
                 </div>
                 <div className="global-header-right">
 
                     <div className="global-header-search-location">
-                        <SearchBar iconName={faSearch} text="What are you craving?" />
+                        <SearchBar iconName={faSearch} text="What are you craving?" image={""} />
                     </div>
 
                     <div className="global-header-search-user" style={{ backgroundColor: '#EA3936', color: 'white', display: 'flex', justifyContent: 'center' }}>
-                        <SearchBar cart text="CART" white quantity="0" style={{ alignItem: 'center', justifyContent: 'center', color: 'white' }} />
+                        <SearchBar cart text="CART"  white quantity="0" style={{ alignItem: 'center', justifyContent: 'center', color: 'white' }} />
                     </div>
                 </div>
             </div>

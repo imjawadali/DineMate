@@ -24,7 +24,7 @@ flex-direction: row;
 width: 90%;
 min-height: 20%;
 padding-top: 20px;
-padding-left: 10px;
+/* padding-left: 10px; */
 }
 .resturantListComponent-info-left h3{
 font-size: 32px;
