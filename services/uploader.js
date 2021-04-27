@@ -7,7 +7,6 @@ exports.s3 = new aws.S3(awsConfig)
 
 const storage = multer.memoryStorage({
   destination: function (req, file, cb) {
-    console.log('multer', file)
     cb(null, '');
   }
 })

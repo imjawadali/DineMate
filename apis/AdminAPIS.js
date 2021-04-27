@@ -1003,7 +1003,7 @@ module.exports = app => {
         const fileName = `${uuid()}.${fileType}`
 
         const params = {
-            Bucket: 'dinematebucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileName,
             Body: file.buffer
         }
@@ -1022,7 +1022,7 @@ module.exports = app => {
         if (!fileName) return res.status(422).send({ 'msg': 'File name is required!' })
 
         const params = {
-            Bucket: 'dinematebucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileName,
         }
 
