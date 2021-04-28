@@ -75,7 +75,7 @@ const addToCart = id =>{
 
                 <div className="menuListingLocation">
                     <div className="menuListingLocationConatiner">
-                        <SearchBar iconName={faMapMarkerAlt} text="Missigua, Ontario" />
+                        <SearchBar iconName={faMapMarkerAlt} text="Missigua, Ontario" color="rgb(103, 103, 103)"/>
                     </div>
                 </div>
 

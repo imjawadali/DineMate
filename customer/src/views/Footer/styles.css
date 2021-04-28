@@ -4,7 +4,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-image: url("../../assets/footerbg.png");
+    background-color: rgba(21,21,21,255);
+    background-image: url("../../assets/footerTransparent.png");
+    background-size: cover;
     align-items: center;
 }
 .global-footer-inner{

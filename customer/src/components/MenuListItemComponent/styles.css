@@ -37,7 +37,7 @@
     align-items: center;
 }
 .MLIComponent-Right-img{
-    width: 200px;
+    width: 90% !important;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -45,7 +45,7 @@
     height: 100%;
 }
 .MLIComponent-Right-img img{
-    width: 100%;
+    width: 80%;
     aspect-ratio: 1;
 }
 .MLIComponent-Right-cart{
