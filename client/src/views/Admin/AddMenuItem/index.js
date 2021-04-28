@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, UPLOAD_TO_S3, DELETE_FROM_S3, BUCKET_URL, BUCKET_URL_2 } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, UPLOAD_TO_S3, DELETE_FROM_S3, BUCKET_URL, BUCKET_URL_2, ADD_MENU } from '../../../constants'
 
 import { Button, ButtonRed, DropDown, Input, Picker, SectionHeading, SmallTitle } from '../../../components'
 import { capitalizeFirstLetter, getIdByName } from '../../../helpers'
@@ -103,14 +103,26 @@ function AddMenuItem(props) {
   }
 
   const validate = () => {
-    // if (!name)
-    //   return 'Item Name is required!'
-    // if (!price)
-    //   return 'Item Price is required!'
-    // if (!category)
-    //   return 'Item Category is required!'
-    // if (!imageUrl)
-    //   return 'Item Image is required!'
+    if (!name)
+      return 'Item Name is required!'
+    if (!price)
+      return 'Item Price is required!'
+    if (!category)
+      return 'Item Category is required!'
+    if (!imageUrl)
+      return 'Item Image is required!'
+    if (addOns && addOns.length) {
+      for (var i = 0; i < addOns.length; i++) {
+        if (!addOns[i].name)
+          return `Add-On # ${i+1} Name is required!`
+        if (addOns[i].variations && addOns[i].variations.length) {
+          for (var j = 0; j < addOns[i].variations.length; j++) {
+            if (!addOns[i].variations[j].name)
+              return 'Option Can\'t be blank!'
+          }
+        }
+      }
+    }
     return false
   }
 
@@ -125,8 +137,7 @@ function AddMenuItem(props) {
       addOns
     }
     dispatch(customisedAction(SET_TOAST_DISMISSING))
-    console.log(payload)
-    // dispatch(customisedAction(ADD_RESTAURANT, payload, { history: props.history }))
+    dispatch(customisedAction(ADD_MENU, payload, { history: props.history, restaurantId }))
   }
 
   return (
@@ -229,7 +240,7 @@ function AddMenuItem(props) {
             <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
               <div className="InputsContainer">
                 <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
-                  <SmallTitle text="Add-On Price" />
+                  <SmallTitle text="Add-On Price (Optional)" />
                   <Input 
                     placeholder="0.2 ($)"
                     type="number"
@@ -258,7 +269,7 @@ function AddMenuItem(props) {
               <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
                 <div className="InputsContainer">
                   <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
-                    <SmallTitle text="Price" />
+                    <SmallTitle text="Price (Optional)" />
                     <Input 
                       placeholder="0.33 ($)"
                       type="number"
