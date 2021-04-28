@@ -57,7 +57,8 @@ import {
   UPLOAD_TO_S3_FAILURE,
   DELETE_FROM_S3,
   DELETE_FROM_S3_SUCCESS,
-  DELETE_FROM_S3_FAILURE
+  DELETE_FROM_S3_FAILURE,
+  ADD_MENU_SUCCESS
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -166,6 +167,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
     case ADD_MENU:
       return { ...state, toast: { message: 'Adding Menu Item', type: 'success' } }
+    case ADD_MENU_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case ADD_MENU_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_ORDERS:

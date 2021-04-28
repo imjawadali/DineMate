@@ -4,14 +4,14 @@ exports.sendEmail = async function (email, subject, message) {
     let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'ivsdeveloper21@gmail.com',
-            pass: 'Ivs2021!'
+            user: process.env.MAILER_EMAIL,
+            pass: process.env.MAILER_PASSWORD
         },
     });
 
     try {
         let info = await transporter.sendMail({
-            from: '"DineMate" <ivsdeveloper21@gmail.com>',
+            from: `"DineMate" <${process.env.MAILER_EMAIL}>`,
             to: email,
             subject: subject,
             text: message

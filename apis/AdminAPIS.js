@@ -25,11 +25,9 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         let sql = 'SELECT U.id, U.name, U.email, U.role, U.restaurantId'
-        if (lowerCased(email) !== 'ahads62426@gmail.com')
             sql += ', R.restaurantName'
         sql += ' FROM users U'
-        if (lowerCased(email) !== 'ahads62426@gmail.com')
-            sql += ' JOIN restaurants R on U.restaurantId = R.restaurantId'
+            sql += ' LEFT JOIN restaurants R on U.restaurantId = R.restaurantId'
         sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`
         getConnection(
             res,
@@ -78,14 +76,11 @@ module.exports = app => {
     })
 
     app.post('/admin/createPassword', async (req, res) => {
-        const { restaurantId, email, password, hashString } = req.body
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        const { email, password, hashString } = req.body
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
         let sql = `UPDATE users SET ? WHERE email = '${lowerCased(email)}' `
-        if (email !== 'ahads62426@gmail.com')
-            sql += `AND restaurantId = BINARY '${restaurantId}' `
         sql += `AND passwordForgotten = 1 `
         sql += `AND hashString = '${hashString}'`
         getConnection(
@@ -715,9 +710,9 @@ module.exports = app => {
                                             } else {
                                                 if (addOns[i].variations && addOns[i].variations.length) {
                                                     tempDb.query("SET FOREIGN_KEY_CHECKS=0;")
-                                                    let query = 'INSERT INTO addOnOptions ( name, addOnID ) VALUES'
+                                                    let query = 'INSERT INTO addOnOptions ( name, price, addOnID ) VALUES'
                                                     for (var j=0; j<addOns[i].variations.length; j++) {
-                                                        query = query + ` ( '${addOns[i].variations[j]}', '${result.insertId}' )`
+                                                        query = query + ` ( '${addOns[i].variations[j].name}', '${addOns[i].variations[j].price}', '${result.insertId}' )`
                                                         if (j !== (addOns[i].variations.length - 1))
                                                             query = query + ','
                                                     }
@@ -1003,7 +998,7 @@ module.exports = app => {
         const fileName = `${uuid()}.${fileType}`
 
         const params = {
-            Bucket: 'dinematebucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileName,
             Body: file.buffer
         }
@@ -1022,7 +1017,7 @@ module.exports = app => {
         if (!fileName) return res.status(422).send({ 'msg': 'File name is required!' })
 
         const params = {
-            Bucket: 'dinematebucket',
+            Bucket: process.env.AWS_BUCKET_NAME,
             Key: fileName,
         }
 

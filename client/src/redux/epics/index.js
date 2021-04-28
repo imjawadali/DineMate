@@ -23,6 +23,7 @@ import { getUsersEpic } from './admin/getUsersEpic'
 import { updateUserEpic } from './admin/updateUserEpic'
 import { deleteUserEpic } from './admin/deleteUserEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
+import { addMenuItemEpic } from './admin/addMenuItemEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
 import { getOpenOrdersEpic } from './admin/getOpenOrdersEpic'
@@ -51,6 +52,7 @@ export const epics = combineEpics(
     updateUserEpic.updateUser,
     deleteUserEpic.deleteUser,
     getMenuEpic.getMenu,
+    addMenuItemEpic.addMenuItem,
     uploadToS3Epic.uploadToS3,
     deleteFromS3Epic.deleteFromS3,
     getOpenOrdersEpic.getOpenOrders
