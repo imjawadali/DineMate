@@ -54,7 +54,7 @@ export default function App() {
     return (!checkingSignIn ?
         <ToastProvider
             autoDismiss
-            autoDismissTimeout={30000}>
+            autoDismissTimeout={10000}>
             <Router>
                 <Toaster />
                 <Switch>

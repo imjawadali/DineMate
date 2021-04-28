@@ -2,33 +2,28 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT, UPLOAD_TO_S3, DELETE_FROM_S3, BUCKET_URL, BUCKET_URL_2 } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, UPLOAD_TO_S3, DELETE_FROM_S3, BUCKET_URL, BUCKET_URL_2 } from '../../../constants'
 
-import { Button, Input, Picker, SectionHeading, SmallTitle } from '../../../components'
+import { Button, ButtonRed, DropDown, Input, Picker, SectionHeading, SmallTitle } from '../../../components'
+import { capitalizeFirstLetter, getIdByName } from '../../../helpers'
 import './styles.css'
-import { capitalizeFirstLetter } from '../../../helpers'
 
 function AddMenuItem(props) {
 
-  const [restaurantId, setrestaurantId] = useState('')
-  const [restaurantName, setrestaurantName] = useState('')
-  const [cuisine, setcuisine] = useState('')
-  const [address, setaddress] = useState('')
-  const [city, setcity] = useState('')
-  const [country, setcountry] = useState('')
-  const [latitude, setlatitude] = useState('')
-  const [longitude, setlongitude] = useState('')
-  const [pName, setpName] = useState('')
-  const [pEmail, setpEmail] = useState('')
-  const [pPhoneNumber, setpPhoneNumber] = useState('')
-  const [sName, setsName] = useState('')
-  const [sEmail, setsEmail] = useState('')
-  const [sPhoneNumber, setsPhoneNumber] = useState('')
+  const [name, setname] = useState('')
+  const [price, setprice] = useState('')
+  const [shortDescription, setshortDescription] = useState('')
+  const [category, setcategory] = useState('')
+  const [addOns, setaddOns] = useState([])
 
-  const addingUpdatingRestaurant = useSelector(({ restaurantsReducer }) => restaurantsReducer.addingUpdatingRestaurant)
+  const addingMenu = useSelector(({ menuReducer }) => menuReducer.addingMenu)
   const uploading = useSelector(({ fileUploadReducer }) => fileUploadReducer.uploading)
   const imageUrl = useSelector(({ fileUploadReducer }) => fileUploadReducer.imageUrl)
+  const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
   const dispatch = useDispatch()
+
+  const { restaurantId } = admin
 
   useEffect(() => {
   }, [])
@@ -48,107 +43,143 @@ function AddMenuItem(props) {
     }
   }
 
+  const addAddOns = () => {
+    const tempAddOns = [ ...addOns, {
+      name: '',
+      price: 0,
+      mandatory: false
+    }]
+    setaddOns(tempAddOns)
+  }
+
+  const updateAddOn = (index, key, value) => {
+    const tempAddOns = [ ...addOns ]
+    const selectedAddOn = addOns[index]
+    selectedAddOn[key] = value
+    tempAddOns[index] = selectedAddOn
+    setaddOns(tempAddOns)
+  }
+
+  const deleteAddOn = (index) => {
+    const tempAddOns = [ ...addOns ]
+    tempAddOns.splice(index, 1)
+    setaddOns(tempAddOns)
+  }
+
+  const addAddOptions = (index) => {
+    const tempAddOns = [ ...addOns ]
+    const selectedAddOn = addOns[index]
+    const variations = selectedAddOn.variations || []
+    variations.push({
+      name: '',
+      price: 0
+    })
+    selectedAddOn.variations = variations
+    tempAddOns[index] = selectedAddOn
+    setaddOns(tempAddOns)
+  }
+
+  const updateAddOnOption = (index, index2, key, value) => {
+    const tempAddOns = [ ...addOns ]
+    const selectedAddOn = addOns[index]
+    const selectedVariation = selectedAddOn.variations[index2]
+    selectedVariation[key] = value
+    selectedAddOn.variations[index2] = selectedVariation
+    tempAddOns[index] = selectedAddOn
+    setaddOns(tempAddOns)
+  }
+
+  const deleteAddOnOption = (index, index2) => {
+    const tempAddOns = [ ...addOns ]
+    const selectedAddOn = addOns[index]
+    const variations = selectedAddOn.variations
+    variations.splice(index2, 1)
+    if (variations.length)
+      selectedAddOn.variations = variations
+    else
+      delete selectedAddOn.variations
+    tempAddOns[index] = selectedAddOn
+    setaddOns(tempAddOns)
+  }
+
   const validate = () => {
-    if (!restaurantName)
-      return 'Restaurant Name Required!'
-    if (!cuisine)
-      return 'Restaurant Cuisine Required!'
-    if (!city)
-      return 'Restaurant City Required!'
-    if (!country)
-      return 'Restaurant Country Required!'
-    if (!address)
-      return 'Detailed Address Required!'
-    if (!pName)
-      return 'Primary Contact Name Required!'
-    if (!pEmail)
-      return 'Primary Contact Email Required!'
-    if (!pPhoneNumber)
-      return 'Primary Contact Number Required!'
-    if (sEmail && !sName)
-      return 'Secondary Contact Name Required!'
-    if (sName && !sEmail)
-      return 'Secondary Contact Email Required!'
+    // if (!name)
+    //   return 'Item Name is required!'
+    // if (!price)
+    //   return 'Item Price is required!'
+    // if (!category)
+    //   return 'Item Category is required!'
+    // if (!imageUrl)
+    //   return 'Item Image is required!'
     return false
   }
 
-  const addRestuarant = () => {
+  const addMenuItem = () => {
     const payload = {
       restaurantId,
-      restaurantName,
-      cuisine: capitalizeFirstLetter(cuisine),
-      address: {
-        address,
-        city,
-        country,
-        latitude,
-        longitude
-      },
-      primaryContact: {
-        name: pName,
-        email: pEmail,
-        contactNumber: pPhoneNumber
-      },
-      secondaryContact: null
-    }
-    if (sName && sEmail) {
-      payload.secondaryContact = {
-        name: sName,
-        email: sEmail,
-        contactNumber: sPhoneNumber
-      }
+      imageUrl,
+      name: capitalizeFirstLetter(name),
+      price,
+      shortDescription,
+      categoryId: getIdByName(categories || [], category),
+      addOns
     }
     dispatch(customisedAction(SET_TOAST_DISMISSING))
-    dispatch(customisedAction(ADD_RESTAURANT, payload, { history: props.history }))
+    console.log(payload)
+    // dispatch(customisedAction(ADD_RESTAURANT, payload, { history: props.history }))
   }
 
   return (
     <div className="Container">
       <h2>Add Food Item</h2>
-      <div className="FormContainer">
+      <div className="FormContainer" style={{ borderBottom: 'none' }}>
         <div className="FormInnerContainer">
-          <SectionHeading text="Restaurant Information" />
           <div className="InputsContainer">
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Name" />
+            <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+              <SmallTitle text="Item Name" />
               <Input 
-                placeholder="Eg. (ABC Restaurant)"
-                value={restaurantName}
-                onChange={({ target: { value } }) => setrestaurantName(value)}
+                placeholder="Chicken Cheese Burger"
+                value={name}
+                onChange={({ target: { value } }) => setname(value)}
               />
             </div>
-            <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
-                <SmallTitle text="Cuisine" />
-                <Input 
-                  placeholder="Eg. (Traditional)"
-                  value={cuisine}
-                  onChange={({ target: { value } }) => setcuisine(value)}
-                />
-              </div>
-              <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
-                <SmallTitle text="City" />
-                <Input 
-                  placeholder="Eg. (Karachi)"
-                  value={city}
-                  onChange={({ target: { value } }) => setcity(value)}
-                />
-              </div>
-            </div>
             <div className="InputsInnerContainer">
-              <SmallTitle text="Country" />
+              <SmallTitle text="Item Price" />
               <Input 
-                placeholder="Eg. (Pakistan)"
-                value={country}
-                onChange={({ target: { value } }) => setcountry(value)}
+                placeholder="5.0 ($)"
+                type="number"
+                value={price}
+                onChange={({ target: { value } }) => setprice(value)}
               />
             </div>
           </div>
         </div>
         <div className="FormInnerContainer">
-          <SectionHeading text="Business Address" />
           <div className="InputsContainer">
+            <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+              <SmallTitle text="Short Description" />
+              <Input 
+                placeholder="Ham and Cheese Croissant."
+                value={shortDescription}
+                onChange={({ target: { value } }) => setshortDescription(value)}
+              />
+            </div>
             <div className="InputsInnerContainer">
+              <SmallTitle text="Category" />
+              <DropDown
+                placeholder="Select Item Category"
+                options={categories ? categories.map(category => category.name) : []}
+                value={category}
+                onChange={({ target: { value } }) => setcategory(value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="FormContainer" style={{ paddingTop: '0px', justifyContent: 'center' }}>
+        <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
+          <div className="InputsContainer">
+            <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
               <SmallTitle text="Item Image" />
               <Picker
                 height={'200px'}
@@ -160,89 +191,128 @@ function AddMenuItem(props) {
                 onCancel={() => dispatch(customisedAction(DELETE_FROM_S3, { fileName: imageUrl.replace(BUCKET_URL, '').replace(BUCKET_URL_2, '')}))}
               />
             </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Detailed Address" />
-              <Input 
-                placeholder="Eg. (Block - A, Street, State)"
-                value={address}
-                onChange={({ target: { value } }) => setaddress(value)}
-              />
-            </div>
           </div>
         </div>
       </div>
-      <div className="FormContainer">
-        <div className="FormInnerContainer">
-          <SectionHeading text="Primary Contact Information" />
-          <div className="InputsContainer">
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Name" />
-              <Input 
-                placeholder="Eg. (John Doe)"
-                value={pName}
-                onChange={({ target: { value } }) => setpName(value)}
-              />
+      {
+        addOns.map((addOn, index) => 
+        <div key={index} >
+          <div className="FormContainer" style={{ justifyContent: 'center', borderBottom: 'none' }}>
+            <div className="FormInnerContainer">
+              <SectionHeading text={`Add-on # ${index+1}`} />
+              <div className="InputsContainer">
+                <div className="InputsInnerContainer">
+                  <SmallTitle text="Add-on Type" />
+                  <DropDown
+                    placeholder="Select Add-on Type"
+                    options={['Mandatory', 'Optional']}
+                    value={addOn.mandatory ? 'Mandatory' : addOn.mandatory === false ? 'Optional' : null}
+                    onChange={({ target: { value } }) => updateAddOn(index, 'mandatory', value ? value === 'Mandatory' ? true : false : null)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Email" />
-              <Input 
-                placeholder="Eg. (john.doe@abcrestaurant.com)"
-                value={pEmail}
-                onChange={({ target: { value } }) => setpEmail(value)}
-              />
+          </div>
+          <div className="FormContainer" style={{ paddingTop: '0px', justifyContent: 'center', borderBottom: 'none' }}>
+            <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
+              <div className="InputsContainer">
+                <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+                  <SmallTitle text="Add-On Name" />
+                  <Input 
+                    placeholder="Flavour"
+                    value={addOn.name}
+                    onChange={({ target: { value } }) => updateAddOn(index, 'name', value)}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Phone Number" />
-              <Input 
-                placeholder="Eg. (+92 315 8731014)"
-                value={pPhoneNumber}
-                onChange={({ target: { value } }) => setpPhoneNumber(value)}
+            <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
+              <div className="InputsContainer">
+                <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+                  <SmallTitle text="Add-On Price" />
+                  <Input 
+                    placeholder="0.2 ($)"
+                    type="number"
+                    value={addOn.price}
+                    onChange={({ target: { value } }) => updateAddOn(index, 'price', value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          {addOn.variations && addOn.variations.length ?
+            addOn.variations.map((option, index2) =>
+            <div key={`${index}${index2}`} className="FormContainer" style={{ paddingTop: '0px', justifyContent: 'center', borderBottom: 'none' }}>
+              <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
+                <div className="InputsContainer">
+                  <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+                    <SmallTitle text={`Option # ${index2+1}`} />
+                    <Input 
+                      placeholder="Cheesy"
+                      value={option.name}
+                      onChange={({ target: { value } }) => updateAddOnOption(index, index2, 'name', value)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="FormInnerContainer" style={{ paddingTop: '0px' }}>
+                <div className="InputsContainer">
+                  <div className="InputsInnerContainer" style={{ paddingTop: '0px' }}>
+                    <SmallTitle text="Price" />
+                    <Input 
+                      placeholder="0.33 ($)"
+                      type="number"
+                      value={option.price}
+                      onChange={({ target: { value } }) => updateAddOnOption(index, index2, 'price', value)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="ButtonContainer OptionButtonContainer">
+                <i className="fa fa-arrow-left temp" style={{ marginRight: '10px' }}/>
+                <ButtonRed
+                  text="Delete Option"
+                  iconLeft={<i className="fa fa-trash" />}
+                  onClick={() => deleteAddOnOption(index, index2)}
+                />
+              </div>
+            </div>)
+          : null}
+          <div className="FormContainer" style={{ padding: '0px', justifyContent: 'center' }}>
+            <div className="ButtonContainer" style={{ paddingTop: '0px' }}>
+              <ButtonRed
+                text="Delete Add-On"
+                iconLeft={<i className="fa fa-trash" />}
+                onClick={() => deleteAddOn(index)}
+              />
+              <Button
+                text={addOn.variations && addOn.variations.length ? "Add more options" : "Add options"}
+                style={{ marginLeft: '15px' }}
+                iconLeft={<i className="fa fa-plus" />}
+                onClick={() => addAddOptions(index)}
               />
             </div>
           </div>
-        </div>
-        <div className="FormInnerContainer">
-          <SectionHeading text="Secondary Contact Information (Optional)" />
-          <div className="InputsContainer">
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Name" />
-              <Input 
-                placeholder="Eg. (John Doe)"
-                value={sName}
-                onChange={({ target: { value } }) => setsName(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Email" />
-              <Input 
-                placeholder="Eg. (john.doe@abcrestaurant.com)"
-                value={sEmail}
-                onChange={({ target: { value } }) => setsEmail(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Phone Number" />
-              <Input 
-                placeholder="Eg. (+92 315 8731014)"
-                value={sPhoneNumber}
-                onChange={({ target: { value } }) => setsPhoneNumber(value)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+        </div>)
+      }
       <div className="ButtonContainer">
         <Button
           text="Submit"
-          light={!!validate() || addingUpdatingRestaurant}
+          light={!!validate() || addingMenu}
           lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
             dispatch(customisedAction(SET_TOAST, {
-            message: validate() || 'Adding restaurant in progress',
+            message: validate() || 'Adding item in progress',
             type: validate() ? 'error' : 'success'
           }))}}
           iconLeft={<i className="fa fa-paper-plane" />}
-          onClick={() => null}
+          onClick={() => addMenuItem()}
+        />
+        <Button
+          text={addOns.length ? "Add more" : "Add Add-Ons"}
+          style={{ marginLeft: '15px' }}
+          iconLeft={<i className="fa fa-plus" />}
+          onClick={() => addAddOns()}
         />
       </div>
     </div>

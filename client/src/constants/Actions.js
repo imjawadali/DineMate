@@ -93,6 +93,7 @@ export const GET_MENU_SUCCESS = 'GET_MENU_SUCCESS'
 export const GET_MENU_FAILURE = 'GET_MENU_FAILURE'
 
 export const ADD_MENU = 'ADD_MENU'
+export const ADD_MENU_SUCCESS = 'ADD_MENU_SUCCESS'
 export const ADD_MENU_FAILURE = 'ADD_MENU_FAILURE'
 
 export const GET_USERS = 'GET_USERS'

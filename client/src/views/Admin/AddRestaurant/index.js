@@ -110,7 +110,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
               <Input 
-                placeholder="Eg. (ABC Restaurant)"
+                placeholder="ABC Restaurant"
                 value={restaurantName}
                 onChange={({ target: { value } }) => setRestaurantNameAndId(value)}
               />
@@ -119,7 +119,7 @@ function AddRestaurant(props) {
               <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Cuisine" />
                 <Input 
-                  placeholder="Eg. (Traditional)"
+                  placeholder="Traditional"
                   value={cuisine}
                   onChange={({ target: { value } }) => setcuisine(value)}
                 />
@@ -127,7 +127,7 @@ function AddRestaurant(props) {
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="City" />
                 <Input 
-                  placeholder="Eg. (Karachi)"
+                  placeholder="Karachi"
                   value={city}
                   onChange={({ target: { value } }) => setcity(value)}
                 />
@@ -136,7 +136,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Country" />
               <Input 
-                placeholder="Eg. (Pakistan)"
+                placeholder="Pakistan"
                 value={country}
                 onChange={({ target: { value } }) => setcountry(value)}
               />
@@ -153,7 +153,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Detailed Address" />
               <Input 
-                placeholder="Eg. (Block - A, Street, State)"
+                placeholder="Block - A, Street, State"
                 value={address}
                 onChange={({ target: { value } }) => setaddress(value)}
               />
@@ -168,7 +168,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
               <Input 
-                placeholder="Eg. (John Doe)"
+                placeholder="John Doe"
                 value={pName}
                 onChange={({ target: { value } }) => setpName(value)}
               />
@@ -176,7 +176,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Email" />
               <Input 
-                placeholder="Eg. (john.doe@abcrestaurant.com)"
+                placeholder="john.doe@abcrestaurant.com"
                 value={pEmail}
                 onChange={({ target: { value } }) => setpEmail(value)}
               />
@@ -184,7 +184,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
               <Input 
-                placeholder="Eg. (+92 315 8731014)"
+                placeholder="+92 315 8731014"
                 value={pPhoneNumber}
                 onChange={({ target: { value } }) => setpPhoneNumber(value)}
               />
@@ -197,7 +197,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
               <Input 
-                placeholder="Eg. (John Doe)"
+                placeholder="John Doe"
                 value={sName}
                 onChange={({ target: { value } }) => setsName(value)}
               />
@@ -205,7 +205,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Email" />
               <Input 
-                placeholder="Eg. (john.doe@abcrestaurant.com)"
+                placeholder="john.doe@abcrestaurant.com"
                 value={sEmail}
                 onChange={({ target: { value } }) => setsEmail(value)}
               />
@@ -213,7 +213,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
               <Input 
-                placeholder="Eg. (+92 315 8731014)"
+                placeholder="+92 315 8731014"
                 value={sPhoneNumber}
                 onChange={({ target: { value } }) => setsPhoneNumber(value)}
               />
