@@ -15,11 +15,11 @@ const Picker = ({ style, height, imageUrl, uploading, showCancel, extensions, on
       imgExtension={extensions}
       maxFileSize={2048000}
       onChange={onChange}
-    /> : <div className="Input ImagePreviewContainer">
+    /> : <div className="Input ImagePreviewContainer" style={{ height }}>
       <p>Processing Image</p>
       <i style={{ marginTop: '10px' }} className="fa fa-refresh fa-pulse fa-2x" />
     </div> :
-    <div className="Input ImagePreviewContainer">
+    <div className="Input ImagePreviewContainer" style={{ height }}>
       {showCancel ? <i className="fa fa-times-circle fa-lg"
         style={{
           display: 'block',
@@ -31,7 +31,7 @@ const Picker = ({ style, height, imageUrl, uploading, showCancel, extensions, on
         }}
         onClick={onCancel}
       /> : null}
-      <img style={{ height, ...style }} src={imageUrl} alt={imageUrl} />
+      <img style={{ height: '100%' , ...style }} src={imageUrl} alt={imageUrl} />
     </div>
 )
 

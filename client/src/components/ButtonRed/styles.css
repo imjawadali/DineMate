@@ -1,0 +1,54 @@
+.ButtonRed {
+    padding: 7px 30px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: rgba(255, 0, 0, 0.6);
+    background-color: rgba(255, 0, 0, 0.6);
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.ButtonRedText {
+    font-weight: 500;
+    color: white;
+    font-size: 18px;
+}
+
+.ButtonRed:hover {
+    border-color: rgba(255, 0, 0, 0.6);
+    background-color: white !important;
+    outline: none !important;
+}
+
+.ButtonRed:hover .ButtonRedText {
+    color: rgba(255, 0, 0, 1) !important;
+}
+
+.ButtonRed:focus {
+    outline: none !important;
+}
+
+@media only screen and (max-width: 978px) {
+    .ButtonRed {
+        padding: 6px 25px;
+    }
+
+    .ButtonRedText {
+        font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .ButtonRed {
+        padding: 5px 20px;
+    }
+
+    .ButtonRedText {
+        font-size: 14px;
+    }
+}

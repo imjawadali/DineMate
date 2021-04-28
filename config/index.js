@@ -3,13 +3,13 @@ exports.mySQLConfig = {
     connectTimeout  : 30 * 1000,
     acquireTimeout  : 30 * 1000,
     timeout         : 30 * 1000,
-    host: 'dinematedev.csrzbhrmzsxf.us-east-2.rds.amazonaws.com',
-    user: 'root',
-    password: 'DineMateDB',
-    database: 'DineMateDev'
+    host: process.env.AWS_DB_HOST,
+    user: process.env.AWS_DB_USER,
+    password: process.env.AWS_DB_PASSWORD,
+    database: process.env.AWS_DB_NAME
 }
 
 exports.awsConfig = {
-    accessKeyId: 'AKIA2QRB7JECKOH4HF7L',
-    secretAccessKey: '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'
+    accessKeyId: process.env.AWS_ID,
+    secretAccessKey: process.env.AWS_SECRET
 }
