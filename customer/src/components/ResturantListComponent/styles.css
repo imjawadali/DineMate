@@ -105,6 +105,7 @@ font-size: 12px;
 @media all and (min-width: 768px) and (max-width: 1024px) {
 
 .resturantListComponent-info-left{
+    
 width: 80%;
 }
 .resturantListComponent-info-left h3{
@@ -135,9 +136,18 @@ font-size: 16px;
 
 
 @media all and (min-width: 480px) and (max-width: 768px) {
-
+    .resturantListComponent-image{
+        width: 100%;
+    /* background-color: greenyellow; */
+    }
+    .resturantListComponent-image img{
+        width: 100% !important; 
+    }
+.resturantListComponent-info{
+    /* background-color: greenyellow; */
+}
 .resturantListComponent-info-left{
-width: 80%;
+width: 70%;
 }
 .resturantListComponent-info-left h3{
 font-size: 22px;
@@ -151,8 +161,9 @@ padding: 10px 0;
 padding-top: 5px;
 }
 .resturantListComponent-info-right{
+/* background-color: green; */
 padding-top:10px;
-padding-right:10px;
+/* padding-right:10px; */
 }
 .resturantListComponent-info-right-star{
     padding-top: 10px;
