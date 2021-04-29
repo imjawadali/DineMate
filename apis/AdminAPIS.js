@@ -867,18 +867,74 @@ module.exports = app => {
         if (!name) return res.status(422).send({ 'msg': 'User\'s name is required!' })
         if (!email) return res.status(422).send({ 'msg': 'User\'s email is required!' })
         if (!role) return res.status(422).send({ 'msg': 'User\'s role is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `INSERT INTO users SET ?`,
-            { restaurantId, name, email, role, contactNumber },
-            (result) => {
-                if (result.affectedRows)
-                    return res.send({ 'msg': 'User Added Successfully!' })
-                else
-                    return res.status(422).send({ 'msg': 'Failed to add user!' })
+        // getSecureConnection(
+        //     res,
+        //     adminId,
+        //     `INSERT INTO users SET ?`,
+        //     { restaurantId, name, email, role, contactNumber },
+        //     (result) => {
+        //         if (result.affectedRows)
+        //             return res.send({ 'msg': 'User Added Successfully!' })
+        //         else
+        //             return res.status(422).send({ 'msg': 'Failed to add user!' })
+        //     }
+        // )
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.status(503).send({ 'msg': 'Unable to reach database!' })
+            } else {
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'SuperAdmin' OR role = 'Admin') AND active = 1`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            const hashString = Math.random().toString(36).substring(2);
+                            tempDb.query('INSERT INTO users SET ?', {
+                                restaurantId, name, email, role, contactNumber, hashString
+                            }, async function(error) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function() {
+                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                    })
+                                } else {
+                                    const emailStatus = await sendEmail(
+                                        email,
+                                        'Create Password',
+                                        setPasswordMessage(
+                                            name,
+                                            restaurantId,
+                                            `${URL}/client/createPassword/${restaurantId}/${email}/${hashString}`
+                                        )
+                                    )
+                                    if (emailStatus && emailStatus.accepted.length) {
+                                        tempDb.commit(function(error) {
+                                            if (error) { 
+                                                tempDb.rollback(function() {
+                                                    return res.status(422).send({ 'msg': error.sqlMessage })
+                                                })
+                                            }
+                                            tempDb.release()
+                                            return res.send({
+                                                'msg': 'User Added Successfully!'
+                                            })
+                                        })
+                                    } else  tempDb.rollback(function() {
+                                        return res.status(422).send({ 'msg': `Invalid Email: "${email}"!` })
+                                    })
+                                }
+                            })
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
             }
-        )
+        })
     })
 
     app.post('/admin/updateUser', async (req, res) => {

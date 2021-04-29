@@ -20,6 +20,7 @@ import { addCategoryEpic } from './admin/addCategoryEpic'
 import { updateCategoryEpic } from './admin/updateCategoryEpic'
 import { deleteCategoryEpic } from './admin/deleteCategoryEpic'
 import { getUsersEpic } from './admin/getUsersEpic'
+import { addUserEpic } from './admin/addUserEpic'
 import { updateUserEpic } from './admin/updateUserEpic'
 import { deleteUserEpic } from './admin/deleteUserEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
@@ -49,6 +50,7 @@ export const epics = combineEpics(
     updateCategoryEpic.updateCategory,
     deleteCategoryEpic.deleteCategory,
     getUsersEpic.getUsers,
+    addUserEpic.addUser,
     updateUserEpic.updateUser,
     deleteUserEpic.deleteUser,
     getMenuEpic.getMenu,

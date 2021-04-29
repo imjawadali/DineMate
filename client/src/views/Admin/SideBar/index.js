@@ -79,10 +79,6 @@ function SideBar(props) {
                             <i className="fa fa-users" />
                             <Link to={`${url}/usersManagement`}>Users Management</Link>
                         </div>
-                        <div className={`sidebar__link sidebar_disabled_link ${pathname.includes('/addUsers') ? 'active_menu_link' : null}`}>
-                            <i className="fa fa-user-plus" />
-                            <Link to={pathname}>Add Users</Link>
-                        </div>
                         <div className="sidebar__link sidebar_disabled_link">
                             <i className="fa fa-list" />
                             <Link to={`${pathname}`}>Schedule Management</Link>
