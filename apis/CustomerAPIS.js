@@ -105,6 +105,43 @@ module.exports = app => {
         )
     })
 
+    app.post('/customer/getRestaurantDetails', async (req, res) => {
+        const { restaurantId } = req.body
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restaurant Id is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating,
+            RA.city, RA.address,
+            GROUP_CONCAT(c.name) as categories
+            FROM restaurants R 
+            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
+            LEFT JOIN categories c on c.restaurantId = R.restaurantId
+            WHERE R.restaurantId = '${restaurantId}' 
+            GROUP BY R.restaurantId
+            ORDER BY R.createdAt DESC`,
+            null,
+            (body) => {
+                if (body.length) {
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body: body[0]
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No reastaurants details available!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
     app.post('/customer/getMenuItems', async (req, res) => {
         const { restaurantId } = req.body
         if (!restaurantId) return res.send({

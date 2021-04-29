@@ -8,7 +8,7 @@ import SearchBar from '../../components/SeachBar'
 import MenuListingContainer from '../MenuListingContainer'
 
 import { customisedAction } from '../../redux/actions';
-import { GET_MENU } from '../../constants';
+import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../constants';
 import Footer from '../Footer'
 import Header from '../Header'
 
@@ -38,12 +38,15 @@ const MenuListing = props => {
 
     const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
+    const fetchingRestaurantDetails = useSelector(({ menuReducer }) => menuReducer.fetchingRestaurantDetails)
+    const restaurant = useSelector(({ menuReducer }) => menuReducer.restaurant)
     const dispatch = useDispatch()
 
     let { restaurantId, tableId } = useParams();
   
     useEffect(() => {
-      dispatch(customisedAction(GET_MENU, { restaurantId }))
+        dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
+        dispatch(customisedAction(GET_MENU, { restaurantId }))
     }, [])
 
     const addToCart = id =>{
@@ -52,6 +55,7 @@ const MenuListing = props => {
         setCart([...cart,{id:id}])
     }
 
+    const imagesArray = [require("../../assets/listingbg.png"), require("../../assets/bgimage.png")]
     return (
         <>
             <Header />
@@ -68,52 +72,43 @@ const MenuListing = props => {
                 <div className="menuListingImagewithText"  >
 
                     <div style={{width:'100%'}}>
-                        <img src={require("../../assets/listingbg.png").default} style={{ width: '100%', height: '100%' }} />
+                        {restaurant ?
+                            <img src={restaurant.imageUrl || imagesArray[0].default} style={{ width: '100%', height: '100%' }} />
+                        : null}
                     </div>
                     <div className="menuListingImagewithTextContainer" style={{ zIndex: 999,position:'absolute',width:'90%',left:'5%',right:'5%',height:'20vh'}}>
-                        <h2>Tim Hortons</h2>
-                        <h3>$$$ • Bakery • Cafe • Donuts • 3.9 (106)</h3>
+                        <h2>{restaurant && restaurant.restaurantName}</h2>
+                        <h3>$$$ {restaurant ? restaurant.categories ? restaurant.categories.replaceAll(',', ' • ') : 'Bakery • Cafe • Donuts' : null}</h3>
                     </div>
                 </div>
 
-
-                <div className="menuListingLocation">
-                    <div className="menuListingLocationConatiner">
-                        <SearchBar iconName={faMapMarkerAlt} text="Missigua, Ontario" color="rgb(103, 103, 103)"/>
-                    </div>
-                </div>
-
-
-
-                <div className="menuListingFeatured">
-                    <div className="menuListingFeaturedContainer">
-                        <div className="menuListingFeaturedContainerItem selectedItem">
-                            <h3>
-                                Picked for you
-                            </h3>
-                        </div>
-                        <div className="menuListingFeaturedContainerItem">
-                            <h3>
-                                Picked for you
-                            </h3>
-                        </div>
-                        <div className="menuListingFeaturedContainerItem">
-                            <h3>
-                                Picked for you
-                            </h3>
-                        </div>
-                        <div className="menuListingFeaturedContainerItem">
-                            <h3>
-                                Picked for you
-                            </h3>
-                        </div>
-                        <div className="menuListingFeaturedContainerItem">
-                            <h3>
-                                Picked for you
-                            </h3>
+                {restaurant ?
+                    <div className="menuListingLocation">
+                        <div className="menuListingLocationConatiner">
+                            <SearchBar iconName={faMapMarkerAlt} text={restaurant ? `${restaurant.address}, ${restaurant.city}` : ''} color="rgb(103, 103, 103)"/>
                         </div>
                     </div>
-                </div>
+                : null }
+
+
+                {restaurant && restaurant.categories && restaurant.categories.split(',').length ? 
+                    <div className="menuListingFeatured">
+                        <div className="menuListingFeaturedContainer">
+                            <div className="menuListingFeaturedContainerItem selectedItem">
+                                <h3>
+                                    Picked for you
+                                </h3>
+                            </div>
+                            {restaurant.categories.split(',').map(category => 
+                                <div className="menuListingFeaturedContainerItem">
+                                    <h3>
+                                        {category}
+                                    </h3>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                : null }
 
               
               
