@@ -8,6 +8,7 @@ import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
 import { RestClient } from '../services/network'
 import { getItem } from '../helpers'
 
+import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
 import Restaurants from './Restaurants'
 import Menu from './Menu'
@@ -49,18 +50,20 @@ export default function App() {
             autoDismissTimeout={6000}>
             <Router>
                 <Toaster />
-                <Switch>
-                    <Route exact path='/'>
-                        <Redirect to='/customer/restaurants' />
-                    </Route>
-                    <Route exact path='/customer'>
-                        <Redirect to='/customer/restaurants' />
-                    </Route>
-                    <Route path='/customer/restaurants'  component={Restaurants} />
-                    <Route exact path='/customer/:restaurantId/menu/' component={MenuListing} />
-                    <Route exact path='/customer/:restaurantId/:tableId' component={Menu} />
-                    <Route component={NoRoute} />
-                </Switch>
+                <ScrollToTop>
+                    <Switch>
+                        <Route exact path='/'>
+                            <Redirect to='/customer/restaurants' />
+                        </Route>
+                        <Route exact path='/customer'>
+                            <Redirect to='/customer/restaurants' />
+                        </Route>
+                        <Route path='/customer/restaurants'  component={Restaurants} />
+                        <Route exact path='/customer/:restaurantId/menu/' component={MenuListing} />
+                        <Route exact path='/customer/:restaurantId/:tableId' component={Menu} />
+                        <Route component={NoRoute} />
+                    </Switch>
+                </ScrollToTop>
             </Router>
         </ToastProvider> :
         <div className="full-screen-container" style={{ background: '#b5c9bf'}}>

@@ -1,5 +1,8 @@
 import { 
   SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
+  GET_ALL_RESTAURANTS_FAILURE,
+  GET_MENU_FAILURE,
+  GET_MENU
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -10,6 +13,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: null }
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
+    case GET_ALL_RESTAURANTS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_MENU:
+      return { ...state, toastSetDismiss: true }
+    case GET_MENU_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state
   }

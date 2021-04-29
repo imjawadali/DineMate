@@ -23,9 +23,9 @@ export class loginEpic {
             API_ENDPOINTS.customer.login,
             { email, password },
             (resObj) => {
-              setItem('customer', resObj)
-              RestClient.setHeader('Authorization', resObj.id)
-              return customisedAction(SET_SESSION, { customer: resObj })
+              setItem('customer', resObj.body)
+              RestClient.setHeader('Authorization', resObj.body.id)
+              return customisedAction(SET_SESSION, { customer: resObj.body })
             },
             SIGN_IN_FAILURE
           )

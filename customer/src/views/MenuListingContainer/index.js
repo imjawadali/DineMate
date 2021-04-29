@@ -11,17 +11,17 @@ const MenuListingContainer = props => {
             </h1>
 
             <div className="MenuListingContainerItemContainer">
-                {data.map(({ title, subTitle, price, id }) => {
+                {data.map(({ name, imageUrl, shortDescription, price, id }) => {
                     return (
                         <div className={"MenuListingContainerItem ".concat(cart.find(item=>item.id==id)?"selectedItemContainer":"")}>
                         <MenuListItemComponent
-                            heading={title}
-                            subHeading={subTitle}
+                            heading={name}
+                            subHeading={shortDescription || 'Loaded with Cheese, with mayo'}
                             cartValue={cart.find(item=>item.id==id)?"1":""}
                             price={price}
                             onClick={()=>onClick(id)}
                             addToCart={cart.find(item=>item.id==id)}
-                            image={require("../../assets/bgimage.png").default} />
+                            image={imageUrl} />
                             </div>
                     )
                 })}

@@ -13,15 +13,17 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         } else response = await RestClient.post(url, data)
         const { status, data: resObj, problem } = response
         if (status && status === 200) {
-          return successCallback(resObj)
-        }
-        if (status && (status === 401 || status === 422 || status === 503)) {
-          if (status === 401) {
-            removeItem('customer')
-            store.dispatch(customisedAction(LOGOUT))
-            store.dispatch(customisedAction(SESSION_CHECK_DONE))
+          const { status: ok, errorCode, message } = resObj
+          if (ok)
+            return successCallback(resObj)
+          else {
+            if (errorCode === 401) {
+              removeItem('customer')
+              store.dispatch(customisedAction(LOGOUT))
+              store.dispatch(customisedAction(SESSION_CHECK_DONE))
+            }
+            return customisedAction(failureAction, noToast ? null : { message, type: 'error' })
           }
-          return customisedAction(failureAction, noToast ? null : { message: resObj.msg, type: 'error' })
         }
         if (problem && problem === 'NETWORK_ERROR') {
           return customisedAction(failureAction, noToast ? null : { message: `Network Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })

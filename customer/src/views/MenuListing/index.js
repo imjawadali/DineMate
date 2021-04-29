@@ -1,14 +1,16 @@
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from "react-router-dom";
+
 import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons'
-import React, { useState } from 'react'
+
 import SearchBar from '../../components/SeachBar'
 import MenuListingContainer from '../MenuListingContainer'
+
+import { customisedAction } from '../../redux/actions';
+import { GET_MENU } from '../../constants';
 import Footer from '../Footer'
 import Header from '../Header'
-
-
-
-
-
 
 const DATA = [{
     id:1,
@@ -30,27 +32,29 @@ const DATA = [{
 
 }]
 
-
-
-
 const MenuListing = props => {
 
-const [cart,setCart] = useState([])
+    const [cart, setCart] = useState([])
 
-const addToCart = id =>{
-    if(cart.find((item)=>item.id===id)){
-        return  setCart(cart.filter((item)=>item.id!==id)) 
-        
+    const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
+    const menu = useSelector(({ menuReducer }) => menuReducer.menu)
+    const dispatch = useDispatch()
+
+    let { restaurantId, tableId } = useParams();
+  
+    useEffect(() => {
+      dispatch(customisedAction(GET_MENU, { restaurantId }))
+    }, [])
+
+    const addToCart = id =>{
+        if (cart.find((item)=>item.id===id))
+            return  setCart(cart.filter((item)=>item.id!==id))
+        setCart([...cart,{id:id}])
     }
-    setCart([...cart,{id:id}])
-    
 
-}
-// alert(cart)
     return (
         <>
             <Header />
-
             <div className="menuListing">
                 {/* searchbar */}
                 <div className="resturant-searchbar menuListingSearch" style={{ zIndex: 999 }}>
@@ -114,10 +118,11 @@ const addToCart = id =>{
               
               
               
-              
+            {menu && menu.length ?
                 <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" data={DATA} onClick={(id)=>addToCart(id)} cart={cart}/>
+                    <MenuListingContainer heading="Picked for you" data={menu} onClick={(id)=>addToCart(id)} cart={cart}/>
                 </div>
+            : null}
 
 
                 {/* <div className="menulistingcontainer">
