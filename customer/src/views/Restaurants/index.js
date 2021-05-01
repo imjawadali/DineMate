@@ -6,9 +6,6 @@ import { Title } from '../../components/Title'
 import { GET_ALL_RESTAURANTS } from '../../constants'
 import { customisedAction } from '../../redux/actions'
 
-import Footer from '../Footer'
-import Header from '../Header'
-
 const ResturantDATA = [{
   title: "Tim Hortons",
   price: "$$",
@@ -55,7 +52,6 @@ function Restaurants(props) {
 
   return (
     <div>
-      <Header />
       <div className="resturant-searchbar">
         {/* <div className="resturant-searchbar-container"> */}
           {/* <SearchBar iconName={faSearch} text="Missigua, Ontario" /> */}
@@ -98,11 +94,6 @@ function Restaurants(props) {
       <div style={{ display: 'flex', justifyContent: 'center',  }} className="button-container-resturant">
         <button className="resturant-button">Show More</button>
       </div>
-      <div>
-        <Footer />
-      </div>
-
-
     </div>
   )
 }

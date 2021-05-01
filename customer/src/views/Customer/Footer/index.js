@@ -8,14 +8,14 @@ import './styles.css'
 //             <div className="footer-top">
 //                 <div className="footer-top-left">
 //                     <div className="footer-top-left-top">
-//                         <img src={require("../../assets/logo.png").default} />
+//                         <img src={require("../../../assets/logo.png").default} />
 //                     </div>
 //                     <div className="footer-top-left-bottom">
 //                         <div className="footer-top-left-bottom-img">
-//                             <img src={require("../../assets/apple.png").default} />
+//                             <img src={require("../../../assets/apple.png").default} />
 //                         </div>
 //                         <div className="footer-top-left-bottom-img">
-//                             <img src={require("../../assets/google.png").default} />
+//                             <img src={require("../../../assets/google.png").default} />
 //                         </div>
 //                     </div>
 //                 </div>
@@ -53,10 +53,10 @@ import './styles.css'
 //                 </div>
 //                 <div className="footer-bottom-right">
 //                     <div className="footer-bottom-right-logo">
-//                         <img src={require("../../assets/fblogo.png").default} />
+//                         <img src={require("../../../assets/fblogo.png").default} />
 //                     </div>
 //                     <div className="footer-bottom-right-logo">
-//                         <img src={require("../../assets/instagramlogo.png").default} />
+//                         <img src={require("../../../assets/instagramlogo.png").default} />
 //                     </div>
 //                 </div>
 //             </div>
@@ -77,14 +77,14 @@ const Footer = props => {
                 <div className="global-footer-top">
                     <div className="footer-top-left">
                         <div className="footer-top-left-top">
-                            <img src={require("../../assets/logo.png").default} />
+                            <img src={require("../../../assets/logo.png").default} />
                         </div>
                         <div className="footer-top-left-bottom">
                             <div className="footer-top-left-bottom-img">
-                                <img src={require("../../assets/apple.png").default} />
+                                <img src={require("../../../assets/apple.png").default} />
                             </div>
                             <div className="footer-top-left-bottom-img">
-                                <img src={require("../../assets/google.png").default} />
+                                <img src={require("../../../assets/google.png").default} />
                             </div>
                         </div>
                     </div>
@@ -122,10 +122,10 @@ const Footer = props => {
                     </div>
                     <div className="footer-bottom-right">
                         <div className="footer-bottom-right-logo">
-                            <img src={require("../../assets/fblogo.png").default} />
+                            <img src={require("../../../assets/fblogo.png").default} />
                         </div>
                         <div className="footer-bottom-right-logo">
-                            <img src={require("../../assets/instagramlogo.png").default} />
+                            <img src={require("../../../assets/instagramlogo.png").default} />
                         </div>
                     </div>
                 </div>

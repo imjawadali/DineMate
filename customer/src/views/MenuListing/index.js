@@ -9,8 +9,6 @@ import MenuListingContainer from '../MenuListingContainer'
 
 import { customisedAction } from '../../redux/actions';
 import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../constants';
-import Footer from '../Footer'
-import Header from '../Header'
 
 const DATA = [{
     id:1,
@@ -58,7 +56,6 @@ const MenuListing = props => {
     const imagesArray = [require("../../assets/listingbg.png"), require("../../assets/bgimage.png")]
     return (
         <>
-            <Header />
             <div className="menuListing">
                 {/* searchbar */}
                 <div className="resturant-searchbar menuListingSearch" style={{ zIndex: 999 }}>
@@ -119,29 +116,7 @@ const MenuListing = props => {
                 </div>
             : null}
 
-
-                {/* <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" />
-                </div>
-                <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" />
-                </div>
-                <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" />
-                </div>
-                <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" />
-                </div>
-                <div className="menulistingcontainer">
-                    <MenuListingContainer heading="Picked for you" />
-                </div>
-
- */}
-
-
             </div>
-
-            <Footer />
         </>
     )
 }

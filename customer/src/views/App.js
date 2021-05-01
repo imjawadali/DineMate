@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
 import { customisedAction } from '../redux/actions'
@@ -10,13 +10,12 @@ import { getItem } from '../helpers'
 
 import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
-import Restaurants from './Restaurants'
-import Menu from './Menu'
+import Customer from './Customer'
+import Home from './Home'
 import NoRoute from './NoRoute'
 
 import logo from '../assets/logo.png'
 import './styles.css'
-import MenuListing from './MenuListing'
 
 export default function App() {
 
@@ -26,23 +25,16 @@ export default function App() {
 
     useEffect(() => {
         if (!customer) {
-        const storedCustomer = getItem('customer')
-        if (storedCustomer)
-            setTimeout(() => {
-                RestClient.setHeader('Authorization', storedCustomer.id)
-                dispatch(customisedAction(SET_SESSION, { customer: storedCustomer }))
-            }, 300)
-        else
-            setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
+            const storedCustomer = getItem('customer')
+            if (storedCustomer)
+                setTimeout(() => {
+                    RestClient.setHeader('Authorization', storedCustomer.id)
+                    dispatch(customisedAction(SET_SESSION, { customer: storedCustomer }))
+                }, 300)
+            else
+                setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
         }
     }, [])
-
-    const CustomerLanding = ({ component: Component, ...rest }) => (
-        <Route {...rest} render={(props) => (
-            !customer ? 
-            <Component {...props} /> : <Redirect to={{ pathname: '/customer/restaurants' }} />
-        )} />
-    )
 
     return (!checkingSignIn ?
         <ToastProvider
@@ -52,15 +44,8 @@ export default function App() {
                 <Toaster />
                 <ScrollToTop>
                     <Switch>
-                        <Route exact path='/'>
-                            <Redirect to='/customer/restaurants' />
-                        </Route>
-                        <Route exact path='/customer'>
-                            <Redirect to='/customer/restaurants' />
-                        </Route>
-                        <Route path='/customer/restaurants'  component={Restaurants} />
-                        <Route exact path='/customer/:restaurantId/menu/' component={MenuListing} />
-                        <Route exact path='/customer/:restaurantId/:tableId' component={Menu} />
+                        <Route exact path='/' component={Home} />
+                        <Route path='/customer'  component={Customer} />
                         <Route component={NoRoute} />
                     </Switch>
                 </ScrollToTop>
