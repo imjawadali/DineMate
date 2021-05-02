@@ -1,5 +1,5 @@
 import React from 'react'
-import MenuListItemComponent from '../../components/MenuListItemComponent'
+import MenuListItemComponent from '../../../../components/MenuListItemComponent'
 
 const MenuListingContainer = props => {
     const { heading, cart, data,onClick } = props

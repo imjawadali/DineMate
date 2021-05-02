@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
@@ -19,6 +19,8 @@ import './styles.css'
 
 export default function App() {
 
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+
     const checkingSignIn = useSelector(({ sessionReducer }) => sessionReducer.checkingSignIn)
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const dispatch = useDispatch()
@@ -36,16 +38,24 @@ export default function App() {
         }
     }, [])
 
+    const openSidebar = () => {
+        setSidebarOpen(true)
+    }
+  
+    const closeSidebar = () => {
+        setSidebarOpen(false)
+    }
+
     return (!checkingSignIn ?
         <ToastProvider
             autoDismiss
             autoDismissTimeout={6000}>
             <Router>
                 <Toaster />
-                <ScrollToTop>
+                <ScrollToTop closeSidebar={closeSidebar}>
                     <Switch>
-                        <Route exact path='/' component={Home} />
-                        <Route path='/customer'  component={Customer} />
+                        <Route exact path='/' openSidebar={openSidebar} component={Home} />
+                        <Route path='/customer' openSidebar={openSidebar} component={Customer} />
                         <Route component={NoRoute} />
                     </Switch>
                 </ScrollToTop>

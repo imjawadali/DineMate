@@ -1,12 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
-function Home(props) {
+import Landing from './Landing'
+import NoRoute from '../NoRoute'
+import Footer from '../Footer'
+
+import './styles.css'
+
+export default function Home(props) {
+
+  useEffect(() => {
+    console.log("Home", props)
+  }, [])
+
+  let { path } = useRouteMatch()
+
   return (
     <div>
-      <p>Home</p>
-      <a href="/customer/restaurants">Restaurants</a>
+      <Switch>
+        <Route exact path={path} component={Landing} />
+        <Route component={NoRoute} />
+      </Switch>
+      <Footer />
     </div>
   )
 }
-
-export default Home

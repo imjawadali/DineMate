@@ -4,33 +4,13 @@ import { useParams } from "react-router-dom";
 
 import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons'
 
-import SearchBar from '../../components/SeachBar'
-import MenuListingContainer from '../MenuListingContainer'
+import SearchBar from '../../../components/SeachBar'
+import MenuListingContainer from './MenuListingContainer'
 
-import { customisedAction } from '../../redux/actions';
-import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../constants';
+import { customisedAction } from '../../../redux/actions';
+import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../../constants';
 
-const DATA = [{
-    id:1,
-    title:"Labs Secret",
-    subTitle:"Loaded with Cheese, with mayo",
-    price:"223"
-
-},{
-    id:2,
-    title:"Labs Secret",
-    subTitle:"Loaded with Cheese, with mayo",
-    price:"223"
-
-},{
-    id:3,
-    title:"Labs Secret",
-    subTitle:"Loaded with Cheese, with mayo",
-    price:"223"
-
-}]
-
-const MenuListing = props => {
+const Menu = props => {
 
     const [cart, setCart] = useState([])
 
@@ -53,7 +33,7 @@ const MenuListing = props => {
         setCart([...cart,{id:id}])
     }
 
-    const imagesArray = [require("../../assets/listingbg.png"), require("../../assets/bgimage.png")]
+    const imagesArray = [require("../../../assets/listingbg.png")]
     return (
         <>
             <div className="menuListing">
@@ -120,4 +100,4 @@ const MenuListing = props => {
         </>
     )
 }
-export default MenuListing
+export default Menu

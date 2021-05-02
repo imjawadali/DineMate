@@ -1,44 +1,10 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import ResturantListComponent from '../../components/ResturantListComponent'
-import { Title } from '../../components/Title'
-import { GET_ALL_RESTAURANTS } from '../../constants'
-import { customisedAction } from '../../redux/actions'
-
-const ResturantDATA = [{
-  title: "Tim Hortons",
-  price: "$$",
-  cuisines: "• Breakfast and Brunch • American • Sandwiches",
-  stars: "4.1",
-  imageUrl: require("../../assets/listingbg.png")
-},
-{
-  title: "secondR esturatn",
-  price: "$$",
-  cuisines: "• Breakfast and Brunch • American • Sandwiches",
-  stars: "4.1",
-  imageUrl: require("../../assets/bgimage.png")
-}, {
-  title: "secondRe Hortons",
-  price: "$$",
-  cuisines: "• Breakfast and Brunch • American • Sandwiches",
-  stars: "4.1",
-  imageUrl: require("../../assets/listingbg.png")
-}, {
-  title: "Tim  turatn",
-  price: "$$",
-  cuisines: "• Breakfast and Brunch • American • Sandwiches",
-  stars: "4.1",
-  imageUrl: require("../../assets/bgimage.png")
-}, {
-  title: "secondRes  Hortons",
-  price: "$$",
-  cuisines: "• Breakfast and Brunch • American • Sandwiches",
-  stars: "4.1",
-  imageUrl: require("../../assets/listingbg.png")
-}
-]
+import ResturantListComponent from '../../../components/ResturantListComponent'
+import { Title } from '../../../components/Title'
+import { GET_ALL_RESTAURANTS } from '../../../constants'
+import { customisedAction } from '../../../redux/actions'
 
 function Restaurants(props) {
 
@@ -59,7 +25,7 @@ function Restaurants(props) {
       </div>
 
       <div className="image_holder">
-        <img src={require("../../assets/bgimage.png").default} style={{ width: '100%',marginTop:-60 }} />
+        <img src={require("../../../assets/bgimage.png").default} style={{ width: '100%',marginTop:-60 }} />
       </div>
 
 
@@ -71,7 +37,7 @@ function Restaurants(props) {
         {restaurants && restaurants.length ?
           restaurants.map((restaurant, index) => {
             const { restaurantId, imageUrl, restaurantName: name, categories, rating } = restaurant
-            const imagesArray = [require("../../assets/listingbg.png"), require("../../assets/bgimage.png")]
+            const imagesArray = [require("../../../assets/listingbg.png"), require("../../../assets/bgimage.png")]
             return (
               <div key={index} className="resturant-list-component">
                 <ResturantListComponent

@@ -2,31 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
 import Header from './Header'
-import Restaurants from '../Restaurants'
-import Menu from '../MenuListing'
+import Restaurants from './Restaurants'
+import Menu from './Menu'
 import NoRoute from '../NoRoute'
-import Footer from './Footer'
+import Footer from '../Footer'
 
 import './styles.css'
 
-function Admin(props) {
-
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+export default function Customer(props) {
 
   useEffect(() => {
+    console.log("Customer", props)
   }, [])
 
-  const openSidebar = () => {
-      setSidebarOpen(true)
-  }
-
-  const closeSidebar = () => {
-      setSidebarOpen(false)
-  }
-
   let { path } = useRouteMatch()
-
-  props.history.listen(() => closeSidebar())
 
   const CustomerLanding = ({ component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
@@ -51,5 +40,3 @@ function Admin(props) {
     </div>
   )
 }
-
-export default Admin

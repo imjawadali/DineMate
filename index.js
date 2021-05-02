@@ -14,8 +14,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 require('./apis/AdminAPIS')(app)
 require('./apis/CustomerAPIS')(app)
 
-app.use(express.static('client/build'))
 app.use(express.static('customer/build'))
+app.use(express.static('client/build'))
 
 app.get('/client', (req, res) => res.redirect('/client/admin'))
 app.get('/client/*', (req, res) => res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html')))
