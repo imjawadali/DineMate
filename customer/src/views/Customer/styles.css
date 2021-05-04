@@ -1,0 +1,155 @@
+.add-on-dialog {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    margin: 0 auto;
+    border: 1px solid black;
+    background-color: #00000075;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog {
+    width: 350px;
+    height: auto;
+    box-shadow: 0px 0px 7px 3px #00000057;
+    background-color: white;
+    border-radius: 5px;
+}
+.icon-starz{
+    color: black;
+    background-color: white !important;
+    font-size: 20px;
+    cursor: pointer;
+}
+.ice-cap{
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 2px;
+}
+.acrdn-hdng{
+    background-color: #f0f0f0;
+    padding: 4px 20px;
+    display: flex;
+    flex-direction: column;
+}
+.acrdn-title{
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.req{
+    font-size: 10px;
+}
+.radio-txt{
+    margin-left:'5px';
+    font-weight: bold;
+    width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.check{
+    background: grey !important;
+    margin: 0px;
+    margin-right: 5px;
+}
+.addon-radio{
+    /* margin: 6px 0px; */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.addon-check{
+    margin: 6px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.ice-cap{
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 10px;
+}
+.special-instruction{
+    font-size: 9px;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 7px;
+    margin-left: 20px;
+}
+.instrctn-txt{
+    height: 45px;
+    box-shadow: 0px 0px 7px #777777;
+    border: none;
+    resize: none;
+    padding: 6px;
+    border-radius: 10px;
+    outline: none;
+}
+.instrct-layout{
+    padding: 10px 20px;
+    margin-top: 5px;
+    border-bottom: 2px solid lightgrey;
+}
+.icon-add{
+    background-color: red;
+    border-radius: 50%;
+    height: 16px;
+    color: white;
+    font-size: 16px;
+    padding: 2px;
+    margin: 0px 8px;
+    width: 16px !important;
+    cursor: pointer;
+}
+.addon-dialog-footer{
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Add-to-Order{
+    border-radius: 66px;
+    padding: 8px 46px;
+    background-color: #2dc3b2;
+    font-size: 16px;
+    color: white;
+    border: 3px solid #e0e0e0;
+    box-shadow: 2px 3px 7px 0px #2dc3b275;
+    cursor: pointer;
+    user-select: none;
+}
+.quntty{
+    font-size: 18px;
+    position: relative;
+    top: -2px;
+    user-select: none;
+}
+.item-iamge{
+    display: 'flex';
+    justify-content: 'center';
+    margin: 40px auto;
+    text-align: -webkit-center;
+}
+.addon-info {
+    display: flex;
+    justify-content: space-between;
+}
+.addon-price {
+    font-size: 13px;
+    color: #00000099;
+    font-weight: bolder;
+}
+.addon-check {
+    display: flex;
+    align-items: center;
+}

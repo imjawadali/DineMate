@@ -17,12 +17,12 @@ export default function Customer(props) {
 
   let { path } = useRouteMatch()
 
-  const CustomerLanding = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          !customer ? 
-          <Component {...props} /> : <Redirect to={{ pathname: '/customer/restaurants' }} />
-      )} />
-  )
+  // const CustomerLanding = ({ component: Component, ...rest }) => (
+  //     <Route {...rest} render={(props) => (
+  //         !customer ? 
+  //         <Component {...props} /> : <Redirect to={{ pathname: '/customer/restaurants' }} />
+  //     )} />
+  // )
 
   return (
     <div>
