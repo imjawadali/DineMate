@@ -1,0 +1,283 @@
+.HomeContainer {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.HomeTopContainer {
+    flex: 1;
+    width: 100vw;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.HomeTopImage {
+    width: 100%;
+    background-color: rgb(255, 15, 25);
+}
+
+.HomeTopImage2 {
+    width: 100%;
+    margin-top: -2.5px;
+}
+
+.HomeHeaderContainer {
+    width: 86%;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 3vw;
+    left: 7vw;
+}
+
+.HomeHeaderMenuIcon {
+    width: 2.3vw;
+    height: 2.3vw;
+}
+
+.HomeHeaderLogoContainer {
+    flex: 1;
+}
+
+.HomeHeaderLogo {
+    width: 7vw;
+    margin-left: 3vw;
+}
+
+.HomeTopContentContainer {
+    position: absolute;
+    top: 12.5vw;
+    left: 11%;
+    box-sizing: border-box;
+}
+
+.HomeTopText {
+    color: white;
+    font-weight: bold;
+    font-size: 4.5vw;
+    margin-bottom: 5vw;
+    box-sizing: border-box;
+}
+
+.HomeTopContentInnerContainer {
+    width: 63vw;
+    background-color: white;
+    padding: 4% 6%;
+    position: relative;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.HomeTopInnerTextTitle {
+    color: red;
+    font-size: 2.9vw;
+    font-weight: 500;
+    margin-top: 1vw;
+    margin-bottom: 2.5vw;
+}
+
+.HomeTopInnerText {
+    font-weight: lighter;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 1.7vw;
+    margin-bottom: 3vw;
+}
+
+.HomeTopInnerButtonContainer {
+    display: flex;
+    margin: 2vw 0 1vw 0;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.HomeTopInnerButton {
+    padding: 1.5% 5%;
+    border-radius: 100px;
+    background-color: rgba(0,199,179,255);
+    border: 0.5vw solid rgba(240,240,240,255);
+    cursor: pointer;
+    box-sizing: border-box;
+    box-shadow: 0px 0.5vw 1vw 0.5vw rgba(193,246,241,255);
+}
+
+.HomeTopInnerButtonText {
+    color: white;
+    font-size: 1.2vw;
+}
+
+.HomeTopImageBottom {
+    position: absolute;
+    bottom: -10vw;
+    left: 3.5vw;
+    width: 35%;
+}
+
+.HomeMiddleContainer {
+    width: 100%;
+    margin-top: 5vw;
+}
+
+.HomeMiddleTopContainer {
+    width: 100%;
+    background-color: rgba(193,246,241,0.1);
+    position: relative;
+}
+
+.HomeMiddleTopBgImage {
+    width: 100%;
+}
+
+.HomeMiddleTopImage {
+    position: absolute;
+    top: -7vw;
+    right: 10vw;
+    width: 20%;
+}
+
+.HomeMiddleMiddleContainer {
+    width: 100vw;
+    position: relative;
+}
+
+.HomeMiddleBgImage {
+    width: 100%;
+}
+
+.HomeMiddleContentContainer {
+    position: absolute;
+    top: 7.5vw;
+    left: 15%;
+    width: 70vw;
+    box-sizing: border-box;
+}
+
+.HomeMiddleText {
+    color: black;
+    font-weight: bold;
+    font-size: 4.4vw;
+    margin: 5vw 0 2vw 0;
+}
+
+.HomeMiddleInnerContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.HomeInputContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 6vw;
+    padding: 1vw 1.5vw;
+    background: white;
+    box-sizing: border-box;
+}
+
+.HomeInputLocationMarker {
+    width: 2vw;
+    height: 2.5vw;
+}
+
+.HomeInput {
+    border: none !important;
+    flex: 1;
+    font-size: 1.5vw;
+    margin-left: 1vw;
+}
+
+.HomeInput:focus {
+    outline: none !important;
+}
+
+.HomeMiddleButton {
+    margin-left: 1vw;
+    width: 15vw;
+    background-color: rgba(255,193,0,255);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.HomeMiddleButtonText {
+    color: black;
+    font-weight: 700;
+    font-size: 1.5vw;
+}
+
+.HomeMiddleBottomImage {
+    position: absolute;
+    top: 2vw;
+    left: 10vw;
+    width: 22%;
+}
+
+.HomeBottomContainer {
+    width: 100vw;
+    position: relative;
+}
+
+.HomeBottomBgImage {
+    width: 100%;
+}
+
+.HomeBottomCenterImage {
+    width: 28vw;
+    position: absolute;
+    top: 0;
+    margin-top: -10vw;
+    left: 50%;
+    margin-left: -14vw;
+}
+
+.HomeBottomContentContainer {
+    position: absolute;
+    top: 47vw;
+    left: 10%;
+    width: 63vw;
+    box-sizing: border-box;
+}
+
+.HomeBottomContentInnerContainer {
+    position: relative;
+    width: 100%;
+}
+
+.HomeBottomText {
+    color: black;
+    font-weight: bold;
+    font-size: 4.4vw;
+}
+
+.HomeBottomHeartImage {
+    position: absolute;
+    top: -2vw;
+    right: 0;
+    width: 7vw;
+}
+
+.HomeDownloadButtonsContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.HomeDownloadButtons {
+    margin-left: -1.5vw;
+    width: 20vw;
+    cursor: pointer;
+}
+
+.HomeBottomBottomImage {
+    position: absolute;
+    bottom: -8vw;
+    right: 10vw;
+    width: 22%;
+}
+
+.HomeBlankDiv {
+    background: white;
+    height: 13vw;
+}

@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
-import Header from './Header'
 import Restaurants from './Restaurants'
 import Menu from './Menu'
 import NoRoute from '../NoRoute'
-import Footer from '../Footer'
 
 import './styles.css'
 
 export default function Customer(props) {
 
   useEffect(() => {
-    console.log("Customer", props)
   }, [])
 
   let { path } = useRouteMatch()
@@ -26,7 +23,6 @@ export default function Customer(props) {
 
   return (
     <div>
-      <Header />
       <Switch>
         <Route exact path={path}>
           <Redirect to={`${path}/restaurants`} />
@@ -36,7 +32,6 @@ export default function Customer(props) {
         <Route exact path={`${path}/:restaurantId/:tableId`} component={Menu} />
         <Route component={NoRoute} />
       </Switch>
-      <Footer />
     </div>
   )
 }
