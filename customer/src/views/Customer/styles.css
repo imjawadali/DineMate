@@ -36,6 +36,7 @@
     padding: 4px 20px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .acrdn-title{
     font-size: 16px;
@@ -160,4 +161,28 @@
 }
 input[type='checkbox'], input[type='radio'] {
     cursor: pointer;
+}
+.toggle-accordion {
+    position: absolute;
+    top: -28px;
+    border: 1px solid #00000099;
+    border-radius: 24px;
+    padding: 0px 3px;
+    right: 20px;
+    color: #00000082;
+    cursor: pointer;
+}
+
+input[type='radio']:checked:after {
+    width: 6px;
+    height: 6px;
+    border-radius: 15px;
+    top: 0px;
+    left: 0px;
+    position: relative;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 4px solid #4f4f4f;
 }

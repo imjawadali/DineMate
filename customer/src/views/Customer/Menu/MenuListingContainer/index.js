@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import MenuListItemComponent from '../../../../components/MenuListItemComponent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
 
 const MenuListingContainer = props => {
@@ -55,6 +55,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
     const [itemCount, setItemCount] = useState(1);
     const [itemToAdd, setItemToAdd] = useState({ addOnOptions: [] });
     const [totalPrice, setTotalPrice] = useState(0);
+    const [updateComponent, setUpdateComponent] = useState(true);
 
     useEffect(() => {
         let price = 0;
@@ -113,7 +114,34 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                                                 <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
                                             </div>
 
-                                            <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+                                            <div
+                                                style={{ position: 'relative' }}>
+                                                {
+                                                    document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+                                                        ?
+                                                        <FontAwesomeIcon
+                                                            icon={faAngleUp}
+                                                            className="toggle-accordion"
+                                                            onClick={() => {
+                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                                addonItemsList.style.display = 'flex';
+                                                                setUpdateComponent(!updateComponent)
+                                                            }}
+                                                        />
+                                                        :
+                                                        <FontAwesomeIcon
+                                                            icon={faAngleDown}
+                                                            className="toggle-accordion"
+                                                            onClick={() => {
+                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                                addonItemsList.style.display = 'none';
+                                                                setUpdateComponent(!updateComponent)
+                                                            }}
+                                                        />
+                                                }
+                                            </div>
+
+                                            <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
                                                 {
                                                     addOn.addOnOptions.length > 0 && addOn.addOnOptions.map(addOnOption => {
                                                         return (
@@ -147,7 +175,34 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                                                 <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
                                             </div>
 
-                                            <div style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+                                            <div
+                                                style={{ position: 'relative' }}>
+                                                {
+                                                    document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+                                                        ?
+                                                        <FontAwesomeIcon
+                                                            icon={faAngleUp}
+                                                            className="toggle-accordion"
+                                                            onClick={() => {
+                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                                addonItemsList.style.display = 'flex';
+                                                                setUpdateComponent(!updateComponent)
+                                                            }}
+                                                        />
+                                                        :
+                                                        <FontAwesomeIcon
+                                                            icon={faAngleDown}
+                                                            className="toggle-accordion"
+                                                            onClick={() => {
+                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                                addonItemsList.style.display = 'none';
+                                                                setUpdateComponent(!updateComponent)
+                                                            }}
+                                                        />
+                                                }
+                                            </div>
+
+                                            <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
                                                 {
                                                     addOn.addOnOptions.map(addOnOption => {
                                                         return (
