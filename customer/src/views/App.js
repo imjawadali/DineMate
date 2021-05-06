@@ -14,6 +14,7 @@ import Header from './Header'
 import Customer from './Customer'
 import Home from './Home'
 import Others from './Others'
+import Registration from './Registration'
 import NoRoute from './NoRoute'
 import Footer from './Footer'
 
@@ -60,6 +61,7 @@ export default function App() {
                     <Switch>
                         <Route exact path='/' openSidebar={openSidebar} component={Home} />
                         <Route path='/customer' openSidebar={openSidebar} component={Customer} />
+                        <Route path='/registration' component={Registration} />
                         <Route path='/others' component={Others} />
                         <Route component={NoRoute} />
                     </Switch>
