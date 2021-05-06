@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Landing(props) {
+function Others(props) {
   return (
     <div>
-      <p>Home</p>
+      <p>Others</p>
       <Link to="/customer/restaurants">Restaurants</Link>
       <br />
       <Link to="/client" target="blank" >Admin</Link>
@@ -12,4 +12,4 @@ function Landing(props) {
   )
 }
 
-export default Landing
+export default Others

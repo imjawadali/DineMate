@@ -10,9 +10,12 @@ import { getItem } from '../helpers'
 
 import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
+import Header from './Header'
 import Customer from './Customer'
 import Home from './Home'
+import Others from './Others'
 import NoRoute from './NoRoute'
+import Footer from './Footer'
 
 import logo from '../assets/logo.png'
 import './styles.css'
@@ -53,11 +56,14 @@ export default function App() {
             <Router>
                 <Toaster />
                 <ScrollToTop closeSidebar={closeSidebar}>
+                    <Header />
                     <Switch>
                         <Route exact path='/' openSidebar={openSidebar} component={Home} />
                         <Route path='/customer' openSidebar={openSidebar} component={Customer} />
+                        <Route path='/others' component={Others} />
                         <Route component={NoRoute} />
                     </Switch>
+                    <Footer />
                 </ScrollToTop>
             </Router>
         </ToastProvider> :
