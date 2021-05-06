@@ -38,7 +38,7 @@ const Menu = props => {
         <>
             <div className="menuListing">
                 {/* searchbar */}
-                <div className="resturant-searchbar menuListingSearch" style={{ zIndex: 999 }}>
+                <div className="resturant-searchbar menuListingSearch">
                     <div className="resturant-searchbar-container">
                         <SearchBar iconName={faSearch} text="Missigua, Ontario" />
                     </div>
@@ -53,7 +53,7 @@ const Menu = props => {
                             <img src={restaurant.imageUrl || imagesArray[0].default} style={{ width: '100%', height: '100%' }} />
                             : null}
                     </div>
-                    <div className="menuListingImagewithTextContainer" style={{ zIndex: 999, position: 'absolute', width: '90%', left: '5%', right: '5%', height: '20vh' }}>
+                    <div className="menuListingImagewithTextContainer" style={{ position: 'absolute', width: '90%', left: '5%', right: '5%', height: '20vh' }}>
                         <h2>{restaurant && restaurant.restaurantName}</h2>
                         <h3>$$$ {restaurant ? restaurant.categories ? restaurant.categories.replaceAll(',', ' • ') : 'Bakery • Cafe • Donuts' : null}</h3>
                     </div>
