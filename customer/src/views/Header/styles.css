@@ -154,3 +154,97 @@
   
 }
 }
+
+.cart {
+    position: relative;
+    display: none;
+}
+
+.cart-content {
+    box-shadow: 0px 0px 7px 0px #00000080;
+    width: 320px;
+    height: 320px;
+    background-color: white;
+    right: 0;
+    position: absolute;
+    top: 24px;
+}
+
+.cart-header {
+    padding: 12px 20px;
+}
+
+.content {
+    padding: 0 20px;
+}
+
+.your-order-title {
+    font-weight: bolder;
+    font-size: x-large;
+    margin-top: 10px;
+}
+
+.restaurant-name-div {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+.restaurant-title {
+    color: red;
+}
+
+.selection-box {
+    background-color: #d3d3d34d;
+    padding: 10px;
+    border: navajowhite;
+    box-shadow: 0px 1px 2px 0px lightgrey;
+    margin-top: 4px;
+}
+
+.details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.item-description {
+    margin-bottom: -44px;
+    margin-left: 14px;
+    height: 66px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.item-title {
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.size-title {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.size {
+    font-size: 14px;
+}
+
+.amount {
+    font-weight: 600;
+}
+
+.checkout-button {
+    background-color: #35c8b8;
+    margin-top: 90px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
