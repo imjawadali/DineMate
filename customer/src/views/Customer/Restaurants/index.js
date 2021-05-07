@@ -5,6 +5,7 @@ import ResturantListComponent from '../../../components/ResturantListComponent'
 import { Title } from '../../../components/Title'
 import { GET_ALL_RESTAURANTS } from '../../../constants'
 import { customisedAction } from '../../../redux/actions'
+import './styles.css'
 
 function Restaurants(props) {
 
@@ -18,12 +19,6 @@ function Restaurants(props) {
 
   return (
     <div>
-      <div className="resturant-searchbar">
-        {/* <div className="resturant-searchbar-container"> */}
-          {/* <SearchBar iconName={faSearch} text="Missigua, Ontario" /> */}
-        {/* </div> */}
-      </div>
-
       <div className="image_holder">
         <img src={require("../../../assets/bgimage.png").default} style={{ width: '100%',marginTop:-60 }} />
       </div>
@@ -31,7 +26,7 @@ function Restaurants(props) {
 
 
       <div className="heading-container">
-        <Title text="All Resturants" />
+        <Title text="All Restaurants" />
       </div>
       <div className="resturant-list-container">
         {restaurants && restaurants.length ?

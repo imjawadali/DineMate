@@ -1,7 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-import { HeaderButton } from '../../components'
+import { HeaderButton, Logo, MenuIcon } from '../../components'
 import './styles.css'
 
 export default function Home(props) {
@@ -14,14 +13,13 @@ export default function Home(props) {
         </>
 
         <div className="HomeHeaderContainer">
-          <img className="HomeHeaderMenuIcon" src={require('../../assets/hamburger.png').default} />
-          <div className="HomeHeaderLogoContainer">
-            <img className="HomeHeaderLogo" src={require('../../assets/logo2.png').default} />
+          <MenuIcon onClick={() => null} />
+          <div className="HeaderLogoContainer">
+            <Logo src={require('../../assets/logo2.png').default} />
           </div>
           <HeaderButton
-            red
-            src={require('../../assets/cart.png').default}
-            text="Sign"
+            src={require('../../assets/signin_icon.png').default}
+            text="Sign In"
           />
         </div>
 

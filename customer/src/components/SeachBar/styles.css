@@ -31,6 +31,14 @@ font-size: 16px;
     font-weight: 400;
 }
 
+.searchbar-image{
+    width: 20px;
+    aspect-ratio: 0.8;
+}
+
+.searchbar-image-cart{
+    aspect-ratio: 0.9;
+}
 
 @media all and (min-width: 768px) and (max-width: 1024px) {
 

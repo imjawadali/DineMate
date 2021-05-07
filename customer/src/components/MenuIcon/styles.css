@@ -1,0 +1,19 @@
+.MenuIcon {
+    width: 2.2vw;
+    height: 2.2vw;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 978px) {
+    .MenuIcon {
+        width: 2.3vw;
+        height: 2.3vw;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .MenuIcon {
+        width: 2.4vw;
+        height: 2.4vw;
+    }
+}

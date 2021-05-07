@@ -1,5 +1,6 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
+import { Logo } from '../../components'
 
 import './styles.css'
 
@@ -12,11 +13,11 @@ const Footer = props => {
                 <div className="global-footer-top">
                     <div className="footer-top-left">
                         <div className="footer-top-left-top">
-                            <img src={require("../../assets/logo.png").default} />
+                            <Logo style={{ marginLeft: 0 }} src={require('../../assets/logo.png').default} />
                         </div>
                         {props && props.location && props.location.pathname !== '/' ?
                         <div className="footer-top-left-bottom">
-                            <div className="footer-top-left-bottom-img">
+                            <div className="footer-top-left-bottom-img" style={{ marginRight: '3vw' }}>
                                 <img src={require("../../assets/apple.png").default} />
                             </div>
                             <div className="footer-top-left-bottom-img">

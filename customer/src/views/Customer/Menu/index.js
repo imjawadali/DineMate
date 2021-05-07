@@ -9,6 +9,7 @@ import MenuListingContainer from './MenuListingContainer'
 
 import { customisedAction } from '../../../redux/actions';
 import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../../constants';
+import './styles.css'
 
 const Menu = props => {
 
@@ -38,8 +39,8 @@ const Menu = props => {
         <>
             <div className="menuListing">
                 {/* searchbar */}
-                <div className="resturant-searchbar menuListingSearch">
-                    <div className="resturant-searchbar-container">
+                <div className="menu-searchbar menuListingSearch">
+                    <div className="menu-searchbar-container">
                         <SearchBar iconName={faSearch} text="Missigua, Ontario" />
                     </div>
                 </div>
