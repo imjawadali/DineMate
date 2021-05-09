@@ -1,0 +1,281 @@
+.main-form-div {
+    background-image: url('/src/assets/background_1.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    color: white;
+    flex-wrap: wrap;
+}
+
+@media screen and (max-width: 440px) {
+    .main-form-div {
+        padding: 20px 10px;
+    }
+}
+
+.abstrat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    padding: 0 44px;
+}
+
+.abstract-header {
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.abstract-text {
+    font-size: 17px;
+    margin-top: 18px;
+    margin-bottom: 20px;
+}
+
+.form-div {
+    flex: 1;
+    margin: 0 24px;
+    max-width: 450px;
+    box-shadow: 0px 0px 10px 1px white;
+    margin-bottom: 36px;
+}
+
+.form {
+    background-color: white;
+    height: 440px;
+    color: black;
+    padding: 30px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.form-title {
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.restaurant-info-fields, .persoanl-info-fields {
+    margin-top: 18px;
+}
+
+.form-input {
+    width: -webkit-fill-available;
+    border-radius: 0;
+    border: 1px solid #00000057;
+    padding: 8px 12px;
+    color: #0000009e;
+    font-weight: 500;
+}
+
+.form-input:focus {
+    border: 2px solid #35c8b8 !important;
+    outline: none !important;
+}
+
+.form-input::placeholder {
+    color: #0000009e;
+}
+
+.names-div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media screen and (min-width: 480px) {
+    .names-div {
+        display: flex;
+        flex-wrap: nowrap;
+    }
+}
+
+.country-select {
+    outline: none;
+    border: navajowhite;
+    position: relative;
+    top: -29px;
+    left: 4px;
+    padding: 0 6px;
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.selected-country {
+    font-size: 12px;
+    font-weight: bold;
+    width: min-content;
+    position: relative;
+    top: -45px;
+    left: 64px;
+}
+
+.mobile-number {
+    padding-left: 90px;
+}
+
+@media screen and (max-width: 768px) {
+    .main-form-div {
+        justify-content: center;
+    }
+    .abstrat-content {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.policy-text {
+    margin-top: 6px;
+    font-size: 8px;
+    color: #000000cc;
+}
+
+.highlighted {
+    color: red;
+    cursor: pointer;
+}
+
+.submit-div {
+    display: flex;
+    justify-content: center;
+    margin-top: 26px;
+}
+
+.submit-button {
+    background-color: #35c8b8;
+    padding: 6px 44px;
+    padding-top: 4px;
+    border-radius: 22px;
+    color: white;
+    text-transform: uppercase;
+    font-size: 13px;
+    border: 4px solid #e8e8e8;
+    box-shadow: 0 0 9px 0px #35c8b8;
+    cursor: pointer;
+}
+
+.why-dine-mate-div {
+    display: flex;
+    justify-content: space-between;
+    margin: 40px 80px;
+}
+
+.why-dine-mate-title {
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.dine-mate-logo {
+    background-color: #35c8b8;
+    padding: 43px 36px;
+    border-radius: 104px;
+    border: 4px solid #e8e8e8;
+    box-shadow: 0 0 9px 0px #35c8b8;
+    margin-top: -74px;
+    margin-left: 10px;
+}
+
+.reasons {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 56px;
+}
+
+.reason-div {
+    min-width: 240px;
+    padding: 24px;
+    flex: 1;
+    padding-top: 0;
+}
+
+.reason-title {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.reason {
+    margin-top: 16px;
+}
+
+.questions-div {
+    margin: 0 78px;
+    margin-bottom: 40px;
+}
+
+.questions-title {
+    font-weight: bold;
+    font-size: 32px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid;
+}
+
+.question-section {
+    margin-top: -1px;
+    border-bottom: 1px solid;
+}
+
+.question {
+    font-size: 20px;
+}
+
+.answer {
+    font-size: 20px;
+    display: none;
+    border-top: 1px solid;
+    padding: 30px;
+}
+
+.question-toggle-div {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 0;
+}
+
+.toggle-answer {
+    font-weight: bold;
+    font-size: 24px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 425px) {
+    .selected-country {
+        display: none;
+    }
+    .country-select {
+        padding: 0;
+    }
+    .mobile-number {
+        padding-left: 60px;
+    }
+    .form-div {
+        margin: 0 10px;
+    }
+    .dine-mate-logo {
+        margin-top: 20px;
+    }
+    .why-dine-mate-div {
+        margin: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .questions-div {
+        margin: 0 24px;
+    }
+    .reasons {
+        margin: 0;
+    }
+}
