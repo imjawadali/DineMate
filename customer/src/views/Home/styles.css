@@ -31,18 +31,8 @@
     left: 7vw;
 }
 
-.HomeHeaderMenuIcon {
-    width: 2.3vw;
-    height: 2.3vw;
-}
-
-.HomeHeaderLogoContainer {
+.HeaderLogoContainer {
     flex: 1;
-}
-
-.HomeHeaderLogo {
-    width: 7vw;
-    margin-left: 3vw;
 }
 
 .HomeTopContentContainer {

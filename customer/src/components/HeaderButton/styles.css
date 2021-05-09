@@ -4,15 +4,61 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     border-radius: 50px;
-    padding: 0.5vw 0.2vw;
+    padding: 0.7vw 0.1vw;
+    cursor: pointer;
     box-sizing: border-box;
 }
 
 .HeaderButtonImage {
     width: 1.5vw;
+    margin-right: 1vw;
 }
 
 .HeaderButtonText {
-    font-size: 1.5vw;
+    font-size: 1.2vw;
+}
+
+.HeaderItemCountsText {
+    font-size: 1.2vw;
+    margin-left: 0.5vw;
+}
+
+@media only screen and (max-width: 978px) {
+    .HeaderButton {
+        width: 12vw;
+        padding: 0.9vw 0.1vw;
+    }
+
+    .HeaderButtonImage {
+        width: 1.7vw;
+    }
+    
+    .HeaderButtonText {
+        font-size: 1.4vw;
+    }
+    
+    .HeaderItemCountsText {
+        font-size: 1.4vw;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .HeaderButton {
+        width: 14vw;
+        padding: 1.1vw 0.1vw;
+    }
+
+    .HeaderButtonImage {
+        width: 1.9vw;
+    }
+    
+    .HeaderButtonText {
+        font-size: 1.6vw;
+    }
+    
+    .HeaderItemCountsText {
+        font-size: 1.6vw;
+    }
 }

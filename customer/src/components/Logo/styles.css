@@ -1,0 +1,17 @@
+.Logo {
+    width: 6vw;
+    margin-left: 3vw;
+    cursor: pointer;
+}
+
+@media only screen and (max-width: 978px) {
+    .Logo {
+        width: 7vw;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .Logo {
+        width: 8vw;
+    }
+}
