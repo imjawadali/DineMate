@@ -256,7 +256,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
 
                             <FontAwesomeIcon icon={faMinus} className="icon-add" onClick={() => setItemCount(itemCount > 1 ? itemCount - 1 : 1)} />
                             <span className='quntty'>{itemCount}</span>
-                            <FontAwesomeIcon icon={faPlus} className="icon-add" onClick={() => setItemCount(itemCount + 1)} />
+                            <FontAwesomeIcon icon={faPlus} className="icon-add" onClick={() => setItemCount(itemCount > 98 ? 99 : itemCount + 1)} />
                         </div>
 
                         <button className="Add-to-Order" type="submit">

@@ -14,7 +14,7 @@
 }
 
 .dialog {
-    width: 350px;
+    width: 310px;
     height: auto;
     box-shadow: 0px 0px 7px 3px #00000057;
     background-color: white;
@@ -95,6 +95,7 @@
     padding: 6px;
     border-radius: 10px;
     outline: none;
+    width: 260px;
 }
 .instrct-layout{
     padding: 10px 20px;
@@ -121,7 +122,7 @@
 }
 .Add-to-Order{
     border-radius: 66px;
-    padding: 8px 46px;
+    padding: 8px 39px;
     background-color: #2dc3b2;
     font-size: 16px;
     color: white;
