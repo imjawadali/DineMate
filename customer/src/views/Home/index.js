@@ -31,7 +31,7 @@ export default function Home(props) {
             <p className="HomeTopInnerText">It's simple: we list your menu online, help you process orders so that you deliver them to your mates!</p>
             <p className="HomeTopInnerText">Interested? Let's start today!</p>
             <div className="HomeTopInnerButtonContainer">
-              <div className="HomeTopInnerButton" onClick={() => props.history.push('/others')}>
+              <div className="HomeTopInnerButton" onClick={() => props.history.push('/registration')}>
                 <p className="HomeTopInnerButtonText">GET STARTED</p>
               </div>
             </div>
