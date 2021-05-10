@@ -5,7 +5,6 @@ import { Logo } from '../../components'
 import './styles.css'
 
 const Footer = props => {
-    console.log(props.location.pathname)
     return (
         <div className="global-footer">
             <div className="global-footer-inner">
@@ -17,7 +16,7 @@ const Footer = props => {
                         </div>
                         {props && props.location && props.location.pathname !== '/' ?
                         <div className="footer-top-left-bottom">
-                            <div className="footer-top-left-bottom-img" style={{ marginRight: '3vw' }}>
+                            <div className="footer-top-left-bottom-img" style={{ marginRight: '2vw' }}>
                                 <img src={require("../../assets/apple.png").default} />
                             </div>
                             <div className="footer-top-left-bottom-img">
@@ -37,18 +36,21 @@ const Footer = props => {
                             <p>
                                 Add your restaurant
                          </p>
-                            <p>
-                                Sign up to deliver
+                            <p onClick={() => {
+                                const win = window.open("/client", "_blank")
+                                win.focus()
+                            }}>
+                                Sign in to deliver
                          </p>
                         </div>
                         <div className="ftr-right">
-                            <p>
+                            <p onClick={() => props.history.push('/others')}>
                                 Get Help
                          </p>
                             <p>
                                 View all cities
                          </p>
-                            <p>
+                            <p onClick={() => props.history.push('/customer')}>
                                 Restaurants near me
                          </p>
                         </div>

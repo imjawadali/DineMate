@@ -14,7 +14,7 @@
 }
 
 .dialog {
-    width: 350px;
+    width: 310px;
     height: auto;
     box-shadow: 0px 0px 7px 3px #00000057;
     background-color: white;
@@ -36,6 +36,7 @@
     padding: 4px 20px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 .acrdn-title{
     font-size: 16px;
@@ -94,6 +95,7 @@
     padding: 6px;
     border-radius: 10px;
     outline: none;
+    width: 260px;
 }
 .instrct-layout{
     padding: 10px 20px;
@@ -120,7 +122,7 @@
 }
 .Add-to-Order{
     border-radius: 66px;
-    padding: 8px 46px;
+    padding: 8px 39px;
     background-color: #2dc3b2;
     font-size: 16px;
     color: white;
@@ -160,4 +162,28 @@
 }
 input[type='checkbox'], input[type='radio'] {
     cursor: pointer;
+}
+.toggle-accordion {
+    position: absolute;
+    top: -28px;
+    border: 1px solid #00000099;
+    border-radius: 24px;
+    padding: 0px 3px;
+    right: 20px;
+    color: #00000082;
+    cursor: pointer;
+}
+
+input[type='radio']:checked:after {
+    width: 6px;
+    height: 6px;
+    border-radius: 15px;
+    top: 0px;
+    left: 0px;
+    position: relative;
+    background-color: white;
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 4px solid #4f4f4f;
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -8,10 +8,24 @@ import { HeaderButton, Logo, MenuIcon } from '../../components';
 
 const Header = props => {
 
+    const [items] = useState([
+        {
+            name: 'Burger',
+            size: 'Medium',
+            price: 1.79,
+            quantity: 1
+        },
+        {
+            name: 'Ice Cream',
+            size: 'Small',
+            price: 2.86,
+            quantity: 3
+        }
+    ]);
+
     const toggleCartModal = () => {
         let cartModal = document.getElementById("cart_modal");
         let justificationDiv = document.getElementById("justification_div");
-        console.log(cartModal.style.display)
         if (cartModal.style.display == 'none' || !cartModal.style.display) {
             cartModal.style.display = 'block';
             justificationDiv.style.display = 'none';
@@ -43,7 +57,7 @@ const Header = props => {
                             </div>
                         </div>
                         <div className="HeaderRight">
-                            <div className="HeaderInputContainer" style={{ justifyContent: 'flex-start'}}>
+                            <div className="HeaderInputContainer" style={{ justifyContent: 'flex-start' }}>
                                 <div className="HeaderSearchBarContainer">
                                     <img className="HeaderInputIcon" src={require('../../assets/search_icon.png').default} />
                                     <input
@@ -74,37 +88,51 @@ const Header = props => {
                                             <span className="restaurant-title">Tim Hortons </span>
                                         </div>
 
-                                        <div className="details">
-                                            <div>
-                                                <select className="selection-box">
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                </select>
-                                            </div>
+                                        <div className="item-details">
+                                            {
+                                                items.map((item, i) => {
+                                                    return (
+                                                        <div className="details" key={i}>
+                                                            <div>
+                                                                <select className="selection-box" value={item.quantity}>
+                                                                    <option value={1}>1</option>
+                                                                    <option value={2}>2</option>
+                                                                    <option value={3}>3</option>
+                                                                </select>
+                                                            </div>
 
-                                            <div className="item-description">
-                                                <div className="item-title">
-                                                    Iced Cap
-                                                </div>
+                                                            <div className="item-description">
+                                                                <div className="item-title">
+                                                                    {item.name}
+                                                                </div>
 
-                                                <div className="size-title">
-                                                    Size
-                                                </div>
+                                                                <div className="size-title">
+                                                                    Size
+                                                            </div>
 
-                                                <div className="size">
-                                                    Small
-                                                </div>
-                                            </div>
+                                                                <div className="size">
+                                                                    {item.size}
+                                                                </div>
+                                                            </div>
 
-                                            <div className="amount">
-                                                $1.79
-                                            </div>
+                                                            <div className="amount">
+                                                                ${item.price}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
                                         </div>
                                     </div>
 
                                     <div className="checkout-button">
                                         <span>
-                                            1
+                                            {
+                                                items.length > 0 ?
+                                                    items.reduce((prevItem, currentItem) => prevItem.quantity + currentItem.quantity)
+                                                    :
+                                                    0
+                                            }
                                         </span>
 
                                         <span>
@@ -112,7 +140,12 @@ const Header = props => {
                                         </span>
 
                                         <span>
-                                            $1.79
+                                            ${
+                                                items.length > 0 ?
+                                                    items.reduce((prevItem, currentItem) => prevItem.price + currentItem.price)
+                                                    :
+                                                    0
+                                            }
                                         </span>
                                     </div>
                                 </div>
@@ -122,24 +155,24 @@ const Header = props => {
                         </div>
                     </div>
                 </div>
-            : <div className="HeaderContainer">
-                <MenuIcon onClick={() => null} />
-                <div className="HeaderLogoContainer">
-                    <Logo
-                        src={require('../../assets/logo.png').default}
-                        onClick={() => props.history.push('/')}
+                : <div className="HeaderContainer">
+                    <MenuIcon onClick={() => null} />
+                    <div className="HeaderLogoContainer">
+                        <Logo
+                            src={require('../../assets/logo.png').default}
+                            onClick={() => props.history.push('/')}
+                        />
+                    </div>
+                    <HeaderButton
+                        src={require('../../assets/signin_icon.png').default}
+                        text="Sign In"
+                    />
+                    <HeaderButton
+                        red
+                        text="Sign Up"
                     />
                 </div>
-                <HeaderButton
-                    src={require('../../assets/signin_icon.png').default}
-                    text="Sign In"
-                />
-                <HeaderButton
-                    red
-                    text="Sign Up"
-                />
-            </div>
-        : null
+            : null
     )
 }
 
