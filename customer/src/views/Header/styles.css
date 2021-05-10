@@ -83,10 +83,10 @@ input.HeaderInput {
 
 .cart-content {
     box-shadow: 0px 0px 7px 0px #00000080;
-    width: 320px;
+    width: 310px;
     height: 320px;
     background-color: white;
-    right: 0;
+    right: -10px;
     position: absolute;
     top: 24px;
 }
@@ -127,7 +127,7 @@ input.HeaderInput {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 24px;
+    margin-top: 32px;
 }
 
 .item-description {
@@ -158,9 +158,14 @@ input.HeaderInput {
     font-weight: 600;
 }
 
+.item-details {
+    height: 130px;
+    overflow: scroll;
+}
+
 .checkout-button {
     background-color: #35c8b8;
-    margin-top: 90px;
+    margin-top: 24px;
     padding: 10px 15px;
     display: flex;
     justify-content: space-between;
@@ -168,9 +173,9 @@ input.HeaderInput {
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    border: 3px solid #ececec;
+    box-shadow: -2px 2px 5px 0px #35c8b84f;
 }
-
-
 
 @media only screen and (max-width: 978px) {
     .HeaderContainer {
