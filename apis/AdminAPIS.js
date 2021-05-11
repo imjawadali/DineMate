@@ -402,6 +402,7 @@ module.exports = app => {
             adminId,
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
             SUM(o.doNotDisturb) as doNotDisturb,
+            SUM(o.customerStatus) as closeRequests,
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
@@ -429,7 +430,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT o.orderNumber,
+            `SELECT o.orderNumber, o.customerStatus,
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
@@ -867,18 +868,6 @@ module.exports = app => {
         if (!name) return res.status(422).send({ 'msg': 'User\'s name is required!' })
         if (!email) return res.status(422).send({ 'msg': 'User\'s email is required!' })
         if (!role) return res.status(422).send({ 'msg': 'User\'s role is required!' })
-        // getSecureConnection(
-        //     res,
-        //     adminId,
-        //     `INSERT INTO users SET ?`,
-        //     { restaurantId, name, email, role, contactNumber },
-        //     (result) => {
-        //         if (result.affectedRows)
-        //             return res.send({ 'msg': 'User Added Successfully!' })
-        //         else
-        //             return res.status(422).send({ 'msg': 'Failed to add user!' })
-        //     }
-        // )
         getTransactionalConnection()
         .getConnection(function (error, tempDb) {
             if (!!error) {

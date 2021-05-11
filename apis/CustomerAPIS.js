@@ -116,7 +116,14 @@ module.exports = app => {
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating,
             RA.city, RA.address,
-            GROUP_CONCAT(c.name) as categories
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',c.id,
+                        ',"name":"',c.name,'"}'
+                    ) ORDER BY c.createdAt DESC
+                ),
+            ']') as categories
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
             LEFT JOIN categories c on c.restaurantId = R.restaurantId
@@ -126,10 +133,13 @@ module.exports = app => {
             null,
             (body) => {
                 if (body.length) {
+                    const data = body[0]
+                    if (data.categories)
+                        data.categories = JSON.parse(data.categories)
                     return res.send({
                         status: true,
                         message: '',
-                        body: body[0]
+                        body: data
                     })
                 } else {
                     return res.send({
@@ -501,17 +511,17 @@ module.exports = app => {
         getConnection(
             res,
             `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
-            { status: false },
+            { customerStatus: true },
             (result) => {
                 if (result.changedRows) {
                     return res.send({
                         status: true,
-                        message: 'Order closed via cash payment'
+                        message: 'Order close request submitted'
                     })
                 } else {
                     return res.send({
                         status: false,
-                        message: 'Order closed already!',
+                        message: 'Request already in que!',
                         errorCode: 422
                     })
                 }
