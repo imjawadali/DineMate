@@ -56,8 +56,9 @@ function GenerateQrs(props) {
         <div className="TopInputContainer">
           <Input 
             placeholder="Number of Qrs you want to generate ?"
+            type="number"
             value={generateQrInput}
-            onChange={({ target: { value } }) => setgenerateQrInput(value)}
+            onChange={({ target: { value } }) => setgenerateQrInput(value < 0 ? value * -1 : value)}
           />
         </div>
         <div className="TopButtonContainer" style={{ justifyContent: 'flex-start' }}>
@@ -75,7 +76,7 @@ function GenerateQrs(props) {
           <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Qrs!</p>
         </div> : null
       }
-      <QrsList restaurantId={state && state.restaurantId} history={history} />
+      <QrsList restaurantId={state && state.restaurantId} />
     </div>
   )
 }

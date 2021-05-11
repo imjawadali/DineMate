@@ -66,7 +66,7 @@ function AddMenuItem(props) {
     setaddOns(tempAddOns)
   }
 
-  const addAddOptions = (index) => {
+  const addAddOnOptions = (index) => {
     const tempAddOns = [ ...addOns ]
     const selectedAddOn = addOns[index]
     const variations = selectedAddOn.variations || []
@@ -118,7 +118,7 @@ function AddMenuItem(props) {
         if (addOns[i].variations && addOns[i].variations.length) {
           for (var j = 0; j < addOns[i].variations.length; j++) {
             if (!addOns[i].variations[j].name)
-              return 'Option Can\'t be blank!'
+              return `Add-On # ${i+1}, Option # ${j+1} Can\'t be blank!`
           }
         }
       }
@@ -160,7 +160,7 @@ function AddMenuItem(props) {
                 placeholder="5.0 ($)"
                 type="number"
                 value={price}
-                onChange={({ target: { value } }) => setprice(value)}
+                onChange={({ target: { value } }) => setprice(value < 0 ? value * -1 : value)}
               />
             </div>
           </div>
@@ -245,7 +245,7 @@ function AddMenuItem(props) {
                     placeholder="0.2 ($)"
                     type="number"
                     value={addOn.price}
-                    onChange={({ target: { value } }) => updateAddOn(index, 'price', value)}
+                    onChange={({ target: { value } }) => updateAddOn(index, 'price', value < 0 ? value * -1 : value)}
                   />
                 </div>
               </div>
@@ -274,16 +274,14 @@ function AddMenuItem(props) {
                       placeholder="0.33 ($)"
                       type="number"
                       value={option.price}
-                      onChange={({ target: { value } }) => updateAddOnOption(index, index2, 'price', value)}
+                      onChange={({ target: { value } }) => updateAddOnOption(index, index2, 'price', value < 0 ? value * -1 : value)}
                     />
                   </div>
                 </div>
               </div>
               <div className="ButtonContainer OptionButtonContainer">
-                <i className="fa fa-arrow-left temp" style={{ marginRight: '10px' }}/>
-                <ButtonRed
-                  text="Delete Option"
-                  iconLeft={<i className="fa fa-trash" />}
+                <i className="fa fa-arrow-left temp"/>
+                <i className="fa fa-trash fa-2x DeleteIcon"
                   onClick={() => deleteAddOnOption(index, index2)}
                 />
               </div>
@@ -300,7 +298,7 @@ function AddMenuItem(props) {
                 text={addOn.variations && addOn.variations.length ? "Add more options" : "Add options"}
                 style={{ marginLeft: '15px' }}
                 iconLeft={<i className="fa fa-plus" />}
-                onClick={() => addAddOptions(index)}
+                onClick={() => addAddOnOptions(index)}
               />
             </div>
           </div>

@@ -16,7 +16,7 @@ function ButtonRed ({ onClick, text, style, light, lightAction, iconLeft, iconRi
         <button 
           className="ButtonRed"
           onClick={lightAction ? lightAction : () => dispatch(customisedAction(SET_TOAST, { message: 'Button is disable!', type: 'warning'}))}
-          style={{ backgroundColor: '#b5c9bf', borderColor: '#b5c9bf', ...style }}>
+          style={{ backgroundColor: 'rgba(255, 0, 0, 0.3)', borderColor: 'rgba(255, 0, 0, 0.3)', ...style }}>
           {iconLeft && <p className="ButtonRedText" style={{ color: 'white', paddingRight: '5px' }}>{iconLeft}</p>}
           <p className="ButtonRedText" style={{ color: 'white' }}>{text}</p>
           {iconRight && <p className="ButtonRedText" style={{ color: 'white', paddingLeft: '5px' }}>{iconRight}</p>}

@@ -10,7 +10,7 @@ function QrsList(props) {
 
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
 
-  const { restaurantId, history } = props
+  const { restaurantId } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -21,7 +21,6 @@ function QrsList(props) {
             <th>Table ID</th>
             <th>Restaurant ID</th>
             <th>Status</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -41,16 +40,6 @@ function QrsList(props) {
                   <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>
                   <td>{restaurantId}</td>
                   <td>{active ? 'Active' : 'In-Active'}</td>
-                  <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="View"
-                      iconLeft={<i className="fa fa-eye" />}
-                      onClick={() => history.push({
-                        pathname: `/client/admin/qrsManagement/viewQr`, state: { qr }
-                      })}
-                    />
-                  </td>
                 </tr>
               )
             }) : 

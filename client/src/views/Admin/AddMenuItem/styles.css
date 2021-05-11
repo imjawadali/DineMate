@@ -6,6 +6,17 @@
     justify-content: flex-start;
 }
 
+.temp {
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+
+.DeleteIcon {
+    color: red;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 978px) {
 }
 

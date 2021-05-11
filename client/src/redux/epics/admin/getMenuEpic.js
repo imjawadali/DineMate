@@ -7,7 +7,10 @@ import {
   ADD_MENU_SUCCESS,
   GET_MENU_SUCCESS,
   GET_MENU_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  UPDATE_MENU_SUCCESS,
+  UPDATE_ADDON_SUCCESS,
+  ADD_ADDON_SUCCESS
 } from '../../../constants'
 
 export class getMenuEpic {
@@ -18,6 +21,12 @@ export class getMenuEpic {
           case GET_MENU:
             return true;
           case ADD_MENU_SUCCESS:
+            return true;
+          case UPDATE_MENU_SUCCESS:
+            return true;
+          case ADD_ADDON_SUCCESS:
+            return true;
+          case UPDATE_ADDON_SUCCESS:
             return true;
           default:
             return false;

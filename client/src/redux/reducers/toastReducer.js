@@ -58,7 +58,16 @@ import {
   DELETE_FROM_S3,
   DELETE_FROM_S3_SUCCESS,
   DELETE_FROM_S3_FAILURE,
-  ADD_MENU_SUCCESS
+  ADD_MENU_SUCCESS,
+  UPDATE_MENU,
+  UPDATE_MENU_SUCCESS,
+  UPDATE_MENU_FAILURE,
+  ADD_ADDON,
+  ADD_ADDON_SUCCESS,
+  ADD_ADDON_FAILURE,
+  UPDATE_ADDON,
+  UPDATE_ADDON_SUCCESS,
+  UPDATE_ADDON_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -170,6 +179,24 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_MENU_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case ADD_MENU_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_MENU:
+      return { ...state, toast: { message: 'Updating Menu Item', type: 'success' } }
+    case UPDATE_MENU_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case UPDATE_MENU_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case ADD_ADDON:
+      return { ...state, toast: { message: 'Adding Add-on', type: 'success' } }
+    case ADD_ADDON_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case ADD_ADDON_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_ADDON:
+      return { ...state, toast: { message: 'Updating Add-on', type: 'success' } }
+    case UPDATE_ADDON_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case UPDATE_ADDON_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_ORDERS:
       return { ...state, toastSetDismiss: true }

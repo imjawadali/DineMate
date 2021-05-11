@@ -116,7 +116,8 @@ function RestaurantUsers(props) {
               <div className="InputsInnerContainer">
                 <SmallTitle text="Contact Number (Optional)" />
                 <Input 
-                  placeholder={`+92 3158731014`}
+                  placeholder={`+923158731014`}
+                  type="number"
                   value={contactNumber}
                   onChange={({ target: { value } }) => setcontactNumber(value)}
                 />
@@ -138,7 +139,7 @@ function RestaurantUsers(props) {
             </div>
           </div>
         </div>
-      : null}
+      : <>
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 
@@ -162,6 +163,7 @@ function RestaurantUsers(props) {
         </div> : null
       }
       <UsersList adminId={id} restaurantId={restaurantId} users={getFilteredList()} />
+      </>}
     </div>
   )
 }
