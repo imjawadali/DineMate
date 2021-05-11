@@ -9,7 +9,7 @@ function MenuList(props) {
   const fetchingCategories = useSelector(({ categoriesReducer }) => categoriesReducer.fetchingCategories)
   const categories = useSelector(({ categoriesReducer }) => categoriesReducer.categories)
   
-  const { menu, history } = props
+  const { menu, fetchingMenu, history } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -57,7 +57,11 @@ function MenuList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="6" style={{ textAlign: 'center' }}>
+                {fetchingMenu ? 
+                  <p><i className={`fa fa-refresh ${fetchingMenu ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Food Items . . .</p>
+                : 'No Data Found!'}
+              </td>
             </tr>
           }
         </tbody>

@@ -157,12 +157,7 @@ function RestaurantUsers(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS, { restaurantId }))} />
         </div>
       </div>
-      {fetchingUsers && !users ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingUsers ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Users . . .</p>
-        </div> : null
-      }
-      <UsersList adminId={id} restaurantId={restaurantId} users={getFilteredList()} />
+      <UsersList adminId={id} fetchingUsers={fetchingUsers} restaurantId={restaurantId} users={getFilteredList()} />
       </>}
     </div>
   )

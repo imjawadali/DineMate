@@ -10,7 +10,7 @@ function QrsList(props) {
 
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
 
-  const { restaurantId } = props
+  const { restaurantId, fetchingQrs } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -44,7 +44,11 @@ function QrsList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="5" style={{ textAlign: 'center' }}>
+                {fetchingQrs ?
+                  <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Qrs!</p>
+                : 'No Data Found!'}
+              </td>
             </tr>
           }
         </tbody>

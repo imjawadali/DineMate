@@ -2,7 +2,7 @@ import React from 'react'
 import {SmallButton } from '../../../../components'
 
 function OrderTable(props) {
-    const { history, restaurantId, tables } = props
+    const { restaurantId, fetchingOrders, orders } = props
     return(
         <div className="HorizontalScrollContainer">
 <table >
@@ -17,8 +17,8 @@ function OrderTable(props) {
 </tr>
 </thead>
 <tbody>
-    {props. order && props.order.length?
-    props.order.map((val,ind)=>{
+    {orders && orders.length?
+    orders.map((val,ind)=>{
         const tableNumber = val.tableId.replace(`${restaurantId}/`, '')
     return(<>
     
@@ -48,7 +48,11 @@ function OrderTable(props) {
     )})
     :
      <tr>
-         <td colSpan="6" style={{textAlign:'center'}}>No Data Found!! </td>
+         <td colSpan="6" style={{textAlign:'center'}}>{
+            fetchingOrders ?
+                <p><i className={`fa fa-refresh ${fetchingOrder ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Orders . . .</p>
+            : 'No Data Found!'
+         }</td>
      </tr>
      }
     

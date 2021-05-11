@@ -88,15 +88,11 @@ function Categories() {
           }
         </div>
       </div>
-      {fetchingCategories && !categories ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingCategories ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Categories . . .</p>
-        </div> : null
-      }
       <CategoriesList 
         onSelect={onSelect}
         onDelete={onDelete}
         reset={reset}
+        fetchingCategories={fetchingCategories}
         selectedCategory={selectedCategory}
         categories={categories} />
     </div>

@@ -4,7 +4,7 @@ import { SmallButton } from '../../../../components'
 
 function TablesList(props) {
   
-  const { history, restaurantId, tables } = props
+  const { history, restaurantId, fetchingQrs, tables } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -41,7 +41,11 @@ function TablesList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="5" style={{ textAlign: 'center' }}>{
+                fetchingQrs ?
+                  <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Tables . . .</p>
+                : 'No Data Found!'
+              }</td>
             </tr>
           }
         </tbody>

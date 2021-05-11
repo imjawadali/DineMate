@@ -8,7 +8,7 @@ import { SmallButton } from '../../../../components'
 
 function RestaurantsList(props) {
   
-  const { restaurants, history } = props
+  const { restaurants, fetchingRestaurants, history } = props
   const dispatch = useDispatch()
 
   return (
@@ -66,7 +66,11 @@ function RestaurantsList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="7" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="7" style={{ textAlign: 'center' }}>{
+                fetchingRestaurants ?
+                  <p><i className={`fa fa-refresh ${fetchingRestaurants ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Restaurants . . .</p>
+                : 'No Data Found!'
+              }</td>
             </tr>
           }
         </tbody>

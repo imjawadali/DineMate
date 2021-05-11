@@ -49,12 +49,7 @@ function Tables(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))} />
         </div>
       </div>
-      {fetchingQrs && !qrs ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Tables . . .</p>
-        </div> : null
-      }
-      <TablesList history={props.history} restaurantId={restaurantId} tables={getFilteredList()} />
+      <TablesList history={props.history} fetchingQrs={fetchingQrs} restaurantId={restaurantId} tables={getFilteredList()} />
     </div>
   )
 }

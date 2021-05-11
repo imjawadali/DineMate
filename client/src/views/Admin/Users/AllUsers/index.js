@@ -57,12 +57,7 @@ function AllUsers(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS))} />
         </div>
       </div>
-      {fetchingUsers && !users ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingUsers ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Users . . .</p>
-        </div> : null
-      }
-      <UsersList users={getFilteredList()} />
+      <UsersList fetchingUsers={fetchingUsers} users={getFilteredList()} />
     </div>
   )
 }

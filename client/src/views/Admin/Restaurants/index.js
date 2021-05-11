@@ -58,12 +58,7 @@ function Restaurants(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))} />
         </div>
       </div>
-      {fetchingRestaurants && !restaurants ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingRestaurants ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Restaurants . . .</p>
-        </div> : null
-      }
-      <RestaurantsList history={props.history} restaurants={getFilteredList()} />
+      <RestaurantsList history={props.history} fetchingRestaurants={fetchingRestaurants} restaurants={getFilteredList()} />
     </div>
   )
 }

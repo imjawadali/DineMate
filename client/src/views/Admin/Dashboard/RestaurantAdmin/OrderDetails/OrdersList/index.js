@@ -10,7 +10,7 @@ function OrdersList(props) {
   
   const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
 
-  const { restaurantId, tableOrders, history } = props
+  const { restaurantId, tableOrders, fetchingTableOrders, history } = props
   const dispatch = useDispatch()
 
   var sum = 0
@@ -98,7 +98,11 @@ function OrdersList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="8" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="8" style={{ textAlign: 'center' }}>
+                {fetchingTableOrders ?
+                  <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Table Order . . .</p>
+                : 'No Data Found!'}
+              </td>
             </tr>
           }
           {tableOrders && tableOrders.length ?

@@ -71,12 +71,12 @@ function GenerateQrs(props) {
           />
         </div>
       </div>
-      {fetchingQrs ?
+      {fetchingQrs && qrs ?
         <div className="loadingContainer">
           <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Qrs!</p>
         </div> : null
       }
-      <QrsList restaurantId={state && state.restaurantId} />
+      <QrsList restaurantId={state && state.restaurantId} fetchingQrs={fetchingQrs} />
     </div>
   )
 }

@@ -8,7 +8,7 @@ import { SmallButton } from '../../../../../components'
 
 function UsersList(props) {
   
-  const { users } = props
+  const { users, fetchingUsers } = props
   const dispatch = useDispatch()
 
   const enable_disable = (id, active) => {
@@ -55,7 +55,11 @@ function UsersList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="7" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="7" style={{ textAlign: 'center' }}>{
+                fetchingUsers ?
+                  <p><i className={`fa fa-refresh ${fetchingUsers ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Users . . .</p>
+                : 'No Data Found!'
+              }</td>
             </tr>
           }
         </tbody>

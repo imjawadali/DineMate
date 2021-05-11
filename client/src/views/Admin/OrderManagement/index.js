@@ -57,13 +57,9 @@ function OrderManagement () {
                   />
               </div>
     </div>
-    {fetchingOrder && !order ?
-      <div className="loadingContainer">
-        <p><i className={`fa fa-refresh ${fetchingOrder ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Food Items . . .</p>
-      </div> : null
-    }
     <OrderTable
-      order={getFilteredList()}
+      orders={getFilteredList()}
+      fetchingOrders={fetchingOrder}
       restaurantId={restaurantId} />
     </div>
   )
