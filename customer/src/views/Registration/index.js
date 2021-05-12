@@ -1,5 +1,6 @@
 import React from 'react'
 import './styles.css';
+import logo from '../../assets/pizza_with_green_circle.png';
 
 function Registration(props) {
 
@@ -89,9 +90,7 @@ function Registration(props) {
           Why Dine Mate?
         </div>
 
-        <div className="dine-mate-logo">
-          Logo
-        </div>
+        <img className="dine-mate-logo" src={logo} />
       </div>
 
       <div className="reasons">
@@ -112,6 +111,16 @@ function Registration(props) {
 
           <div className="reason">Turn customers into regulars with actionable data insights, respond to reviews or offer a loyalty program.</div>
         </div>
+      </div>
+
+      <div className="video-div">
+        <iframe src='https://www.youtube.com/embed/E7wJTI-1dvQ'
+          className="video"
+          frameborder='0'
+          allow='autoplay; encrypted-media'
+          allowfullscreen
+          title='video'
+        />
       </div>
 
       <div className="questions-div">
