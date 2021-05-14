@@ -27,7 +27,7 @@ export default function App() {
 
     useEffect(() => {
         ReactGA.initialize('UA-197037903-1')
-        ReactGA.pageview('/')
+        ReactGA.pageview(Window.location.pathname)
         if (!admin) {
             const storedAdmin = getItem('admin')
             if (storedAdmin)
