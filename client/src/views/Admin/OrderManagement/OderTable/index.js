@@ -50,7 +50,7 @@ function OrderTable(props) {
      <tr>
          <td colSpan="6" style={{textAlign:'center'}}>{
             fetchingOrders ?
-                <p><i className={`fa fa-refresh ${fetchingOrder ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Orders . . .</p>
+                <p><i className={`fa fa-refresh ${fetchingOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Orders . . .</p>
             : 'No Data Found!'
          }</td>
      </tr>
