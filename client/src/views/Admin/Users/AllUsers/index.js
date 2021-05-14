@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../redux/actions'
-import { GET_USERS } from '../../../../constants'
+import { GET_USERS, PER_PAGE_COUNTS } from '../../../../constants'
 
 import { Button, Input } from '../../../../components'
 
 import UsersList from './UsersList'
+import { Pagination } from '../../../../components/Pagination'
 
 function AllUsers(props) {
 
   const [usersFetchCalled, setusersFetchCalled] = useState(false)
   const [filterKey, setfilterKey] = useState('')
+  const [currentIndex, setcurrentIndex] = useState(1)
 
   const fetchingUsers = useSelector(({ usersReducer }) => usersReducer.fetchingUsers)
   const users = useSelector(({ usersReducer }) => usersReducer.users)
@@ -37,6 +39,14 @@ function AllUsers(props) {
     return filteredUsers
   }
 
+  const paginate = (list) => {
+    let paginatedList = list ? [ ...list ] : list
+    if (currentIndex && list && list.length) {
+      paginatedList = paginatedList.slice(((currentIndex * PER_PAGE_COUNTS) - PER_PAGE_COUNTS), (currentIndex * PER_PAGE_COUNTS))
+    }
+    return paginatedList
+  }
+
   return (
     <div className="Container">
       <h2>Users Management</h2>
@@ -57,7 +67,16 @@ function AllUsers(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS))} />
         </div>
       </div>
-      <UsersList fetchingUsers={fetchingUsers} users={getFilteredList()} />
+      <UsersList fetchingUsers={fetchingUsers} users={paginate(getFilteredList())} />
+      {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+        <Pagination
+          currentIndex={currentIndex}
+          mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+          totalCounts={getFilteredList().length}
+          perPageCounts={PER_PAGE_COUNTS}
+          onClick={(index) => setcurrentIndex(index)}
+        />
+      : null}
     </div>
   )
 }

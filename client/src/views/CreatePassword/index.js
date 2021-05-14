@@ -42,6 +42,7 @@ function CreatePassword(props) {
         <Input 
           style={{ width: '80%' }}
           placeholder="Enter Password"
+          type="password"
           value={password}
           onChange={({ target: { value } }) => setpassword(value)}
         />

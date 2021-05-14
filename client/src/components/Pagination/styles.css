@@ -1,0 +1,60 @@
+.Pagination {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 22px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.PaginationCounts {
+    background: #3ae175;
+    padding: 1px 5px 2px 5px;
+    margin: 0 1px;
+    font-size: 14px;
+    border: 1px solid black;
+    box-sizing: content-box;
+    cursor: pointer;
+}
+
+.PaginationActive {
+    background: #b5c9bf;
+    color: rgba(0, 0, 0, 0.3);
+    border-color: white;
+    cursor: default;
+}
+
+.PaginationTotal {
+    color: rgba(0, 0, 0, 0.3);
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+@media only screen and (max-width: 978px) {
+    .Pagination {
+        height: 35px;
+    }
+
+    .PaginationCounts {
+        font-size: 12px;
+    }
+
+    .PaginationTotal {
+        font-size: 12px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .Pagination {
+        height: 17px;
+    }
+
+    .PaginationCounts {
+        font-size: 10px;
+    }
+
+    .PaginationTotal {
+        font-size: 10px;
+    }
+}
