@@ -56,7 +56,15 @@ const Menu = props => {
                     </div>
                     <div className="menuListingImagewithTextContainer" style={{ position: 'absolute', width: '90%', left: '5%', right: '5%', height: '20vh' }}>
                         <h2>{restaurant && restaurant.restaurantName}</h2>
-                        <h3>$$$ {restaurant ? restaurant.categories ? restaurant.categories.replaceAll(',', ' • ') : 'Bakery • Cafe • Donuts' : null}</h3>
+                        {restaurant ?
+                            restaurant.categories && restaurant.categories.length ?
+                                <h3>$$$: 
+                                    {restaurant.categories.map((category, index) => 
+                                        ` ${category.name}${index !== restaurant.categories.length - 1 ? ' • ' : ''}`
+                                    )}
+                                </h3>
+                            : <h3>$$$: Bakery • Cafe • Donuts</h3>
+                        : <h3>$$$: Loading data . . .</h3>}
                     </div>
                 </div>
 
@@ -69,18 +77,18 @@ const Menu = props => {
                     : null}
 
 
-                {restaurant && restaurant.categories && restaurant.categories.split(',').length ?
+                {restaurant && restaurant.categories && restaurant.categories.length ?
                     <div className="menuListingFeatured">
                         <div className="menuListingFeaturedContainer">
                             <div className="menuListingFeaturedContainerItem selectedItem">
                                 <h3>
-                                    Picked for you
+                                    All
                                 </h3>
                             </div>
-                            {restaurant.categories.split(',').map(category =>
+                            {restaurant.categories.map(category =>
                                 <div className="menuListingFeaturedContainerItem">
                                     <h3>
-                                        {category}
+                                        {category.name}
                                     </h3>
                                 </div>
                             )}

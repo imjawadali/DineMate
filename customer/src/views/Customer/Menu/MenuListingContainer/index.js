@@ -105,7 +105,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
 
                     <div className="addon-selection-content">
                         {
-                            selectedItem.addOns.map(addOn => {
+                            selectedItem.addOns.filter(addOn => addOn.addOnOptions.length > 0).map(addOn => {
                                 return (
                                     addOn.mandatory ?
                                         <React.Fragment key={addOn.id}>
@@ -237,6 +237,71 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                                                 }
                                             </div>
                                         </React.Fragment>
+                                )
+                            })
+                        }
+
+                        {
+                            selectedItem.addOns.filter(addOn => addOn.addOnOptions.length == 0).map(addOn => {
+                                return (
+                                    <React.Fragment key={addOn.id}>
+                                        <div className="acrdn-hdng" style={{ padding: '10px 18px' }}>
+                                            <h3 className='acrdn-title'>Optional</h3>
+                                        </div>
+
+                                        <div
+                                            style={{ position: 'relative' }}>
+                                            {
+                                                document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+                                                    ?
+                                                    <FontAwesomeIcon
+                                                        icon={faAngleUp}
+                                                        className="toggle-accordion"
+                                                        onClick={() => {
+                                                            let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                            addonItemsList.style.display = 'flex';
+                                                            setUpdateComponent(!updateComponent)
+                                                        }}
+                                                    />
+                                                    :
+                                                    <FontAwesomeIcon
+                                                        icon={faAngleDown}
+                                                        className="toggle-accordion"
+                                                        onClick={() => {
+                                                            let addonItemsList = document.getElementById("addon_" + addOn.id);
+                                                            addonItemsList.style.display = 'none';
+                                                            setUpdateComponent(!updateComponent)
+                                                        }}
+                                                    />
+                                            }
+                                        </div>
+
+                                        <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+                                            <div className="addon-radio">
+                                                <div className="addon-check" >
+                                                    <input
+                                                        type="checkbox"
+                                                        onChange={() => {
+                                                            setItemToAdd({
+                                                                ...itemToAdd,
+                                                                addOnOptions: itemToAdd.addOnOptions.includes(addOn) ?
+                                                                    itemToAdd.addOnOptions.filter(_addOnOption => addOn.id != _addOnOption.id)
+                                                                    :
+                                                                    [...itemToAdd.addOnOptions, addOn]
+                                                            })
+                                                        }}
+                                                        name={addOn.name}
+                                                        className="check"
+                                                    />
+                                                    <small className='radio-txt'>{addOn.name}</small>
+                                                </div>
+
+                                                <div className="addon-info">
+                                                    <span className="addon-price">+${addOn.price}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>
                                 )
                             })
                         }

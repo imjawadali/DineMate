@@ -51,7 +51,7 @@
 .radio-txt{
     margin-left:'5px';
     font-weight: bold;
-    width: 220px;
+    width: 150px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

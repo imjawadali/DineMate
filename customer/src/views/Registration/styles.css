@@ -7,6 +7,7 @@
     padding: 20px 40px;
     color: white;
     flex-wrap: wrap;
+    background-position: center;
 }
 
 @media screen and (max-width: 440px) {
@@ -179,13 +180,9 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 }
 
 .dine-mate-logo {
-    background-color: #35c8b8;
-    padding: 43px 36px;
-    border-radius: 104px;
-    border: 4px solid #e8e8e8;
-    box-shadow: 0 0 9px 0px #35c8b8;
     margin-top: -74px;
     margin-left: 10px;
+    width: 160px;
 }
 
 .reasons {
@@ -208,6 +205,17 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 
 .reason {
     margin-top: 16px;
+}
+
+.video-div {
+    display: flex;
+    justify-content: center;
+}
+
+.video {
+    width: 450px;
+    box-shadow: 0px 0px 7px 0px #2bc2b16b;
+    margin: 30px 0;
 }
 
 .questions-div {
@@ -277,5 +285,8 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
     }
     .reasons {
         margin: 0;
+    }
+    .video {
+        width: 310px;
     }
 }
