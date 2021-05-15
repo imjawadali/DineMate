@@ -253,7 +253,7 @@ module.exports = app => {
                     (result2) => {
                         if (result2.affectedRows)
                             return res.send({
-                                status: false,
+                                status: true,
                                 message: 'Order Initialized Successfully!',
                                 body: { 
                                     orderNumber: padding(Number(result.length ? result[0].orderNumber : 0)+1, 9),

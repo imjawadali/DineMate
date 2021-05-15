@@ -40,7 +40,7 @@ function GenerateQrs(props) {
         values: []
       }
       for (let index = qrCounts; index < Number(qrCounts)+Number(generateQrInput); index++) {
-        generatedQrData.values.push(`${state.restaurantId}/${index+1}`)
+        generatedQrData.values.push(`${index+1}`)
       }
       setgenerateQrInput('')
       dispatch(customisedAction(GENERATE_QRS, generatedQrData))
