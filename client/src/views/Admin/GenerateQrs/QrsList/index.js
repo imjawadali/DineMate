@@ -37,7 +37,6 @@ function QrsList(props) {
             {paginate(qrs) && paginate(qrs).length ?
               paginate(qrs).map((qr) => {
                 const { id, value, active } = qr
-                const tableNumber = value.replace(`${restaurantId}/`, '')
                 return (
                   <tr key={id}>
                     <td>
@@ -47,7 +46,7 @@ function QrsList(props) {
                         size={40}
                       />
                     </td>
-                    <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>
+                    <td>{value.length === 1 ? '0' : null}{value}</td>
                     <td>{restaurantId}</td>
                     <td>{active ? 'Active' : 'In-Active'}</td>
                   </tr>

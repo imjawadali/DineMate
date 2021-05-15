@@ -406,7 +406,7 @@ module.exports = app => {
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
-            (o.tableId = rq.value AND o.status = 1 AND o.type = 'Dine-In')
+            (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')
             WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
             GROUP BY rq.value
             ORDER BY rq.id ASC`,

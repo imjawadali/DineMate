@@ -35,11 +35,11 @@ function OrderDetails(props) {
       <TitleWithAction
         text={`
           ${!mergedTables ?
-            `Table - ${tableId && tableId.replace(`${restaurantId}/`, '').length === 1 && 0}${tableId && tableId.replace(`${restaurantId}/`, '')}`
+            `Table - ${tableId && tableId.length === 1 ? 0 : ''}${tableId}`
             : `${
               `Table(s) - Merged: 
               ${mergedTables.map((table) => 
-                `${table.value.replace(`${restaurantId}/`, '').length === 1 ? 0 : ''}${table.value.replace(`${restaurantId}/`, '')}`
+                `${table.value.length === 1 ? 0 : ''}${table.value}`
               )}`
             }`
           }`

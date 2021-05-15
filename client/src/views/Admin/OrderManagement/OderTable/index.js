@@ -19,7 +19,7 @@ function OrderTable(props) {
 <tbody>
     {orders && orders.length?
     orders.map((val,ind)=>{
-        const tableNumber = val.tableId.replace(`${restaurantId}/`, '')
+        const tableNumber = val.tableId
     return(<>
     
         <tr>

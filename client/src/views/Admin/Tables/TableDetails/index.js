@@ -56,8 +56,8 @@ function TableDetails(props) {
             <div className="TableDetailsSections">
               <h4>Table No:</h4>
               <p>
-                {selectedTable.value.replace(`${state.restaurantId}/`, '').length === 1 ? '0' : null}
-                {selectedTable.value.replace(`${state.restaurantId}/`, '')}
+                {selectedTable.value.length === 1 ? '0' : null}
+                {selectedTable.value}
               </p>
             </div>
             <div className="TableDetailsSections">

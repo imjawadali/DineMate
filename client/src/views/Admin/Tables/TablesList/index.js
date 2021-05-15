@@ -21,10 +21,9 @@ function TablesList(props) {
           {tables && tables.length ?
             tables.map((table) => {
               const { id, tableName, value, active } = table
-              const tableNumber = value.replace(`${restaurantId}/`, '')
               return (
                 <tr key={id}>
-                  <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>
+                  <td>{value.length === 1 ? '0' : null}{value}</td>
                   <td>{tableName || '-'}</td>
                   <td>{active ? 'Active' : 'In-Active'}</td>
                   <td>
