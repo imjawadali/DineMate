@@ -56,8 +56,10 @@ function ItemDetails(props) {
         />}
       />
       {fetchingOrderItemDetails && !orderItemDetails ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingOrderItemDetails ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Item Details . . .</p>
+        <div className="DashBoardContainer">
+          <div className="loadingContainer">
+            <p><i className={`fa fa-refresh ${fetchingOrderItemDetails ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Item Details . . .</p>
+          </div>
         </div> : null
       }
       {orderItemDetails ? <>

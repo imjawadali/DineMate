@@ -54,13 +54,9 @@ function Menu(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_MENU, { restaurantId }))} />
         </div>
       </div>
-      {fetchingMenu && !menu ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingMenu ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Food Items . . .</p>
-        </div> : null
-      }
       <MenuList 
         history={props.history}
+        fetchingMenu={fetchingMenu}
         menu={getFilteredList()} />
     </div>
   )

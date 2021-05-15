@@ -143,7 +143,7 @@ module.exports = app => {
                             if (!!error) {
                                 console.log('TableError', error.sqlMessage)
                                 tempDb.rollback(function() {
-                                    return res.status(422).send({ 'msg': error.sqlMessage })
+                                    return res.status(422).send({ 'msg': "Failed to add restaurant address!" })
                                 })
                             } else {
                                 restaurant.addressId = result.insertId
@@ -155,7 +155,7 @@ module.exports = app => {
                                     if (!!error) {
                                         console.log('TableError', error.sqlMessage)
                                         tempDb.rollback(function() {
-                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                            return res.status(422).send({ 'msg': "Failed to create user!" })
                                         })
                                     } else {
                                         restaurant.primaryContactId = result.insertId
@@ -179,7 +179,7 @@ module.exports = app => {
                                                     if (!!error) {
                                                         console.log('TableError', error.sqlMessage)
                                                         tempDb.rollback(function() {
-                                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                                            return res.status(422).send({ 'msg': "Failed to create user!" })
                                                         })
                                                     } else {
                                                         restaurant.secondaryContactId = result.insertId
@@ -197,7 +197,7 @@ module.exports = app => {
                                                                 if (!!error) {
                                                                     console.log('TableError', error.sqlMessage)
                                                                     tempDb.rollback(function() {
-                                                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                                                        return res.status(422).send({ 'msg': "Failed to create restaurant!" })
                                                                     })
                                                                 } else {
                                                                     tempDb.commit(function(error) {
@@ -406,7 +406,7 @@ module.exports = app => {
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
-            (o.tableId = rq.value AND o.status = 1 AND o.type = 'Dine-In')
+            (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')
             WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
             GROUP BY rq.value
             ORDER BY rq.id ASC`,
@@ -659,7 +659,6 @@ module.exports = app => {
                 if (!addOns[i].name) return res.status(422).send({ 'msg': 'AddOns name is required!' })
             }
         }
-
         getTransactionalConnection()
         .getConnection(function (error, tempDb) {
             if (!!error) {
@@ -811,6 +810,184 @@ module.exports = app => {
                 else return res.status(422).send({ 'msg': 'No menu items available!' })
             }
         )
+    })
+
+    app.post('/admin/updateMenuItem', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, updatedData } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Item Id is required!' })
+        if (!updatedData) return res.status(422).send({ 'msg': 'No data to update!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE menu SET ? WHERE id = ${id}`,
+            updatedData,
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Item details Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Failed to update item details' })
+            }
+        )
+    })
+
+    app.post('/admin/addAddOn', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { addOn } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!addOn) return res.status(422).send({ 'msg': 'No data to update!' })
+        if (addOn) {
+            if (!addOn.name) return res.status(422).send({ 'msg': 'Add-on name is required!' })
+            if (!addOn.menuId) return res.status(422).send({ 'msg': 'Menu Id is required!' })
+            if (addOn.addOnOptions && addOn.addOnOptions.length) {
+                for (var i=0; i<addOn.addOnOptions.length; i++) {
+                    if (!addOn.addOnOptions[i].name) return res.status(422).send({ 'msg': `Option # ${i + 1} name is required!` })
+                }
+            }
+        }
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.status(503).send({ 'msg': 'Unable to reach database!' })
+            }
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin') AND active = 1`, (error, authResult) => {
+                if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                if (authResult.length) {
+                    tempDb.beginTransaction(function (error) {
+                        if (!!error) {
+                            console.log('TransactionError', error.sqlMessage)
+                            return res.status(422).send({ 'msg': error.sqlMessage })
+                        }
+                        const data = { ...addOn }
+                        delete data['addOnOptions']
+                        tempDb.query(`INSERT INTO addOns SET ?`, data, function(error, result) {
+                            if (!!error) {
+                                console.log('TableError', error.sqlMessage)
+                                tempDb.rollback(function() {
+                                    return res.status(422).send({ 'msg': "Failed to add Add-on!" })
+                                })
+                            } else {
+                                if (addOn.addOnOptions && addOn.addOnOptions.length) {
+                                    tempDb.query("SET FOREIGN_KEY_CHECKS=0;")
+                                    let query = 'INSERT INTO addOnOptions ( name, price, addOnID ) VALUES'
+                                    for (var j=0; j<addOn.addOnOptions.length; j++) {
+                                        query = query + ` ( '${addOn.addOnOptions[j].name}', '${addOn.addOnOptions[j].price}', '${result.insertId}' )`
+                                        if (j !== (addOn.addOnOptions.length - 1))
+                                            query = query + ','
+                                    }
+                                    tempDb.query(query, function(error) {
+                                        if (!!error) {
+                                            console.log('TableError', error.sqlMessage)
+                                            tempDb.rollback(function() {
+                                                return res.status(422).send({ 'msg': "Failed to add Add-on Options" })
+                                            })
+                                        }
+                                    })
+                                }
+                                tempDb.commit(function(error) {
+                                    if (error) { 
+                                        tempDb.rollback(function() {
+                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                        })
+                                    }
+                                    tempDb.query("SET FOREIGN_KEY_CHECKS=1;")
+                                    tempDb.release()
+                                    return res.send({
+                                        'msg': 'Add-on Updated Successfully!'
+                                    })
+                                })
+                            }
+                        })
+                    })
+                }
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
+            })
+        })
+    })
+
+    app.post('/admin/updateAddOn', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, updatedAddOn } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Item Id is required!' })
+        if (!updatedAddOn) return res.status(422).send({ 'msg': 'No data to update!' })
+        if (updatedAddOn) {
+            if (!updatedAddOn.name) return res.status(422).send({ 'msg': 'Add-on name is required!' })
+            if (updatedAddOn.addOnOptions && updatedAddOn.addOnOptions.length) {
+                for (var i=0; i<updatedAddOn.addOnOptions.length; i++) {
+                    if (!updatedAddOn.addOnOptions[i].name) return res.status(422).send({ 'msg': `Option # ${i + 1} name is required!` })
+                }
+            }
+        }
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.status(503).send({ 'msg': 'Unable to reach database!' })
+            }
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin') AND active = 1`, (error, authResult) => {
+                if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                if (authResult.length) {
+                    tempDb.beginTransaction(function (error) {
+                        if (!!error) {
+                            console.log('TransactionError', error.sqlMessage)
+                            return res.status(422).send({ 'msg': error.sqlMessage })
+                        }
+                        const data = { ...updatedAddOn }
+                        delete data['addOnOptions']
+                        tempDb.query(`UPDATE addOns SET ? WHERE id = ${id}`, data, function(error, result) {
+                            if (!!error) {
+                                console.log('TableError', error.sqlMessage)
+                                tempDb.rollback(function() {
+                                    return res.status(422).send({ 'msg': "Failed to update Add-on!" })
+                                })
+                            } else {
+                                tempDb.query(`DELETE FROM addOnOptions WHERE addOnID = ${id}`, null, function(error, result) {
+                                    if (!!error) {
+                                        console.log('TableError', error.sqlMessage)
+                                        tempDb.rollback(function() {
+                                            return res.status(422).send({ 'msg': "Failed to update Add-on option!" })
+                                        })
+                                    } else {
+                                        if (updatedAddOn.addOnOptions && updatedAddOn.addOnOptions.length) {
+                                            tempDb.query("SET FOREIGN_KEY_CHECKS=0;")
+                                            let query = 'INSERT INTO addOnOptions ( name, price, addOnID ) VALUES'
+                                            for (var j=0; j<updatedAddOn.addOnOptions.length; j++) {
+                                                query = query + ` ( '${updatedAddOn.addOnOptions[j].name}', '${updatedAddOn.addOnOptions[j].price}', '${id}' )`
+                                                if (j !== (updatedAddOn.addOnOptions.length - 1))
+                                                    query = query + ','
+                                            }
+                                            tempDb.query(query, function(error) {
+                                                if (!!error) {
+                                                    console.log('TableError', error.sqlMessage)
+                                                    tempDb.rollback(function() {
+                                                        return res.status(422).send({ 'msg': "Failed to add Add-on Options" })
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    }
+                                })
+                                tempDb.commit(function(error) {
+                                    if (error) { 
+                                        tempDb.rollback(function() {
+                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                        })
+                                    }
+                                    tempDb.query("SET FOREIGN_KEY_CHECKS=1;")
+                                    tempDb.release()
+                                    return res.send({
+                                        'msg': 'Add-on Updated Successfully!'
+                                    })
+                                })
+                            }
+                        })
+                    })
+                }
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
+            })
+        })
     })
 
     app.get('/admin/getAllUsers', async (req, res) => {

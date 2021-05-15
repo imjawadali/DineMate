@@ -4,6 +4,7 @@ export const options = [
   { value: 3, label: 'Website' },
   { value: 4, label: 'Mobile App' },
 ]
+export const PER_PAGE_COUNTS = 10
 export const countryList = [
     "Afghanistan",
     "Albania",

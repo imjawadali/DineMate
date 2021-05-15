@@ -4,7 +4,7 @@ import { Separator, SmallButton } from '../../../../components'
 
 function AddOnsList(props) {
   
-  const { addOns } = props
+  const { addOns, editting, showAddOnModal } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -15,13 +15,13 @@ function AddOnsList(props) {
             <th>Price</th>
             <th>Type</th>
             <th>Options</th>
-            <th>Action</th>
+            {editting && <th>Action</th>}
           </tr>
         </thead>
         <tbody>
           {addOns && addOns.length ?
-            addOns.map((category) => {
-              const { id, name, price, mandatory, addOnOptions } = category
+            addOns.map((addOn) => {
+              const { id, name, price, mandatory, addOnOptions } = addOn
               return (
                 <tr key={id}>
                   <td>{name}</td>
@@ -34,13 +34,15 @@ function AddOnsList(props) {
                       </div>)
                     : 'No Options'
                   }</td>
-                  <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="Edit"
-                      iconLeft={<i className="fa fa-edit" />}
-                      onClick={() => null} />
-                  </td>
+                  {editting &&
+                    <td>
+                      <SmallButton
+                        style={{ width: '100%' }}
+                        text="Edit"
+                        iconLeft={<i className="fa fa-edit" />}
+                        onClick={() => showAddOnModal(addOn)} />
+                    </td>
+                  }
                 </tr>
               )
             }) : 

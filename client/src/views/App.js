@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
+import ReactGA from 'react-ga'
 
 import { customisedAction } from '../redux/actions'
 import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
@@ -25,6 +26,8 @@ export default function App() {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        ReactGA.initialize('UA-197037903-1')
+        ReactGA.pageview(window.location.pathname)
         if (!admin) {
             const storedAdmin = getItem('admin')
             if (storedAdmin)

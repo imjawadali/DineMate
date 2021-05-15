@@ -4,7 +4,7 @@ import { SmallButton, SmallButtonRed } from '../../../../components'
 
 function CategoriesList(props) {
   
-  const { categories, selectedCategory, onSelect, onDelete, reset } = props
+  const { categories, selectedCategory, fetchingCategories, onSelect, onDelete, reset } = props
 
   return (
     <div className="HorizontalScrollContainer">
@@ -43,7 +43,12 @@ function CategoriesList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Data Found!</td>
+              <td colSpan="5" style={{ textAlign: 'center' }}>
+                {fetchingCategories ?
+                  <p><i className={`fa fa-refresh ${fetchingCategories ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Categories . . .</p>
+                  : 'No Data Found!'
+                }
+              </td>
             </tr>
           }
         </tbody>

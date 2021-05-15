@@ -15,7 +15,6 @@ import KitchenAdmin from './Dashboard/KitchenAdmin'
 import AddRestaurant from './AddRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
-import ViewQr from './GenerateQrs/ViewQr'
 import AllUsers from './Users/AllUsers'
 import Tables from './Tables'
 import TableDetails from './Tables/TableDetails'
@@ -131,13 +130,8 @@ function Admin(props) {
                 <RestaurantAdminRoutes path={`${path}/usersManagement/restaurantUsers`} component={RestaurantUsers} />
               </Switch>
             </Route>
-           <RestaurantAdminRoutes path={`${path}/orderManagement`} component={OrderManagement} />
-            <Route path={`${path}/qrsManagement`}>
-              <Switch>
-                <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
-                <SuperAdminRoutes path={`${path}/qrsManagement/viewQr`} component={ViewQr} />
-              </Switch>
-            </Route>
+            <RestaurantAdminRoutes path={`${path}/orderManagement`} component={OrderManagement} />
+            <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
             <Route path={`${path}/tablesManagement`}>
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/tablesManagement`} component={Tables} />

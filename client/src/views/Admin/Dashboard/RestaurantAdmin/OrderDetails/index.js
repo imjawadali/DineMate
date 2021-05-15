@@ -35,11 +35,11 @@ function OrderDetails(props) {
       <TitleWithAction
         text={`
           ${!mergedTables ?
-            `Table - ${tableId && tableId.replace(`${restaurantId}/`, '').length === 1 && 0}${tableId && tableId.replace(`${restaurantId}/`, '')}`
+            `Table - ${tableId && tableId.length === 1 ? 0 : ''}${tableId}`
             : `${
               `Table(s) - Merged: 
               ${mergedTables.map((table) => 
-                `${table.value.replace(`${restaurantId}/`, '').length === 1 ? 0 : ''}${table.value.replace(`${restaurantId}/`, '')}`
+                `${table.value.length === 1 ? 0 : ''}${table.value}`
               )}`
             }`
           }`
@@ -58,12 +58,7 @@ function OrderDetails(props) {
           onClick={() => dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))}
         />}
       />
-      {fetchingTableOrders && !tableOrders ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Order Details . . .</p>
-        </div> : null
-      }
-      <OrdersList restaurantId={restaurantId} tableOrders={tableOrders} history={history} />
+      <OrdersList restaurantId={restaurantId} fetchingTableOrders={fetchingTableOrders} tableOrders={tableOrders} history={history} />
     </div>
   )
 }

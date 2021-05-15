@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { GET_EXISTING_QRS } from '../../../constants'
+import { GET_EXISTING_QRS, PER_PAGE_COUNTS } from '../../../constants'
 
 import { Button, Input } from '../../../components'
 
 import TablesList from './TablesList'
+import { Pagination } from '../../../components/Pagination'
 
 function Tables(props) {
 
   const [filterKey, setfilterKey] = useState('')
+  const [currentIndex, setcurrentIndex] = useState(1)
 
   const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
@@ -29,6 +31,14 @@ function Tables(props) {
     return filteredQrs
   }
 
+  const paginate = (list) => {
+    let paginatedList = list ? [ ...list ] : list
+    if (currentIndex && list && list.length) {
+      paginatedList = paginatedList.slice(((currentIndex * PER_PAGE_COUNTS) - PER_PAGE_COUNTS), (currentIndex * PER_PAGE_COUNTS))
+    }
+    return paginatedList
+  }
+
   return (
     <div className="Container">
       <h2>Tables Management</h2>
@@ -36,8 +46,14 @@ function Tables(props) {
         <div className="TopInputContainer">
           <Input 
             placeholder="Search Table (by Table No.)"
+            type="number"
             value={filterKey}
-            onChange={({ target: { value } }) => setfilterKey(value)}
+            onChange={({ target: { value } }) => {
+              if (value !== '0') {
+                setfilterKey(value < 0 ? `${value * -1}` : value)
+                setcurrentIndex(1)
+              }
+            }}
           />
         </div>
         <div className="TopButtonContainer">
@@ -49,12 +65,16 @@ function Tables(props) {
             onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))} />
         </div>
       </div>
-      {fetchingQrs && !qrs ?
-        <div className="loadingContainer">
-          <p><i className={`fa fa-refresh ${fetchingQrs ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Tables . . .</p>
-        </div> : null
-      }
-      <TablesList history={props.history} restaurantId={restaurantId} tables={getFilteredList()} />
+      <TablesList history={props.history} fetchingQrs={fetchingQrs} restaurantId={restaurantId} tables={paginate(getFilteredList())} />
+      {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+        <Pagination
+          currentIndex={currentIndex}
+          mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+          totalCounts={getFilteredList().length}
+          perPageCounts={PER_PAGE_COUNTS}
+          onClick={(index) => setcurrentIndex(index)}
+        />
+      : null}
     </div>
   )
 }

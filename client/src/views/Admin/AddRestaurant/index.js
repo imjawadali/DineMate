@@ -115,13 +115,21 @@ function AddRestaurant(props) {
                 onChange={({ target: { value } }) => setRestaurantNameAndId(value)}
               />
             </div>
+            <div className="InputsInnerContainer">
+              <SmallTitle text="Cuisine" />
+              <Input 
+                placeholder="Traditional"
+                value={cuisine}
+                onChange={({ target: { value } }) => setcuisine(value)}
+              />
+            </div>
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
-                <SmallTitle text="Cuisine" />
+              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+                <SmallTitle text="Country" />
                 <Input 
-                  placeholder="Traditional"
-                  value={cuisine}
-                  onChange={({ target: { value } }) => setcuisine(value)}
+                  placeholder="Pakistan"
+                  value={country}
+                  onChange={({ target: { value } }) => setcountry(value)}
                 />
               </div>
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
@@ -132,14 +140,6 @@ function AddRestaurant(props) {
                   onChange={({ target: { value } }) => setcity(value)}
                 />
               </div>
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Country" />
-              <Input 
-                placeholder="Pakistan"
-                value={country}
-                onChange={({ target: { value } }) => setcountry(value)}
-              />
             </div>
           </div>
         </div>

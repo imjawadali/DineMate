@@ -246,26 +246,33 @@ module.exports = app => {
             (result) => {
                 getConnection(
                     res,
-                    `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
-                    VALUES ( '${restaurantId}', '${tableId}', ${customerId ? `${customerId}` : null}, 
-                    ${type ? `${type}` : `'Dine-In'`}, ${Number(result.length ? result[0].orderNumber : 0)+1})`,
+                    `SELECT mergeId FROM restaurantsQrs WHERE value = '${tableId}' AND restaurantID = '${restaurantId}'`,
                     null,
                     (result2) => {
-                        if (result2.affectedRows)
-                            return res.send({
-                                status: false,
-                                message: 'Order Initialized Successfully!',
-                                body: { 
-                                    orderNumber: padding(Number(result.length ? result[0].orderNumber : 0)+1, 9),
-                                    restaurantId,
-                                    tableId
-                                }
-                            })
-                        else return res.send({
-                            status: false,
-                            message: 'Failed to initialize order!',
-                            errorCode: 422
-                        })
+                        getConnection(
+                            res,
+                            `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
+                            VALUES ( '${restaurantId}', '${result2.length ? result2[0].mergeId : tableId}', ${customerId ? `${customerId}` : null}, 
+                            ${type ? `${type}` : `'Dine-In'`}, ${Number(result.length ? result[0].orderNumber : 0)+1})`,
+                            null,
+                            (result3) => {
+                                if (result3.affectedRows)
+                                    return res.send({
+                                        status: true,
+                                        message: 'Order Initialized Successfully!',
+                                        body: { 
+                                            orderNumber: padding(Number(result.length ? result[0].orderNumber : 0)+1, 9),
+                                            restaurantId,
+                                            tableId: result2.length ? result2[0].mergeId : tableId
+                                        }
+                                    })
+                                else return res.send({
+                                    status: false,
+                                    message: 'Failed to initialize order!',
+                                    errorCode: 422
+                                })
+                            }
+                        )
                     }
                 )
             }

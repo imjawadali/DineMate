@@ -190,7 +190,7 @@ function RestaurantAdmin(props) {
                         backgroundColor: merging ? occupiedBy ? 'white' : 'rgb(245, 222, 179)' : ''
                         }}>
                         <DashboardGridItem
-                          text={"Table " + value.replace(`${restaurantId}/`, '')}
+                          text={"Table " + value}
                           doNotDisturb={doNotDisturb}
                           occupiedBy={occupiedBy}
                           merging={merging}
@@ -252,7 +252,7 @@ function RestaurantAdmin(props) {
                           onClick={() => unMergeTables(mergeId)}
                         />
                         <DashboardGridItem
-                          text={"Table " + value.replace(`${restaurantId}/`, '')}
+                          text={"Table " + value}
                           doNotDisturb={mergedTables.filter(table => table.doNotDisturb).length}
                           occupiedBy={mergedTables.filter(table => table.occupiedBy).length}
                           merging={merging}
@@ -275,10 +275,10 @@ function RestaurantAdmin(props) {
                           hoveredTable.map((table, index) => {
                             return `
                               ${index === hoveredTable.length - 1 ? ' & ' : ''}
-                              ${table.value.replace(`${restaurantId}/`, '')}
+                              ${table.value}
                               ${index < hoveredTable.length - 2 ? ', ' : ''}`
                           })
-                        : hoveredTable.value.replace(`${restaurantId}/`, '')
+                        : hoveredTable.value
                       }</p>
                       <p style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>Duration: 00:00:00</p>
                     </>
@@ -294,7 +294,7 @@ function RestaurantAdmin(props) {
                     return <ServiceQueItem
                       id={item.id}
                       type={item.type}
-                      tableNumber={item.tableNumber.replace(`${restaurantId}/`, '')}
+                      tableNumber={item.tableNumber}
                       text={item.text}
                       onClick={() => null}
                     />
