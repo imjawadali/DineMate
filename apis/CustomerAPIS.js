@@ -2,6 +2,7 @@ const { getSecureConnection, getConnection, getTransactionalConnection } = requi
 
 module.exports = app => {
     app.post('/customer/signUp', async (req, res) => {
+        console.log("\n\n>>> /customer/signUp")
         console.log(req.body)
         const { firstName, lastName, email, password } = req.body
         if (!firstName) return res.send({
@@ -43,6 +44,7 @@ module.exports = app => {
     })
 
     app.post('/customer/login', async (req, res) => {
+        console.log("\n\n>>> /customer/login")
         console.log(req.body)
         const { email, password } = req.body
         if (!email) return res.send({
@@ -78,11 +80,19 @@ module.exports = app => {
     })
 
     app.get('/customer/getAllRestaurants', async (req, res) => {
+        console.log("\n\n>>> /customer/getAllRestaurants")
         getConnection(
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating,
             RA.city, RA.address,
-            GROUP_CONCAT(c.name) as categories
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',c.id,
+                        ',"name":"',c.name,'"}'
+                    ) ORDER BY c.createdAt DESC
+                ),
+            ']') as categories
             FROM restaurants R 
             JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
             LEFT JOIN categories c on c.restaurantId = R.restaurantId
@@ -91,10 +101,17 @@ module.exports = app => {
             null,
             (body) => {
                 if (body.length) {
+                    const data = []
+                    for (let i = 0; i < body.length; i++) {
+                        const temp = body[i]
+                        if (temp.categories)
+                            temp.categories = JSON.parse(temp.categories)
+                        data.push(temp)
+                    }
                     return res.send({
                         status: true,
                         message: '',
-                        body
+                        body: data
                     })
                 } else {
                     return res.send({
@@ -108,6 +125,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getRestaurantDetails', async (req, res) => {
+        console.log("\n\n>>> /customer/getRestaurantDetails")
         console.log(req.body)
         const { restaurantId } = req.body
         if (!restaurantId) return res.send({
@@ -156,6 +174,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getMenuItems', async (req, res) => {
+        console.log("\n\n>>> /customer/getMenuItems")
         console.log(req.body)
         const { restaurantId } = req.body
         if (!restaurantId) return res.send({
@@ -232,6 +251,7 @@ module.exports = app => {
     })
 
     app.post('/customer/initializeOrder', async (req, res) => {
+        console.log("\n\n>>> /customer/initializeOrder")
         console.log(req.body)
         const { restaurantId, tableId, customerId, type } = req.body
         if (!restaurantId) return res.send({
@@ -285,6 +305,7 @@ module.exports = app => {
     })
 
     app.post('/customer/addOrderItem', async (req, res) => {
+        console.log("\n\n>>> /customer/addOrderItem")
         console.log(req.body)
         const { restaurantId, orderNumber, quantity, name, price, totalPrice, specialInstructions, addOns } = req.body
         if (!restaurantId) return res.send({
@@ -444,6 +465,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getOrderItems', async (req, res) => {
+        console.log("\n\n>>> /customer/getOrderItems")
         console.log(req.body)
         const { restaurantId, orderNumber } = req.body
         if (!restaurantId) return res.send({
@@ -480,8 +502,9 @@ module.exports = app => {
     })
 
     app.post('/customer/getOrderItemDetails', async (req, res) => {
-        const { id } = req.body
+        console.log("\n\n>>> /customer/getOrderItemDetails")
         console.log(req.body)
+        const { id } = req.body
         if (!id) return res.send({
             status: false,
             message: 'OrderItem Id is required!',
@@ -512,6 +535,7 @@ module.exports = app => {
     })
 
     app.post('/customer/closeOrderViaCash', async (req, res) => {
+        console.log("\n\n>>> /customer/closeOrderViaCash")
         console.log(req.body)
         const { restaurantId, orderNumber } = req.body
         if (!restaurantId) return res.send({
@@ -546,6 +570,7 @@ module.exports = app => {
     })
 
     app.post('/customer/doNotDisturb', async (req, res) => {
+        console.log("\n\n>>> /customer/doNotDisturb")
         console.log(req.body)
         const { restaurantId, orderNumber, enabled } = req.body
         if (!restaurantId) return res.send({
@@ -585,6 +610,7 @@ module.exports = app => {
     })
 
     app.post('/customer/requestService', async (req, res) => {
+        console.log("\n\n>>> /customer/requestService")
         console.log(req.body)
         const { restaurantId, tableId, orderNumber, type, text } = req.body
         if (!restaurantId) return res.send({
