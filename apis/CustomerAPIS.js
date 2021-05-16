@@ -2,6 +2,7 @@ const { getSecureConnection, getConnection, getTransactionalConnection } = requi
 
 module.exports = app => {
     app.post('/customer/signUp', async (req, res) => {
+        console.log(req.body)
         const { firstName, lastName, email, password } = req.body
         if (!firstName) return res.send({
             status: false,
@@ -42,6 +43,7 @@ module.exports = app => {
     })
 
     app.post('/customer/login', async (req, res) => {
+        console.log(req.body)
         const { email, password } = req.body
         if (!email) return res.send({
             status: false,
@@ -106,6 +108,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getRestaurantDetails', async (req, res) => {
+        console.log(req.body)
         const { restaurantId } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -153,6 +156,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getMenuItems', async (req, res) => {
+        console.log(req.body)
         const { restaurantId } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -228,6 +232,7 @@ module.exports = app => {
     })
 
     app.post('/customer/initializeOrder', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, tableId, customerId, type } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -280,6 +285,7 @@ module.exports = app => {
     })
 
     app.post('/customer/addOrderItem', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, orderNumber, quantity, name, price, totalPrice, specialInstructions, addOns } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -438,6 +444,7 @@ module.exports = app => {
     })
 
     app.post('/customer/getOrderItems', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, orderNumber } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -474,6 +481,7 @@ module.exports = app => {
 
     app.post('/customer/getOrderItemDetails', async (req, res) => {
         const { id } = req.body
+        console.log(req.body)
         if (!id) return res.send({
             status: false,
             message: 'OrderItem Id is required!',
@@ -504,6 +512,7 @@ module.exports = app => {
     })
 
     app.post('/customer/closeOrderViaCash', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, orderNumber } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -537,6 +546,7 @@ module.exports = app => {
     })
 
     app.post('/customer/doNotDisturb', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, orderNumber, enabled } = req.body
         if (!restaurantId) return res.send({
             status: false,
@@ -575,6 +585,7 @@ module.exports = app => {
     })
 
     app.post('/customer/requestService', async (req, res) => {
+        console.log(req.body)
         const { restaurantId, tableId, orderNumber, type, text } = req.body
         if (!restaurantId) return res.send({
             status: false,
