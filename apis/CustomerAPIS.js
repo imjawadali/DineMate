@@ -216,6 +216,7 @@ module.exports = app => {
                                     name: data[j].addOn_name,
                                     price: data[j].addOn_price,
                                     mandatory: data[j].mandatory,
+                                    isradio: !!addOnOptions.length,
                                     addOnOptions
                                 })
                             }

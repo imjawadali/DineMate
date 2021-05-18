@@ -38,7 +38,9 @@ function Restaurants(props) {
                 <ResturantListComponent
                   title={name}
                   price={"$$"}
-                  cuisines={categories ? categories.replaceAll(',', ' • ') : 'Breakfast and Brunch • American • Sandwiches'}
+                  cuisines={categories && categories.length ? categories.map((category, index) => {
+                    return `${category.name}${index !== (categories.length - 1) ? ' • ' : ''}`
+                  }) : null}
                   stars={rating}
                   image={imageUrl || imagesArray[index%2].default}
                   onClick={() => props.history.push(`/customer/${restaurantId}/menu`)}
