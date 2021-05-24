@@ -1,9 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-import { HeaderButton, Logo, MenuIcon } from '../../components'
+import { HeaderButton, Logo, MenuIcon, SideNav } from '../../components'
 import './styles.css'
 
 export default function Home(props) {
+
+  const [showSidenav, setShowSideNav] = useState(false);
+
   return (
     <div className="HomeContainer">
       <div className="HomeTopContainer">
@@ -13,7 +16,12 @@ export default function Home(props) {
         </>
 
         <div className="HomeHeaderContainer">
-          <MenuIcon onClick={() => null} />
+          <MenuIcon onClick={() => setShowSideNav(!showSidenav)} />
+          {
+            showSidenav ?
+              <SideNav setShowSideNav={setShowSideNav} />
+              : null
+          }
           <div className="HeaderLogoContainer">
             <Logo src={require('../../assets/logo2.png').default} />
           </div>
@@ -90,7 +98,7 @@ export default function Home(props) {
 
         <img className="HomeBottomBottomImage" src={require('../../assets/burger_with_circle.png').default} />
       </div>
-      
+
       <div className="HomeBlankDiv" />
     </div>
   )

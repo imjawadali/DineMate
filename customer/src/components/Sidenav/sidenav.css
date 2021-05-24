@@ -1,0 +1,140 @@
+.sidenav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: calc(100vw);
+    height: calc(100vh);
+    background-color: #000000a1;
+    z-index: 1;
+}
+
+.sidenav-drawer {
+    width: 0;
+    transition: width 2s;
+    width: 320px;
+    height: calc(100vh);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-image: url('../../assets/abstractbackground.png');
+    background-size: contain;
+}
+
+.close-icon {
+    padding: 14px;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+.sign-in-button {
+    padding: 12px 90px;
+    background-color: #e93936;
+    color: white;
+    cursor: pointer;
+    font-size: 28px;
+}
+
+.create-add-div {
+    margin-top: 30px;
+    margin-left: -5px;
+}
+
+.create-add {
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.dinemate-intro {
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    padding: 38px;
+    padding-bottom: 0;
+}
+
+.dinemate-logo {
+    width: 54px;
+}
+
+.dinemate-slogan {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.url-buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.ia-button {
+    background-color: #f0f0f0;
+    padding: 3px 14px;
+    border-radius: 22px;
+    font-weight: bold;
+    margin: 30px 10px;
+    font-size: 13px;
+    box-shadow: 2px 2px 4px 0px #00000047;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.dp-div {
+    border-radius: 100px;
+    overflow: hidden;
+    border: 2px white;
+    box-shadow: 0px 0px 11px 2px lightgrey;
+    width: 140px;
+    height: 140px;
+}
+
+.profile-picture {
+    width: 140px;
+    height: 140px;
+}
+
+.username {
+    margin-top: 40px;
+    font-size: 24px;
+    font-weight: bold;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reward-point-headeing {
+    color: #00000085;
+}
+
+.reward-points {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.reward-point {
+    color: red;
+}
+
+.route-section {
+    cursor: pointer;
+    cursor: pointer;
+    padding: 12px 0;
+    border-bottom: 2px solid lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.route {
+    margin-left: 10px;
+    margin-right: 60px;
+    font-weight: 600;
+}

@@ -94,11 +94,14 @@ const Header = props => {
                                                     return (
                                                         <div className="details" key={i}>
                                                             <div>
-                                                                <select className="selection-box" value={item.quantity}>
+                                                                {/* <select className="selection-box" value={item.quantity}>
                                                                     <option value={1}>1</option>
                                                                     <option value={2}>2</option>
                                                                     <option value={3}>3</option>
-                                                                </select>
+                                                                </select> */}
+                                                                <div className="selected-quantity">
+                                                                    1
+                                                                </div>
                                                             </div>
 
                                                             <div className="item-description">

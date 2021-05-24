@@ -123,6 +123,12 @@ input.HeaderInput {
     margin-top: 4px;
 }
 
+.selected-quantity {
+    margin: 10px;
+    font-size: 16px;
+    font-weight: 900;
+}
+
 .details {
     display: flex;
     justify-content: space-between;
