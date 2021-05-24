@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_SESSION } from '../constants'
+import { SESSION_CHECK_DONE, SET_ORDER, SET_SESSION, ORDER_CHECK_DONE } from '../constants'
 import { RestClient } from '../services/network'
 import { getItem } from '../helpers'
 
@@ -27,18 +27,28 @@ export default function App() {
 
     const checkingSignIn = useSelector(({ sessionReducer }) => sessionReducer.checkingSignIn)
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+    const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if (!customer) {
+        if (!customer || !orderDetails) {
             const storedCustomer = getItem('customer')
-            if (storedCustomer)
+            const storedOrderDetails = getItem('orderDetails')
+            if (storedCustomer && !customer)
                 setTimeout(() => {
                     RestClient.setHeader('Authorization', storedCustomer.id)
                     dispatch(customisedAction(SET_SESSION, { customer: storedCustomer }))
                 }, 300)
             else
                 setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
+
+            if (storedOrderDetails && !orderDetails)
+                setTimeout(() => {
+                    dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                }, 300)
+            else
+                setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
     }, [])
 
@@ -50,7 +60,7 @@ export default function App() {
         setSidebarOpen(false)
     }
 
-    return (!checkingSignIn ?
+    return (!checkingSignIn && !checkingOrder ?
         <ToastProvider
             autoDismiss
             autoDismissTimeout={6000}>

@@ -8,6 +8,7 @@ export const API_ENDPOINTS = {
         login: 'customer/login',
         getAllRestaurants: 'customer/getAllRestaurants',
         getRestaurantDetails: 'customer/getRestaurantDetails',
+        initializeOrder: 'customer/initializeOrder',
         getMenuItems: 'customer/getMenuItems'
     }
 }

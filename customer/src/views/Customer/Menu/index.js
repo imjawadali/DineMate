@@ -8,7 +8,7 @@ import SearchBar from '../../../components/SeachBar'
 import MenuListingContainer from './MenuListingContainer'
 
 import { customisedAction } from '../../../redux/actions';
-import { GET_MENU, GET_RESTAURANT_DETAILS } from '../../../constants';
+import { GET_MENU, GET_RESTAURANT_DETAILS, INITIALIZE_ORDER } from '../../../constants';
 import './styles.css'
 
 const Menu = props => {
@@ -19,6 +19,9 @@ const Menu = props => {
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
     const fetchingRestaurantDetails = useSelector(({ menuReducer }) => menuReducer.fetchingRestaurantDetails)
     const restaurant = useSelector(({ menuReducer }) => menuReducer.restaurant)
+    const initializingOrder = useSelector(({ orderReducer }) => orderReducer.initializingOrder)
+    const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
 
     let { restaurantId, tableId } = useParams();
@@ -26,6 +29,8 @@ const Menu = props => {
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))
+        // if (tableId && !checkingOrder && !initializingOrder && !orderDetails)
+        //     dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
     }, [])
 
     const addToCart = id => {

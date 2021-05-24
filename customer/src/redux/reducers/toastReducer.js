@@ -5,7 +5,9 @@ import {
   GET_MENU,
   GET_RESTAURANT_DETAILS,
   GET_RESTAURANT_DETAILS_SUCCESS,
-  GET_RESTAURANT_DETAILS_FAILURE
+  GET_RESTAURANT_DETAILS_FAILURE,
+  SET_ORDER,
+  INITIALIZE_ORDER_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -26,6 +28,10 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case GET_RESTAURANT_DETAILS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case SET_ORDER:
+      return { ...state, toast: payload.toast }
+    case INITIALIZE_ORDER_FAILURE:
+      return { ...state, toast: payload }
     default:
       return state
   }

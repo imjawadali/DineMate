@@ -1,10 +1,17 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import MenuListItemComponent from '../../../../components/MenuListItemComponent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
+import { customisedAction } from '../../../../redux/actions';
+import { SET_TOAST } from '../../../../constants';
 
 const MenuListingContainer = props => {
+
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const dispatch = useDispatch()
+
     const { heading, cart, data, onClick } = props
     const [viewAddons, setViewAddons] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
@@ -25,9 +32,11 @@ const MenuListingContainer = props => {
                                 cartValue={cart.find(item => item.id == menuItem.id) ? "1" : ""}
                                 price={menuItem.price}
                                 onClick={() => {
-                                    setSelectedItem(menuItem);
-                                    setViewAddons(true);
-                                    console.clear();
+                                    if (orderDetails) {
+                                        setSelectedItem(menuItem);
+                                        setViewAddons(true);
+                                        console.clear();
+                                    } else dispatch(customisedAction(SET_TOAST, { message: 'Order isn\'t initialized yet!', type: 'warning' }))
                                 }}
                                 updateCart={onClick}
                                 addToCart={cart.find(item => item.id == menuItem.id)}
@@ -52,13 +61,16 @@ const MenuListingContainer = props => {
 
 const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
 
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const dispatch = useDispatch()
+
     const [itemCount, setItemCount] = useState(1);
     const [itemToAdd, setItemToAdd] = useState({ addOnOptions: [] });
     const [totalPrice, setTotalPrice] = useState(0);
     const [updateComponent, setUpdateComponent] = useState(true);
 
     useEffect(() => {
-        let price = 0;
+        let price = selectedItem.price;
         for (let key in itemToAdd) {
             if (key == 'addOnOptions') {
                 itemToAdd[key].forEach(item => price += item.price)
@@ -73,9 +85,11 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
     const addToCart = e => {
         e.preventDefault();
         console.log("itemToAdd", {
-            ...itemToAdd,
-            special_instructions: document.getElementById("special_instructions").value,
-            totalPrice
+            restaurantId: orderDetails.restaurantId,
+            orderNumber: orderDetails.orderNumber,
+            quantity: itemCount,
+            totalPrice,
+            special_instructions: document.getElementById("special_instructions").value
         });
         // updateCart();
     }
