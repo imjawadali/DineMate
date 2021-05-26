@@ -47,9 +47,9 @@ function SideNav(props) {
                                 <span className="route">Profile</span>
                             </div>
 
-                            <div className="route-section">
+                            <div className="route-section" style={{ borderBottom: 'none' }}>
                                 <img style={{ width: 23, marginRight: 8 }} src={arrowright} />
-                                <span className="route" style={{ borderBottom: 'none' }}>Logout</span>
+                                <span className="route">Logout</span>
                             </div>
                         </>
                         :
@@ -86,6 +86,9 @@ function SideNav(props) {
                         Android
                     </div>
                 </div>
+            </div>
+
+            <div className="backdrop" onClick={() => props.setShowSideNav(false)}>
             </div>
         </div>
     )
