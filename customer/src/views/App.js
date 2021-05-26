@@ -15,6 +15,7 @@ import Customer from './Customer'
 import Home from './Home'
 import Others from './Others'
 import Registration from './Registration'
+import SignIn from './SignIn'
 import NoRoute from './NoRoute'
 import Footer from './Footer'
 
@@ -72,6 +73,7 @@ export default function App() {
                         <Route exact path='/' openSidebar={openSidebar} component={Home} />
                         <Route path='/customer' openSidebar={openSidebar} component={Customer} />
                         <Route path='/registration' component={Registration} />
+                        <Route path='/signin' component={SignIn} />
                         <Route path='/others' component={Others} />
                         <Route component={NoRoute} />
                     </Switch>
