@@ -21,6 +21,7 @@ import Footer from './Footer'
 
 import logo from '../assets/logo.png'
 import './styles.css'
+import SignUp from './SignUp'
 
 export default function App() {
 
@@ -74,6 +75,7 @@ export default function App() {
                         <Route path='/customer' openSidebar={openSidebar} component={Customer} />
                         <Route path='/registration' component={Registration} />
                         <Route path='/signin' component={SignIn} />
+                        <Route path='/signup' component={SignUp} />
                         <Route path='/others' component={Others} />
                         <Route component={NoRoute} />
                     </Switch>

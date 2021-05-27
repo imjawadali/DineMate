@@ -1,0 +1,40 @@
+.sign-up {
+    display: flex;
+    justify-content: center;
+}
+
+.content-div {
+    padding: 30px;
+    box-shadow: 2px 2px 19px 2px #d3d3d3b5;
+    margin: 100px 10px;
+    background-image: url('../../assets/abstractbackground.png');
+    background-size: contain;
+    width: 100%;
+    max-width: 400px;
+}
+
+.welcome-title {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.form-field {
+    padding: 12px;
+    background-color: white;
+    box-shadow: 0px 1px 5px 0px #2fc5b459;
+    width: -webkit-fill-available;
+    margin-top: 10px;
+}
+
+.signup-div {
+    padding: 10px 0;
+    background-color: #2bc2b2;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    margin-top: 12px;
+    box-shadow: -1px 5px 14px 0px #2fc5b48a;
+    cursor: pointer;
+}
