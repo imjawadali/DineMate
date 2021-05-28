@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './styles.css';
-import fb from '../../assets/fb.png';
-import enter from '../../assets/enter.png';
+import fb from '../../../assets/fb.png';
+import enter from '../../../assets/enter.png';
 
 function SignIn() {
 

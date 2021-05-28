@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles.css';
-import signup_icon from '../../assets/signup_icon.png';
+import signup_icon from '../../../assets/signup_icon.png';
 
 function SignUp() {
 

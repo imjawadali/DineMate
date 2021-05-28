@@ -11,7 +11,7 @@ function ScrollToTop({ history, children, closeSidebar }) {
     }
   }, []);
 
-  history.listen(() => closeSidebar)
+  history.listen(() => closeSidebar())
 
   return <Fragment>{children}</Fragment>;
 }

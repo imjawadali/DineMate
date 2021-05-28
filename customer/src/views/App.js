@@ -10,18 +10,17 @@ import { getItem } from '../helpers'
 
 import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
+import SideNav from './Sidenav'
 import Header from './Header'
 import Customer from './Customer'
 import Home from './Home'
 import Others from './Others'
 import Registration from './Registration'
-import SignIn from './SignIn'
 import NoRoute from './NoRoute'
 import Footer from './Footer'
 
 import logo from '../assets/logo.png'
 import './styles.css'
-import SignUp from './SignUp'
 
 export default function App() {
 
@@ -69,13 +68,14 @@ export default function App() {
             <Router>
                 <Toaster />
                 <ScrollToTop closeSidebar={closeSidebar}>
-                    <Header />
+                    <SideNav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar}/>
+                    <Header openSidebar={openSidebar} />
                     <Switch>
-                        <Route exact path='/' openSidebar={openSidebar} component={Home} />
-                        <Route path='/customer' openSidebar={openSidebar} component={Customer} />
+                        <Route exact path='/'>
+                            <Home openSidebar={openSidebar}/>
+                        </Route>
+                        <Route path='/customer' component={Customer} />
                         <Route path='/registration' component={Registration} />
-                        <Route path='/signin' component={SignIn} />
-                        <Route path='/signup' component={SignUp} />
                         <Route path='/others' component={Others} />
                         <Route component={NoRoute} />
                     </Switch>

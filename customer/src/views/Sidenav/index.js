@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom'
 import './sidenav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -11,12 +12,15 @@ import usericon from '../../assets/usericon.png';
 import arrowright from '../../assets/arrowright.png';
 
 function SideNav(props) {
+
     const [signIn, setSignIn] = useState(false);
 
+    const { sidebarOpen, closeSidebar, history } = props
+
     return (
-        <div className="sidenav">
+        <div className="sidenav" style={{ display: sidebarOpen ? 'block' : 'none' }}>
             <div className="sidenav-drawer">
-                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => props.setShowSideNav(false)} />
+                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => closeSidebar()} />
 
                 {
                     signIn ?
@@ -59,8 +63,15 @@ function SideNav(props) {
                             </div>
 
                             <div className="create-add-div">
-                                <div className="create-add" style={{ borderBottom: '1px solid black' }}>Create an account</div>
-                                <div className="create-add">Add your restaurant</div>
+                                <div className="create-add" 
+                                    onClick={() => history.push('/customer/signup')}
+                                    style={{ borderBottom: '1px solid black' }}>
+                                    Create an account
+                                </div>
+                                <div className="create-add"
+                                    onClick={() => history.push('/registration')}>
+                                    Add your restaurant
+                                </div>
                             </div>
                         </>
                 }
@@ -88,10 +99,10 @@ function SideNav(props) {
                 </div>
             </div>
 
-            <div className="backdrop" onClick={() => props.setShowSideNav(false)}>
+            <div className="backdrop" onClick={() => closeSidebar()}>
             </div>
         </div>
     )
 }
 
-export { SideNav };
+export default withRouter(SideNav);

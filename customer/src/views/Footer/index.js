@@ -33,7 +33,7 @@ const Footer = props => {
                             <p>
                                 Read our blog
                          </p>
-                            <p>
+                            <p onClick={() => props.history.push('/registration')}>
                                 Add your restaurant
                          </p>
                             <p onClick={() => {
@@ -44,13 +44,13 @@ const Footer = props => {
                          </p>
                         </div>
                         <div className="ftr-right">
-                            <p onClick={() => props.history.push('/others')}>
+                            <p onClick={() => null}>
                                 Get Help
                          </p>
                             <p>
                                 View all cities
                          </p>
-                            <p onClick={() => props.history.push('/customer')}>
+                            <p onClick={() => props.history.push('/customer/restaurants')}>
                                 Restaurants near me
                          </p>
                         </div>
