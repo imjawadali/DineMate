@@ -24,6 +24,7 @@ function Home(props) {
           <HeaderButton
             src={require('../../assets/signin_icon.png').default}
             text="Sign In"
+            onClick={() => props.history.push('/customer/signin')}
           />
         </div>
 

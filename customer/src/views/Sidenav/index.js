@@ -58,7 +58,7 @@ function SideNav(props) {
                         </>
                         :
                         <>
-                            <div className="sign-in-button" onClick={() => setSignIn(true)}>
+                            <div className="sign-in-button" onClick={() => history.push('/customer/signin')}>
                                 Sign In
                             </div>
 
@@ -78,8 +78,11 @@ function SideNav(props) {
 
 
                 <div className="dinemate-intro">
-                    <img className="dinemate-logo" src={logo} />
-                    <span className="dinemate-slogan">There's more to love in the app</span>
+                    <img className="dinemate-logo" src={logo} 
+                        onClick={() => setSignIn(!signIn)}/>
+                    <span className="dinemate-slogan">
+                        There's more to love in the app
+                    </span>
                 </div>
 
                 <div className="url-buttons">

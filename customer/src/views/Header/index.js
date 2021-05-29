@@ -164,10 +164,12 @@ const Header = props => {
                     <HeaderButton
                         src={require('../../assets/signin_icon.png').default}
                         text="Sign In"
+                        onClick={() => props.history.push('/customer/signin')}
                     />
                     <HeaderButton
                         red
                         text="Sign Up"
+                        onClick={() => props.history.push('/customer/signup')}
                     />
                 </div>
             : null
