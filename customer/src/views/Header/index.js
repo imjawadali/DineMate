@@ -41,7 +41,7 @@ const Header = props => {
                 <div className="HeaderContainer">
                     <div className="HeaderInnerContainer">
                         <div className="HeaderLeft">
-                            <MenuIcon onClick={() => null} />
+                            <MenuIcon onClick={() => props.openSidebar()} />
                             <Logo
                                 src={require('../../assets/logo.png').default}
                                 onClick={() => props.history.push('/')}
@@ -94,13 +94,8 @@ const Header = props => {
                                                     return (
                                                         <div className="details" key={i}>
                                                             <div>
-                                                                {/* <select className="selection-box" value={item.quantity}>
-                                                                    <option value={1}>1</option>
-                                                                    <option value={2}>2</option>
-                                                                    <option value={3}>3</option>
-                                                                </select> */}
                                                                 <div className="selected-quantity">
-                                                                    1
+                                                                    {item.quantity}
                                                                 </div>
                                                             </div>
 
@@ -159,7 +154,7 @@ const Header = props => {
                     </div>
                 </div>
                 : <div className="HeaderContainer">
-                    <MenuIcon onClick={() => null} />
+                    <MenuIcon onClick={() => props.openSidebar()} />
                     <div className="HeaderLogoContainer">
                         <Logo
                             src={require('../../assets/logo.png').default}
@@ -169,10 +164,12 @@ const Header = props => {
                     <HeaderButton
                         src={require('../../assets/signin_icon.png').default}
                         text="Sign In"
+                        onClick={() => props.history.push('/customer/signin')}
                     />
                     <HeaderButton
                         red
                         text="Sign Up"
+                        onClick={() => props.history.push('/customer/signup')}
                     />
                 </div>
             : null

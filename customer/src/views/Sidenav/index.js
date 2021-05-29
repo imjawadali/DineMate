@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom'
 import './sidenav.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -11,12 +12,15 @@ import usericon from '../../assets/usericon.png';
 import arrowright from '../../assets/arrowright.png';
 
 function SideNav(props) {
+
     const [signIn, setSignIn] = useState(false);
 
+    const { sidebarOpen, closeSidebar, history } = props
+
     return (
-        <div className="sidenav">
+        <div className="sidenav" style={{ display: sidebarOpen ? 'block' : 'none' }}>
             <div className="sidenav-drawer">
-                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => props.setShowSideNav(false)} />
+                <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => closeSidebar()} />
 
                 {
                     signIn ?
@@ -47,28 +51,38 @@ function SideNav(props) {
                                 <span className="route">Profile</span>
                             </div>
 
-                            <div className="route-section">
+                            <div className="route-section" style={{ borderBottom: 'none' }}>
                                 <img style={{ width: 23, marginRight: 8 }} src={arrowright} />
-                                <span className="route" style={{ borderBottom: 'none' }}>Logout</span>
+                                <span className="route">Logout</span>
                             </div>
                         </>
                         :
                         <>
-                            <div className="sign-in-button" onClick={() => setSignIn(true)}>
+                            <div className="sign-in-button" onClick={() => history.push('/customer/signin')}>
                                 Sign In
                             </div>
 
                             <div className="create-add-div">
-                                <div className="create-add" style={{ borderBottom: '1px solid black' }}>Create an account</div>
-                                <div className="create-add">Add your restaurant</div>
+                                <div className="create-add" 
+                                    onClick={() => history.push('/customer/signup')}
+                                    style={{ borderBottom: '1px solid black' }}>
+                                    Create an account
+                                </div>
+                                <div className="create-add"
+                                    onClick={() => history.push('/registration')}>
+                                    Add your restaurant
+                                </div>
                             </div>
                         </>
                 }
 
 
                 <div className="dinemate-intro">
-                    <img className="dinemate-logo" src={logo} />
-                    <span className="dinemate-slogan">There's more to love in the app</span>
+                    <img className="dinemate-logo" src={logo} 
+                        onClick={() => setSignIn(!signIn)}/>
+                    <span className="dinemate-slogan">
+                        There's more to love in the app
+                    </span>
                 </div>
 
                 <div className="url-buttons">
@@ -87,8 +101,11 @@ function SideNav(props) {
                     </div>
                 </div>
             </div>
+
+            <div className="backdrop" onClick={() => closeSidebar()}>
+            </div>
         </div>
     )
 }
 
-export { SideNav };
+export default withRouter(SideNav);

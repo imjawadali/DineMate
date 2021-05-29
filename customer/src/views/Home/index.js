@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom';
 
-import { HeaderButton, Logo, MenuIcon, SideNav } from '../../components'
+import { HeaderButton, Logo, MenuIcon } from '../../components'
 import './styles.css'
 
-export default function Home(props) {
+function Home(props) {
 
   const [showSidenav, setShowSideNav] = useState(false);
 
@@ -16,18 +17,14 @@ export default function Home(props) {
         </>
 
         <div className="HomeHeaderContainer">
-          <MenuIcon onClick={() => setShowSideNav(!showSidenav)} />
-          {
-            showSidenav ?
-              <SideNav setShowSideNav={setShowSideNav} />
-              : null
-          }
+          <MenuIcon onClick={() => props.openSidebar()} />
           <div className="HeaderLogoContainer">
             <Logo src={require('../../assets/logo2.png').default} />
           </div>
           <HeaderButton
             src={require('../../assets/signin_icon.png').default}
             text="Sign In"
+            onClick={() => props.history.push('/customer/signin')}
           />
         </div>
 
@@ -103,3 +100,5 @@ export default function Home(props) {
     </div>
   )
 }
+
+export default withRouter(Home)
