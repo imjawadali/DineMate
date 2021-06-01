@@ -97,14 +97,15 @@ module.exports = app => {
 
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, imageUrl, restaurantName, cuisine, address, primaryContact, secondaryContact  } = req.body
+        const { restaurantId, imageUrl, restaurantName, cuisine, address, city, country, latitude, longitude, taxId, taxPercentage, customMessage, primaryContact, secondaryContact  } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Slug is required!' })
         if (!restaurantName) return res.status(422).send({ 'msg': 'Restaurant Name is required!' })
-        if (!address) return res.status(422).send({ 'msg': 'Address fields are required!' })
-        if (!address.address) return res.status(422).send({ 'msg': 'Address is required!' })
-        if (!address.city) return res.status(422).send({ 'msg': 'City is required!' })
-        if (!address.country) return res.status(422).send({ 'msg': 'Country is required!' })
+        if (!address) return res.status(422).send({ 'msg': 'Address is required!' })
+        if (!city) return res.status(422).send({ 'msg': 'City is required!' })
+        if (!country) return res.status(422).send({ 'msg': 'Country is required!' })
+        if (!taxId) return res.status(422).send({ 'msg': 'Tax Id is required!' })
+        if (!taxPercentage) return res.status(422).send({ 'msg': 'Tax percentage is required!' })
         if (!primaryContact) return res.status(422).send({ 'msg': 'Primary Contact fields are required!' })
         if (!primaryContact.name) return res.status(422).send({ 'msg': 'Primary Contact\'s Name is required!' })
         if (!primaryContact.email) return res.status(422).send({ 'msg': 'Primary Contact\'s Email is required!' })
@@ -135,116 +136,114 @@ module.exports = app => {
                         restaurant.restaurantName = restaurantName
                         if (cuisine)
                             restaurant.cuisine = cuisine
-                        restaurant.city = address.city
+                        restaurant.address = address
+                        restaurant.city = city
+                        restaurant.country = country
+                        if (latitude)
+                            restaurant.latitude = latitude
+                        if (longitude)
+                            restaurant.longitude = longitude
+                        restaurant.taxId = taxId
+                        restaurant.taxPercentage = taxPercentage
+                        if (customMessage)
+                            restaurant.customMessage = customMessage
                         
-                        let data = address
+                        let data = primaryContact
+                        data.email = lowerCased(primaryContact.email)
                         data.restaurantId = restaurantId
-                        tempDb.query('INSERT INTO restaurantsAddress SET ?', data, function(error, result) {
+                        data.hashString = hashString
+                        tempDb.query('INSERT INTO users SET ?', data, async function(error, result) {
                             if (!!error) {
                                 console.log('TableError', error.sqlMessage)
                                 tempDb.rollback(function() {
-                                    return res.status(422).send({ 'msg': "Failed to add restaurant address!" })
+                                    return res.status(422).send({ 'msg': "Failed to create user!" })
                                 })
                             } else {
-                                restaurant.addressId = result.insertId
-                                data = primaryContact
-                                data.email = lowerCased(primaryContact.email)
-                                data.restaurantId = restaurantId
-                                data.hashString = hashString
-                                tempDb.query('INSERT INTO users SET ?', data, async function(error, result) {
-                                    if (!!error) {
-                                        console.log('TableError', error.sqlMessage)
-                                        tempDb.rollback(function() {
-                                            return res.status(422).send({ 'msg': "Failed to create user!" })
-                                        })
-                                    } else {
-                                        restaurant.primaryContactId = result.insertId
-                                        let emailStatus = await sendEmail(
-                                            primaryContact.email,
-                                            'Create Password',
-                                            setPasswordMessage(
-                                                primaryContact.name,
-                                                restaurantName,
-                                                `${URL}/client/createPassword/${restaurantId}/${primaryContact.email}/${hashString}`
-                                            )
-                                        )
-                                        if (emailStatus && emailStatus.accepted.length) {
-                                            if (secondaryContact) {
-                                                data = secondaryContact
-                                                data.email = lowerCased(secondaryContact.email)
-                                                data.restaurantId = restaurantId
-                                                hashString = Math.random().toString(36).substring(2);
-                                                data.hashString = hashString
-                                                tempDb.query('INSERT INTO users SET ?', data, async function(error, result) {
-                                                    if (!!error) {
-                                                        console.log('TableError', error.sqlMessage)
-                                                        tempDb.rollback(function() {
-                                                            return res.status(422).send({ 'msg': "Failed to create user!" })
-                                                        })
-                                                    } else {
-                                                        restaurant.secondaryContactId = result.insertId
-                                                        emailStatus = await sendEmail(
-                                                            secondaryContact.email,
-                                                            'Create Password',
-                                                            setPasswordMessage(
-                                                                secondaryContact.name,
-                                                                restaurantName,
-                                                                `${URL}/client/createPassword/${restaurantId}/${secondaryContact.email}/${hashString}`
-                                                            )
-                                                        )
-                                                        if (emailStatus && emailStatus.accepted.length)
-                                                            tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
-                                                                if (!!error) {
-                                                                    console.log('TableError', error.sqlMessage)
-                                                                    tempDb.rollback(function() {
-                                                                        return res.status(422).send({ 'msg': "Failed to create restaurant!" })
-                                                                    })
-                                                                } else {
-                                                                    tempDb.commit(function(error) {
-                                                                        if (error) { 
-                                                                            tempDb.rollback(function() {
-                                                                                return res.status(422).send({ 'msg': error.sqlMessage })
-                                                                            })
-                                                                        }
-                                                                        tempDb.release()
-                                                                        return res.send({
-                                                                            'msg': 'Restuarant Added Successfully!'
-                                                                        })
-                                                                    })
-                                                                }
-                                                            })
-                                                        else  tempDb.rollback(function() {
-                                                            return res.status(422).send({ 'msg': `Invalid Email: "${secondaryContact.email}"!` })
-                                                        })
-                                                    }
+                                restaurant.primaryContactId = result.insertId
+                                let emailStatus = await sendEmail(
+                                    primaryContact.email,
+                                    'Create Password',
+                                    setPasswordMessage(
+                                        primaryContact.name,
+                                        restaurantName,
+                                        `${URL}/client/createPassword/${restaurantId}/${primaryContact.email}/${hashString}`
+                                    )
+                                )
+                                if (emailStatus && emailStatus.accepted.length) {
+                                    if (secondaryContact) {
+                                        data = secondaryContact
+                                        data.email = lowerCased(secondaryContact.email)
+                                        data.restaurantId = restaurantId
+                                        hashString = Math.random().toString(36).substring(2);
+                                        data.hashString = hashString
+                                        tempDb.query('INSERT INTO users SET ?', data, async function(error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function() {
+                                                    return res.status(422).send({ 'msg': "Failed to create user!" })
                                                 })
                                             } else {
-                                                tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
-                                                    if (!!error) {
-                                                        console.log('TableError', error.sqlMessage)
+                                                restaurant.secondaryContactId = result.insertId
+                                                emailStatus = await sendEmail(
+                                                    secondaryContact.email,
+                                                    'Create Password',
+                                                    setPasswordMessage(
+                                                        secondaryContact.name,
+                                                        restaurantName,
+                                                        `${URL}/client/createPassword/${restaurantId}/${secondaryContact.email}/${hashString}`
+                                                    )
+                                                )
+                                                if (emailStatus && emailStatus.accepted.length)
+                                                    tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
+                                                        if (!!error) {
+                                                            console.log('TableError', error.sqlMessage)
+                                                            tempDb.rollback(function() {
+                                                                return res.status(422).send({ 'msg': "Failed to create restaurant!" })
+                                                            })
+                                                        } else {
+                                                            tempDb.commit(function(error) {
+                                                                if (error) { 
+                                                                    tempDb.rollback(function() {
+                                                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                                                    })
+                                                                }
+                                                                tempDb.release()
+                                                                return res.send({
+                                                                    'msg': 'Restuarant Added Successfully!'
+                                                                })
+                                                            })
+                                                        }
+                                                    })
+                                                else  tempDb.rollback(function() {
+                                                    return res.status(422).send({ 'msg': `Invalid Email: "${secondaryContact.email}"!` })
+                                                })
+                                            }
+                                        })
+                                    } else {
+                                        tempDb.query('INSERT INTO restaurants SET ?', restaurant, function(error) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function() {
+                                                    return res.status(422).send({ 'msg': error.sqlMessage })
+                                                })
+                                            } else {
+                                                tempDb.commit(function(error) {
+                                                    if (error) { 
                                                         tempDb.rollback(function() {
                                                             return res.status(422).send({ 'msg': error.sqlMessage })
                                                         })
-                                                    } else {
-                                                        tempDb.commit(function(error) {
-                                                            if (error) { 
-                                                                tempDb.rollback(function() {
-                                                                    return res.status(422).send({ 'msg': error.sqlMessage })
-                                                                })
-                                                            }
-                                                            tempDb.release()
-                                                            return res.send({
-                                                                'msg': 'Restuarant Added Successfully!'
-                                                            })
-                                                        })
                                                     }
+                                                    tempDb.release()
+                                                    return res.send({
+                                                        'msg': 'Restuarant Added Successfully!'
+                                                    })
                                                 })
                                             }
-                                        }
-                                        else  tempDb.rollback(function() {
-                                            return res.status(422).send({ 'msg': `Invalid Email: "${primaryContact.email}"!` })
                                         })
                                     }
+                                }
+                                else  tempDb.rollback(function() {
+                                    return res.status(422).send({ 'msg': `Invalid Email: "${primaryContact.email}"!` })
                                 })
                             }
                         })
@@ -261,10 +260,9 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT R.restaurantId, R.restaurantName, R.cuisine,  RA.city, 
+            `SELECT R.restaurantId, R.restaurantName, R.cuisine, R.city, 
             (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qrCounts 
             FROM restaurants R 
-            JOIN restaurantsAddress RA on RA.restaurantId = R.restaurantId 
             ORDER BY R.createdAt DESC`,
             null,
             (data) => {

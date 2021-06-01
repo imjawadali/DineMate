@@ -18,6 +18,9 @@ function AddRestaurant(props) {
   const [country, setcountry] = useState('')
   const [latitude, setlatitude] = useState('')
   const [longitude, setlongitude] = useState('')
+  const [taxId, settaxId] = useState('')
+  const [taxPercentage, settaxPercentage] = useState('')
+  const [customMessage, setcustomMessage] = useState('')
   const [pName, setpName] = useState('')
   const [pEmail, setpEmail] = useState('')
   const [pPhoneNumber, setpPhoneNumber] = useState('')
@@ -57,6 +60,10 @@ function AddRestaurant(props) {
       return 'Restaurant Country Required!'
     if (!address)
       return 'Detailed Address Required!'
+    if (!taxId)
+      return 'Tax ID Required!'
+    if (!taxPercentage)
+      return 'Tax Percentage Required!'
     if (!pName)
       return 'Primary Contact Name Required!'
     if (!pEmail)
@@ -75,13 +82,14 @@ function AddRestaurant(props) {
       restaurantId,
       restaurantName,
       cuisine: capitalizeFirstLetter(cuisine),
-      address: {
-        address,
-        city,
-        country,
-        latitude,
-        longitude
-      },
+      address,
+      city,
+      country,
+      latitude,
+      longitude,
+      taxId,
+      taxPercentage,
+      customMessage,
       primaryContact: {
         name: pName,
         email: pEmail,
@@ -123,6 +131,53 @@ function AddRestaurant(props) {
                 onChange={({ target: { value } }) => setcuisine(value)}
               />
             </div>
+          </div>
+        </div>
+        <div className="FormInnerContainer">
+          <SectionHeading text="Other Details" />
+          <div className="InputsContainer">
+            <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
+              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+                <SmallTitle text="Tax ID #" />
+                <Input 
+                  placeholder="NTN-111000"
+                  value={taxId}
+                  onChange={({ target: { value } }) => settaxId(value)}
+                />
+              </div>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
+                <SmallTitle text="Tax Percentage %" />
+                <Input 
+                  placeholder="7.5"
+                  type='number'
+                  value={taxPercentage}
+                  onChange={({ target: { value } }) => settaxPercentage(value)}
+                />
+              </div>
+            </div>
+            <div className="InputsInnerContainer">
+              <SmallTitle text="Custom Message" />
+              <Input 
+                placeholder="Please come again. Thank you!"
+                value={customMessage}
+                onChange={({ target: { value } }) => setcustomMessage(value)}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="FormContainer">
+        <div className="FormInnerContainer">
+          <SectionHeading text="Business Address" />
+          <div className="InputsContainer">
+            <div className="InputsInnerContainer">
+              <SmallTitle text="Detailed Address" />
+              <Input 
+                placeholder="Block - A, Street, State"
+                value={address}
+                onChange={({ target: { value } }) => setaddress(value)}
+              />
+            </div>
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
               <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Country" />
@@ -144,19 +199,11 @@ function AddRestaurant(props) {
           </div>
         </div>
         <div className="FormInnerContainer">
-          <SectionHeading text="Business Address" />
+          <SectionHeading text="Location" />
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Map" />
               <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }}/>
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Detailed Address" />
-              <Input 
-                placeholder="Block - A, Street, State"
-                value={address}
-                onChange={({ target: { value } }) => setaddress(value)}
-              />
             </div>
           </div>
         </div>
