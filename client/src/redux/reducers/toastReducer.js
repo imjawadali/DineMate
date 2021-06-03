@@ -67,7 +67,13 @@ import {
   ADD_ADDON_FAILURE,
   UPDATE_ADDON,
   UPDATE_ADDON_SUCCESS,
-  UPDATE_ADDON_FAILURE
+  UPDATE_ADDON_FAILURE,
+  GET_RESTAURANT_TO_EDIT,
+  GET_RESTAURANT_TO_EDIT_FAILURE,
+  GET_RESTAURANT_TO_EDIT_SUCCESS,
+  UPDATE_RESTAURANT,
+  UPDATE_RESTAURANT_SUCCESS,
+  UPDATE_RESTAURANT_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -101,6 +107,18 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_RESTAURANT_SUCCESS:
       return { ...state, toastSetDismiss: true }
     case ADD_RESTAURANT_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RESTAURANT:
+      return { ...state, toast: { message: 'Updating Restaurant', type: 'success' } }
+    case UPDATE_RESTAURANT_SUCCESS:
+      return { ...state, toastSetDismiss: true }
+    case UPDATE_RESTAURANT_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_RESTAURANT_TO_EDIT:
+      return { ...state, toast: { message: 'Fetching restaurant data for editting', type: 'success' } }
+    case GET_RESTAURANT_TO_EDIT_SUCCESS:
+      return { ...state, toastSetDismiss: true }
+    case GET_RESTAURANT_TO_EDIT_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case SET_TABLE_NAME:
       return { ...state, toast: { message: 'Updating Table Name', type: 'success' } }

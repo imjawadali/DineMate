@@ -254,6 +254,51 @@ module.exports = app => {
         })
     })
 
+    app.post('/admin/getRestaurantToEdit', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId  } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT restaurantId, restaurantName, cuisine,
+            address, city, country, latitude, longitude,
+            taxId, taxPercentage, customMessage,
+            primaryContactId, secondaryContactId
+            FROM restaurants WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data[0])
+                } else {
+                    return res.status(422).send({ 'msg': 'Reastaurant not available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/updateRestaurant', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, updatedData } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!updatedData) return res.status(422).send({ 'msg': 'No field submitted to update!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurants SET ? WHERE restaurantId = '${restaurantId}'`,
+            updatedData,
+            (result) => {
+                if (result.changedRows) {
+                    return res.send({ msg: 'Restaurant Updated Successfully!' })
+                } else {
+                    return res.status(422).send({ 'msg': 'Failed to update reastaurant!' })
+                }
+            }
+        )
+    })
+
     app.get('/admin/getAllRestaurants', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })

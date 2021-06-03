@@ -13,6 +13,7 @@ import OrderDetails from './Dashboard/RestaurantAdmin/OrderDetails'
 import OrderItemDetails from './Dashboard/RestaurantAdmin/OrderDetails/ItemDetails'
 import KitchenAdmin from './Dashboard/KitchenAdmin'
 import AddRestaurant from './AddRestaurant'
+import EditRestaurant from './EditRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
 import AllUsers from './Users/AllUsers'
@@ -117,6 +118,7 @@ function Admin(props) {
               </Switch>
             </Route>
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
+            <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
             <Route path={`${path}/usersManagement`}>
               <Switch>

@@ -6,6 +6,7 @@ import {
   GET_ALL_RESTAURANTS,
   GENERATE_QRS_SUCCESS,
   ADD_RESTAURANT_SUCCESS,
+  UPDATE_RESTAURANT_SUCCESS,
   GET_ALL_RESTAURANTS_SUCCESS,
   GET_ALL_RESTAURANTS_FAILURE,
   API_ENDPOINTS
@@ -21,6 +22,8 @@ export class getAllRestaurantsEpic {
           case GENERATE_QRS_SUCCESS:
             return true;
           case ADD_RESTAURANT_SUCCESS:
+            return true;
+          case UPDATE_RESTAURANT_SUCCESS:
             return true;
           default:
             return false;

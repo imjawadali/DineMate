@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, UPDATE_RESTAURANT } from '../../../constants'
 
 import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
-import './styles.css'
 import { capitalizeFirstLetter } from '../../../helpers'
 
-function AddRestaurant(props) {
+function EditRestaurant(props) {
 
   const [restaurantId, setrestaurantId] = useState('')
   const [restaurantName, setrestaurantName] = useState('')
@@ -21,33 +20,29 @@ function AddRestaurant(props) {
   const [taxId, settaxId] = useState('')
   const [taxPercentage, settaxPercentage] = useState('')
   const [customMessage, setcustomMessage] = useState('')
-  const [pName, setpName] = useState('')
-  const [pEmail, setpEmail] = useState('')
-  const [pPhoneNumber, setpPhoneNumber] = useState('')
-  const [sName, setsName] = useState('')
-  const [sEmail, setsEmail] = useState('')
-  const [sPhoneNumber, setsPhoneNumber] = useState('')
 
+  const restaurantToEdit = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurantToEdit)
   const addingUpdatingRestaurant = useSelector(({ restaurantsReducer }) => restaurantsReducer.addingUpdatingRestaurant)
   const dispatch = useDispatch()
 
+  const { history } = props
+
   useEffect(() => {
-  }, [])
-
-  const setRestaurantNameAndId = (name) => {
-    let tempRestaurantId
-    if (name)
-      tempRestaurantId = name.replaceAll(' ', '_').replaceAll('\'', '').replaceAll(',', '').replaceAll('.', '')
-    else tempRestaurantId = null
-
-    if (tempRestaurantId && tempRestaurantId.replaceAll('_', '')) {
-      setrestaurantName(capitalizeFirstLetter(name))
-      setrestaurantId(tempRestaurantId.toLowerCase())
-    } else {
-      setrestaurantName('')
-      setrestaurantId('')
+    if (!restaurantToEdit) history.goBack()
+    else {
+      setrestaurantId(restaurantToEdit.restaurantId)
+      setrestaurantName(restaurantToEdit.restaurantName)
+      setcuisine(restaurantToEdit.cuisine)
+      setaddress(restaurantToEdit.address)
+      setcity(restaurantToEdit.city)
+      setcountry(restaurantToEdit.country)
+      setlatitude(restaurantToEdit.latitude)
+      setlongitude(restaurantToEdit.longitude)
+      settaxId(restaurantToEdit.taxId)
+      settaxPercentage(restaurantToEdit.taxPercentage)
+      setcustomMessage(restaurantToEdit.customMessage)
     }
-  }
+  }, [])
 
   const validate = () => {
     if (!restaurantName)
@@ -64,23 +59,23 @@ function AddRestaurant(props) {
       return 'Tax ID Required!'
     if (!taxPercentage)
       return 'Tax Percentage Required!'
-    if (!pName)
-      return 'Primary Contact Name Required!'
-    if (!pEmail)
-      return 'Primary Contact Email Required!'
-    if (!pPhoneNumber)
-      return 'Primary Contact Number Required!'
-    if (sEmail && !sName)
-      return 'Secondary Contact Name Required!'
-    if (sName && !sEmail)
-      return 'Secondary Contact Email Required!'
+    if (restaurantName == restaurantToEdit.restaurantName
+      && cuisine == restaurantToEdit.cuisine
+      && address == restaurantToEdit.address
+      && city == restaurantToEdit.city
+      && country == restaurantToEdit.country
+      && latitude == restaurantToEdit.latitude
+      && longitude == restaurantToEdit.longitude
+      && taxId == restaurantToEdit.taxId
+      && taxPercentage == restaurantToEdit.taxPercentage
+      && customMessage == restaurantToEdit.customMessage)
+      return 'No field changed to update'
     return false
   }
 
-  const addRestuarant = () => {
-    const payload = {
-      restaurantId,
-      restaurantName,
+  const editRestuarant = () => {
+    const updatedData = {
+      restaurantName: capitalizeFirstLetter(restaurantName),
       cuisine: capitalizeFirstLetter(cuisine),
       address,
       city,
@@ -89,28 +84,14 @@ function AddRestaurant(props) {
       longitude,
       taxId,
       taxPercentage,
-      customMessage,
-      primaryContact: {
-        name: pName,
-        email: pEmail,
-        contactNumber: pPhoneNumber
-      },
-      secondaryContact: null
+      customMessage
     }
-    if (sName && sEmail) {
-      payload.secondaryContact = {
-        name: sName,
-        email: sEmail,
-        contactNumber: sPhoneNumber
-      }
-    }
-    dispatch(customisedAction(SET_TOAST_DISMISSING))
-    dispatch(customisedAction(ADD_RESTAURANT, payload, { history: props.history }))
+    dispatch(customisedAction(UPDATE_RESTAURANT, { updatedData, restaurantId, history }))
   }
 
   return (
     <div className="Container">
-      <h2>Add Restaurant</h2>
+      <h2>Edit Restaurant</h2>
       <div className="FormContainer">
         <div className="FormInnerContainer">
           <SectionHeading text="Restaurant Information" />
@@ -120,7 +101,7 @@ function AddRestaurant(props) {
               <Input 
                 placeholder="ABC Restaurant"
                 value={restaurantName}
-                onChange={({ target: { value } }) => setRestaurantNameAndId(value)}
+                onChange={({ target: { value } }) => setrestaurantName(value)}
               />
             </div>
             <div className="InputsInnerContainer">
@@ -208,66 +189,6 @@ function AddRestaurant(props) {
           </div>
         </div>
       </div>
-      <div className="FormContainer">
-        <div className="FormInnerContainer">
-          <SectionHeading text="Primary Contact Information" />
-          <div className="InputsContainer">
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Name" />
-              <Input 
-                placeholder="John Doe"
-                value={pName}
-                onChange={({ target: { value } }) => setpName(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Email" />
-              <Input 
-                placeholder="john.doe@abcrestaurant.com"
-                value={pEmail}
-                onChange={({ target: { value } }) => setpEmail(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Phone Number" />
-              <Input 
-                placeholder="+92 315 8731014"
-                value={pPhoneNumber}
-                onChange={({ target: { value } }) => setpPhoneNumber(value)}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="FormInnerContainer">
-          <SectionHeading text="Secondary Contact Information (Optional)" />
-          <div className="InputsContainer">
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Name" />
-              <Input 
-                placeholder="John Doe"
-                value={sName}
-                onChange={({ target: { value } }) => setsName(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Email" />
-              <Input 
-                placeholder="john.doe@abcrestaurant.com"
-                value={sEmail}
-                onChange={({ target: { value } }) => setsEmail(value)}
-              />
-            </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Phone Number" />
-              <Input 
-                placeholder="+92 315 8731014"
-                value={sPhoneNumber}
-                onChange={({ target: { value } }) => setsPhoneNumber(value)}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="ButtonContainer">
         <Button
           text="Submit"
@@ -275,15 +196,15 @@ function AddRestaurant(props) {
           lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
             dispatch(customisedAction(SET_TOAST, {
-            message: validate() || 'Adding restaurant in progress',
+            message: validate() || 'Updating restaurant in progress',
             type: validate() ? 'error' : 'success'
           }))}}
           iconLeft={<i className="fa fa-paper-plane" />}
-          onClick={() => addRestuarant()}
+          onClick={() => editRestuarant()}
         />
       </div>
     </div>
   )
 }
 
-export default AddRestaurant
+export default EditRestaurant

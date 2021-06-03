@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS, GET_RESTAURANT_TO_EDIT } from '../../../constants'
 
-import { Button, Input } from '../../../components'
+import { Button, Input, TitleWithAction } from '../../../components'
 
 import QrsList from './QrsList'
 
@@ -49,9 +49,14 @@ function GenerateQrs(props) {
 
   return (
     <div className="Container">
-      <div className="PageTitleContainer">
-        <h2>QRs Management</h2>
-      </div>
+      <TitleWithAction
+        text="QRs Management"
+        button={<Button
+          text="Edit Restaurant"
+          iconLeft={<i className={`fa fa-edit`} />}
+          onClick={() => dispatch(customisedAction(GET_RESTAURANT_TO_EDIT, { restaurantId: state.restaurantId, history }))}
+        />}
+      />
       <div className="TopOptionsContainer">
         <div className="TopInputContainer">
           <Input 

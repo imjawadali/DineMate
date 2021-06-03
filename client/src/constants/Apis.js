@@ -11,6 +11,8 @@ export const API_ENDPOINTS = {
         forgotPassword: 'admin/forgotPassword',
         createPassword: 'admin/createPassword',
         addRestuarant: 'admin/addRestuarant',
+        getRestaurantToEdit: 'admin/getRestaurantToEdit',
+        updateRestaurant: 'admin/updateRestaurant',
         generateQrs: 'admin/generateQrs',
         getAllRestaurants: 'admin/getAllRestaurants',
         getExistingQrs: 'admin/getExistingQrs',

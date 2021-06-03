@@ -4,6 +4,8 @@ import { forgotPasswordEpic } from './admin/forgotPasswordEpic'
 import { createPasswordEpic } from './admin/createPasswordEpic'
 import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
 import { addRestaurantEpic } from './admin/addRestaurantEpic'
+import { getRestaurantToEditEpic } from './admin/getRestaurantToEditEpic'
+import { updateRestaurantEpic } from './admin/updateRestaurantEpic'
 import { generateQrsEpic } from './admin/generateQrsEpic'
 import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
@@ -37,6 +39,8 @@ export const epics = combineEpics(
     createPasswordEpic.createPassword,
     getAllRestaurantsEpic.getAllRestaurants,
     addRestaurantEpic.addRestaurant,
+    getRestaurantToEditEpic.getRestaurantToEdit,
+    updateRestaurantEpic.updateRestaurant,
     generateQrsEpic.generateQrs,
     getExistingQrsEpic.getExistingQrs,
     setTableNameEpic.setTableName,
