@@ -49,8 +49,6 @@ function SuperAdmin(props) {
               iconName="fa fa-user"
               onClick={() => props.history.push('/client/admin/usersManagement/allUsers')}
             />
-          </div>
-          <div className="DashBoardSectionsContainer">
             <DashboardBatches
               text={`${adminDashboard.qrs} QRs`}
               iconName="fa fa-qrcode"

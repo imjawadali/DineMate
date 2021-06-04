@@ -63,31 +63,23 @@ function Categories() {
   return (
     <div className="Container">
       <h2>Categories Management</h2>
-      <div className="TopOptionsContainer">
-        <div className="TopInputContainer">
-          <Input 
-            placeholder="Enter New Category Name"
-            value={categoryName}
-            onChange={({ target: { value } }) => setcategoryName(value)}
-          />
+      <div className="TabularContentContainer">
+        <div className="TableTopContainer">
+          <div className="TopLeftContainer">
+          </div>
+          <div className="TopRightContainer">
+            <Input 
+              style={{ border: 'none', borderBottom: '1px solid black', background: categoryName ? 'white' : 'transparent' }}
+              placeholder="Enter New Category Name"
+              value={categoryName}
+              onChange={({ target: { value } }) => setcategoryName(value)}
+            />
+            <i 
+              style={{ margin: '0px 10px' }}
+              className={`fa ${selectedCategory ? 'fa-check-circle' : 'fa-plus-circle'} fa-lg`}
+              onClick={() => selectedCategory ? UpdateCategory() : addCategory()}/>
+          </div>
         </div>
-        <div className="TopButtonContainer" style={{ justifyContent: 'flex-start' }}>
-          {selectedCategory ?
-            <Button
-              text="Update Category"
-              light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
-              lightAction={() => null}
-              iconLeft={<i className="fa fa-check-circle" />}
-              onClick={() => UpdateCategory()} />
-            :  <Button
-                text="Add Category"
-                light={fetchingCategories || addingCategory || updatingCategory || deletingCategory}
-                lightAction={() => null}
-                iconLeft={<i className="fa fa-plus-circle" />}
-                onClick={() => addCategory()} />
-          }
-        </div>
-      </div>
       <CategoriesList 
         onSelect={onSelect}
         onDelete={onDelete}
@@ -95,6 +87,7 @@ function Categories() {
         fetchingCategories={fetchingCategories}
         selectedCategory={selectedCategory}
         categories={categories} />
+      </div>
     </div>
   )
 }

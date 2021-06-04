@@ -4,7 +4,7 @@ import QRCode from "qrcode.react";
 
 import { CUSTOMER_APP_URL, SET_TABLE_NAME } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions';
-import { Button, Input } from '../../../../components'
+import { Button, Input, TitleWithAction } from '../../../../components'
 import './styles.css'
 
 function TableDetails(props) {
@@ -41,7 +41,18 @@ function TableDetails(props) {
 
   return (
     <div className="Container">
-      <h2>Table Details</h2>
+      <TitleWithAction
+        text="Table Details"
+        icon={<i
+          className="fa fa-arrow-left fa-lg"
+          style={{ cursor: 'pointer', marginRight: '10px' }}
+          onClick={() => history.goBack()}
+        />}
+        button={<div className="QrButtonsContainer">
+          <i className="fa fa-download fa-2x" onClick={() => downloadQR()}/>
+          <i className="fa fa-print fa-2x" onClick={() => window.print()}/>
+        </div>}
+      />
       {selectedTable ?
         <div className="TableContainer">
           <div className="TableDetailsContainer">
@@ -97,26 +108,6 @@ function TableDetails(props) {
           </div>
         </div>
       : null}
-      <Button
-        style={{ width: '100%', marginTop: '15px' }}
-        text="Back"
-        light
-        lightAction={() => history.goBack()}
-        iconLeft={<i className="fa fa-arrow-circle-left" />}
-      />
-      <Button
-        style={{ width: '100%', marginTop: '15px' }}
-        text="Download"
-        iconLeft={<i className="fa fa-download" />}
-        onClick={() => downloadQR()}
-      />
-      <Button
-        style={{ width: '100%', marginTop: '15px', marginBottom: '15px' }}
-        text="Print"
-        light
-        lightAction={() => window.print()}
-        iconLeft={<i className="fa fa-print" />}
-      />
     </div>
   )
 }

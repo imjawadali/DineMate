@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../redux/actions'
-import { GET_EXISTING_QRS, RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
+import { GET_EXISTING_QRS, GET_RESTAURANT_TO_EDIT, RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
 
 import { SmallButton } from '../../../../components'
 
@@ -12,17 +12,16 @@ function RestaurantsList(props) {
   const dispatch = useDispatch()
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
+            <th>Manage</th>
             <th>Name</th>
             <th>Cuisine</th>
             <th>City</th>
             <th>QR Codes Assigned</th>
             <th>Payment Received</th>
-            <th>Visit</th>
-            <th>Manage</th>
           </tr>
         </thead>
         <tbody>
@@ -31,12 +30,34 @@ function RestaurantsList(props) {
               const { restaurantId, restaurantName, cuisine, city, qrCounts } = restaurant
               return (
                 <tr key={restaurantId}>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                      <i className="TableActionicons fa fa-mouse-pointer"
+                        onClick={() => {
+                          dispatch(customisedAction(SET_RESTAURANT, restaurant))
+                          history.push('/client/admin')
+                        }}
+                      />
+                      <i className="TableActionicons fa fa-edit"
+                        onClick={() => dispatch(customisedAction(GET_RESTAURANT_TO_EDIT, { restaurantId, history }))}
+                      />
+                      <i className="TableActionicons fa fa-info-circle"
+                        onClick={() => {
+                          dispatch(customisedAction(RESTAURANT_CHANGED))
+                          dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
+                          history.push({
+                            pathname: `/client/admin/qrsManagement`, state: { restaurantId, qrCounts }
+                          })
+                        }}
+                      />
+                    </div>
+                  </td>
                   <td>{restaurantName}</td>
                   <td>{cuisine}</td>
                   <td>{city}</td>
-                  <td>{qrCounts} QR Code(s)</td>
-                  <td>$ {0}</td>
-                  <td>
+                  <td>{qrCounts} QR Code{qrCounts !== 1  ? 's' : ''}</td>
+                  <td>$ {'0.00'}</td>
+                  {/* <td>
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Select"
@@ -47,8 +68,8 @@ function RestaurantsList(props) {
                       }}
                       iconLeft={<i className="fa fa-mouse-pointer" />}
                     />
-                  </td>
-                  <td>
+                  </td> */}
+                  {/* <td>
                     <SmallButton
                       style={{ width: '100%' }}
                       text="Manage"
@@ -61,7 +82,7 @@ function RestaurantsList(props) {
                         })
                       }}
                     />
-                  </td>
+                  </td> */}
                 </tr>
               )
             }) : 

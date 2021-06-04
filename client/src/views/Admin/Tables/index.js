@@ -42,39 +42,40 @@ function Tables(props) {
   return (
     <div className="Container">
       <h2>Tables Management</h2>
-      <div className="TopOptionsContainer">
-        <div className="TopInputContainer">
-          <Input 
-            placeholder="Search Table (by Table No.)"
-            type="number"
-            value={filterKey}
-            onChange={({ target: { value } }) => {
-              if (value !== '0') {
-                setfilterKey(value < 0 ? `${value * -1}` : value)
-                setcurrentIndex(1)
-              }
-            }}
+      <div className="TabularContentContainer">
+        <div className="TableTopContainer">
+          <div className="TopLeftContainer">
+          </div>
+          <div className="TopRightContainer">
+            <Input 
+              style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
+              placeholder="Search Table (by Table No.)"
+              type="number"
+              value={filterKey}
+              onChange={({ target: { value } }) => {
+                if (value !== '0') {
+                  setfilterKey(value < 0 ? `${value * -1}` : value)
+                  setcurrentIndex(1)
+                }
+              }}
+            />
+            <i
+              style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingQrs ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))}/>
+          </div>
+        </div>
+        <TablesList history={props.history} fetchingQrs={fetchingQrs} restaurantId={restaurantId} tables={paginate(getFilteredList())} />
+        {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+          <Pagination
+            currentIndex={currentIndex}
+            mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+            totalCounts={getFilteredList().length}
+            perPageCounts={PER_PAGE_COUNTS}
+            onClick={(index) => setcurrentIndex(index)}
           />
-        </div>
-        <div className="TopButtonContainer">
-          <Button
-            text={filterKey ? "Clear" : fetchingQrs ? "Syncing" : "Refresh"}
-            light={fetchingQrs}
-            lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingQrs ? 'refresh fa-pulse' : 'refresh'}`} />}
-            onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))} />
-        </div>
+        : null}
       </div>
-      <TablesList history={props.history} fetchingQrs={fetchingQrs} restaurantId={restaurantId} tables={paginate(getFilteredList())} />
-      {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
-        <Pagination
-          currentIndex={currentIndex}
-          mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
-          totalCounts={getFilteredList().length}
-          perPageCounts={PER_PAGE_COUNTS}
-          onClick={(index) => setcurrentIndex(index)}
-        />
-      : null}
     </div>
   )
 }

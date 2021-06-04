@@ -1,5 +1,5 @@
 .DashBoardContainer {
-    height: 100%;
+    height: 60%;
     padding: 15px;
     display: flex;
     flex-direction: column;
@@ -9,7 +9,10 @@
 }
 
 .DashBoardSectionsContainer {
+    width: 100%;
     display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
 }
 
 .RestaurantDashBoardContainer {
@@ -81,6 +84,7 @@
 
 @media only screen and (max-width: 480px) {
     .DashBoardContainer {
+        height: 100%;
         padding: 7px;
     }
 

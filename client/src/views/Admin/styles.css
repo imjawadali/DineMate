@@ -29,6 +29,35 @@
     justify-content: space-between;
 }
 
+.TabularContentContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+.TableTopContainer {
+    width: 100%;
+    height: 8%;
+    display: flex;
+    flex-direction: row;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.TopLeftContainer {
+    width: 50%;
+}
+
+.TopRightContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 50%;
+}
+
 .TopOptionsContainer {
     width: 100%;
     display: flex;
@@ -49,6 +78,11 @@
     justify-content: flex-end;
 }
 
+.TableDataContainer {
+    height: 90%;
+    overflow-x: auto;
+}
+
 .HorizontalScrollContainer {
     overflow-x: auto;
     border: 1px solid black;
@@ -62,19 +96,27 @@ table {
     width: 100%;
 }
 
-td, th {
-    border: 1px solid rgba(0, 0, 0, 0.1);
+td, th {    
     text-align: left;
     padding: 10px;
 }
 
 th {
-    border: 1px solid black;
-    padding: 15px;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
 }
 
-tbody tr:nth-child(odd) {
-    background-color: #dddddd;
+td {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.TableActionicons {
+    color: rgba(0, 0, 0, 0.8);
+    margin: 0px 5px;
+    padding: 2px 4px;
+    border: 0.5px solid black;
+    border-radius: 100px;
+    align-items: center;
+    cursor: pointer;
 }
 
 @media only screen and (max-width: 978px) {

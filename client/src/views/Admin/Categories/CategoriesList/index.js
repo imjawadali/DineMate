@@ -7,13 +7,12 @@ function CategoriesList(props) {
   const { categories, selectedCategory, fetchingCategories, onSelect, onDelete, reset } = props
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
+            <th>Manage</th>
             <th>Category Name</th>
-            <th>Action</th>
-            <th>Edit</th>
           </tr>
         </thead>
         <tbody>
@@ -22,23 +21,18 @@ function CategoriesList(props) {
               const { id, name } = category
               return (
                 <tr key={id}>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                      <i className="TableActionicons fa fa-trash"
+                        onClick={() => onDelete(id)}
+                      />
+                      <i className="TableActionicons fa fa-edit"
+                        style={{ color: selectedCategory && selectedCategory.id === id ? '#3ae175' : '' }}
+                        onClick={() => selectedCategory && selectedCategory.id === id ? reset() : onSelect(category)}
+                      />
+                    </div>
+                  </td>
                   <td>{name}</td>
-                  <td>
-                    <SmallButtonRed
-                      style={{ width: '100%' }}
-                      text="Delete"
-                      iconLeft={<i className="fa fa-trash" />}
-                      onClick={() => onDelete(id)} />
-                  </td>
-                  <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="Select"
-                      light={selectedCategory && selectedCategory.id === id}
-                      lightAction={() => reset()}
-                      iconLeft={<i className="fa fa-edit" />}
-                      onClick={() => onSelect(category)} />
-                  </td>
                 </tr>
               )
             }) : 

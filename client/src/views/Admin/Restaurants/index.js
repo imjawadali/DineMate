@@ -51,36 +51,37 @@ function Restaurants(props) {
   return (
     <div className="Container">
       <h2>Restaurants Management</h2>
-      <div className="TopOptionsContainer">
-        <div className="TopInputContainer">
-          <Input 
-            placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
-            value={filterKey}
-            onChange={({ target: { value } }) => {
-              setfilterKey(value)
-              setcurrentIndex(1)
-            }}
+      <div className="TabularContentContainer">
+        <div className="TableTopContainer">
+          <div className="TopLeftContainer">
+          </div>
+          <div className="TopRightContainer">
+            <Input 
+              style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
+              placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
+              value={filterKey}
+              onChange={({ target: { value } }) => {
+                setfilterKey(value)
+                setcurrentIndex(1)
+              }}
+            />
+            <i
+              style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingRestaurants ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))}/>
+          </div>
+        </div>
+        <RestaurantsList history={props.history} fetchingRestaurants={fetchingRestaurants} restaurants={paginate(getFilteredList())} />
+        {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+          <Pagination
+            currentIndex={currentIndex}
+            mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+            totalCounts={getFilteredList().length}
+            perPageCounts={PER_PAGE_COUNTS}
+            onClick={(index) => setcurrentIndex(index)}
           />
-        </div>
-        <div className="TopButtonContainer">
-          <Button
-            text={filterKey ? "Clear" : fetchingRestaurants ? "Syncing" : "Refresh"}
-            light={fetchingRestaurants}
-            lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingRestaurants ? 'refresh fa-pulse' : 'refresh'}`} />}
-            onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))} />
-        </div>
+        : null} 
       </div>
-      <RestaurantsList history={props.history} fetchingRestaurants={fetchingRestaurants} restaurants={paginate(getFilteredList())} />
-      {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
-        <Pagination
-          currentIndex={currentIndex}
-          mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
-          totalCounts={getFilteredList().length}
-          perPageCounts={PER_PAGE_COUNTS}
-          onClick={(index) => setcurrentIndex(index)}
-        />
-      : null}
     </div>
   )
 }

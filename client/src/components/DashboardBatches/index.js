@@ -4,10 +4,10 @@ import './styles.css'
 
 function DashboardBatches({ text, iconName, onClick }) {
   return (
-    <div className="DashboardBatch"
-      onClick={onClick}>
-      <i className={`${iconName || 'fa-user'} fa-4x`} />
-      <p className="">{text}</p>
+    <div className="DashboardBatch">
+      <i className={`${iconName || 'fa-user'} fa-5x`} 
+        onClick={onClick}/>
+      <p>{text}</p>
     </div>
   )
 }

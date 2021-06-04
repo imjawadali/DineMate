@@ -7,14 +7,14 @@ function TablesList(props) {
   const { history, restaurantId, fetchingQrs, tables } = props
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
+            <th>Manage</th>
             <th>Table No</th>
             <th>Table Name</th>
             <th>Status</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -23,19 +23,18 @@ function TablesList(props) {
               const { id, tableName, value, active } = table
               return (
                 <tr key={id}>
-                  <td>{value.length === 1 ? '0' : null}{value}</td>
-                  <td>{tableName || '-'}</td>
-                  <td>{active ? 'Active' : 'In-Active'}</td>
                   <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="Details"
-                      iconLeft={<i className="fa fa-info-circle" />}
+                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                      <i className="TableActionicons fa fa-info-circle"
                       onClick={() => history.push({
                         pathname: `/client/admin/tablesManagement/tableDetails`, state: { table, restaurantId }
                       })}
-                    />
+                      />
+                    </div>
                   </td>
+                  <td>{value.length === 1 ? '0' : null}{value}</td>
+                  <td>{tableName || '-'}</td>
+                  <td>{active ? 'Active' : 'In-Active'}</td>
                 </tr>
               )
             }) : 
