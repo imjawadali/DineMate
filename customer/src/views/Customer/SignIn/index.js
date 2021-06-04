@@ -14,6 +14,8 @@ function SignIn(props) {
     const [password, setpassword] = useState('');
     const dispatch = useDispatch()
 
+    const { history } = props
+
     return (
         <>
             {isEmailSignIn ?
