@@ -9,9 +9,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const epicMiddleware = createEpicMiddleware()
 
 const rootReducer = (state, action) => {
-  if (action.type === LOGOUT) {
-    state = undefined;
-  }
+  // if (action.type === LOGOUT) {
+  //   state = undefined;
+  // }
   return appReducer(state, action);
 };
 

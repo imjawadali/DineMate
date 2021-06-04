@@ -29,7 +29,7 @@ export default function Customer(props) {
   const NonCustomerLanding = ({ component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
           !customer ? 
-          <Component {...props} /> : <Redirect to={{ pathname: '/customer/restaurants' }} />
+          <Component {...props} /> : <Redirect to={{ pathname: '/' }} />
       )} />
   )
 

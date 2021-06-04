@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 
 import { HeaderButton, Logo, MenuIcon } from '../../components'
@@ -6,7 +7,7 @@ import './styles.css'
 
 function Home(props) {
 
-  const [showSidenav, setShowSideNav] = useState(false);
+  const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
 
   return (
     <div className="HomeContainer">
@@ -21,11 +22,13 @@ function Home(props) {
           <div className="HeaderLogoContainer">
             <Logo src={require('../../assets/logo2.png').default} />
           </div>
-          <HeaderButton
-            src={require('../../assets/signin_icon.png').default}
-            text="Sign In"
-            onClick={() => props.history.push('/customer/signin')}
-          />
+          {!customer ?
+            <HeaderButton
+              src={require('../../assets/signin_icon.png').default}
+              text="Sign In"
+              onClick={() => props.history.push('/customer/signin')}
+            />
+          : null}
         </div>
 
         <div className="HomeTopContentContainer">

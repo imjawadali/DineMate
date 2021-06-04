@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +8,8 @@ import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 
 const Header = props => {
+
+    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
 
     const [items] = useState([
         {
@@ -161,16 +164,27 @@ const Header = props => {
                             onClick={() => props.history.push('/')}
                         />
                     </div>
-                    <HeaderButton
-                        src={require('../../assets/signin_icon.png').default}
-                        text="Sign In"
-                        onClick={() => props.history.push('/customer/signin')}
-                    />
-                    <HeaderButton
-                        red
-                        text="Sign Up"
-                        onClick={() => props.history.push('/customer/signup')}
-                    />
+                    {!customer ?
+                        <>
+                        <HeaderButton
+                            src={require('../../assets/signin_icon.png').default}
+                            text="Sign In"
+                            onClick={() => props.history.push('/customer/signin')}
+                        />
+                        <HeaderButton
+                            red
+                            text="Sign Up"
+                            onClick={() => props.history.push('/customer/signup')}
+                        />
+                        </>
+                    :
+                        <HeaderButton
+                            red
+                            src={require('../../assets/cart.png').default}
+                            text="Cart"
+                            itemCounts={0}
+                        />
+                    }
                 </div>
             : null
     )

@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import './sidenav.css';
+
+import { customisedAction } from '../../redux/actions'
+import { LOGOUT } from '../../constants'
+import { removeItem } from '../../helpers'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import logo from '../../assets/logo.png';
@@ -10,10 +15,12 @@ import badge from '../../assets/badge.png';
 import serve from '../../assets/serve.png';
 import usericon from '../../assets/usericon.png';
 import arrowright from '../../assets/arrowright.png';
+import './sidenav.css';
 
 function SideNav(props) {
 
-    const [signIn, setSignIn] = useState(false);
+    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+    const dispatch = useDispatch()
 
     const { sidebarOpen, closeSidebar, history } = props
 
@@ -23,7 +30,7 @@ function SideNav(props) {
                 <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => closeSidebar()} />
 
                 {
-                    signIn ?
+                    !!customer ?
                         <>
                             <div className="dp-div">
                                 <img className="profile-picture" src={logo} />
@@ -51,7 +58,14 @@ function SideNav(props) {
                                 <span className="route">Profile</span>
                             </div>
 
-                            <div className="route-section" style={{ borderBottom: 'none' }}>
+                            <div 
+                                className="route-section"
+                                style={{ borderBottom: 'none' }}
+                                onClick={() => {
+                                    removeItem('customer')
+                                    dispatch(customisedAction(LOGOUT))
+                                }}
+                            >
                                 <img style={{ width: 23, marginRight: 8 }} src={arrowright} />
                                 <span className="route">Logout</span>
                             </div>
@@ -78,8 +92,8 @@ function SideNav(props) {
 
 
                 <div className="dinemate-intro">
-                    <img className="dinemate-logo" src={logo} 
-                        onClick={() => setSignIn(!signIn)}/>
+                    <img className="dinemate-logo" src={logo}
+                        onClick={() => history.push('/')}/>
                     <span className="dinemate-slogan">
                         There's more to love in the app
                     </span>

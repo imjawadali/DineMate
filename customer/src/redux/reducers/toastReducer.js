@@ -7,7 +7,10 @@ import {
   GET_RESTAURANT_DETAILS_SUCCESS,
   GET_RESTAURANT_DETAILS_FAILURE,
   SET_ORDER,
-  INITIALIZE_ORDER_FAILURE
+  INITIALIZE_ORDER_FAILURE,
+  SIGN_IN,
+  SET_SESSION,
+  SIGN_IN_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -18,6 +21,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: null }
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
+    case SIGN_IN:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' }}
+    case SET_SESSION:
+      return { ...state, toastSetDismiss: true }
+    case SIGN_IN_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case GET_ALL_RESTAURANTS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_MENU_FAILURE:
