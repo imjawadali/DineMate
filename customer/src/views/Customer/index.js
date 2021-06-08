@@ -4,6 +4,7 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
 import SignIn from './SignIn'
 import SignUp from './SignUp'
+import ForgotPassword from './forgot-password'
 import Restaurants from './Restaurants'
 import Menu from './Menu'
 import NoRoute from '../NoRoute'
@@ -41,6 +42,7 @@ export default function Customer(props) {
         </Route>
         <NonCustomerLanding path={`${path}/signin`} component={SignIn} />
         <NonCustomerLanding path={`${path}/signup`} component={SignUp} />
+        <NonCustomerLanding path={`${path}/forgot-password`} component={ForgotPassword} />
         <Route exact path={`${path}/restaurants`} component={Restaurants} />
         <Route exact path={`${path}/:restaurantId/menu`} component={Menu} />
         <Route exact path={`${path}/:restaurantId/:tableId`} component={Menu} />

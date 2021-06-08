@@ -54,7 +54,7 @@ function SignIn(props) {
                         </div>
                     </div>
 
-                    <div className="forgot-password">
+                    <div className="forgot-password" style={{ cursor: 'pointer' }} onClick={() => history.push('/customer/forget-password')}>
                         I forgot my password
                     </div>
 
