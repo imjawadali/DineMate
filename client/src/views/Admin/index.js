@@ -87,12 +87,12 @@ function Admin(props) {
 
   return (
     <div className="container">
-      {/* <div className="sidebarContainer" style={{ display: role === "Kitchen" ? 'none' : '' }}> */}
-      <div className="sidebarContainer">
+      <div className="sidebarContainer" style={{ display: role === "Kitchen" ? 'none' : '' }}>
+      {/* <div className="sidebarContainer"> */}
         <SideBar admin={admin} sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       </div>
-      {/* <div className="mainContainer" style={{ width: role === "Kitchen" ? '100%' : '' }}> */}
-      <div className="mainContainer" >
+      <div className="mainContainer" style={{ width: role === "Kitchen" ? '100%' : '' }}>
+      {/* <div className="mainContainer" > */}
         <NavBar openSidebar={openSidebar} />
         <div className="Main">
           <Switch>
