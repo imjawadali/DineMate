@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import QRCode from "qrcode.react";
 
+import { Pagination } from '../../../../components';
 import { CUSTOMER_APP_URL, PER_PAGE_COUNTS } from '../../../../constants'
-import { Pagination } from '../../../../components/Pagination';
 
 function QrsList(props) {
 

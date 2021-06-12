@@ -274,7 +274,7 @@ module.exports = app => {
                         getConnection(
                             res,
                             `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
-                            VALUES ( '${restaurantId}', '${result2.length ? result2[0].mergeId : tableId}', ${customerId ? `${customerId}` : null}, 
+                            VALUES ( '${restaurantId}', '${result2.length && result2[0].mergeId ? result2[0].mergeId : tableId}', ${customerId ? `${customerId}` : null}, 
                             ${type ? `${type}` : `'Dine-In'`}, ${Number(result.length ? result[0].orderNumber : 0)+1})`,
                             null,
                             (result3) => {
@@ -285,7 +285,7 @@ module.exports = app => {
                                         body: { 
                                             orderNumber: padding(Number(result.length ? result[0].orderNumber : 0)+1, 9),
                                             restaurantId,
-                                            tableId: result2.length ? result2[0].mergeId : tableId
+                                            tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId
                                         }
                                     })
                                 else return res.send({
@@ -393,7 +393,7 @@ module.exports = app => {
                 orderItem.totalPrice = totalPrice
                 if (specialInstructions)
                     orderItem.specialInstructions = specialInstructions
-                tempDb.query('INSERT INTO orderItems SET ?', orderItem, function(error, result) {
+                    tempDb.query(`UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function(error, result) {
                     if (!!error) {
                         console.log('TableError', error.sqlMessage)
                         tempDb.rollback(function() {
@@ -404,24 +404,53 @@ module.exports = app => {
                             })
                         })
                     } else {
-                        if (addOns && addOns.length) {
-                            let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                            for (var i=0; i<addOns.length; i++) {
-                                query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
-                                if (i !== (addOns.length - 1))
-                                    query = query + ','
-                            }
-                            tempDb.query(query, function(error) {
-                                if (!!error) {
-                                    console.log('TableError', error.sqlMessage)
-                                    tempDb.rollback(function() {
-                                        return res.send({
-                                            status: false,
-                                            message: 'Failed to add Item Add-ons',
-                                            errorCode: 422
+                        tempDb.query('INSERT INTO orderItems SET ?', orderItem, function(error, result) {
+                            if (!!error) {
+                                console.log('TableError', error.sqlMessage)
+                                tempDb.rollback(function() {
+                                    return res.send({
+                                        status: false,
+                                        message: error.sqlMessage,
+                                        errorCode: 422
+                                    })
+                                })
+                            } else {
+                                if (addOns && addOns.length) {
+                                    let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                    for (var i=0; i<addOns.length; i++) {
+                                        query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
+                                        if (i !== (addOns.length - 1))
+                                            query = query + ','
+                                    }
+                                    tempDb.query(query, function(error) {
+                                        if (!!error) {
+                                            console.log('TableError', error.sqlMessage)
+                                            tempDb.rollback(function() {
+                                                return res.send({
+                                                    status: false,
+                                                    message: 'Failed to add Item Add-ons',
+                                                    errorCode: 422
+                                                })
+                                            })
+                                        } else tempDb.commit(function(error) {
+                                            if (error) { 
+                                                tempDb.rollback(function() {
+                                                    return res.send({
+                                                        status: false,
+                                                        message: error.sqlMessage,
+                                                        errorCode: 422
+                                                    })
+                                                })
+                                            }
+                                            tempDb.release()
+                                            return res.send({
+                                                status: true,
+                                                message: 'Order item added successfully!'
+                                            })
                                         })
                                     })
-                                } else tempDb.commit(function(error) {
+                                }
+                                else tempDb.commit(function(error) {
                                     if (error) { 
                                         tempDb.rollback(function() {
                                             return res.send({
@@ -437,23 +466,7 @@ module.exports = app => {
                                         message: 'Order item added successfully!'
                                     })
                                 })
-                            })
-                        }
-                        else tempDb.commit(function(error) {
-                            if (error) { 
-                                tempDb.rollback(function() {
-                                    return res.send({
-                                        status: false,
-                                        message: error.sqlMessage,
-                                        errorCode: 422
-                                    })
-                                })
                             }
-                            tempDb.release()
-                            return res.send({
-                                status: true,
-                                message: 'Order item added successfully!'
-                            })
                         })
                     }
                 })
@@ -553,53 +566,9 @@ module.exports = app => {
                     })
                 }
                 if (items && items.length) {
-                    for (var i=0; i<items.length; i++) {
-                        const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
-                        const orderItem = {}
-                        orderItem.restaurantId = restaurantId
-                        orderItem.orderNumber = orderNumber
-                        orderItem.quantity = quantity
-                        orderItem.name = name
-                        orderItem.price = price
-                        orderItem.totalPrice = totalPrice
-                        if (specialInstructions)
-                            orderItem.specialInstructions = specialInstructions
-                        tempDb.query('INSERT INTO orderItems SET ?', orderItem, function(error, result) {
-                            if (!!error) {
-                                console.log('TableError', error.sqlMessage)
-                                tempDb.rollback(function() {
-                                    return res.send({
-                                        status: false,
-                                        message: error.sqlMessage,
-                                        errorCode: 422
-                                    })
-                                })
-                            } else {
-                                if (addOns && addOns.length) {
-                                    let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                                    for (var i=0; i<addOns.length; i++) {
-                                        query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
-                                        if (i !== (addOns.length - 1))
-                                            query = query + ','
-                                    }
-                                    tempDb.query(query, function(error) {
-                                        if (!!error) {
-                                            console.log('TableError', error.sqlMessage)
-                                            tempDb.rollback(function() {
-                                                return res.send({
-                                                    status: false,
-                                                    message: 'Failed to add Item Add-ons',
-                                                    errorCode: 422
-                                                })
-                                            })
-                                        }
-                                    })
-                                }
-                            }
-                        })
-                    }
-                    tempDb.commit(function(error) {
-                        if (error) { 
+                    tempDb.query(`UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function(error, result) {
+                        if (!!error) {
+                            console.log('TableError', error.sqlMessage)
                             tempDb.rollback(function() {
                                 return res.send({
                                     status: false,
@@ -607,12 +576,69 @@ module.exports = app => {
                                     errorCode: 422
                                 })
                             })
+                        } else {
+                            for (var i=0; i<items.length; i++) {
+                                const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                const orderItem = {}
+                                orderItem.restaurantId = restaurantId
+                                orderItem.orderNumber = orderNumber
+                                orderItem.quantity = quantity
+                                orderItem.name = name
+                                orderItem.price = price
+                                orderItem.totalPrice = totalPrice
+                                if (specialInstructions)
+                                    orderItem.specialInstructions = specialInstructions
+                                tempDb.query('INSERT INTO orderItems SET ?', orderItem, function(error, result) {
+                                    if (!!error) {
+                                        console.log('TableError', error.sqlMessage)
+                                        tempDb.rollback(function() {
+                                            return res.send({
+                                                status: false,
+                                                message: error.sqlMessage,
+                                                errorCode: 422
+                                            })
+                                        })
+                                    } else {
+                                        if (addOns && addOns.length) {
+                                            let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                            for (var i=0; i<addOns.length; i++) {
+                                                query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
+                                                if (i !== (addOns.length - 1))
+                                                    query = query + ','
+                                            }
+                                            tempDb.query(query, function(error) {
+                                                if (!!error) {
+                                                    console.log('TableError', error.sqlMessage)
+                                                    tempDb.rollback(function() {
+                                                        return res.send({
+                                                            status: false,
+                                                            message: 'Failed to add Item Add-ons',
+                                                            errorCode: 422
+                                                        })
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    }
+                                })
+                            }
+                            tempDb.commit(function(error) {
+                                if (error) { 
+                                    tempDb.rollback(function() {
+                                        return res.send({
+                                            status: false,
+                                            message: error.sqlMessage,
+                                            errorCode: 422
+                                        })
+                                    })
+                                }
+                                tempDb.release()
+                                return res.send({
+                                    status: true,
+                                    message: 'Order item(s) added successfully!'
+                                })
+                            })
                         }
-                        tempDb.release()
-                        return res.send({
-                            status: true,
-                            message: 'Order item(s) added successfully!'
-                        })
                     })
                 }
             })

@@ -201,7 +201,7 @@ function RestaurantAdmin(props) {
                             else if (occupiedBy) {
                               dispatch(customisedAction(CLEAR_TABLE_ORDERS))
                               props.history.push({
-                                pathname: '/client/admin/dashboard/restaurantAdmin/orderDetails',
+                                pathname: '/client/admin/dashboard/restaurantAdmin/tableOrders',
                                 state: { restaurantId, tableId: value }
                               })
                             }
@@ -234,7 +234,7 @@ function RestaurantAdmin(props) {
                           if (mergedTables.filter(table => table.occupiedBy).length) {
                             dispatch(customisedAction(CLEAR_TABLE_ORDERS))
                             props.history.push({
-                              pathname: '/client/admin/dashboard/restaurantAdmin/orderDetails',
+                              pathname: '/client/admin/dashboard/restaurantAdmin/tableOrders',
                               state: { restaurantId, tableId: table.mergeId, mergedTables }
                             })
                           }

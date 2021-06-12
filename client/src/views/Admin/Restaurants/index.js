@@ -4,10 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
 import { GET_ALL_RESTAURANTS, PER_PAGE_COUNTS } from '../../../constants'
 
-import { Button, Input } from '../../../components'
+import { Pagination, Input } from '../../../components'
 
 import RestaurantsList from './RestaurantsList'
-import { Pagination } from '../../../components/Pagination'
 
 function Restaurants(props) {
 

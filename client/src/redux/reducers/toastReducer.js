@@ -73,7 +73,10 @@ import {
   GET_RESTAURANT_TO_EDIT_SUCCESS,
   UPDATE_RESTAURANT,
   UPDATE_RESTAURANT_SUCCESS,
-  UPDATE_RESTAURANT_FAILURE
+  UPDATE_RESTAURANT_FAILURE,
+  GET_KITCHEN_DASHBOARD_FAILURE,
+  MARK_ITEM_READY_FAILURE,
+  MARK_ORDER_READY_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -131,6 +134,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_RESTAURANT_DASHBOARD:
       return { ...state, toastSetDismiss: true }
     case GET_RESTAURANT_DASHBOARD_FAILURE:
+      return { ...state, toast: payload }
+    case GET_KITCHEN_DASHBOARD_FAILURE:
+      return { ...state, toast: payload }
+    case MARK_ITEM_READY_FAILURE:
+      return { ...state, toast: payload }
+    case MARK_ORDER_READY_FAILURE:
       return { ...state, toast: payload }
     case GET_TABLE_ORDERS:
       return { ...state, toastSetDismiss: true }

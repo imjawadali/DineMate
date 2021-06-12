@@ -57,7 +57,7 @@ function OrdersList(props) {
                             onClick={() => {
                               dispatch(customisedAction(CLEAR_ORDER_ITEM_DETAILS))
                               history.push({
-                                pathname: '/client/admin/dashboard/restaurantAdmin/orderDetails/itemDetails',
+                                pathname: '/client/admin/dashboard/restaurantAdmin/tableOrders/itemDetails',
                                 state: { restaurantId, id: orderItem.id, orderNumber }
                               })
                             }}

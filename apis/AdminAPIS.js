@@ -464,6 +464,93 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/getKitchenDashboard', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT TIMESTAMPDIFF(SECOND, oi.createdAt, CURRENT_TIMESTAMP) as time,
+            o.type, o.orderNumber, o.tableId,
+            oi.id, oi.quantity, oi.name, oi.specialInstructions, oi.status,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"name":"',oia.addOnName,
+                        '","option":"',oia.addOnOption,'"}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as addOns
+            FROM orders o
+            JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}'
+            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+            WHERE o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.ready = 0
+            GROUP BY oi.id
+            ORDER BY o.createdAt DESC, oi.createdAt DESC`,
+            null,
+            (result) => {
+                if (result.length) {
+                    return res.send(getGroupedList(result, 'orderNumber'))
+                } else {
+                    return res.status(422).send({ 'msg': `No items in-que!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/markItemReady', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Item ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orderItems SET ? WHERE id = ${id}`,
+            { status: 'R' },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Item marked ready successfully!'})
+                else return res.status(422).send({ 'msg': 'Failed to mark item as ready!' })
+            }
+        )
+    })
+
+    app.post('/admin/markOrderReady', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'OrderNumber is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SET SQL_SAFE_UPDATES=0`,
+            null,
+            (result) => {
+                getSecureConnection(
+                    res,
+                    adminId,
+                    `UPDATE orderItems SET status = 'R' WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 'P'`,
+                    null,
+                    () => {
+                        getSecureConnection(
+                            res,
+                            adminId,
+                            `UPDATE orders SET ready = 1 WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`,
+                            null,
+                            (result) => {
+                                if (result.changedRows) return res.send({ 'msg': 'Order marked ready successfully!'})
+                                else return res.status(422).send({ 'msg': 'Failed to mark item as ready!' })
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    })
+
     app.post('/admin/getTableOrders', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, tableId } = req.body
@@ -486,8 +573,7 @@ module.exports = app => {
                 ),
             ']') as items
             FROM orders o
-            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber
-            WHERE o.restaurantId = '${restaurantId}'
+            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}'
             AND o.tableId = '${tableId}'
             AND o.status = 1 AND o.type = 'Dine-In'
             GROUP BY o.orderNumber
@@ -1306,6 +1392,22 @@ function lowerCased(string) {
 function includes(list, id) {
     var result = list.filter(item => item.id === id)
     return result.length
+}
+
+function getGroupedList (list, key) {
+  let groupedList = []
+  if (list && list.length) {
+    groupedList = list.reduce((r, a) => {
+      r[a[key]] = r[a[key]] || [];
+      r[a[key]].push(a);
+      return r;
+    }, Object.create(null));
+  }
+  const array = []
+  if (groupedList)
+    for (const [key, value] of Object.entries(groupedList))
+        array.push({ id: key, data: value })
+  return array
 }
 
 function setPasswordMessage(name, restaurantName, link) {

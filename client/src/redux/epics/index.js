@@ -11,6 +11,9 @@ import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
+import { getKitchenDashboardEpic } from './admin/getKitchenDashboardEpic'
+import { markItemReadyEpic } from './admin/markItemReadyEpic'
+import { markOrderReadyEpic } from './admin/markOrderReadyEpic'
 import { getTableOrdersEpic } from './admin/getTableOrdersEpic'
 import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
@@ -46,6 +49,9 @@ export const epics = combineEpics(
     setTableNameEpic.setTableName,
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
+    getKitchenDashboardEpic.getKitchenDashboard,
+    markItemReadyEpic.markItemReady,
+    markOrderReadyEpic.markOrderReady,
     getTableOrdersEpic.getTableOrders,
     getOrderItemDetailsEpic.getOrderItemDetails,
     closeOrderEpic.closeOrder,

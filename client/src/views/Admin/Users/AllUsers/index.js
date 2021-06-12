@@ -4,10 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../../redux/actions'
 import { GET_USERS, PER_PAGE_COUNTS } from '../../../../constants'
 
-import { Button, Input } from '../../../../components'
+import { Button, Input, Pagination } from '../../../../components'
 
 import UsersList from './UsersList'
-import { Pagination } from '../../../../components/Pagination'
 
 function AllUsers(props) {
 

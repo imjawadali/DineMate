@@ -4,10 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
 import { GET_EXISTING_QRS, PER_PAGE_COUNTS } from '../../../constants'
 
-import { Button, Input } from '../../../components'
+import { Pagination, Input } from '../../../components'
 
 import TablesList from './TablesList'
-import { Pagination } from '../../../components/Pagination'
 
 function Tables(props) {
 

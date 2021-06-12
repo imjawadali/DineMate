@@ -29,6 +29,10 @@
     justify-content: space-between;
 }
 
+.PageTitleButtonContainer {
+    display: flex;
+}
+
 .TabularContentContainer {
     display: flex;
     flex-direction: column;
@@ -49,6 +53,53 @@
 
 .TopLeftContainer {
     width: 50%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.TableButtons {
+    width: 20%;
+    margin-left: 5px;
+    padding: 3px 0px;
+    border-style: solid;
+    border-width: 2px;
+    color: white;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.TableButtons > p {
+    white-space: nowrap;
+    font-size: 85%;
+}
+
+.TableButtonGreen {
+    border-color: rgb(101, 168, 59);
+    background-color: rgb(101, 168, 59);
+}
+
+.TableButtonGreen:hover {
+    background-color: white;
+    color: rgb(101, 168, 59);
+}
+
+.TableButtonOrange {
+    border-color: rgb(234, 113, 28);
+    background-color: rgb(234, 113, 28);
+}
+
+.TableButtonOrange:hover {
+    background-color: white;
+    color: rgb(234, 113, 28);
 }
 
 .TopRightContainer {
@@ -79,7 +130,7 @@
 }
 
 .TableDataContainer {
-    height: 90%;
+    height: 100%;
     overflow-x: auto;
 }
 
@@ -98,15 +149,23 @@ table {
 
 td, th {    
     text-align: left;
-    padding: 10px;
+    padding: 5px;
 }
 
 th {
     border: 1.5px solid rgba(0, 0, 0, 0.1);
 }
 
-td {
+tbody > tr {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+tbody > tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.NoBorder {
+    border-bottom: none;
 }
 
 .TableActionicons {
@@ -147,16 +206,11 @@ td {
 
     td, th {
         font-size: 12px;
-        padding: 7px;
     }
 
-    th {
-        padding: 12px;
+    .TableButtons > p {
+        font-size: 70%;
     }
-}
-
-.PageTitleButtonContainer {
-    display: flex;
 }
 
 @media only screen and (max-width: 480px) {
@@ -166,5 +220,9 @@ td {
 
     .PageTitleButtonContainer {
         justify-content: flex-end;
+    }
+
+    .TableButtons > p {
+        font-size: 50%;
     }
 }

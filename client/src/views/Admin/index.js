@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { GET_CATEGORIES, GET_EXISTING_QRS, GET_MENU, GET_RESTAURANT_DASHBOARD } from '../../constants'
+import { GET_CATEGORIES, GET_EXISTING_QRS, GET_KITCHEN_DASHBOARD, GET_MENU, GET_RESTAURANT_DASHBOARD } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
 
 import SuperAdmin from './Dashboard/SuperAdmin'
 import RestaurantAdmin from './Dashboard/RestaurantAdmin'
-import OrderDetails from './Dashboard/RestaurantAdmin/OrderDetails'
-import OrderItemDetails from './Dashboard/RestaurantAdmin/OrderDetails/ItemDetails'
+import TableOrders from './Dashboard/RestaurantAdmin/TableOrders'
+import OrderItemDetails from './Dashboard/RestaurantAdmin/TableOrders/ItemDetails'
 import KitchenAdmin from './Dashboard/KitchenAdmin'
 import AddRestaurant from './AddRestaurant'
 import EditRestaurant from './EditRestaurant'
@@ -41,10 +41,14 @@ function Admin(props) {
 
   useEffect(() => {
     if (restaurantId) {
-      dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-      dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
+      if (role === 'Kitchen') {
+        dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
+      } else {
+        dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+        dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
+      }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
-      dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
     }
   }, [restaurantId])
 
@@ -76,17 +80,19 @@ function Admin(props) {
 
   const KitchenAdminRoutes = ({ component: Component, ...rest }) => (
       <Route {...rest} render={(props) => (
-          restaurantId ? 
+          restaurantId && (role === "Kitchen") ? 
           <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
       )} />
   )
 
   return (
     <div className="container">
+      {/* <div className="sidebarContainer" style={{ display: role === "Kitchen" ? 'none' : '' }}> */}
       <div className="sidebarContainer">
         <SideBar admin={admin} sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       </div>
-      <div className="mainContainer">
+      {/* <div className="mainContainer" style={{ width: role === "Kitchen" ? '100%' : '' }}> */}
+      <div className="mainContainer" >
         <NavBar openSidebar={openSidebar} />
         <div className="Main">
           <Switch>
@@ -105,10 +111,10 @@ function Admin(props) {
                 <Route path={`${path}/dashboard/restaurantAdmin`}>
                   <Switch>
                     <RestaurantAdminRoutes exact path={`${path}/dashboard/restaurantAdmin`} component={RestaurantAdmin} />
-                    <Route path={`${path}/dashboard/restaurantAdmin/orderDetails`}>
+                    <Route path={`${path}/dashboard/restaurantAdmin/tableOrders`}>
                       <Switch>
-                        <RestaurantAdminRoutes exact path={`${path}/dashboard/restaurantAdmin/orderDetails`} component={OrderDetails} />
-                        <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin/orderDetails/itemDetails`} component={OrderItemDetails} />
+                        <RestaurantAdminRoutes exact path={`${path}/dashboard/restaurantAdmin/tableOrders`} component={TableOrders} />
+                        <RestaurantAdminRoutes path={`${path}/dashboard/restaurantAdmin/tableOrders/itemDetails`} component={OrderItemDetails} />
                       </Switch>
                     </Route>
                   </Switch>

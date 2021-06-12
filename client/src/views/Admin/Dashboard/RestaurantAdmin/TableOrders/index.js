@@ -7,7 +7,7 @@ import { GET_TABLE_ORDERS } from '../../../../../constants'
 import OrdersList from './OrdersList'
 import { Button, TitleWithAction } from '../../../../../components'
 
-function OrderDetails(props) {
+function TableOrders(props) {
 
   const [restaurantId, setrestaurantId] = useState(null)
   const [tableId, settableId] = useState(null)
@@ -63,4 +63,4 @@ function OrderDetails(props) {
   )
 }
 
-export default OrderDetails
+export default TableOrders

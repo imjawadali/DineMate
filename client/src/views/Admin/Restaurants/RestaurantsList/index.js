@@ -57,32 +57,6 @@ function RestaurantsList(props) {
                   <td>{city}</td>
                   <td>{qrCounts} QR Code{qrCounts !== 1  ? 's' : ''}</td>
                   <td>$ {'0.00'}</td>
-                  {/* <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="Select"
-                      light
-                      lightAction={() => {
-                        dispatch(customisedAction(SET_RESTAURANT, restaurant))
-                        history.push('/client/admin')
-                      }}
-                      iconLeft={<i className="fa fa-mouse-pointer" />}
-                    />
-                  </td> */}
-                  {/* <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text="Manage"
-                      iconLeft={<i className="fa fa-info-circle" />}
-                      onClick={() => {
-                        dispatch(customisedAction(RESTAURANT_CHANGED))
-                        dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
-                        history.push({
-                          pathname: `/client/admin/qrsManagement`, state: { restaurantId, qrCounts }
-                        })
-                      }}
-                    />
-                  </td> */}
                 </tr>
               )
             }) : 
