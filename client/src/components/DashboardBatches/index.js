@@ -4,9 +4,9 @@ import './styles.css'
 
 function DashboardBatches({ text, iconName, onClick }) {
   return (
-    <div className="DashboardBatch">
-      <i className={`${iconName || 'fa-user'} fa-5x`} 
-        onClick={onClick}/>
+    <div className="DashboardBatch" 
+      onClick={onClick}>
+      <i className={`${iconName || 'fa-user'} fa-5x`} />
       <p>{text}</p>
     </div>
   )

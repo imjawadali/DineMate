@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { customisedAction } from '../../../../redux/actions'
 import { GET_EXISTING_QRS, GET_RESTAURANT_TO_EDIT, RESTAURANT_CHANGED, SET_RESTAURANT } from '../../../../constants'
 
-import { SmallButton } from '../../../../components'
+import { TableActionicons } from '../../../../components'
 
 function RestaurantsList(props) {
   
@@ -16,8 +16,8 @@ function RestaurantsList(props) {
       <table>
         <thead>
           <tr>
-            <th>Manage</th>
-            <th>Name</th>
+            <th style={{ borderRight: 'none' }}>Manage</th>
+            <th style={{ borderLeft: 'none' }}>Name</th>
             <th>Cuisine</th>
             <th>City</th>
             <th>QR Codes Assigned</th>
@@ -32,16 +32,19 @@ function RestaurantsList(props) {
                 <tr key={restaurantId}>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'row'}}>
-                      <i className="TableActionicons fa fa-mouse-pointer"
+                      <TableActionicons
+                        icon="fa-mouse-pointer"
                         onClick={() => {
                           dispatch(customisedAction(SET_RESTAURANT, restaurant))
                           history.push('/client/admin')
                         }}
                       />
-                      <i className="TableActionicons fa fa-edit"
+                      <TableActionicons
+                        icon="fa-edit"
                         onClick={() => dispatch(customisedAction(GET_RESTAURANT_TO_EDIT, { restaurantId, history }))}
                       />
-                      <i className="TableActionicons fa fa-info-circle"
+                      <TableActionicons
+                        icon="fa-info-circle"
                         onClick={() => {
                           dispatch(customisedAction(RESTAURANT_CHANGED))
                           dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
@@ -56,7 +59,7 @@ function RestaurantsList(props) {
                   <td>{cuisine}</td>
                   <td>{city}</td>
                   <td>{qrCounts} QR Code{qrCounts !== 1  ? 's' : ''}</td>
-                  <td>$ {'0.00'}</td>
+                  <td style={{ textAlign: 'center' }}>$ {'11.99'}</td>
                 </tr>
               )
             }) : 

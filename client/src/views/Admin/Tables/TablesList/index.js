@@ -11,8 +11,8 @@ function TablesList(props) {
       <table>
         <thead>
           <tr>
-            <th>Manage</th>
-            <th>Table No</th>
+            <th style={{ borderRight: 'none' }}>Manage</th>
+            <th style={{ borderLeft: 'none' }}>Table No</th>
             <th>Table Name</th>
             <th>Status</th>
           </tr>
@@ -25,10 +25,11 @@ function TablesList(props) {
                 <tr key={id}>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'row'}}>
-                      <i className="TableActionicons fa fa-info-circle"
-                      onClick={() => history.push({
-                        pathname: `/client/admin/tablesManagement/tableDetails`, state: { table, restaurantId }
-                      })}
+                      <TableActionicons
+                        icon="fa-info-circle"
+                        onClick={() => history.push({
+                          pathname: `/client/admin/tablesManagement/tableDetails`, state: { table, restaurantId }
+                        })}
                       />
                     </div>
                   </td>

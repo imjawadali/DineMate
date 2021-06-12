@@ -11,6 +11,8 @@ import CategoriesList from './CategoriesList'
 
 function Categories() {
 
+  const [filterKey, setfilterKey] = useState('')
+  const [typing, settyping] = useState(false)
   const [categoryName, setcategoryName] = useState('')
   const [selectedCategory, setselectedCategory] = useState(null)
 
@@ -31,6 +33,7 @@ function Categories() {
   const reset = () => {
     setcategoryName('')
     setselectedCategory(null)
+    settyping(false)
   }
 
   const isValid = () => {
@@ -54,10 +57,21 @@ function Categories() {
   const onSelect = (category) => {
     setselectedCategory(category)
     setcategoryName(category.name)
+    settyping(!typing)
   }
 
   const onDelete = (id) => {
     dispatch(customisedAction(DELETE_CATEGORY, { id, restaurantId }))
+  }
+
+  const getFilteredList = () => {
+    let filteredRestaurants = categories
+    if (filterKey && filterKey.length && categories) {
+      filteredRestaurants = categories.filter(
+        (restaurant) => restaurant.name.toLowerCase().includes(filterKey.toLowerCase())
+      )
+    }
+    return filteredRestaurants
   }
 
   return (
@@ -66,18 +80,38 @@ function Categories() {
       <div className="TabularContentContainer">
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
+            {typing ?
+            <>
+              <Input 
+                style={{ border: 'none', borderBottom: '1px solid black', background: categoryName ? 'white' : 'transparent' }}
+                placeholder="Enter Category Name"
+                value={categoryName}
+                onChange={({ target: { value } }) => setcategoryName(value)}
+              />
+              <i 
+                style={{ margin: '0px 10px' }}
+                className={`fa ${selectedCategory ? 'fa-send' : 'fa-plus-circle'} fa-lg`}
+                onClick={() => selectedCategory ? UpdateCategory() : addCategory()}
+              />
+            </>
+            : <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center'}}
+                onClick={() => settyping(true)}>
+                <i style={{ margin: '0px 10px' }} className="fa fa-plus fa-lg" />
+                <p>Add</p>
+              </div>
+            }
           </div>
           <div className="TopRightContainer">
             <Input 
-              style={{ border: 'none', borderBottom: '1px solid black', background: categoryName ? 'white' : 'transparent' }}
-              placeholder="Enter New Category Name"
-              value={categoryName}
-              onChange={({ target: { value } }) => setcategoryName(value)}
+              style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
+              placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
+              value={filterKey}
+              onChange={({ target: { value } }) => setfilterKey(value)}
             />
-            <i 
-              style={{ margin: '0px 10px' }}
-              className={`fa ${selectedCategory ? 'fa-check-circle' : 'fa-plus-circle'} fa-lg`}
-              onClick={() => selectedCategory ? UpdateCategory() : addCategory()}/>
+            <i
+              style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingCategories ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))}/>
           </div>
         </div>
       <CategoriesList 
@@ -86,7 +120,7 @@ function Categories() {
         reset={reset}
         fetchingCategories={fetchingCategories}
         selectedCategory={selectedCategory}
-        categories={categories} />
+        categories={getFilteredList()} />
       </div>
     </div>
   )

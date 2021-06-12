@@ -156,6 +156,10 @@ th {
     border: 1.5px solid rgba(0, 0, 0, 0.1);
 }
 
+td {
+    color: rgb(72, 72, 72);
+}
+
 tbody > tr {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -166,16 +170,6 @@ tbody > tr:hover {
 
 .NoBorder {
     border-bottom: none;
-}
-
-.TableActionicons {
-    color: rgba(0, 0, 0, 0.8);
-    margin: 0px 5px;
-    padding: 2px 4px;
-    border: 0.5px solid black;
-    border-radius: 100px;
-    align-items: center;
-    cursor: pointer;
 }
 
 @media only screen and (max-width: 978px) {

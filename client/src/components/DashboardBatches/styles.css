@@ -8,8 +8,10 @@
     justify-content: center;
 }
 
-.DashboardBatch > i:hover {
+.DashboardBatch:hover {
+    border-radius: 10px;
     cursor: pointer;
+    background-color: #b5c9bf;
 }
 
 .DashboardBatch > p {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SmallButton, SmallButtonRed } from '../../../../components'
+import { TableActionicons } from '../../../../components'
 
 function CategoriesList(props) {
   
@@ -11,8 +11,8 @@ function CategoriesList(props) {
       <table>
         <thead>
           <tr>
-            <th>Manage</th>
-            <th>Category Name</th>
+            <th style={{ borderRight: 'none' }}>Manage</th>
+            <th style={{ borderLeft: 'none' }}>Category Name</th>
           </tr>
         </thead>
         <tbody>
@@ -23,10 +23,12 @@ function CategoriesList(props) {
                 <tr key={id}>
                   <td>
                     <div style={{ display: 'flex', flexDirection: 'row'}}>
-                      <i className="TableActionicons fa fa-trash"
+                      <TableActionicons
+                        icon="fa-trash"
                         onClick={() => onDelete(id)}
                       />
-                      <i className="TableActionicons fa fa-edit"
+                      <TableActionicons
+                        icon="fa-edit"
                         style={{ color: selectedCategory && selectedCategory.id === id ? '#3ae175' : '' }}
                         onClick={() => selectedCategory && selectedCategory.id === id ? reset() : onSelect(category)}
                       />
