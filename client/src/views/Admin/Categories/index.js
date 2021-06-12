@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { ADD_CATEGORY, DELETE_CATEGORY, SET_TOAST, SET_TOAST_DISMISSING, UPDATE_CATEGORY } from '../../../constants'
+import { ADD_CATEGORY, DELETE_CATEGORY, GET_CATEGORIES, SET_TOAST, SET_TOAST_DISMISSING, UPDATE_CATEGORY } from '../../../constants'
 import { capitalizeFirstLetter } from '../../../helpers'
 
 import { Button, Input } from '../../../components'
@@ -111,7 +111,7 @@ function Categories() {
             <i
               style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
               className={`fa fa-${filterKey ? 'times-circle' : fetchingCategories ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))}/>
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))}/>
           </div>
         </div>
       <CategoriesList 

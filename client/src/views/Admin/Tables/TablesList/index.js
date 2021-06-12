@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SmallButton } from '../../../../components'
+import { TableActionicons } from '../../../../components'
 
 function TablesList(props) {
   
