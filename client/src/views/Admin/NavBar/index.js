@@ -13,12 +13,12 @@ function NavBar(props) {
     const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
     const dispatch = useDispatch()
 
-    let { openSidebar } = props
+    let { openSidebar, role } = props
 
     return (
         <nav className="navbar">
-            <div className="nav_icon" onClick={() => openSidebar()}>
-                <i className="fa fa-bars" />
+            <div className="nav_icon"  onClick={() => openSidebar()}>
+                <i style={{ display: role === "Kitchen" ? 'none' : '' }} className="fa fa-bars" />
             </div>
             <div className="navbar__left">
                 <h3>{admin.restaurantName || 'Welcome to Admin'}</h3>

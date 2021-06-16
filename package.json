@@ -8,7 +8,6 @@
     "server": "nodemon index.js",
     "client": "npm run start --prefix client",
     "customer": "npm run start --prefix customer",
-    "home": "npm run start --prefix home",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "pm2": "pm2 start index.js"
   },
