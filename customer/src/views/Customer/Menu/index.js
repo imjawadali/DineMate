@@ -9,6 +9,8 @@ import MenuListingContainer from './MenuListingContainer'
 
 import { customisedAction } from '../../../redux/actions';
 import { GET_MENU, GET_RESTAURANT_DETAILS, INITIALIZE_ORDER } from '../../../constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import './styles.css'
 
 const Menu = props => {
@@ -23,6 +25,8 @@ const Menu = props => {
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
+    const [openCall, setOpenCall] = useState(false);
+    const [selectedServices, setSelectedServices] = useState(['WATER']);
 
     let { restaurantId, tableId } = useParams();
 
@@ -63,13 +67,25 @@ const Menu = props => {
                         <h2>{restaurant && restaurant.restaurantName}</h2>
                         {restaurant ?
                             restaurant.categories && restaurant.categories.length ?
-                                <h3>$$$: 
-                                    {restaurant.categories.map((category, index) => 
+                                <span className="divider">
+                                    <h3>$$$:
+                                        {restaurant.categories.map((category, index) =>
                                         ` ${category.name}${index !== restaurant.categories.length - 1 ? ' • ' : ''}`
                                     )}
-                                </h3>
-                            : <h3>$$$: Bakery • Cafe • Donuts</h3>
-                        : <h3>$$$: Loading data . . .</h3>}
+                                    </h3>
+
+                                    <div className="my-dinemate-div" onClick={() => setOpenCall(true)}>
+                                        <div className="my-dinemate">
+                                            My DineMate
+                                        </div>
+
+                                        <div className="dinemate-logo">
+                                            <img src={require("../../../assets/cart.png").default} className="searchbar-image-cart" />
+                                        </div>
+                                    </div>
+                                </span>
+                                : <h3>$$$: Bakery • Cafe • Donuts</h3>
+                            : <h3>$$$: Loading data . . .</h3>}
                     </div>
                 </div>
 
@@ -109,6 +125,97 @@ const Menu = props => {
                         <MenuListingContainer heading="Picked for you" data={menu} onClick={(id) => addToCart(id)} cart={cart} />
                     </div>
                     : null}
+
+                {
+                    openCall ?
+                        <div className="call-service-div">
+                            <div className="call-service-dialog">
+                                <div className="close-dialog-div">
+                                    <div className="icon-title-div">
+                                        <span className="dialog-icon">
+                                            <img src={require("../../../assets/Group 6409.png").default} className="searchbar-image-cart" />
+                                        </span>
+
+                                        <span className="call-for-service">Call For Services</span>
+                                    </div>
+
+                                    <div>
+                                        <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => setOpenCall(false)} />
+                                    </div>
+                                </div>
+
+                                <div className="services-div">
+                                    <div
+                                        className={selectedServices.includes("WATER") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            selectedServices.includes("WATER") ?
+                                                setSelectedServices(selectedServices.filter(service => service !== 'WATER')) :
+                                                setSelectedServices([...selectedServices, "WATER"])
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 6410.png").default} className="service-icon" />
+                                        </div>
+                                        Water
+                                    </div>
+
+                                    <div
+                                        className={selectedServices.includes("HELP") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            selectedServices.includes("HELP") ?
+                                                setSelectedServices(selectedServices.filter(service => service !== 'HELP')) :
+                                                setSelectedServices([...selectedServices, "HELP"])
+                                        }}
+                                        style={{ position: 'relative' }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Path 7705.png").default} className="service-icon" />
+                                        </div>
+                                        <div style={{ position: 'absolute', bottom: 8 }}>Help</div>
+                                    </div>
+
+                                    <div
+                                        className={selectedServices.includes("DISTURB") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            selectedServices.includes("DISTURB") ?
+                                                setSelectedServices(selectedServices.filter(service => service !== 'DISTURB')) :
+                                                setSelectedServices([...selectedServices, "DISTURB"])
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 4691.png").default} className="service-icon" />
+                                        </div>
+                                        Do not Disturb
+                                    </div>
+
+                                    <div
+                                        className={selectedServices.includes("BILL") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            selectedServices.includes("BILL") ?
+                                                setSelectedServices(selectedServices.filter(service => service !== 'BILL')) :
+                                                setSelectedServices([...selectedServices, "BILL"])
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 6412.png").default} className="service-icon" />
+                                        </div>
+                                        Bill
+                                    </div>
+                                </div>
+
+                                <div className="description-div">
+                                    <textarea type="text" placeholder="Description" className="text-area" />
+                                </div>
+
+                                <div className="send-button-div">
+                                    <div className={selectedServices.length > 0 ? "send-button" : "send-button disabled-send-button"}>
+                                        <div>Send Message</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        : null
+                }
 
             </div>
         </>
