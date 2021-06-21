@@ -1,0 +1,32 @@
+.continue-with {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.ios-android {
+    width: 320px;
+    height: 320px;
+}
+
+.play-store {
+    margin: 0 5px;
+    width: 250px; 
+    cursor: pointer;
+}
+
+.computer-img {
+    width: 50px;
+    height: 50px;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
