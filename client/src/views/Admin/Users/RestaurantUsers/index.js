@@ -99,7 +99,7 @@ function RestaurantUsers(props) {
                   <SmallTitle text="Role" />
                   <DropDown 
                     placeholder="Select role"
-                    options={['Admin', 'Kitchen']}
+                    options={['Admin', 'Kitchen', 'Staff']}
                     value={role}
                     onChange={({ target: { value } }) => setrole(value)}
                   />

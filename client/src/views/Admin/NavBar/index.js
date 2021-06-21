@@ -18,13 +18,12 @@ function NavBar(props) {
     return (
         <nav className="navbar">
             <div className="nav_icon"  onClick={() => openSidebar()}>
-                <i style={{ display: role === "Kitchen" ? 'none' : '' }} className="fa fa-bars" />
+                <i style={{ display: role === "Kitchen" && props.location.pathname.includes('/dashboard') ? 'none' : '' }} className="fa fa-bars" />
             </div>
             <div className="navbar__left">
                 <h3>{admin.restaurantName || 'Welcome to Admin'}</h3>
             </div>
             <div className="navbar__right">
-                <i className="fa fa-search" />
                 <i className="fa fa-power-off" onClick={() => {
                     removeItem('admin')
                     dispatch(customisedAction(ADMIN_LOGOUT))

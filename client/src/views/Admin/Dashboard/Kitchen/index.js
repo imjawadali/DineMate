@@ -8,7 +8,7 @@ import { customisedAction } from '../../../../redux/actions'
 
 import OrdersList from './OrdersList'
 
-function KitchenAdmin() {
+function Kitchen() {
 
   const [filterKey, setfilterKey] = useState('')
   const [category, setcategory] = useState(null)
@@ -132,4 +132,4 @@ function KitchenAdmin() {
   )
 }
 
-export default KitchenAdmin
+export default Kitchen

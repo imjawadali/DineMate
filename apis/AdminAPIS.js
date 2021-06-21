@@ -24,14 +24,12 @@ module.exports = app => {
         const { email, password } = req.body
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
-        let sql = 'SELECT U.id, U.name, U.email, U.role, U.restaurantId'
-            sql += ', R.restaurantName'
-        sql += ' FROM users U'
-            sql += ' LEFT JOIN restaurants R on U.restaurantId = R.restaurantId'
-        sql += ` WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`
         getConnection(
             res,
-            sql,
+            `SELECT U.id, U.name, U.email, U.role, U.restaurantId, R.restaurantName
+            FROM users U
+            LEFT JOIN restaurants R on U.restaurantId = R.restaurantId
+            WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`,
             null,
             (data) => {
                 if (data.length)
@@ -573,9 +571,8 @@ module.exports = app => {
                 ),
             ']') as items
             FROM orders o
-            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}'
-            AND o.tableId = '${tableId}'
-            AND o.status = 1 AND o.type = 'Dine-In'
+            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
+            WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
             GROUP BY o.orderNumber
             ORDER BY o.createdAt DESC`,
             null,

@@ -5,7 +5,7 @@ import { Button, DashboardGridItem, ServiceQueItem } from '../../../../component
 import { CLEAR_TABLE_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
-function RestaurantAdmin(props) {
+function Restaurant(props) {
 
   const [merging, setmerging] = useState(false)
   const [selectedTables, setselectedTables] = useState([])
@@ -201,7 +201,7 @@ function RestaurantAdmin(props) {
                             else if (occupiedBy) {
                               dispatch(customisedAction(CLEAR_TABLE_ORDERS))
                               props.history.push({
-                                pathname: '/client/admin/dashboard/restaurantAdmin/tableOrders',
+                                pathname: '/client/admin/dashboard/restaurant/tableOrders',
                                 state: { restaurantId, tableId: value }
                               })
                             }
@@ -234,7 +234,7 @@ function RestaurantAdmin(props) {
                           if (mergedTables.filter(table => table.occupiedBy).length) {
                             dispatch(customisedAction(CLEAR_TABLE_ORDERS))
                             props.history.push({
-                              pathname: '/client/admin/dashboard/restaurantAdmin/tableOrders',
+                              pathname: '/client/admin/dashboard/restaurant/tableOrders',
                               state: { restaurantId, tableId: table.mergeId, mergedTables }
                             })
                           }
@@ -309,4 +309,4 @@ function RestaurantAdmin(props) {
   )
 }
 
-export default RestaurantAdmin
+export default Restaurant

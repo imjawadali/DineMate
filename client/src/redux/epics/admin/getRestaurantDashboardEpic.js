@@ -31,7 +31,7 @@ export class getRestaurantDashboardEpic {
             { restaurantId },
             (resObj) => {
               if (history)
-                history.push('/client/admin/dashboard/restaurantAdmin')
+                history.push('/client/admin/dashboard/restaurant')
               return customisedAction(GET_RESTAURANT_DASHBOARD_SUCCESS, resObj)
             },
             GET_RESTAURANT_DASHBOARD_FAILURE

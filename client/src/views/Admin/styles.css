@@ -149,15 +149,16 @@ table {
 
 td, th {    
     text-align: left;
-    padding: 5px;
 }
 
 th {
-    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
+    padding: 10px 5px;
 }
 
 td {
     color: rgb(72, 72, 72);
+    padding: 5px;
 }
 
 tbody > tr {

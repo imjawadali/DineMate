@@ -5,8 +5,8 @@ import {
 } from '../../constants'
   
 export default (state = { 
-  fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrder: false,
-  tableOrders: null, orderItemDetails: null, closingId: null, order: null
+  fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false,
+  tableOrders: null, orderItemDetails: null, closingId: null, orders: null
 }, { type, payload }) => {
   switch (type) {
     case GET_TABLE_ORDERS:
@@ -32,11 +32,11 @@ export default (state = {
     case CLOSE_ORDER_FAILURE:
       return { ...state, closingId: null }
     case GET_ORDERS:
-      return { ...state, fetchingOrder: true }
+      return { ...state, fetchingOrders: true }
     case GET_ORDERS_SUCCESS:
-      return { ...state, fetchingOrder: false, order: payload }
+      return { ...state, fetchingOrders: false, orders: payload }
     case GET_ORDERS_FAILURE:
-      return { ...state, fetchingOrder: false, order: null }
+      return { ...state, fetchingOrders: false, orders: null }
     default:
       return state
   }

@@ -10,7 +10,7 @@ import { customisedAction } from '../../../redux/actions'
 import { RESET_RESTAURANT } from '../../../constants'
 
 function SideBar(props) {
-    
+
     const dispatch = useDispatch()
     let { url } = useRouteMatch()
     const { admin, sidebarOpen, closeSidebar, location } = props
@@ -22,39 +22,39 @@ function SideBar(props) {
         <div className="sidebar__title">
             <div className="sidebar__img">
                 <img src={logo} alt="logo" />
-                <DineMateTitle/>
+                <DineMateTitle />
             </div>
-            <i className="fa fa-times" id="sidebarIcon" onClick={() => closeSidebar()}/>
+            <i className="fa fa-times" id="sidebarIcon" onClick={() => closeSidebar()} />
         </div>
 
         <div className="sidebar__menu">
             <div className={`sidebar__link ${pathname.includes('/dashboard') ? 'active_menu_link' : null}`}>
-                <i className="fa fa-home"/>
+                <i className="fa fa-home" />
                 <Link to={`${url}`}>Dashboard</Link>
             </div>
             {!restaurantId ?
                 <>
                     <h2>Super Admin</h2>
                     <div className={`sidebar__link ${pathname.includes('/addRestaurant') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-plus"/>
+                        <i className="fa fa-plus" />
                         <Link to={`${url}/addRestaurant`}>Add Restaurants</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/restaurants') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-cutlery"/>
+                        <i className="fa fa-cutlery" />
                         <Link to={`${url}/restaurants`}>Restaurants Management</Link>
                     </div>
                     {pathname.includes('/qrsManagement') ?
                         <div className={`sidebar__link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
-                            <i className="fa fa-qrcode"/>
+                            <i className="fa fa-qrcode" />
                             <Link to={pathname}>QRs Management</Link>
                         </div>
-                    : null}
+                        : null}
                     {pathname.includes('/editRestaurant') ?
                         <div className={`sidebar__link ${pathname.includes('/editRestaurant') ? 'active_menu_link' : null}`}>
-                            <i className="fa fa-edit"/>
+                            <i className="fa fa-edit" />
                             <Link to={pathname}>Edit Restaurant</Link>
                         </div>
-                    : null}
+                        : null}
                     <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-user" />
                         <Link to={`${url}/usersManagement`}>Users Management</Link>
@@ -67,6 +67,10 @@ function SideBar(props) {
                 <>
                     {role === "SuperAdmin" || role === "Admin" ? <>
                         <h2>Restaurant Admin</h2>
+                        <div className={`sidebar__link ${pathname.includes('/ordersManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-archive" />
+                            <Link to={`${url}/ordersManagement`}>Orders Management</Link>
+                        </div>
                         <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-building-o" />
                             <Link to={`${url}/tablesManagement`}>Tables Management</Link>
@@ -93,30 +97,32 @@ function SideBar(props) {
                         </div>
                         <div className={`sidebar__link sidebar_disabled_link`}>
                             <i className="fa fa-wrench" />
-                            <Link to={pathname}>Settings</Link>
+                            <Link to={pathname}>Restaurant Settings</Link>
                         </div>
-                        </> : null // <h2>Kitchen Admin</h2>
+                        <div className={`sidebar__link sidebar_disabled_link`}>
+                            <i className="fa fa-files-o" />
+                            <Link to={pathname}>Profile</Link>
+                        </div>
+                    </> : role === 'Staff' ?
+                        <>
+                            <h2>Staff</h2>
+                            <div className={`sidebar__link ${pathname.includes('/ordersManagement') ? 'active_menu_link' : null}`}>
+                                <i className="fa fa-archive" />
+                                <Link to={`${url}/ordersManagement`}>Orders Management</Link>
+                            </div>
+                            <div className={`sidebar__link sidebar_disabled_link`}>
+                                <i className="fa fa-files-o" />
+                                <Link to={pathname}>Profile</Link>
+                            </div>
+                        </>
+                        : <>
+                            <h2>Kitchen Admin</h2>
+                            <div className={`sidebar__link sidebar_disabled_link`}>
+                                <i className="fa fa-files-o" />
+                                <Link to={pathname}>Profile</Link>
+                            </div>
+                        </>
                     }
-                    {/* <div className="sidebar__link">
-                        <i className="fa fa-archive" />
-                        <Link to={`${url}/orderManagement`}>Orders Management</Link>
-                    </div>
-                    <div className="sidebar__link">
-                        <i className="fa fa-handshake-o" />
-                        <Link to={`/customer/`} target="_blank">Contracts</Link>
-                    </div>
-                    <div className="sidebar__link">
-                        <i className="fa fa-question" />
-                        <Link to={`${url}/adc`}>Requests</Link>
-                    </div>
-                    <div className="sidebar__link">
-                        <i className="fa fa-files-o" />
-                        <Link to={`${url}/adc`}>Apply for Leaves</Link>
-                    </div>
-                    <div className={`sidebar__link ${pathname.includes('/others') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-wrench" />
-                        <Link to={`${url}/others`}>Settings</Link>
-                    </div> */}
                     {admin.role === "SuperAdmin" ?
                         <div className="LeaveButtonContainer">
                             <SmallButtonRed
@@ -125,9 +131,9 @@ function SideBar(props) {
                                 onClick={() => {
                                     dispatch(customisedAction(RESET_RESTAURANT))
                                     props.history.push(`${url}`)
-                                }}/>
+                                }} />
                         </div>
-                    : null}
+                        : null}
                 </>
             }
         </div>
