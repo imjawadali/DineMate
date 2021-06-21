@@ -1,5 +1,6 @@
 .continue-with {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .flex-1 {
@@ -7,7 +8,8 @@
 }
 
 .ios-android {
-    width: 500px;
+    width: 320px;
+    height: 320px;
 }
 
 .play-store {
@@ -19,4 +21,12 @@
 .computer-img {
     width: 50px;
     height: 50px;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
 }
