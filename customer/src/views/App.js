@@ -14,6 +14,7 @@ import SideNav from './Sidenav'
 import Header from './Header'
 import Customer from './Customer'
 import Home from './Home'
+import ContinueWith from './ContinueWith'
 import Others from './Others'
 import Registration from './Registration'
 import NoRoute from './NoRoute'
@@ -21,7 +22,6 @@ import Footer from './Footer'
 
 import logo from '../assets/logo.png'
 import './styles.css'
-import ContinueWith from './Customer/continue-with'
 
 export default function App() {
 
@@ -76,7 +76,7 @@ export default function App() {
                             <Home openSidebar={openSidebar}/>
                         </Route>
                         <Route path='/customer' component={Customer} />
-                        <Route path='/continue-with' component={ContinueWith} />
+                        <Route exact path='/:restaurantId/:tableId' component={ContinueWith} />
                         <Route path='/registration' component={Registration} />
                         <Route path='/others' component={Others} />
                         <Route component={NoRoute} />

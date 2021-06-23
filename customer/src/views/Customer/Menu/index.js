@@ -21,20 +21,15 @@ const Menu = props => {
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
     const fetchingRestaurantDetails = useSelector(({ menuReducer }) => menuReducer.fetchingRestaurantDetails)
     const restaurant = useSelector(({ menuReducer }) => menuReducer.restaurant)
-    const initializingOrder = useSelector(({ orderReducer }) => orderReducer.initializingOrder)
-    const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
-    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
     const [openCall, setOpenCall] = useState(false);
     const [selectedServices, setSelectedServices] = useState(['WATER']);
 
-    let { restaurantId, tableId } = useParams();
+    let { restaurantId } = useParams();
 
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))
-        // if (tableId && !checkingOrder && !initializingOrder && !orderDetails)
-        //     dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
     }, [])
 
     const addToCart = id => {

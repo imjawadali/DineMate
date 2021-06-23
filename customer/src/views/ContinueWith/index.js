@@ -1,14 +1,29 @@
-import React from 'react';
-import image from '../../../assets/ios-android.jpg';
-import google from '../../../assets/google.png';
-import apple from '../../../assets/apple.png';
-import computer from '../../../assets/computer.png';
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from "react-router-dom";
+
+import image from '../../assets/ios-android.jpg';
+import google from '../../assets/google.png';
+import apple from '../../assets/apple.png';
+import computer from '../../assets/computer.png';
 import './styles.css';
 
-function ContinueWith() {
+function ContinueWith(props) {
+
+    const initializingOrder = useSelector(({ orderReducer }) => orderReducer.initializingOrder)
+    const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const dispatch = useDispatch()
+
+    let { restaurantId, tableId } = useParams();
+
+    useEffect(() => {
+        // if (tableId && !checkingOrder && !initializingOrder && !orderDetails)
+        //     dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
+    }, [])
 
     return (
-        <div className="continue-with">
+        <div className="ContinueWith">
             <div className="flex-1 flex justify-center">
                 <img className="ios-android" src={image} />
             </div>
@@ -30,7 +45,8 @@ function ContinueWith() {
 
                 <div style={{ marginBottom: 50, fontSize: 24, fontWeight: 'bolder' }}>Start Using</div>
 
-                <div style={{ display: 'flex', marginBottom: 20, cursor: 'pointer', background: '#0000001c', padding: 10, borderRadius: 5, alignItems: 'center' }}>
+                <div style={{ display: 'flex', marginBottom: 20, cursor: 'pointer', background: '#0000001c', padding: 10, borderRadius: 5, alignItems: 'center' }}
+                    onClick={() => props.history.push(`/customer/${restaurantId}/menu`)}>
                     <img className="computer-img" src={computer} />
                     <span style={{ margin: 10, fontSize: 24, fontWeight: 'bolder' }}>The Web</span>
                 </div>
