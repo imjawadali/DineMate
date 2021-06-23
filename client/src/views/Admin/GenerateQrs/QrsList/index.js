@@ -42,7 +42,7 @@ function QrsList(props) {
                     <td>
                       <QRCode
                         id={id}
-                        value={CUSTOMER_APP_URL+"/"+restaurantId+"/"+value}
+                        value={CUSTOMER_APP_URL+restaurantId+"/"+value}
                         size={40}
                       />
                     </td>
