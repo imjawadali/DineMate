@@ -6,25 +6,24 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
+import { useEffect } from 'react';
 
 const Header = props => {
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
 
-    const [items] = useState([
-        {
-            name: 'Burger',
-            size: 'Medium',
-            price: 1.79,
-            quantity: 1
-        },
-        {
-            name: 'Ice Cream',
-            size: 'Small',
-            price: 2.86,
-            quantity: 3
+    const [items, setItems] = useState([]);
+
+
+    useEffect(() => {
+        let data = JSON.parse(localStorage.getItem('cartMenu'))
+        if(data){
+            setItems(data)
+            console.log(items)
+        }else {
+            setItems([])
         }
-    ]);
+    }, [])
 
     const toggleCartModal = () => {
         let cartModal = document.getElementById("cart_modal");
@@ -73,7 +72,7 @@ const Header = props => {
                                 red
                                 src={require('../../assets/cart.png').default}
                                 text="Cart"
-                                itemCounts={0}
+                                itemCounts={items && items.length}
                                 onClick={toggleCartModal}
                             />
 
@@ -93,12 +92,12 @@ const Header = props => {
 
                                         <div className="item-details">
                                             {
-                                                items.map((item, i) => {
+                                                items.length ? items.map((item, i) => {
                                                     return (
                                                         <div className="details" key={i}>
                                                             <div>
                                                                 <div className="selected-quantity">
-                                                                    {item.quantity}
+                                                                    {item.quanity}
                                                                 </div>
                                                             </div>
 
@@ -109,19 +108,19 @@ const Header = props => {
 
                                                                 <div className="size-title">
                                                                     Size
-                                                            </div>
+                                                                </div>
 
                                                                 <div className="size">
-                                                                    {item.size}
+                                                                    item.size
                                                                 </div>
                                                             </div>
 
                                                             <div className="amount">
-                                                                ${item.price}
+                                                                {item.totalPrice}
                                                             </div>
                                                         </div>
                                                     )
-                                                })
+                                                }) : null
                                             }
                                         </div>
                                     </div>
@@ -129,8 +128,8 @@ const Header = props => {
                                     <div className="checkout-button">
                                         <span>
                                             {
-                                                items.length > 0 ?
-                                                    items.reduce((prevItem, currentItem) => prevItem.quantity + currentItem.quantity)
+                                                items && items.length > 0 ?
+                                                    items.reduce((prevItem, currentItem) => prevItem.quanity + currentItem.quanity)
                                                     :
                                                     0
                                             }
@@ -142,8 +141,8 @@ const Header = props => {
 
                                         <span>
                                             ${
-                                                items.length > 0 ?
-                                                    items.reduce((prevItem, currentItem) => prevItem.price + currentItem.price)
+                                                items && items.length > 0 ?
+                                                    items.reduce((prevItem, currentItem) => prevItem.totalPrice + currentItem.totalPrice)
                                                     :
                                                     0
                                             }
@@ -166,18 +165,18 @@ const Header = props => {
                     </div>
                     {!customer ?
                         <>
-                        <HeaderButton
-                            src={require('../../assets/signin_icon.png').default}
-                            text="Sign In"
-                            onClick={() => props.history.push('/customer/signin')}
-                        />
-                        <HeaderButton
-                            red
-                            text="Sign Up"
-                            onClick={() => props.history.push('/customer/signup')}
-                        />
+                            <HeaderButton
+                                src={require('../../assets/signin_icon.png').default}
+                                text="Sign In"
+                                onClick={() => props.history.push('/customer/signin')}
+                            />
+                            <HeaderButton
+                                red
+                                text="Sign Up"
+                                onClick={() => props.history.push('/customer/signup')}
+                            />
                         </>
-                    :
+                        :
                         <HeaderButton
                             red
                             src={require('../../assets/cart.png').default}

@@ -1,6 +1,7 @@
 import React from 'react'
 import './styles.css';
 import logo from '../../assets/pizza_with_green_circle.png';
+import { useState } from 'react';
 
 function Registration(props) {
 
@@ -22,6 +23,23 @@ function Registration(props) {
     }
   ];
 
+  const [restuarantName,setRestuarantName] = useState("")
+  const [restuarantAddress,setRestuarantAddress] = useState("")
+  const [firstame,setFirstame] = useState("")
+  const [lastName,setLastName] = useState("")
+  const [email,setEmail] = useState("")
+  const [ContactNumber,setContactNumber] = useState("")
+  const [businessType,setBusinessType] = useState("")
+
+
+  const submit = () =>{
+    // let obj ={
+    //      "restaurantId": "xyz_restaurant",
+    //      "restaurantName": restuarantName,
+    //       "address\": {\n        \"address\": \"XYZ\",\n        \"city\": \"Karachi\",\n        \"country\": \"Pakistan\"\n    },\n    \"primaryContact\": {\n        \"adminName\": \"Jawad\",\n        \"email\": \"asdf62426@gmail.com\"\n    },\n    \"secondaryContact\": null
+    // }
+  }
+
   return (
     <div>
       <div className="main-form-div">
@@ -42,18 +60,18 @@ function Registration(props) {
             <div className="form-title">Get Started</div>
 
             <div className="restaurant-info-fields">
-              <input className="form-input" placeholder="Tim hortins" type="text" />
-              <input className="form-input" placeholder="Store Address" type="text" />
+              <input onChange={(ev)=>setRestuarantName(ev.target.value)} className="form-input" placeholder="Tim hortins" type="text" />
+              <input onChange={(ev)=>setRestuarantAddress(ev.target.value)} className="form-input" placeholder="Store Address" type="text" />
               <input className="form-input" placeholder="Floor / Suite (Optional)" type="text" />
             </div>
 
             <div className="persoanl-info-fields">
               <div className="names-div">
-                <input className="form-input" placeholder="First Name" type="text" />
-                <input className="form-input" placeholder="Last Name" type="text" />
+                <input onChange={(ev)=>setFirstame(ev.target.value)} className="form-input" placeholder="First Name" type="text" />
+                <input onChange={(ev)=>setLastName(ev.target.value)} className="form-input" placeholder="Last Name" type="text" />
               </div>
-              <input className="form-input" placeholder="Email Address" type="text" />
-              <input className="form-input mobile-number" placeholder="Mobile Phone Number" type="number" />
+              <input onChange={(ev)=>setEmail(ev.target.value)} className="form-input" placeholder="Email Address" type="text" />
+              <input onChange={(ev)=>setContactNumber(`+1${ev.target.value}`)} className="form-input mobile-number" placeholder="Mobile Phone Number" type="number" />
 
               <select className="country-select">
                 <option>PK</option>
@@ -65,7 +83,7 @@ function Registration(props) {
             </div>
 
             <div className="persoanl-info-fields" style={{ marginTop: -14 }}>
-              <select className="form-input" placeholder="Business type">
+              <select onChange={(ev)=>setBusinessType(ev)} className="form-input" placeholder="Business type">
                 <option>Business Type</option>
                 <option>No Business</option>
               </select>
@@ -76,7 +94,7 @@ function Registration(props) {
               have read the <span className="highlighted">Privacy Policy.</span>
             </div>
 
-            <div className="submit-div">
+            <div className="submit-div" onClick={submit}>
               <div className="submit-button">
                 Submit
               </div>
