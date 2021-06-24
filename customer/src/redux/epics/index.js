@@ -4,11 +4,16 @@ import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
 import { getRestaurantDetailsEpic } from './admin/getRestaurantDetailsEpic'
 import { initializeOrderEpic } from './admin/initializeOrderEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
+import { signUpEpic } from './admin/singUpEpic'
+import { forgotPsswordEpic } from './admin/forgetPassword'
 
 export const epics = combineEpics(
     loginEpic.login,
     getAllRestaurantsEpic.getAllRestaurants,
     getRestaurantDetailsEpic.getRestaurantDetails,
     initializeOrderEpic.initializeOrder,
-    getMenuEpic.getMenu
+    getMenuEpic.getMenu,
+    signUpEpic.signUp,
+    forgotPsswordEpic.forgetPassword
+
 )

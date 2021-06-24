@@ -23,6 +23,10 @@ function SideNav(props) {
     const dispatch = useDispatch()
 
     const { sidebarOpen, closeSidebar, history } = props
+    const profile = useSelector(({ sessionReducer }) => sessionReducer)
+
+    console.log(profile)
+
 
     return (
         <div className="sidenav" style={{ display: sidebarOpen ? 'block' : 'none' }}>

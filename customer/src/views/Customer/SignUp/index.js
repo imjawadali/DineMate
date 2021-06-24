@@ -1,9 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './styles.css';
 import signup_icon from '../../../assets/signup_icon.png';
+import { useDispatch } from 'react-redux';
+import { customisedAction } from '../../../redux/actions';
+import { SIGN_IN, SIGN_UP } from '../../../constants';
 
 function SignUp() {
+    let [firstName, setFirstName] = useState("")
+    let [lastName, setLastName] = useState("")
+    let [email, setEmail] = useState("")
+    let [password, setPassword] = useState("")
+    let [phoneNumber, setPhoneNumber] = useState("")
+    let dispatch = useDispatch()
 
+    function singUp() {
+        let obj = {
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email,
+            "password": password,
+        }
+
+        dispatch(customisedAction(SIGN_UP, obj))
+    }
     return (
         <div className="sign-up">
             <div className="content-div">
@@ -13,27 +32,27 @@ function SignUp() {
 
                 <div className="welcome-title">Lets get started!</div>
 
+
                 <div>
-                    <input type="email" className="form-field" placeholder="Email" />
+                    <input onChange={(ev) => setFirstName(ev.target.value)} type="text" className="form-field" placeholder="First Name" />
                 </div>
 
                 <div>
-                    <input type="text" className="form-field" placeholder="First Name" />
+                    <input onChange={(ev) => setLastName(ev.target.value)} type="text" className="form-field" placeholder="Last Name" />
                 </div>
 
                 <div>
-                    <input type="text" className="form-field" placeholder="Last Name" />
+                    <input onChange={(ev) => setEmail(ev.target.value)} type="text" className="form-field" placeholder="Email Address" />
+                </div>
+                <div>
+                    <input onChange={(ev) => setPassword(ev.target.value)} type="password" className="form-field" placeholder="Password" />
                 </div>
 
                 <div>
-                    <input type="text" className="form-field" placeholder="Email Address" />
+                    <input onChange={(ev) => setPhoneNumber(ev.target.value)} type="text" className="form-field" placeholder="Phone Number" />
                 </div>
 
-                <div>
-                    <input type="text" className="form-field" placeholder="Phone Number" />
-                </div>
-
-                <div className="signup-div">
+                <div className="signup-div" onClick={singUp}>
                     <div className="signup-text">
                         SIGN UP
                     </div>

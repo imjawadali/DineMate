@@ -18,12 +18,15 @@ const Menu = props => {
     const [cart, setCart] = useState([])
 
     const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
+    // const [menu, setMenu] = useState([])
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
+    const [selectedCategory, setSelectedCategory] = useState(menu)
     const fetchingRestaurantDetails = useSelector(({ menuReducer }) => menuReducer.fetchingRestaurantDetails)
     const restaurant = useSelector(({ menuReducer }) => menuReducer.restaurant)
     const dispatch = useDispatch()
     const [openCall, setOpenCall] = useState(false);
     const [selectedServices, setSelectedServices] = useState(['WATER']);
+    const [categorie, setCategorie] = useState('All')
 
     let { restaurantId } = useParams();
 
@@ -31,6 +34,16 @@ const Menu = props => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))
     }, [])
+
+    useEffect(() => {
+        if (categorie === 'All') {
+            setSelectedCategory(menu)
+        } else if (categorie != 'All') {
+            setSelectedCategory(menu.filter((a, i) => a.categoryName === categorie))
+        }
+    }, [categorie,menu])
+    console.log(selectedCategory)
+
 
     const addToCart = id => {
         if (cart.find((item) => item.id === id))
@@ -65,8 +78,8 @@ const Menu = props => {
                                 <span className="divider">
                                     <h3>$$$:
                                         {restaurant.categories.map((category, index) =>
-                                        ` ${category.name}${index !== restaurant.categories.length - 1 ? ' • ' : ''}`
-                                    )}
+                                            ` ${category.name}${index !== restaurant.categories.length - 1 ? ' • ' : ''}`
+                                        )}
                                     </h3>
 
                                     <div className="my-dinemate-div" onClick={() => setOpenCall(true)}>
@@ -96,13 +109,13 @@ const Menu = props => {
                 {restaurant && restaurant.categories && restaurant.categories.length ?
                     <div className="menuListingFeatured">
                         <div className="menuListingFeaturedContainer">
-                            <div className="menuListingFeaturedContainerItem selectedItem">
+                            <div onClick={() => setCategorie('All')} className={categorie === "All" ? "menuListingFeaturedContainerItem selectedItem" :"menuListingFeaturedContainerItem"}>
                                 <h3>
                                     All
                                 </h3>
                             </div>
                             {restaurant.categories.map(category =>
-                                <div className="menuListingFeaturedContainerItem">
+                                <div onClick={() => setCategorie(category.name)} className={categorie === category.name ? "menuListingFeaturedContainerItem selectedItem" :"menuListingFeaturedContainerItem"}>
                                     <h3>
                                         {category.name}
                                     </h3>
@@ -115,9 +128,9 @@ const Menu = props => {
 
 
 
-                {menu && menu.length ?
+                {selectedCategory && selectedCategory.length ?
                     <div className="menulistingcontainer">
-                        <MenuListingContainer heading="Picked for you" data={menu} onClick={(id) => addToCart(id)} cart={cart} />
+                        <MenuListingContainer heading="Picked for you" data={selectedCategory} onClick={(id) => addToCart(id)} cart={cart} />
                     </div>
                     : null}
 

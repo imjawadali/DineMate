@@ -1,0 +1,111 @@
+.CheckOut {
+    width: 100%;
+    padding: 0 5vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+.CheckOut .checkoutForm {
+    width: 100%;
+    box-shadow: 0px 0px 13px -6px black;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    padding: 20px;
+}
+.CheckOut .checkoutForm .heading .from {
+    font-size: 17px;
+    font-weight: bold;
+}
+.CheckOut .checkoutForm .heading .from span {
+    color: red;
+}
+.CheckOut .checkoutForm .menuCart {
+    width: 250px;
+    border: 1px solid #00000052;
+    padding: 10px;
+
+    margin: 15px 0px;
+}
+.CheckOut .checkoutForm .menuCart .itemCart {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #00000052;
+    font-size: 13px;
+    color: 0000007d;
+}
+.CheckOut .checkoutForm .menuCart .itemCart,
+p {
+    padding: 5px 0px;
+}
+.CheckOut .checkoutForm .menuCart .totalCart {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f3f3f3;
+    color: red;
+    font-size: 14px;
+    padding: 4px;
+    margin: 10px 0px 0px;
+}
+.pickUpTime,
+.pickUpLocation,
+.pickUpPayment {
+    margin-top: 40px;
+}
+.pickUpTime label,
+.pickUpLocation textarea,
+.pickUpPayment select {
+    width: 250px;
+    border: 1px solid #00000052;
+    padding: 10px;
+    margin: 15px 0px;
+    outline: none;
+}
+.pickUpPayment select {
+    border: none;
+    box-shadow: 0px 0px 13px 7px #0000ff36;
+}
+
+.CheckOut .Ammount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0px;
+}
+.CheckOut .Ammount img {
+    width: 110px;
+    height: 110px;
+    margin-left: 30px;
+}
+.CheckOut .Ammount h2 {
+    color: #828181;
+    font-weight: bolder;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+.CheckOut .Ammount h2 span {
+    color: #ef6e6c;
+}
+.CheckOut .Ammount .payBtn {
+    background-color: #2ec3b3;
+    color: white;
+    font-size: 18px;
+    border-radius: 40px;
+    border: none;
+    margin-top: 10px;
+    padding: 8px;
+    width: 290px;
+}
+
+.pickUpTime input{
+    /* display: none;
+    -webkit-appearance: none; */
+    /* visibility: hidden; */
+    width: 100%;
+}
+.pickUpTime label{
+    display: inline-block;
+}

@@ -10,7 +10,8 @@ import {
   INITIALIZE_ORDER_FAILURE,
   SIGN_IN,
   SET_SESSION,
-  SIGN_IN_FAILURE
+  SIGN_IN_FAILURE,
+  SIGN_UP
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -23,6 +24,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: payload }
     case SIGN_IN:
       return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' }}
+      case SIGN_UP:
+        return { ...state, toastSetDismiss: true, toast: { message: 'Sign Up Succes', type: 'success' }}
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
     case SIGN_IN_FAILURE:

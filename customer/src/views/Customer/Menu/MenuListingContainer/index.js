@@ -32,11 +32,11 @@ const MenuListingContainer = props => {
                                 cartValue={cart.find(item => item.id == menuItem.id) ? "1" : ""}
                                 price={menuItem.price}
                                 onClick={() => {
-                                    if (orderDetails) {
-                                        setSelectedItem(menuItem);
-                                        setViewAddons(true);
-                                        console.clear();
-                                    } else dispatch(customisedAction(SET_TOAST, { message: 'Order isn\'t initialized yet!', type: 'warning' }))
+                                    // if (orderDetails) {
+                                    setSelectedItem(menuItem);
+                                    setViewAddons(true);
+                                    // console.clear();
+                                    // } else dispatch(customisedAction(SET_TOAST, { message: 'Order isn\'t initialized yet!', type: 'warning' }))
                                 }}
                                 updateCart={onClick}
                                 addToCart={cart.find(item => item.id == menuItem.id)}
@@ -44,6 +44,7 @@ const MenuListingContainer = props => {
                         </div>
                     )
                 })}
+
             </div>
 
             {
@@ -65,33 +66,48 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
     const dispatch = useDispatch()
 
     const [itemCount, setItemCount] = useState(1);
-    const [itemToAdd, setItemToAdd] = useState({ addOnOptions: [] });
+    const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
     const [totalPrice, setTotalPrice] = useState(0);
     const [updateComponent, setUpdateComponent] = useState(true);
 
     useEffect(() => {
         let price = selectedItem.price;
         for (let key in itemToAdd) {
-            if (key == 'addOnOptions') {
+            if (key == 'addOns') {
                 itemToAdd[key].forEach(item => price += item.price)
             } else {
                 price += itemToAdd[key].price;
             }
         }
         setTotalPrice(price * itemCount)
+        // console.log(price * itemCount)
     }, [itemToAdd, itemCount]);
+
+    const saveCart = (obj) => {
+        let cartMenu = localStorage.getItem('cartMenu') ? localStorage.getItem('cartMenu') : '';
+        if (cartMenu) {
+            let updatedCart = JSON.parse(cartMenu)
+                updatedCart.push(obj)
+                console.log(updatedCart)
+            localStorage.setItem('cartMenu', JSON.stringify(updatedCart))
+        } else {
+            let cart = JSON.stringify([obj])
+            localStorage.setItem('cartMenu', cart)
+        }
+    }
 
     // FINAL CALL
     const addToCart = e => {
         e.preventDefault();
-        console.log("itemToAdd", {
-            restaurantId: orderDetails.restaurantId,
-            orderNumber: orderDetails.orderNumber,
-            quantity: itemCount,
-            totalPrice,
-            special_instructions: document.getElementById("special_instructions").value
-        });
-        // updateCart();
+        console.log(orderDetails)
+        let obj = {
+            ...selectedItem,
+            addOns: itemToAdd.addOns,
+            quanity:itemCount,
+            totalPrice:totalPrice
+        }
+        // console.log("itemToAdd", obj);
+        saveCart(obj)
     }
 
     return (
@@ -103,7 +119,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                         <FontAwesomeIcon icon={faTimes} className="icon-starz" onClick={() => setViewAddons(false)} />
                     </div>
 
-                    <div className="item-iamge" >
+                    <div className="item-iamge" onClick={() => console.log(selectedItem, itemToAdd)} >
                         <img
                             width='90px'
                             height='90px'
@@ -229,10 +245,10 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                                                                             onChange={() => {
                                                                                 setItemToAdd({
                                                                                     ...itemToAdd,
-                                                                                    addOnOptions: itemToAdd.addOnOptions.includes(addOnOption) ?
-                                                                                        itemToAdd.addOnOptions.filter(_addOnOption => addOnOption.id != _addOnOption.id)
+                                                                                    addOns: itemToAdd.addOns.includes(addOnOption) ?
+                                                                                        itemToAdd.addOns.filter(_addOnOption => addOnOption.id != _addOnOption.id)
                                                                                         :
-                                                                                        [...itemToAdd.addOnOptions, addOnOption]
+                                                                                        [...itemToAdd.addOns, addOnOption]
                                                                                 })
                                                                             }}
                                                                             name={addOnOption.name}
@@ -298,10 +314,10 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart }) => {
                                                         onChange={() => {
                                                             setItemToAdd({
                                                                 ...itemToAdd,
-                                                                addOnOptions: itemToAdd.addOnOptions.includes(addOn) ?
-                                                                    itemToAdd.addOnOptions.filter(_addOnOption => addOn.id != _addOnOption.id)
+                                                                addOns: itemToAdd.addOns.includes(addOn) ?
+                                                                    itemToAdd.addOns.filter(_addOnOption => addOn.id != _addOnOption.id)
                                                                     :
-                                                                    [...itemToAdd.addOnOptions, addOn]
+                                                                    [...itemToAdd.addOns, addOn]
                                                             })
                                                         }}
                                                         name={addOn.name}
