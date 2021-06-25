@@ -10,7 +10,8 @@ export const API_ENDPOINTS = {
         getRestaurantDetails: 'customer/getRestaurantDetails',
         initializeOrder: 'customer/initializeOrder',
         getMenuItems: 'customer/getMenuItems',
-        signUp:'customer/signUp',
-        forgetPassword:'/admin/forgotPassword'
+        signUp: 'customer/signUp',
+        forgetPassword: '/admin/forgotPassword',
+        addSingleItem: '/customer/addSingleItem',
     }
 }

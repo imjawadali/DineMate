@@ -56,19 +56,41 @@ p {
     margin-top: 40px;
 }
 .pickUpTime label,
-.pickUpLocation textarea,
-.pickUpPayment select {
+.pickUpLocation textarea {
     width: 250px;
     border: 1px solid #00000052;
     padding: 10px;
     margin: 15px 0px;
     outline: none;
 }
-.pickUpPayment select {
-    border: none;
-    box-shadow: 0px 0px 13px 7px #0000ff36;
+.pickUpPayment {
+    width: 380px;
 }
-
+.pickUpPayment select,
+.pickUpPayment input {
+    border: none;
+    box-shadow: 0px 0px 16px 0px #31c6b6b5;
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    margin: 8px 0px;
+}
+.pickUpPayment input {
+    border: none;
+    box-shadow: 0px 0px 16px 0px #31c6b6b5;
+    width: calc(100% - 20px);
+    padding: 10px;
+    outline: none;
+    margin: 8px 0px;
+}
+.pickUpPayment .dateCode {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.pickUpPayment .dateCode input {
+    width: 42%;
+}
 .CheckOut .Ammount {
     display: flex;
     align-items: center;
@@ -100,12 +122,24 @@ p {
     width: 290px;
 }
 
-.pickUpTime input{
+.pickUpTime input {
     /* display: none;
     -webkit-appearance: none; */
     /* visibility: hidden; */
     width: 100%;
 }
-.pickUpTime label{
+.pickUpTime label {
     display: inline-block;
+}
+@media screen and (max-width: 600px) {
+    .pickUpPayment {
+        width: 100%;
+    }
+    .CheckOut .Ammount{
+        flex-direction: column;
+    text-align: center;
+    }
+    .CheckOut .checkoutForm .menuCart, .pickUpTime label, .pickUpLocation textarea{
+        width: calc(100% - 20px);
+    }
 }

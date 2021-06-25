@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { withRouter } from 'react-router-dom';
+import { useParams, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
@@ -13,14 +13,25 @@ const Header = props => {
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
 
     const [items, setItems] = useState([]);
+    const [search, setSearch] = useState("")
 
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        let value = urlParams.get("value")
+        if (value) {
+            setSearch(value)
+        } else {
+
+            setSearch('')
+        }
+    }, [window.location.search])
 
     useEffect(() => {
         let data = JSON.parse(localStorage.getItem('cartMenu'))
-        if(data){
+        if (data) {
             setItems(data)
             console.log(items)
-        }else {
+        } else {
             setItems([])
         }
     }, [])
@@ -65,6 +76,8 @@ const Header = props => {
                                     <input
                                         className="HeaderInput"
                                         placeholder="What are you craving?"
+                                        value={search}
+                                        onChange={(ev) => setSearch(ev.target.value)}
                                     />
                                 </div>
                             </div>
