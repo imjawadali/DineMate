@@ -6,6 +6,7 @@ import { initializeOrderEpic } from './admin/initializeOrderEpic'
 import { getMenuEpic } from './admin/getMenuEpic'
 import { signUpEpic } from './admin/singUpEpic'
 import { forgotPsswordEpic } from './admin/forgetPassword'
+import { addOrderEpic } from './admin/addOrderEpic'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -14,6 +15,7 @@ export const epics = combineEpics(
     initializeOrderEpic.initializeOrder,
     getMenuEpic.getMenu,
     signUpEpic.signUp,
-    forgotPsswordEpic.forgetPassword
+    forgotPsswordEpic.forgetPassword,
+    addOrderEpic.addOrder
 
 )

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 
@@ -8,6 +9,8 @@ import './styles.css'
 function Home(props) {
 
   const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+const [search,setSearch] = useState('')
+  
 
   return (
     <div className="HomeContainer">
@@ -64,9 +67,10 @@ function Home(props) {
                 <input
                   className="HomeInput"
                   placeholder="Enter Delivery Address"
+                  onChange={(ev)=>setSearch(ev.target.value)}
                 />
               </div>
-              <div className="HomeMiddleButton">
+              <div className="HomeMiddleButton" onClick={()=>props.history.push(`customer/restaurants/?value=${search}`)}>
                 <p className="HomeMiddleButtonText">Find Food</p>
               </div>
             </div>

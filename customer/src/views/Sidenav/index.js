@@ -15,9 +15,12 @@ import badge from '../../assets/badge.png';
 import serve from '../../assets/serve.png';
 import usericon from '../../assets/usericon.png';
 import arrowright from '../../assets/arrowright.png';
+import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
+
 import './sidenav.css';
 
 function SideNav(props) {
+    let { path } = useRouteMatch()
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const dispatch = useDispatch()
@@ -59,7 +62,7 @@ function SideNav(props) {
 
                             <div className="route-section">
                                 <img style={{ width: 23, marginRight: 8 }} src={usericon} />
-                                <span className="route">Profile</span>
+                                <span className="route" onClick={()=>props.history.push(`/customer/profile`)}>Profiles</span>
                             </div>
 
                             <div 

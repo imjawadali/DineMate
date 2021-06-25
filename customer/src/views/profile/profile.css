@@ -1,0 +1,121 @@
+.profile {
+    margin: 50px 0px;
+    padding: 0 5vw;
+}
+.profile h1 {
+    color: #ec4d4a;
+    margin: 20px 0px;
+}
+.profile .profileImageDiv {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 180px;
+}
+.centerAb {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0px);
+}
+.profile .profileImageDiv .profileImage {
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0px 0px 7px -1px black;
+}
+.profile .profileImageDiv .profileImage img {
+    width: 100%;
+    border-radius: 50%;
+}
+.profile .profileName h1 {
+    color: black;
+    font-weight: 800;
+    font-size: 45px;
+}
+.profile .profileName p {
+    font-size: 21px;
+    align-items: center;
+    display: fd;
+    display: flex;
+    align-items: center;
+    color: #00000057;
+}
+.profile .profileName p .pointBadge {
+
+    display: flex;
+    margin-right: 10px;
+    align-items: center;
+}
+.profile .profileName p .pointBadge img {
+    width: 30px;
+}
+.profile .profileName p {
+    font-size: 21px;
+    align-items: center;
+    display: fd;
+    display: flex;
+    align-items: center;
+    color: #00000057;
+}
+.profile .profileName p .point {
+    color: #eb4744;
+    font-weight:bolder ;
+    margin-left: 10px;
+}
+.profile .inputDiv input{
+    border: none;
+    box-shadow: 0px 0px 16px 0px #31c6b6b5;
+    width: calc(100% - 20px);
+    padding: 15px 10px;
+    outline: none;
+    margin: 8px 0px;
+    width: 350px;
+}
+.profile .profileInputDIv{
+    height: 70PX;
+}
+.profile .profileSaveBtn{
+    height: 70px;
+} 
+.profile .saveBtn button{
+    background-color: #2ec3b3;
+    color: white;
+    font-size: 18px;
+    border-radius: 40px;
+    border: none;
+    margin-top: 10px;
+    padding: 12px;
+    box-shadow: 0px 0px 16px 0px #31c6b6b5;
+    width: 350px;
+    border: 2px solid white;
+}
+@media screen and (max-width: 600px) {
+    .profile .profileImageDiv {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+        margin-bottom: 20px;
+    }
+    .profile .profileImageDiv h2 {
+    margin-bottom: 10px;
+    }
+    .profile .centerAb{
+        position: unset;
+        transform: unset;
+    }
+    .profile .centerAb h1{
+    margin-bottom: 0px;
+    margin-top: 0px;
+    }
+    .profile .inputDiv{
+        width: calc(100% - 5vw);
+    }
+    .profile .inputDiv input{
+        width: calc(100% - 5vw);
+
+    }
+}

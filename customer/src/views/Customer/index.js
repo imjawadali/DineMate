@@ -11,6 +11,7 @@ import NoRoute from '../NoRoute'
 
 import './styles.css'
 import CheckOut from './checkout/CheckOut'
+import Profile from '../profile/Profile'
 
 export default function Customer(props) {
 
@@ -45,8 +46,10 @@ export default function Customer(props) {
         <NonCustomerLanding path={`${path}/signup`} component={SignUp} />
         <NonCustomerLanding path={`${path}/forgotPassword`} component={ForgotPassword} />
         <Route exact path={`${path}/restaurants`} component={Restaurants} />
+        {/* <Route exact path={`${path}/restaurants`} component={Restaurants} /> */}
         <Route exact path={`${path}/:restaurantId/menu`} component={Menu} />
         <Route exact path={`${path}/checkout`} component={CheckOut} />
+        <Route exact path={`${path}/profile`} component={Profile} />
         <Route component={NoRoute} />
       </Switch>
     </div>
