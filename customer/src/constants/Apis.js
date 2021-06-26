@@ -13,5 +13,7 @@ export const API_ENDPOINTS = {
         signUp: 'customer/signUp',
         forgetPassword: '/admin/forgotPassword',
         addSingleItem: '/customer/addSingleItem',
+        submitOrder: '/customer/submitOrder',
+        
     }
 }
