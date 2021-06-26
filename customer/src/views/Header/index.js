@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -7,6 +7,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
+import { SUBMIT_ORDER_ITEM } from '../../constants';
+import { customisedAction } from '../../redux/actions';
 
 const Header = props => {
 
@@ -14,6 +16,9 @@ const Header = props => {
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
+    let dispatch = useDispatch()
+
+    let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -27,14 +32,18 @@ const Header = props => {
     }, [window.location.search])
 
     useEffect(() => {
-        let data = JSON.parse(localStorage.getItem('cartMenu'))
-        if (data) {
-            setItems(data)
-            console.log(items)
+        if (cartItemR) {
+            setItems(cartItemR)
         } else {
-            setItems([])
+            let data = JSON.parse(localStorage.getItem('cartMenu'))
+            if (data) {
+                setItems(data)
+                console.log(data)
+            } else {
+                setItems([])
+            }
         }
-    }, [])
+    }, [cartItemR])
 
     const toggleCartModal = () => {
         let cartModal = document.getElementById("cart_modal");
@@ -47,6 +56,32 @@ const Header = props => {
             justificationDiv.style.display = 'block';
         }
     }
+
+    const submitOrder = () => {
+        let obj = {
+            "restaurantId": items[0].restaurantId,
+            "orderNumber": "000000032",
+            "items": items
+        }
+        console.log(obj)
+        dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
+
+    }
+    const totalAmountFn = () => {
+        let price = 0
+        if (items.length) {
+            items.map((a, i) => price += a.price)
+        }
+        return price
+    }
+    const totalQuantityFn = () => {
+        let quantity = 0
+        if (items.length) {
+            items.map((a, i) => quantity += a.quantity)
+        }
+        return quantity
+    }
+
 
     return (
         props && props.location && props.location.pathname !== '/' ?
@@ -107,10 +142,10 @@ const Header = props => {
                                             {
                                                 items.length ? items.map((item, i) => {
                                                     return (
-                                                        <div className="details" key={i}>
+                                                        <div onClick={() => console.log(item)} className="details" key={i}>
                                                             <div>
                                                                 <div className="selected-quantity">
-                                                                    {item.quanity}
+                                                                    {item.quantity}
                                                                 </div>
                                                             </div>
 
@@ -120,16 +155,12 @@ const Header = props => {
                                                                 </div>
 
                                                                 <div className="size-title">
-                                                                    Size
-                                                                </div>
-
-                                                                <div className="size">
-                                                                    item.size
+                                                                    {item.shortDescription}
                                                                 </div>
                                                             </div>
 
                                                             <div className="amount">
-                                                                {item.totalPrice}
+                                                                ${item.totalPrice}
                                                             </div>
                                                         </div>
                                                     )
@@ -141,10 +172,11 @@ const Header = props => {
                                     <div className="checkout-button">
                                         <span>
                                             {
-                                                items && items.length > 0 ?
-                                                    items.reduce((prevItem, currentItem) => prevItem.quanity + currentItem.quanity)
-                                                    :
-                                                    0
+                                                // items && items.length > 0 ?
+                                                //     items.reduce((prevItem, currentItem) => Number(prevItem.quantity) + Number(currentItem.quantity))
+                                                //     :
+                                                //     0
+                                                totalQuantityFn()
                                             }
                                         </span>
 
@@ -154,12 +186,17 @@ const Header = props => {
 
                                         <span>
                                             ${
-                                                items && items.length > 0 ?
-                                                    items.reduce((prevItem, currentItem) => prevItem.totalPrice + currentItem.totalPrice)
-                                                    :
-                                                    0
+                                                // items && items.length > 0 ?
+                                                // items.reduce((prevItem, currentItem) => prevItem.totalPrice + currentItem.totalPrice)
+                                                // :
+                                                // 0
+                                            totalAmountFn()
                                             }
                                         </span>
+                                    </div>
+                                    <div className="orderSubBtn">
+                                        <button className="submitOrder" onClick={submitOrder}>Submit Order</button>
+                                        <button className="addItem">Close Order</button>
                                     </div>
                                 </div>
                             </div>

@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { SET_ORDER, SET_TOAST } from '../../../../constants';
+import { SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
 
 const MenuListingContainer = props => {
@@ -16,9 +16,11 @@ const MenuListingContainer = props => {
     const { heading, cart, data, onClick } = props
     const [viewAddons, setViewAddons] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
+    const { restaurantId } = useParams()
 
     return (
         <div className="MenuListingContainer">
+
             <h1>
                 {heading}
             </h1>
@@ -53,6 +55,7 @@ const MenuListingContainer = props => {
                     <ViewAddon
                         setViewAddons={setViewAddons}
                         selectedItem={selectedItem}
+                        restaurantId={restaurantId}
                     />
                     :
                     null
@@ -61,29 +64,48 @@ const MenuListingContainer = props => {
     )
 }
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
-    const { restaurantId } = useParams()
 
     const [itemCount, setItemCount] = useState(1);
     const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
     const [totalPrice, setTotalPrice] = useState(0);
     const [updateComponent, setUpdateComponent] = useState(true);
+    const [updatePrice,setupdatePrice] = useState(false)
 
+    let [obj, setObj] = useState({
+        // combo: {
+        //     "addOnId": 42,
+        //     "addOnName": "Flavour",
+        //     "addOnOptionId": 49,
+        //     "addOnOption": "Cheesy",
+        //     "price": 0
+        // }
+    })
+
+    let [price,setPrice] = useState(selectedItem.price);
     useEffect(() => {
-        let price = selectedItem.price;
-        for (let key in itemToAdd) {
-            if (key == 'addOns') {
-                itemToAdd[key].forEach(item => price += item.price)
-            } else {
-                price += itemToAdd[key].price;
-            }
+        // for (let key in itemToAdd) {
+        //     if (key == 'addOns') {
+        //         itemToAdd[key].forEach(item => price += item.price)
+        //     } else {
+        //         price += itemToAdd[key].price;
+        //     }
+        // }
+        // setTotalPrice(price * itemCount)
+        let arr = []
+        for (let keys in obj) {
+            arr.push(obj[keys])
         }
+        console.log(arr)
+        arr.map((a, i) => price += Number(a.price))
+        console.log(arr.map((a, i) => a.price))
         setTotalPrice(price * itemCount)
+        setupdatePrice(false)
         // console.log(price * itemCount)
-    }, [itemToAdd, itemCount]);
+    }, [itemToAdd, itemCount, obj,price,updatePrice]);
 
     const saveCart = (obj) => {
         // let cartMenu = localStorage.getItem('cartMenu') ? localStorage.getItem('cartMenu') : '';
@@ -98,7 +120,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
         // }
 
 
-        dispatch(customisedAction(SET_ORDER,obj))
+        dispatch(customisedAction(SET_ORDER_ITEM, obj))
 
 
 
@@ -133,15 +155,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
     }
     let arrr = []
 
-    let [obj, setObj] = useState({
-        // combo: {
-        //     "addOnId": 42,
-        //     "addOnName": "Flavour",
-        //     "addOnOptionId": 49,
-        //     "addOnOption": "Cheesy",
-        //     "price": 0
-        // }
-    })
+
     useEffect(() => {
 
 
@@ -222,6 +236,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
                                                                             className="check"
                                                                             // onChange={() => { setItemToAdd({ ...itemToAdd, [addOn.name]: addOnOption }) }}
                                                                             onChange={() => {
+                                                                                setupdatePrice(true)
+
                                                                                 let objj = { ...obj }
                                                                                 objj[addOn.name] = {
                                                                                     "addOnId": addOnOption.id,
@@ -343,15 +359,25 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
                                                                             //     })
                                                                             // }}
                                                                             onChange={() => {
-                                                                                let objj = { ...obj }
-                                                                                objj[addOn.name] = {
-                                                                                    "addOnId": addOn.id,
-                                                                                    "addOnName": addOn.name,
-                                                                                    "addOnOptionId": addOn.id,
-                                                                                    "addOnOption": addOn.name,
-                                                                                    "price": addOn.price
+                                                                                setupdatePrice(true)
+                                                                                if (!obj[addOn.name]) {
+
+                                                                                    let objj = { ...obj }
+                                                                                    objj[addOn.name] = {
+                                                                                        "addOnId": addOn.id,
+                                                                                        "addOnName": addOn.name,
+                                                                                        "addOnOptionId": addOn.id,
+                                                                                        "addOnOption": addOn.name,
+                                                                                        "price": addOn.price
+                                                                                    }
+                                                                                    setObj(objj)
+                                                                                } else {
+                                                                                    let objj = { ...obj }
+
+                                                                                    delete obj[addOn.name]
+                                                                                    // setPrice(price -= addOn.price)
+
                                                                                 }
-                                                                                setObj(objj)
                                                                                 // setItemToAdd({
                                                                                 //     ...itemToAdd,
                                                                                 //     addOns: [...itemToAdd.addOns, {
@@ -433,15 +459,25 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history }) => {
                                                         //     })
                                                         // }}
                                                         onChange={() => {
-                                                            let objj = { ...obj }
-                                                            objj[addOn.name] = {
-                                                                "addOnId": addOn.id,
-                                                                "addOnName": addOn.name,
-                                                                "addOnOptionId": addOn.id,
-                                                                "addOnOption": addOn.name,
-                                                                "price": addOn.price
+                                                            setupdatePrice(true)
+
+                                                            if (!obj[addOn.name]) {
+
+                                                                let objj = { ...obj }
+                                                                objj[addOn.name] = {
+                                                                    "addOnId": addOn.id,
+                                                                    "addOnName": addOn.name,
+                                                                    "addOnOptionId": addOn.id,
+                                                                    "addOnOption": addOn.name,
+                                                                    "price": addOn.price
+                                                                }
+                                                                setObj(objj)
+                                                            } else {
+                                                                let objj = { ...obj }
+
+                                                                delete obj[addOn.name]
+                                                                // setPrice(price -= addOn.price)
                                                             }
-                                                            setObj(objj)
                                                             // setItemToAdd({
                                                             //     ...itemToAdd,
                                                             //     addOns: [...itemToAdd.addOns, {
