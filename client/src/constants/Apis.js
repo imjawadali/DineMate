@@ -3,7 +3,7 @@ export const PUBLIC_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.c
 export const CUSTOMER_APP_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/'
 export const BUCKET_URL = 'https://dinematebucket.s3.amazonaws.com/'
 export const BUCKET_URL_2 = 'https://dinematebucket.s3.us-east-2.amazonaws.com/'
-export const BASE_URL = '/dev/'
+export const BASE_URL = LOCAL_URL
 
 export const API_ENDPOINTS = {
     admin: {
@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
         getSuperAdminDashboard: 'admin/getSuperAdminDashboard',
         getRestaurantDashboard: 'admin/getRestaurantDashboard',
         getKitchenDashboard: 'admin/getKitchenDashboard',
+        getStaffDashboard: 'admin/getStaffDashboard',
         markItemReady: 'admin/markItemReady',
         markOrderReady: 'admin/markOrderReady',
         getTableOrders: 'admin/getTableOrders',
@@ -28,6 +29,8 @@ export const API_ENDPOINTS = {
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',
         getServicesQue: 'admin/getServicesQue',
+        getStaffAssignedTables: 'admin/getStaffAssignedTables',
+        assignTablesToStaff: 'admin/assignTablesToStaff',
         addCategory: 'admin/addCategory',
         getCategories: 'admin/getCategories',
         updateCategory: 'admin/updateCategory',
@@ -42,7 +45,7 @@ export const API_ENDPOINTS = {
         addUser: 'admin/addUser',
         updateUser: 'admin/updateUser',
         deleteUser: 'admin/deleteUser',
-        getOpenOrders:'admin/getOpenOrders',
+        getOrders:'admin/getOrders',
         uploadToS3:'admin/uploadToS3',
         deleteFromS3:'admin/deleteFromS3'
     }

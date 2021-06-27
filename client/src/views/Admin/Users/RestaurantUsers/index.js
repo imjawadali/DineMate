@@ -10,7 +10,6 @@ import UsersList from './UsersList'
 
 function RestaurantUsers(props) {
 
-  const [usersFetchCalled, setusersFetchCalled] = useState(false)
   const [userDialogOpen, setuserDialogOpen] = useState(false)
   const [name, setname] = useState('')
   const [email, setemail] = useState('')
@@ -27,10 +26,6 @@ function RestaurantUsers(props) {
   const { id, restaurantId } = admin
 
   useEffect(() => {
-    if (!usersFetchCalled && !fetchingUsers && !users) {
-      setusersFetchCalled(true)
-      dispatch(customisedAction(GET_USERS, { restaurantId }))
-    }
     if (fetchingUsers) reset()
   }, [fetchingUsers])
 

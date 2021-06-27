@@ -15,7 +15,7 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
             })
         }
         else {
-            tempDb.query(`SELECT * FROM users WHERE id = '${token}' AND active = 1`, (error, authResult) => {
+            tempDb.query(`SELECT * FROM customers WHERE id = '${token}' AND active = 1`, (error, authResult) => {
                 if (authResult.length) {
                     tempDb.query(query, data, (error, result) => {
                         tempDb.release()

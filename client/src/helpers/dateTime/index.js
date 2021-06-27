@@ -20,8 +20,8 @@ export function getTimeObject (timeStamp) {
     var time = {}
     var days = Math.floor(timeStamp / 86400)
     var hrs = Math.floor((timeStamp % 86400) / 3600)
-    var mints = Math.round(((timeStamp % 86400) % 3600) / 60)
-    var secs = new Date(timeStamp).getSeconds()
+    var mints = Math.floor(((timeStamp % 86400) % 3600) / 60)
+    var secs = ((timeStamp % 86400) % 3600) % 60
     if (days) time.days = days
     if (hrs) time.hrs = hrs
     if (mints) time.mints = mints

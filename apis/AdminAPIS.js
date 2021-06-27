@@ -93,6 +93,27 @@ module.exports = app => {
         )
     })
 
+    app.get('/admin/getSuperAdminDashboard', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT (SELECT COUNT(*) FROM restaurants) as restaurants,
+            (SELECT COUNT(*) FROM users WHERE role = 'Admin') as admins,
+            (SELECT COUNT(*) FROM restaurantsQrs) as qrs
+            FROM users WHERE id = ${adminId} AND role = 'SuperAdmin'`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data[0])
+                } else {
+                    return res.status(422).send({ 'msg': 'Dashboard data not available!' })
+                }
+            }
+        )
+    })
+
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, imageUrl, restaurantName, cuisine, address, city, country, latitude, longitude, taxId, taxPercentage, customMessage, primaryContact, secondaryContact  } = req.body
@@ -412,22 +433,23 @@ module.exports = app => {
         )
     })
 
-    app.get('/admin/getSuperAdminDashboard', async (req, res) => {
+    app.get('/admin/getAllUsers', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         getSecureConnection(
             res,
             adminId,
-            `SELECT (SELECT COUNT(*) FROM restaurants) as restaurants,
-            (SELECT COUNT(*) FROM users WHERE role = 'Admin') as admins,
-            (SELECT COUNT(*) FROM restaurantsQrs) as qrs
-            FROM users WHERE id = ${adminId} AND role = 'SuperAdmin'`,
+            `SELECT u.id, u.name, u.email, u.contactNumber, u.role, u.active, r.restaurantName
+            FROM users u
+            JOIN restaurants r ON u.restaurantId = r.restaurantId
+            WHERE role <> 'SuperAdmin'
+            ORDER BY r.createdAt DESC, u.createdAt ASC `,
             null,
             (data) => {
                 if (data.length) {
-                    return res.send(data[0])
+                    return res.send(data)
                 } else {
-                    return res.status(422).send({ 'msg': 'Dashboard data not available!' })
+                    return res.status(422).send({ 'msg': 'No users available!' })
                 }
             }
         )
@@ -444,11 +466,316 @@ module.exports = app => {
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
             SUM(o.doNotDisturb) as doNotDisturb,
             SUM(o.customerStatus) as closeRequests,
+            COUNT(o.orderNumber) as occupiedBy,
+            MIN(o.createdAt) as createdAt
+            FROM restaurantsQrs rq
+            LEFT JOIN orders o ON
+            (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')
+            WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
+            GROUP BY rq.value
+            ORDER BY rq.id ASC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Table Data!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/mergeTables', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { selectedTables, mergeId } = req.body
+        if (!selectedTables || !Array.isArray(selectedTables)) return res.status(401).send({ 'msg': 'Table(s) list required!' })
+        if (!selectedTables.length) return res.status(401).send({ 'msg': 'No Table(s) Selected!' })
+        if (selectedTables.length < 2) return res.status(422).send({ 'msg': 'Select atleast 2 tables!' })
+        if (selectedTables.length > 3) return res.status(422).send({ 'msg': 'Maximum 3 tables could be merged!' })
+        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurantsQrs SET ? WHERE id IN (${selectedTables.join()})`,
+            { mergeId },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Tables Merged Successfully!' })
+                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
+            }
+        )
+    })
+
+    app.post('/admin/unMergeTables', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { mergeId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurantsQrs SET ? WHERE mergeId = '${mergeId}'`,
+            { mergeId: null },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Tables Un-merged Successfully!' })
+                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
+            }
+        )
+    })
+
+    app.post('/admin/getServicesQue', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT id, tableNumber, type, text FROM servicesQue
+            WHERE restaurantId = '${restaurantId}'
+            ORDER BY createdAt ASC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No services in que!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getTableOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, tableId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT o.orderNumber, o.customerStatus,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oi.id,
+                        ',"name":"',oi.name,
+                        '","quantity":',oi.quantity,
+                        ',"totalPrice":',oi.totalPrice,
+                        ',"status":"',oi.status,'"}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as items
+            FROM orders o
+            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
+            WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
+            GROUP BY o.orderNumber
+            ORDER BY o.createdAt DESC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Table Data Available!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getOrderItemDetails', async (req, res) => {
+        const { id } = req.body
+        if (!id) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getConnection(
+            res,
+            `SELECT oi.name, oi.quantity, oi.status, oi.price, oi.totalPrice, oi.specialInstructions,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oia.id,
+                        ',"name":"',oia.addOnName,
+                        '","option":"',oia.addOnOption,
+                        '","price":',oia.price,'}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as addOns
+            FROM orderItems oi
+            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+            WHERE oi.id = ${id}
+            GROUP BY oi.id`,
+            null,
+            (result) => {
+                if (result.length) return res.send(result[0])
+                else return res.status(422).send({ 'msg': 'No item details available!' })
+            }
+        )
+    })
+
+    app.post('/admin/closeOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { status: false },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!'})
+                else return res.status(422).send({ 'msg': 'Order closed already!' })
+            }
+        )
+    })
+
+    app.post('/admin/getOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, type, status } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
+        if (!status && status !== 0) return res.status(422).send({ 'msg': 'Order Status is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT * FROM orders WHERE
+            restaurantId = '${restaurantId}'
+            AND status = ${status}
+            AND type = '${type}'
+            ORDER BY createdAt DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Open ${type} Orders!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getStaffAssignedTables', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT sat.staffId as id, u.name,
+            GROUP_CONCAT(sat.tableNumber) as assignedTables
+            FROM staffAssignedTables sat
+            JOIN users u on u.id = sat.staffId
+            WHERE sat.restaurantId = '${restaurantId}'
+            GROUP BY sat.staffId
+            ORDER BY sat.createdAt DESC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No table(s) assigned to staff!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/assignTablesToStaff', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { selectedStaff, assignedTables, restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!selectedStaff) return res.status(422).send({ 'msg': 'Staff ID is required!' })
+        if (!assignedTables) return res.status(422).send({ 'msg': 'No data to update!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        getTransactionalConnection()
+        .getConnection(function (error, tempDb) {
+            if (!!error) {
+                console.log('DbConnectionError', error.sqlMessage)
+                return res.status(503).send({ 'msg': 'Unable to reach database!' })
+            }
+            tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin' || role = 'Staff') AND active = 1`, (error, authResult) => {
+                if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                if (authResult.length) {
+                    tempDb.beginTransaction(function (error) {
+                        if (!!error) {
+                            console.log('TransactionError', error.sqlMessage)
+                            return res.status(422).send({ 'msg': error.sqlMessage })
+                        }
+                        tempDb.query(`DELETE FROM staffAssignedTables WHERE staffId = ${selectedStaff}`, null, function(error) {
+                            if (!!error) {
+                                console.log('TableError', error.sqlMessage)
+                                tempDb.rollback(function() {
+                                    return res.status(422).send({ 'msg': "Failed to assign tables to staff!" })
+                                })
+                            } else {
+                                if (assignedTables && assignedTables.length) {
+                                    var query = 'INSERT INTO staffAssignedTables ( staffId, tableNumber, restaurantId ) VALUES'
+                                    for (var i=0; i<assignedTables.length; i++) {
+                                        query = query + ` ( ${selectedStaff}, '${assignedTables[i]}', '${restaurantId}' )`
+                                        if (i !== (assignedTables.length - 1))
+                                            query = query + ','
+                                    }
+                                    tempDb.query(query, function(error) {
+                                        if (!!error) {
+                                            console.log('TableError', error.sqlMessage)
+                                            tempDb.rollback(function() {
+                                                return res.status(422).send({ 'msg': "Failed to assign tables to staff" })
+                                            })
+                                        } else {
+                                            tempDb.commit(function(error) {
+                                                if (error) { 
+                                                    tempDb.rollback(function() {
+                                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                                    })
+                                                }
+                                                tempDb.release()
+                                                return res.send({
+                                                    'msg': 'Updated staff tables successfully!'
+                                                })
+                                            })
+                                        }
+                                    })
+                                } else {
+                                    tempDb.commit(function(error) {
+                                        if (error) { 
+                                            tempDb.rollback(function() {
+                                                return res.status(422).send({ 'msg': error.sqlMessage })
+                                            })
+                                        }
+                                        tempDb.release()
+                                        return res.send({
+                                            'msg': 'Updated staff tables successfully!'
+                                        })
+                                    })
+                                }
+                            }
+                        })
+                    })
+                }
+                else return res.status(401).send({ 'msg': 'Invalid Session!' })
+            })
+        })
+    })
+
+    app.post('/admin/getStaffDashboard', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
+            SUM(o.doNotDisturb) as doNotDisturb,
+            SUM(o.customerStatus) as closeRequests,
             GROUP_CONCAT(o.orderNumber) as occupiedBy
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
             (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')
             WHERE rq.restaurantId = '${restaurantId}' AND rq.active = 1
+            AND rq.value in (SELECT tableNumber FROM staffAssignedTables WHERE staffId = ${adminId})
             GROUP BY rq.value
             ORDER BY rq.id ASC`,
             null,
@@ -545,151 +872,6 @@ module.exports = app => {
                         )
                     }
                 )
-            }
-        )
-    })
-
-    app.post('/admin/getTableOrders', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, tableId } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT o.orderNumber, o.customerStatus,
-            CONCAT('[',
-                GROUP_CONCAT(
-                    CONCAT(
-                        '{"id":',oi.id,
-                        ',"name":"',oi.name,
-                        '","quantity":',oi.quantity,
-                        ',"totalPrice":',oi.totalPrice,
-                        ',"status":"',oi.status,'"}'
-                    ) ORDER BY oi.createdAt DESC
-                ),
-            ']') as items
-            FROM orders o
-            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
-            WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
-            GROUP BY o.orderNumber
-            ORDER BY o.createdAt DESC`,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': `No Table Data Available!` })
-                }
-            }
-        )
-    })
-
-    app.post('/admin/getOrderItemDetails', async (req, res) => {
-        const { id } = req.body
-        if (!id) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        getConnection(
-            res,
-            `SELECT oi.name, oi.quantity, oi.status, oi.price, oi.totalPrice, oi.specialInstructions,
-            CONCAT('[',
-                GROUP_CONCAT(
-                    CONCAT(
-                        '{"id":',oia.id,
-                        ',"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,
-                        '","price":',oia.price,'}'
-                    ) ORDER BY oi.createdAt DESC
-                ),
-            ']') as addOns
-            FROM orderItems oi
-            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
-            WHERE oi.id = ${id}
-            GROUP BY oi.id`,
-            null,
-            (result) => {
-                if (result.length) return res.send(result[0])
-                else return res.status(422).send({ 'msg': 'No item details available!' })
-            }
-        )
-    })
-
-    app.post('/admin/closeOrder', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, orderNumber } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
-            { status: false },
-            (result) => {
-                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!'})
-                else return res.status(422).send({ 'msg': 'Order closed already!' })
-            }
-        )
-    })
-
-    app.post('/admin/mergeTables', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        const { selectedTables, mergeId } = req.body
-        if (!selectedTables || !Array.isArray(selectedTables)) return res.status(401).send({ 'msg': 'Table(s) list required!' })
-        if (!selectedTables.length) return res.status(401).send({ 'msg': 'No Table(s) Selected!' })
-        if (selectedTables.length < 2) return res.status(422).send({ 'msg': 'Select atleast 2 tables!' })
-        if (selectedTables.length > 3) return res.status(422).send({ 'msg': 'Maximum 3 tables could be merged!' })
-        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `UPDATE restaurantsQrs SET ? WHERE id IN (${selectedTables.join()})`,
-            { mergeId },
-            (result) => {
-                if (result.changedRows)
-                    return res.send({ 'msg': 'Tables Merged Successfully!' })
-                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
-            }
-        )
-    })
-
-    app.post('/admin/unMergeTables', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { mergeId } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!mergeId) return res.status(422).send({ 'msg': 'Merge ID is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `UPDATE restaurantsQrs SET ? WHERE mergeId = '${mergeId}'`,
-            { mergeId: null },
-            (result) => {
-                if (result.changedRows)
-                    return res.send({ 'msg': 'Tables Un-merged Successfully!' })
-                else return res.status(422).send({ 'msg': 'Tables Merging Failed' })
-            }
-        )
-    })
-
-    app.post('/admin/getServicesQue', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT id, tableNumber, type, text FROM servicesQue
-            WHERE restaurantId = '${restaurantId}'
-            ORDER BY createdAt ASC`,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': 'No services in que!' })
-                }
             }
         )
     })
@@ -1116,28 +1298,6 @@ module.exports = app => {
         })
     })
 
-    app.get('/admin/getAllUsers', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT u.id, u.name, u.email, u.contactNumber, u.role, u.active, r.restaurantName
-            FROM users u
-            JOIN restaurants r ON u.restaurantId = r.restaurantId
-            WHERE role <> 'SuperAdmin'
-            ORDER BY r.createdAt DESC, u.createdAt ASC `,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': 'No users available!' })
-                }
-            }
-        )
-    })
-
     app.post('/admin/getRestaurantUsers', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId } = req.body
@@ -1280,56 +1440,6 @@ module.exports = app => {
                             else return res.status(422).send({ 'msg': 'Failed to delete user' })
                         }
                     )
-                }
-            }
-        )
-    })
-
-    app.post('/admin/getOpenOrders', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, type } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT * FROM orders WHERE
-            restaurantId = '${restaurantId}'
-            AND status = 1
-            AND type = '${type}'
-            ORDER BY createdAt DESC `,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': `No Open ${type} Orders!` })
-                }
-            }
-        )
-    })
-
-    app.post('/admin/getClosedOrders', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, type } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT * FROM orders WHERE
-            restaurantId = '${restaurantId}'
-            AND status = 0
-            AND type = '${type}'
-            ORDER BY createdAt DESC `,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': `No Closed ${type} Orders!` })
                 }
             }
         )

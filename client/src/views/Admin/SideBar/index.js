@@ -71,6 +71,10 @@ function SideBar(props) {
                             <i className="fa fa-archive" />
                             <Link to={`${url}/ordersManagement`}>Orders Management</Link>
                         </div>
+                        <div className={`sidebar__link ${pathname.includes('/staffManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-user" />
+                            <Link to={`${url}/staffManagement`}>Staff Management</Link>
+                        </div>
                         <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-building-o" />
                             <Link to={`${url}/tablesManagement`}>Tables Management</Link>
@@ -106,9 +110,9 @@ function SideBar(props) {
                     </> : role === 'Staff' ?
                         <>
                             <h2>Staff</h2>
-                            <div className={`sidebar__link ${pathname.includes('/ordersManagement') ? 'active_menu_link' : null}`}>
-                                <i className="fa fa-archive" />
-                                <Link to={`${url}/ordersManagement`}>Orders Management</Link>
+                            <div className={`sidebar__link ${pathname.includes('/staffManagement') ? 'active_menu_link' : null}`}>
+                                <i className="fa fa-user" />
+                                <Link to={`${url}/staffManagement`}>Staff Management</Link>
                             </div>
                             <div className={`sidebar__link sidebar_disabled_link`}>
                                 <i className="fa fa-files-o" />

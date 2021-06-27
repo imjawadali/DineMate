@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getTimeObject } from '../../../../../helpers'
 import { customisedAction } from '../../../../../redux/actions'
 import { MARK_ITEM_READY, MARK_ORDER_READY } from '../../../../../constants'
-import { ReadyIcon } from '../../../../../components'
+import { ReadyIcon, KitchenTimer } from '../../../../../components'
 
 function OrdersList(props) {
 
@@ -65,19 +65,7 @@ function OrdersList(props) {
                             }
                           />
                         </td>
-                        <td style={{ backgroundColor: index === 0 ? time.days || time.hrs || time.mints > 9 ? 'rgb(248, 203, 173)' : 'rgb(198, 224, 180)' : ''}}>
-                          {index === 0 ? <p style={{ display: 'inline' }}>
-                            {/* {time.days ? time.days + 'day(s)' : ''}
-                            {time.days && (time.hrs || time.mints) ? ', ' : ''}
-                            {time.hrs ? time.hrs + 'hr(s)' : ''}
-                            {time.hrs && time.mints ? ', ' : ''}
-                            {time.mints ? time.mints + 'mint(s)' : ''} */}
-                            {/* {time.days ? time.days + 'd ' : ''} */}
-                            {time.hrs ? time.hrs < 9 ? '0' + time.hrs + ':' : time.hrs + ':' : '00:'}
-                            {time.mints ? time.mints < 9 ? '0' + time.mints + ':' : time.mints + ':' : '00:'}
-                            {'00'}
-                          </p> : ''}
-                        </td>
+                        <KitchenTimer index={index} timeStamp={data[data.length-1].time} />
                         <td><p style={{ whiteSpace: 'nowrap' }}>{index === 0 ? type : ''}</p></td>
                         <td>{index === 0 ? orderNumber : ''}</td>
                         <td style={{ textAlign: 'center' }}>{index === 0 ? tableId : ''}</td>

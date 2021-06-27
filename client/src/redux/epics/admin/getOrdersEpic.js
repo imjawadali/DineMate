@@ -10,16 +10,16 @@ import {
   API_ENDPOINTS
 } from '../../../constants'
 
-export class getOpenOrdersEpic {
-  static getOpenOrders = action$ =>
+export class getOrdersEpic {
+  static getOrders = action$ =>
     action$.pipe(
       ofType(GET_ORDERS),
       switchMap(
-        async ({ payload: { restaurantId, type, noToast } }) => {
+        async ({ payload: { restaurantId, type, status, noToast } }) => {
           return generalizedEpic(
             'post', 
-            API_ENDPOINTS.admin.getOpenOrders,
-            { restaurantId,type},
+            API_ENDPOINTS.admin.getOrders,
+            { restaurantId, type, status },
             (resObj) => {
               return customisedAction(GET_ORDERS_SUCCESS, resObj)
             },

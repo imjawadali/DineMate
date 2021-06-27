@@ -83,6 +83,15 @@ function Kitchen() {
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
             <div className="TableButtons TableButtonGreen"
+              style={{ opacity: !category && !late ? 0.5 : '' }}
+              onClick={() => {
+                setcategory(null)
+                setlate(false)
+              }}>
+              <p>All</p>
+              <p>{dineInCounts+takeawayCounts}</p>
+            </div>
+            <div className="TableButtons TableButtonGreen"
               style={{ opacity: category === 'Dine-In' ? 0.5 : '' }}
               onClick={() => setcategory(category === 'Dine-In' ? null : 'Dine-In')}>
               <p>Dine-In</p>

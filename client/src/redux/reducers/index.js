@@ -7,6 +7,7 @@ import categoriesReducer from './categoriesReducer'
 import menuReducer from './menuReducer'
 import usersReducer from './usersReducer'
 import ordersReducer from './ordersReducer'
+import staffReducer from './staffReducer'
 import fileUploadReducer from './fileUploadReducer'
 import toastReducer from './toastReducer'
 
@@ -19,6 +20,7 @@ export default combineReducers({
     menuReducer,
     usersReducer,
     ordersReducer,
+    staffReducer,
     fileUploadReducer,
     toastReducer
 })
