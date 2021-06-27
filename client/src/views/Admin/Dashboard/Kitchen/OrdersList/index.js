@@ -20,7 +20,7 @@ function OrdersList(props) {
         <thead>
           <tr>
             <th>Complete</th>
-            <th>Ready</th>
+            <th style={{ textAlign: 'center', width: '7%' }}>Ready</th>
             <th>Time</th>
             <th>Type</th>
             <th>Check #</th>
