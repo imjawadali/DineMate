@@ -3,12 +3,10 @@ import { getTimeObject } from '../../helpers'
 
 function DashboardTimer({ timeStamp }) {
 
-  const [timer, settimer] = useState(null)
+  const [timer, settimer] = useState(new Date() - new Date(timeStamp))
   const [time, settime] = useState(timeStamp)
 
   useEffect(() => {
-    if (!timer)
-      settimer(new Date() - new Date(timeStamp))
     settime(getTimeObject(timer))
     setTimeout(() => settimer(timer + 1), 1000)
   }, [timer])

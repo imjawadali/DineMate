@@ -533,9 +533,13 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT id, tableNumber, type, text FROM servicesQue
-            WHERE restaurantId = '${restaurantId}'
-            ORDER BY createdAt ASC`,
+            `SELECT GROUP_CONCAT(sq.id) as ids, sq.tableNumber, sq.orderNumber, GROUP_CONCAT(sq.text) as text,
+            TIMESTAMPDIFF(SECOND, MIN(sq.createdAt), CURRENT_TIMESTAMP) as time
+            FROM servicesQue sq
+            LEFT JOIN orders o ON o.orderNumber = sq.orderNumber AND sq.status = 1 
+            WHERE sq.restaurantId = '${restaurantId}' AND o.status = 1
+            GROUP BY sq.orderNumber
+            ORDER BY sq.createdAt ASC`,
             null,
             (data) => {
                 if (data.length) {

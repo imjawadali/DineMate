@@ -274,6 +274,7 @@ function Restaurant(props) {
                         merging={merging || managingStaff}
                         includesMerging={selectedTables.includes(id) || assignedTables.includes(value)}
                         onMouseEnter={() => merging ? null : sethoveredTable(table)}
+                        onMouseLeave={() => merging ? null : sethoveredTable(null)}
                         onClick={() => {
                           if (merging && !occupiedBy) selectTable(id)
                           else if (managingStaff) assignTable(value)
@@ -309,6 +310,7 @@ function Restaurant(props) {
                           cursor: 'pointer'
                         }}
                         onMouseEnter={() => merging ? null : sethoveredTable(mergedTables)}
+                        onMouseLeave={() => merging ? null : sethoveredTable(null)}
                         onClick={() => {
                           if (managingStaff) assignTable(table.mergeId)
                           else if (mergedTables.filter(table => table.occupiedBy).length && !merging) {
@@ -379,9 +381,10 @@ function Restaurant(props) {
                   servicesQue.map(item => {
                     return <ServiceQueItem
                       id={item.id}
-                      type={item.type}
                       tableNumber={item.tableNumber}
-                      text={item.text}
+                      orderNumber={item.orderNumber}
+                      textArray={item.text ? item.text.split(',') : null}
+                      timeStamp={item.time}
                       onClick={() => null}
                     />
                   }) : null

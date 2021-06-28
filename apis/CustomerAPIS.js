@@ -398,7 +398,8 @@ module.exports = app => {
                                             body: {
                                                 orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
                                                 restaurantId,
-                                                tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId
+                                                tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId,
+                                                type: 'Dine-In'
                                             }
                                         })
                                     else return res.send({
@@ -951,7 +952,8 @@ module.exports = app => {
                                                     body: {
                                                         orderNumber,
                                                         restaurantId,
-                                                        tableId: null
+                                                        tableId: null,
+                                                        type: 'Take-Away'
                                                     }
                                                 })
                                             })
@@ -1190,7 +1192,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/requestService")
             console.log(req.body)
-            const { restaurantId, tableId, orderNumber, type, text } = req.body
+            const { restaurantId, tableId, orderNumber, text } = req.body
             if (!restaurantId) return res.send({
                 status: false,
                 message: 'Restuatant Id is required!',
@@ -1206,14 +1208,7 @@ module.exports = app => {
                 message: 'Order number is required!',
                 errorCode: 422
             })
-            if (!type && type !== 0) return res.send({
-                status: false,
-                message: 'Service type is required!',
-                errorCode: 422
-            })
-            const data = { restaurantId, tableNumber: tableId, orderNumber, type }
-            if (text && type !== 0)
-                data.text = text
+            const data = { restaurantId, tableNumber: tableId, orderNumber, text }
             getConnection(
                 res,
                 `INSERT INTO servicesQue SET ?`,
