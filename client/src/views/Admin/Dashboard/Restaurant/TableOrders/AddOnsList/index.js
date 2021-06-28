@@ -13,16 +13,16 @@ function AddOnsList(props) {
             <th>Item Name</th>
             <th>Add-on</th>
             <th>Add-on Option</th>
-            <th>Quantity</th>
-            <th>Price</th>
+            <th style={{ textAlign: 'center' }}>Quantity</th>
+            <th style={{ textAlign: 'center' }}>Price</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td />
             <td colSpan="3">{itemName}</td>
-            <td style={{ textAlign: 'end' }}>{quantity}</td>
-            <td style={{ textAlign: 'end' }}>$ {itemPrice}</td>
+            <td style={{ textAlign: 'center' }}>{quantity}</td>
+            <td style={{ textAlign: 'center' }}>$ {itemPrice}</td>
           </tr>
           {addOns && addOns.length ?
             addOns.map((category) => {
@@ -34,7 +34,7 @@ function AddOnsList(props) {
                   <td>{name}</td>
                   <td>{option && option !== 'null' ? option : '-'}</td>
                   <td />
-                  <td style={{ textAlign: 'end' }}>$ {price}</td>
+                  <td style={{ textAlign: 'center' }}>$ {price}</td>
                 </tr>
               )
             }) : 
@@ -45,7 +45,7 @@ function AddOnsList(props) {
           <tr>
             <td style={{ fontWeight: 'bold' }}>Total</td>
             <td colSpan="4" />
-            <td style={{ fontWeight: 'bold', textAlign: 'end' }}>$ {itemTotalPrice}</td>
+            <td style={{ fontWeight: 'bold', textAlign: 'center' }}>$ {itemTotalPrice}</td>
           </tr>
         </tbody>
       </table>

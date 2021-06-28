@@ -45,8 +45,8 @@ function OrdersList(props) {
                         <td>{!index ? orderNumber : ''}</td>
                         <td>{!index ? '-' : ''}</td>
                         <td>{orderItem.name}</td>
-                        <td style={{ textAlign: 'end' }}>{orderItem.quantity}</td>
-                        <td style={{ textAlign: 'end' }}>$ {orderItem.totalPrice}</td>
+                        <td style={{ textAlign: 'center' }}>{orderItem.quantity}</td>
+                        <td style={{ textAlign: 'center' }}>$ {orderItem.totalPrice}</td>
                         <td>
                           <SmallButton
                             style={{ width: '100%' }}
@@ -109,7 +109,7 @@ function OrdersList(props) {
             <tr key="-">
               <td style={{ fontWeight: 'bold' }}>Total</td>
               <td colSpan="4" />
-              <td style={{ fontWeight: 'bold', textAlign: 'end' }}>$ {sum}</td>
+              <td style={{ fontWeight: 'bold', textAlign: 'center' }}>$ {sum}</td>
               <td colSpan="2" />
             </tr>
             : null

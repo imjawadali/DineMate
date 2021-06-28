@@ -36,60 +36,62 @@ function OrdersList(props) {
             kitchenDashboard.map((order) => {
               const { data } = order
               return (
-                data && data.length ?
-                data.map((item, index) => {
-                  const { type, orderNumber, tableId, id, quantity, name, status, addOns, specialInstructions } = item
-                  const time = getTimeObject(data[data.length-1].time)
-                  const addOnsArray = addOns && addOns.length ? JSON.parse(addOns) : null
-                    return (
-                      <tr key={id} className={index === data.length - 1 ? '' : 'NoBorder'}>
-                        <td style={{ textAlign: 'center' }}>
-                          {index === 0 ?
-                            <div className="TableButtons TableButtonGreen"
-                              style= {{ width: '100%', opacity: markingOrderNumber === orderNumber ? 0.5 : '' }}
-                              onClick={() => dispatch(customisedAction(MARK_ORDER_READY, { restaurantId, orderNumber }))}>
-                              {markingOrderNumber === orderNumber ?
-                                <i className="fa fa-refresh fa-pulse" />
-                                : <p>Ready</p>
+                <>{
+                  data && data.length ?
+                    data.map((item, index) => {
+                      const { type, orderNumber, tableId, id, quantity, name, status, addOns, specialInstructions } = item
+                      const addOnsArray = addOns && addOns.length ? JSON.parse(addOns) : null
+                      return (
+                        <tr key={id} className={index === data.length - 1 ? '' : 'NoBorder'}>
+                          <td style={{ textAlign: 'center' }}>
+                            {index === 0 ?
+                              <div className="TableButtons TableButtonGreen"
+                                style={{ width: '100%', opacity: markingOrderNumber === orderNumber ? 0.5 : '' }}
+                                onClick={() => dispatch(customisedAction(MARK_ORDER_READY, { restaurantId, orderNumber }))}>
+                                {markingOrderNumber === orderNumber ?
+                                  <i className="fa fa-refresh fa-pulse" />
+                                  : <p>Ready</p>
+                                }
+                              </div>
+                              : null}
+                          </td>
+                          <td style={{ textAlign: 'center' }}>
+                            <ReadyIcon
+                              status={status}
+                              markingItemReady={markingId === id}
+                              onClick={() => status !== 'R' ?
+                                dispatch(customisedAction(MARK_ITEM_READY, { restaurantId, id }))
+                                : null
                               }
-                            </div>
-                          : null}
-                        </td>
-                        <td style={{ textAlign: 'center' }}>
-                          <ReadyIcon
-                            status={status}
-                            markingItemReady={markingId === id}
-                            onClick={() => status !== 'R' ? 
-                              dispatch(customisedAction(MARK_ITEM_READY, { restaurantId, id }))
-                              : null
-                            }
-                          />
-                        </td>
-                        <KitchenTimer index={index} timeStamp={data[data.length-1].time} />
-                        <td><p style={{ whiteSpace: 'nowrap' }}>{index === 0 ? type : ''}</p></td>
-                        <td>{index === 0 ? orderNumber : ''}</td>
-                        <td style={{ textAlign: 'center' }}>{index === 0 ? tableId : ''}</td>
-                        <td style={{ textAlign: 'center' }}>{quantity}</td>
-                        <td><p style={{ textDecorationLine: status === 'R' ? 'line-through' : '' }}>{name}</p></td>
-                        <td>{
-                          addOnsArray && addOnsArray.length ?
-                            addOnsArray.map((addOn, index) => <p key={index} style={{ display: 'inline' }}>{
-                              addOn.option && addOn.option !== 'null' ? addOn.option : addOn.name
-                            }{index !== addOnsArray.length - 1 ? ', ' : ''}</p>)
-                          : '-'
-                        }</td>
-                        <td style={{ color: 'red' }}>{specialInstructions}</td>
-                      </tr>
-                    )
-                  })
-                : null
+                            />
+                          </td>
+                          <KitchenTimer index={index} timeStamp={data[data.length - 1].time} />
+                          <td><p style={{ whiteSpace: 'nowrap' }}>{index === 0 ? type : ''}</p></td>
+                          <td style={{ textAlign: 'center' }}>{index === 0 ? orderNumber : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{index === 0 ? tableId : ''}</td>
+                          <td style={{ textAlign: 'center' }}>{quantity}</td>
+                          <td><p style={{ textDecorationLine: status === 'R' ? 'line-through' : '' }}>{name}</p></td>
+                          <td>{
+                            addOnsArray && addOnsArray.length ?
+                              addOnsArray.map((addOn, index) => <p key={index} style={{ display: 'inline' }}>{
+                                addOn.option && addOn.option !== 'null' ? addOn.option : addOn.name
+                              }{index !== addOnsArray.length - 1 ? ', ' : ''}</p>)
+                              : '-'
+                          }</td>
+                          <td style={{ color: 'red' }}>{specialInstructions}</td>
+                        </tr>
+                      )
+                    })
+                    : null}
+                    <tr><td colSpan="10" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
+                </>
               )
-            }) : 
+            }) :
             <tr>
               <td colSpan="10" style={{ textAlign: 'center' }}>
                 {fetchingDashboard ?
                   <p><i className={`fa fa-refresh ${fetchingDashboard ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Kitchen Dashboard . . .</p>
-                : 'No items in-que!'}
+                  : 'No items in-que!'}
               </td>
             </tr>
           }

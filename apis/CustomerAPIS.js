@@ -396,7 +396,7 @@ module.exports = app => {
                                             status: true,
                                             message: 'Order Initialized Successfully!',
                                             body: {
-                                                orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 9),
+                                                orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
                                                 restaurantId,
                                                 tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId
                                             }
@@ -856,7 +856,7 @@ module.exports = app => {
                 `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
                 null,
                 (result) => {
-                    const orderNumber = padding(Number(result.length ? result[0].orderNumber : 0) + 1, 9)
+                    const orderNumber = padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3)
                     getTransactionalConnection()
                         .getConnection(function (error, tempDb) {
                             if (!!error) {
@@ -877,7 +877,7 @@ module.exports = app => {
                                     })
                                 }
                                 tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status ) 
-                            VALUES ( '${restaurantId}', ${customerId ? `${customerId}` : null}, 'Take-Away', ${orderNumber}, 0)`,
+                                VALUES ( '${restaurantId}', ${customerId ? `${customerId}` : null}, 'Take-Away', ${orderNumber}, 0)`,
                                     function (error, result2) {
                                         if (!!error) {
                                             console.log('TableError', error.sqlMessage)
@@ -966,7 +966,7 @@ module.exports = app => {
                                 )
                             })
                         }
-                        )
+                    )
                 }
             )
         } catch (error) {

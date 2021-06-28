@@ -31,7 +31,7 @@ function Orders() {
     if (filterKey && filterKey.length && orders) {
       filteredQrs = orders.filter(
         (ord) =>
-          ord.tableId.toLowerCase().includes(filterKey.toLowerCase()) ||
+          (type === 'Dine-In' && ord.tableId.toLowerCase().includes(filterKey.toLowerCase())) ||
           ord.orderNumber.toLowerCase().includes(filterKey.toLowerCase())
       )
     }
@@ -53,14 +53,14 @@ function Orders() {
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
             <DropDown
-              style={{ border: 'none', borderBottom: '1px solid black', background: type ? 'white' : 'transparent' }}
+              style={{ border: 'none', borderBottom: 'none', borderRight: '1px solid black', background: type ? 'white' : 'transparent' }}
               placeholder="Select type"
               options={['Dine-In','Take-Away']}
               value={type}
               onChange={({ target: { value } }) => settype(value)}
             />
             <DropDown
-              style={{ border: 'none', borderBottom: '1px solid black', background: status ? 'white' : 'transparent' }}
+              style={{ border: 'none', borderBottom: 'none', borderRight: '1px solid black', background: status ? 'white' : 'transparent' }}
               placeholder="Select status"
               options={[{
                 label: 'Open',
@@ -75,8 +75,8 @@ function Orders() {
           </div>
           <div className="TopRightContainer">
             <Input
-              style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
-              placeholder="Search (by Check #, Table #)"
+              style={{ border: 'none', borderBottom: 'none', background: filterKey ? 'white' : 'transparent' }}
+              placeholder={type === 'Dine-In' ? "Search (by Check #, Table #)" : "Search (by Check #)"}
               type="number"
               value={filterKey}
               onChange={({ target: { value } }) => {
