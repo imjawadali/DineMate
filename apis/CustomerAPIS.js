@@ -120,17 +120,75 @@ module.exports = app => {
                     if (data.length)
                         return res.send({
                             status: true,
-                            message: 'Logged-In Successfully!',
+                            message: 'Profile data fetched successfully!',
                             body: data[0]
                         })
                     else
                         return res.send({
                             status: false,
-                            message: 'Invalid Credentials Provided!',
+                            message: 'Failed to get profile!',
                             errorCode: 422
                         })
                 }
             )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/updateProfile', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/updateProfile")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { updatedData } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!updatedData) return res.send({
+                status: false,
+                message: 'No data provided to update!',
+                errorCode: 422
+            })
+
+            if (updatedData.imageUrl
+                || updatedData.firstName
+                || updatedData.lastName
+                || updatedData.password
+                || updatedData.email
+                || updatedData.phoneNumber
+                || updatedData.address) {
+                getSecureConnection(
+                    res,
+                    customerId,
+                    `UPDATE customers SET ? WHERE id = ${customerId}`,
+                    updatedData,
+                    (result) => {
+                        if (result.changedRows)
+                            return res.send({
+                                status: true,
+                                message: 'Profile updated successfully!'
+                            })
+                        else
+                            return res.send({
+                                status: false,
+                                message: 'Failed to update profile!',
+                                errorCode: 422
+                            })
+                    }
+                )
+            } else return res.send({
+                status: false,
+                message: 'Invalid data provided to update!',
+                errorCode: 422
+            })
         } catch (error) {
             console.log(error)
             return res.send({
@@ -161,7 +219,7 @@ module.exports = app => {
                         const emailStatus = await sendEmail(
                             email,
                             'Reset Password Link',
-                            forgotPasswordMessage(`${URL}/customer/createPassword/${email}/${hashString}`)
+                            forgotPasswordMessage(`${URL}/customer/setNewPassword/${email}/${hashString}`)
                         )
                         if (emailStatus && emailStatus.accepted.length)
                             return res.send({
@@ -177,6 +235,56 @@ module.exports = app => {
                     else return res.send({
                         status: false,
                         message: 'Email not registered!',
+                        errorCode: 422
+                    })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/setNewPassword', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/setNewPassword")
+            console.log(req.body)
+            const { email, password, hashString } = req.body
+            if (!email) return res.send({
+                status: false,
+                message: 'Email is required!',
+                errorCode: 422
+            })
+            if (!password) return res.send({
+                status: false,
+                message: 'Password is required!',
+                errorCode: 422
+            })
+            if (!hashString) return res.send({
+                status: false,
+                message: 'Invalid hashString!',
+                errorCode: 422
+            })
+            let sql = `UPDATE customers SET ? WHERE email = '${lowerCased(email)}' `
+            sql += `AND passwordForgotten = 1 `
+            sql += `AND hashString = '${hashString}'`
+            getConnection(
+                res,
+                sql,
+                { password, passwordForgotten: 0 },
+                (result) => {
+                    if (result.changedRows)
+                        return res.send({
+                            status: true,
+                            message: 'Password updated successfully!'
+                        })
+                    else return res.send({
+                        status: false,
+                        message: 'Link Expired!',
                         errorCode: 422
                     })
                 }
@@ -363,7 +471,13 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/initializeOrder")
             console.log(req.body)
-            const { restaurantId, tableId, customerId } = req.body
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, tableId } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
             if (!restaurantId) return res.send({
                 status: false,
                 message: 'Restuatant Id is required!',
@@ -387,7 +501,7 @@ module.exports = app => {
                             getConnection(
                                 res,
                                 `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
-                            VALUES ( '${restaurantId}', '${result2.length && result2[0].mergeId ? result2[0].mergeId : tableId}', ${customerId ? `${customerId}` : null}, 
+                            VALUES ( '${restaurantId}', '${result2.length && result2[0].mergeId ? result2[0].mergeId : tableId}', ${customerId}, 
                             'Dine-In', ${Number(result.length ? result[0].orderNumber : 0) + 1})`,
                                 null,
                                 (result3) => {
@@ -788,7 +902,13 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/takeAwayOrder")
             console.log(req.body)
-            const { restaurantId, customerId, items } = req.body
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, items } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
             if (!restaurantId) return res.send({
                 status: false,
                 message: 'Restuatant Id is required!',
@@ -877,7 +997,7 @@ module.exports = app => {
                                     })
                                 }
                                 tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status ) 
-                                VALUES ( '${restaurantId}', ${customerId ? `${customerId}` : null}, 'Take-Away', ${orderNumber}, 0)`,
+                                VALUES ( '${restaurantId}', ${customerId}, 'Take-Away', ${orderNumber}, 0)`,
                                     function (error, result2) {
                                         if (!!error) {
                                             console.log('TableError', error.sqlMessage)
@@ -967,7 +1087,7 @@ module.exports = app => {
                                 )
                             })
                         }
-                    )
+                        )
                 }
             )
         } catch (error) {

@@ -34,7 +34,13 @@ function OrdersList(props) {
           {tableOrders && tableOrders.length ?
             tableOrders.map((tableOrder) => {
               const { orderNumber, items } = tableOrder
-              const orderItems = items && JSON.parse(items)
+              console.log(items)
+              let orderItems
+              try {
+                orderItems = items && JSON.parse(items)
+              } catch (error) {
+                console.log(items)
+              }
               return (
                 orderItems && orderItems.length ?
                   orderItems.map((orderItem, index) => {
