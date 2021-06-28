@@ -647,28 +647,28 @@ module.exports = app => {
                     errorCode: 422
                 })
                 if (addOns && addOns.length) {
-                    for (var i = 0; i < addOns.length; i++) {
-                        if (!addOns[i].addOnId) return res.send({
+                    for (var j = 0; j < addOns.length; j++) {
+                        if (!addOns[j].addOnId) return res.send({
                             status: false,
                             message: 'AddOns ID is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].addOnName) return res.send({
+                        if (!addOns[j].addOnName) return res.send({
                             status: false,
                             message: 'AddOns name is required!',
                             errorCode: 422
                         })
-                        if (addOns[i].addOnOptionId && !addOns[i].addOnOption) return res.send({
+                        if (addOns[j].addOnOptionId && !addOns[j].addOnOption) return res.send({
                             status: false,
                             message: 'AddOn option name is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].addOnOptionId && addOns[i].addOnOption) return res.send({
+                        if (!addOns[j].addOnOptionId && addOns[j].addOnOption) return res.send({
                             status: false,
                             message: 'AddOns option Id is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].price && addOns[i].price !== 0) return res.send({
+                        if (!addOns[j].price && addOns[j].price !== 0) return res.send({
                             status: false,
                             message: 'AddOns price is required!',
                             errorCode: 422
@@ -676,7 +676,6 @@ module.exports = app => {
                     }
                 }
             }
-
             getTransactionalConnection()
                 .getConnection(function (error, tempDb) {
                     if (!!error) {
@@ -732,9 +731,9 @@ module.exports = app => {
                                             } else {
                                                 if (addOns && addOns.length) {
                                                     let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                                                    for (var i = 0; i < addOns.length; i++) {
-                                                        query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
-                                                        if (i !== (addOns.length - 1))
+                                                    for (var j = 0; j < addOns.length; j++) {
+                                                        query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', ${addOns[j].addOnOptionId ? `${addOns[j].addOnOptionId}` : null}, ${addOns[j].addOnOption ? `'${addOns[j].addOnOption}'` : null}, '${addOns[j].price}' )`
+                                                        if (j !== (addOns.length - 1))
                                                             query = query + ','
                                                     }
                                                     tempDb.query(query, function (error) {
@@ -822,28 +821,28 @@ module.exports = app => {
                     errorCode: 422
                 })
                 if (addOns && addOns.length) {
-                    for (var i = 0; i < addOns.length; i++) {
-                        if (!addOns[i].addOnId) return res.send({
+                    for (var j = 0; j < addOns.length; j++) {
+                        if (!addOns[j].addOnId) return res.send({
                             status: false,
                             message: 'AddOns ID is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].addOnName) return res.send({
+                        if (!addOns[j].addOnName) return res.send({
                             status: false,
                             message: 'AddOns name is required!',
                             errorCode: 422
                         })
-                        if (addOns[i].addOnOptionId && !addOns[i].addOnOption) return res.send({
+                        if (addOns[j].addOnOptionId && !addOns[j].addOnOption) return res.send({
                             status: false,
                             message: 'AddOn option name is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].addOnOptionId && addOns[i].addOnOption) return res.send({
+                        if (!addOns[j].addOnOptionId && addOns[j].addOnOption) return res.send({
                             status: false,
                             message: 'AddOns option Id is required!',
                             errorCode: 422
                         })
-                        if (!addOns[i].price && addOns[i].price !== 0) return res.send({
+                        if (!addOns[j].price && addOns[j].price !== 0) return res.send({
                             status: false,
                             message: 'AddOns price is required!',
                             errorCode: 422
@@ -914,9 +913,9 @@ module.exports = app => {
                                                     } else {
                                                         if (addOns && addOns.length) {
                                                             let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                                                            for (var i = 0; i < addOns.length; i++) {
-                                                                query = query + ` ( '${result3.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
-                                                                if (i !== (addOns.length - 1))
+                                                            for (var j = 0; j < addOns.length; j++) {
+                                                                query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', ${addOns[j].addOnOptionId ? `${addOns[j].addOnOptionId}` : null}, ${addOns[j].addOnOption ? `'${addOns[j].addOnOption}'` : null}, '${addOns[j].price}' )`
+                                                                if (j !== (addOns.length - 1))
                                                                     query = query + ','
                                                             }
                                                             tempDb.query(query, function (error) {

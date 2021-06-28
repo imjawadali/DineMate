@@ -556,30 +556,37 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT o.orderNumber, o.customerStatus,
-            CONCAT('[',
-                GROUP_CONCAT(
-                    CONCAT(
-                        '{"id":',oi.id,
-                        ',"name":"',oi.name,
-                        '","quantity":',oi.quantity,
-                        ',"totalPrice":',oi.totalPrice,
-                        ',"status":"',oi.status,'"}'
-                    ) ORDER BY oi.createdAt DESC
-                ),
-            ']') as items
-            FROM orders o
-            LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
-            WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
-            GROUP BY o.orderNumber
-            ORDER BY o.createdAt DESC`,
+            `SET SESSION group_concat_max_len = 1000000`,
             null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': `No Table Data Available!` })
-                }
+            () => {
+                getConnection(
+                    res,
+                    `SELECT o.orderNumber, o.customerStatus,
+                    CONCAT('[',
+                            GROUP_CONCAT(
+                                CONCAT(
+                                    '{"id":',oi.id,
+                                    ',"name":"',oi.name,
+                                    '","quantity":',oi.quantity,
+                                    ',"totalPrice":',oi.totalPrice,
+                                    ',"status":"',oi.status,'"}'
+                                ) ORDER BY oi.createdAt DESC
+                        ),
+                    ']') as items
+                    FROM orders o
+                    LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
+                    WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
+                    GROUP BY o.orderNumber
+                    ORDER BY o.createdAt DESC`,
+                    null,
+                    (data) => {
+                        if (data.length) {
+                            return res.send(data)
+                        } else {
+                            return res.status(422).send({ 'msg': `No Table Data Available!` })
+                        }
+                    }
+                )
             }
         )
     })
