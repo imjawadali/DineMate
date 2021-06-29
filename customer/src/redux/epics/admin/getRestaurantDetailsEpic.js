@@ -16,7 +16,6 @@ export class getRestaurantDetailsEpic {
       ofType(GET_RESTAURANT_DETAILS),
       switchMap(
         async ({ payload: { restaurantId }}) => {
-          console.log('OKK')
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.getRestaurantDetails,

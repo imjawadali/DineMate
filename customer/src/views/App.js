@@ -62,6 +62,12 @@ export default function App() {
         setSidebarOpen(false)
     }
 
+    useEffect(()=>{
+        console.log = function() {}
+        console.warn = function() {}
+        console.error = function() {}
+    },[])
+
     return (!checkingSignIn && !checkingOrder ?
         <ToastProvider
             autoDismiss

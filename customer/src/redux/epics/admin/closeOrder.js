@@ -22,8 +22,8 @@ export class closeOrderViaCashEpic {
             API_ENDPOINTS.customer.closeOrderViaCash,
             obj.payload,
             (resObj) => {
-              console.log('closed')
               removeItem('orderDetails')
+              removeItem('cartMenu')
               return customisedAction(CLOSE_ORDER_SUCCESS,{ closeOrder: resObj.body, toast: { message: resObj.message, type: 'success' }})
             },
             CLOSE_ORDER_FAILURE

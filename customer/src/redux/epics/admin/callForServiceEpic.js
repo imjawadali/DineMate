@@ -24,7 +24,6 @@ export class callForServiceEpic {
       ofType(CALL_FOR_SERVICE),
       switchMap(
         async ({ payload: obj }) => {
-          console.log('runn')
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.callForService,
@@ -45,7 +44,6 @@ export class callForServiceEpic {
       ofType(DONOTDISTURB),
       switchMap(
         async ({ payload: obj }) => {
-          console.log('runn')
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.doNotDisturb,

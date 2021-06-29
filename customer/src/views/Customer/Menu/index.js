@@ -42,7 +42,6 @@ const Menu = props => {
             setSelectedCategory(menu.filter((a, i) => a.categoryName === categorie))
         }
     }, [categorie,menu])
-    console.log(selectedCategory)
 
 
     const addToCart = id => {

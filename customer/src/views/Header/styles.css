@@ -84,7 +84,7 @@ input.HeaderInput {
 .cart-content {
     box-shadow: 0px 0px 7px 0px #00000080;
     width: 330px;
-    height: 339px;
+    height: 359px;
     background-color: white;
     right: -10px;
     position: absolute;
@@ -227,6 +227,9 @@ font-weight: normal;
     color: white;
     font-weight: bold;
     width: 120px;
+}
+.orderSubBtn button:disabled{
+    opacity: 0.7;
 }
 
 @media only screen and (max-width: 978px) {

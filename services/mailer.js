@@ -18,7 +18,6 @@ exports.sendEmail = async function (email, subject, message) {
         });
         return info
     } catch (error) {
-        console.log(error.message)
         return null
     }
 }

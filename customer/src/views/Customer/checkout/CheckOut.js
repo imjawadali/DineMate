@@ -31,10 +31,11 @@ function CheckOut() {
     const [orderDetail, setOrderDetail] = useState("")
 
     const dispatch = useDispatch()
-
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     useEffect(() => {
-        setOrderDetail(getItem("orderDetails"))
-    }, [])
+        setOrderDetail(orderDetails)
+        console.log(orderDetails)
+    }, [orderDetails])
 
 
     useEffect(() => {
@@ -45,7 +46,7 @@ function CheckOut() {
                 orderNumber: orderDetail.orderNumber,
 
             }
-            console.log('ddd')
+
             dispatch(customisedAction(GET_ORDER_ITEMS, obj))
         } else {
             // setProducts(getItem("cartMenu"))
@@ -64,11 +65,9 @@ function CheckOut() {
 
     let dataOrder = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
-    console.log(resturantDetail)
     useEffect(() => {
         let data = dataOrder ? dataOrder : []
         if (data.length) {
-            console.log(data)
             setProducts([...data])
         }
     }, [dataOrder])
@@ -82,7 +81,6 @@ function CheckOut() {
 
     useEffect(() => {
         setDoNotDisturbActive(getItem('doNotDisturb'))
-        console.log(getItem('doNotDisturb'))
 
     }, [doNotDisturb])
 
@@ -145,7 +143,7 @@ function CheckOut() {
                 <div className="menuCart">
                     {products.length ? products.map((a, i) => {
                         return (
-                            <div className="itemCart" onClick={() => console.log(a)}>
+                            <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
                                 <p>$ {a.totalPrice}</p>
                             </div>
@@ -173,7 +171,7 @@ function CheckOut() {
                     <h2>Payment</h2>
                     <div>
                         <p>Select Payment Method</p>
-                        <select defaultValue={payment} onChange={(ev) => { setPayment(ev.target.value); console.log(ev.target.value) }} >
+                        <select defaultValue={payment} onChange={(ev) => { setPayment(ev.target.value); }} >
                             <option value="cash">Cash</option>
                             <option value="Credit Card">Credit Card</option>
                         </select>
@@ -199,7 +197,7 @@ function CheckOut() {
                 </div>
                 <div className="Ammount">
                     <div>
-                        <h2><span>Payment Amount</span> $4.28</h2>
+                        <h2><span>Payment Amount</span> ${totalAmount()}</h2>
                         <button className="payBtn" onClick={payNow}>Pay Now</button>
                     </div>
                     <div>

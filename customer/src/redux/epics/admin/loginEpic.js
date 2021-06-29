@@ -45,14 +45,12 @@ export class loginEpic {
       ofType(GET_RPOFILE),
       switchMap(
         async () => {
-          console.log('runn')
           return generalizedEpic(
             'get', 
             API_ENDPOINTS.customer.getProfile,
             null,
             (resObj) => {
               let id = getItem('customer').id
-              console.log(id)
               RestClient.setHeader('Authorization', id)
               return customisedAction(GET_RPOFILE_SUCCESS,resObj.body )
             },
@@ -67,14 +65,12 @@ export class loginEpic {
       ofType(UPDATE_RPOFILE),
       switchMap(
         async () => {
-          console.log('runn')
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.updateProfile,
             null,
             (resObj) => {
               let id = getItem('customer').id
-              console.log(id)
               RestClient.setHeader('Authorization', id)
               return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
             },
