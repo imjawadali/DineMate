@@ -16,8 +16,8 @@ function RestaurantsList(props) {
       <table>
         <thead>
           <tr>
-            <th style={{ borderRight: 'none' }}>Manage</th>
-            <th style={{ borderLeft: 'none' }}>Name</th>
+            <th>Manage</th>
+            <th>Name</th>
             <th>Cuisine</th>
             <th>City</th>
             <th>QR Codes Assigned</th>

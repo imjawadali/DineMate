@@ -16,7 +16,7 @@ function OrdersList(props) {
   var sum = 0
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>

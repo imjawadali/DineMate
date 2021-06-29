@@ -16,7 +16,7 @@ function ItemDetails(props) {
 
   const fetchingOrderItemDetails = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrderItemDetails)
   const orderItemDetails = useSelector(({ ordersReducer }) => ordersReducer.orderItemDetails)
-  
+
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
@@ -96,12 +96,14 @@ function ItemDetails(props) {
         <div className="ItemDetailsSections">
           <h4>Add-Ons:</h4>
         </div>
-        <AddOnsList
-          itemName={orderItemDetails.name}
-          quantity={orderItemDetails.quantity}
-          itemPrice={orderItemDetails.price}
-          itemTotalPrice={orderItemDetails.totalPrice}
-          addOns={JSON.parse(orderItemDetails.addOns)} />
+        <div className="TabularContentContainer" style={{ marginTop: '0px' }}>
+          <AddOnsList
+            itemName={orderItemDetails.name}
+            quantity={orderItemDetails.quantity}
+            itemPrice={orderItemDetails.price}
+            itemTotalPrice={orderItemDetails.totalPrice}
+            addOns={JSON.parse(orderItemDetails.addOns)} />
+        </div>
       </> : null}
     </div>
   )

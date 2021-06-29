@@ -5,7 +5,7 @@ function AddOnsList(props) {
   const { itemName, quantity, itemPrice, itemTotalPrice, addOns } = props
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
@@ -39,7 +39,7 @@ function AddOnsList(props) {
               )
             }) : 
             <tr>
-              <td colSpan="5" style={{ textAlign: 'center' }}>No Add-ons Added!</td>
+              <td colSpan="6" style={{ textAlign: 'center' }}>No Add-ons Added!</td>
             </tr>
           }
           <tr>

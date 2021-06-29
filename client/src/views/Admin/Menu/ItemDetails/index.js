@@ -151,6 +151,7 @@ function ItemDetails(props) {
               <h4>Item Name:</h4>
               {editting ?
                 <Input
+                  style={{ margin: '0px' }}
                   placeholder="Item name"
                   value={name}
                   onChange={({ target: { value }}) => setname(value)}
@@ -162,6 +163,7 @@ function ItemDetails(props) {
               <h4>Short  Description:</h4>
               {editting ?
                 <Input
+                  style={{ margin: '0px' }}
                   placeholder="Short Description"
                   value={shortDescription || ''}
                   onChange={({ target: { value }}) => setshortDescription(value)}
@@ -173,6 +175,7 @@ function ItemDetails(props) {
               <h4>Price:</h4>
               {editting ?
                 <Input
+                  style={{ margin: '0px' }}
                   placeholder="Price"
                   type="number"
                   value={price}
@@ -185,6 +188,7 @@ function ItemDetails(props) {
               <h4>Category:</h4>
               {editting ?
                 <DropDown
+                  style={{ margin: '0px' }}
                   placeholder="Select Category"
                   options={categories ? categories.map(category => category.name) : []}
                   value={categories ? getNameById(categories, categoryId) : null}
@@ -212,7 +216,9 @@ function ItemDetails(props) {
         <div className="ItemDetailsSections">
           <h4>Add-Ons:</h4>
         </div>
-        <AddOnsList addOns={selectedItem.addOns} editting={editting} showAddOnModal={showAddOnModal} />
+        <div className="TabularContentContainer" style={{ marginTop: '0px' }}>
+          <AddOnsList addOns={selectedItem.addOns} editting={editting} showAddOnModal={showAddOnModal} />
+        </div>
       </> : null}
     </div>
   )

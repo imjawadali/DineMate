@@ -3,14 +3,15 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
 
-import { Button, Input } from '../../../components'
+import { Input, Pagination } from '../../../components'
 
 import MenuList from './MenuList'
-import { GET_MENU } from '../../../constants'
+import { GET_MENU, PER_PAGE_COUNTS } from '../../../constants'
 
 function Menu(props) {
 
   const [filterKey, setfilterKey] = useState('')
+  const [currentIndex, setcurrentIndex] = useState(1)
 
   const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
   const menu = useSelector(({ menuReducer }) => menuReducer.menu)
@@ -32,32 +33,53 @@ function Menu(props) {
     return filteredQrs
   }
 
+  const paginate = (list) => {
+    let paginatedList = list ? [ ...list ] : list
+    if (currentIndex && list && list.length) {
+      paginatedList = paginatedList.slice(((currentIndex * PER_PAGE_COUNTS) - PER_PAGE_COUNTS), (currentIndex * PER_PAGE_COUNTS))
+    }
+    return paginatedList
+  }
+
   return (
     <div className="Container">
-      <div className="PageTitleContainer">
-        <h2>Menu Management</h2>
-      </div>
-      <div className="TopOptionsContainer">
-        <div className="TopInputContainer">
-          <Input 
-            placeholder="Search Item (by Name)"
-            value={filterKey}
-            onChange={({ target: { value } }) => setfilterKey(value)}
+      <h2>Menu Management</h2>
+      <div className="TabularContentContainer">
+        <div className="TableTopContainer">
+          <div className="TopLeftContainer">
+          </div>
+          <div className="TopRightContainer">
+            <Input 
+              style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
+              placeholder="Search Item (by Name)"
+              value={filterKey}
+              onChange={({ target: { value } }) => {
+                if (value !== '0') {
+                  setfilterKey(value)
+                  setcurrentIndex(1)
+                }
+              }}
+            />
+            <i
+              style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingMenu ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_MENU, { restaurantId }))}/>
+          </div>
+        </div>
+        <MenuList 
+          history={props.history}
+          fetchingMenu={fetchingMenu}
+          menu={paginate(getFilteredList())} />
+        {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+          <Pagination
+            currentIndex={currentIndex}
+            mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+            totalCounts={getFilteredList().length}
+            perPageCounts={PER_PAGE_COUNTS}
+            onClick={(index) => setcurrentIndex(index)}
           />
-        </div>
-        <div className="TopButtonContainer">
-          <Button
-            text={filterKey ? "Clear" : fetchingMenu ? "Syncing" : "Refresh"}
-            light={fetchingMenu}
-            lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingMenu ? 'refresh fa-pulse' : 'refresh'}`} />}
-            onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_MENU, { restaurantId }))} />
-        </div>
+        : null}
       </div>
-      <MenuList 
-        history={props.history}
-        fetchingMenu={fetchingMenu}
-        menu={getFilteredList()} />
     </div>
   )
 }

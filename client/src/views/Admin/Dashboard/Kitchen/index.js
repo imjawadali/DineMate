@@ -52,7 +52,7 @@ function Kitchen() {
           if (time.hrs || time.mints > 9)
             return order
         })
-      } 
+      }
       if (category) {
         filteredOrders = filteredOrders.filter((order) => {
           if (order.data[0].type === category)
@@ -62,7 +62,7 @@ function Kitchen() {
       if (filterKey && filterKey.length) {
         filteredOrders = filteredOrders.filter(
           (order) => order.id.includes(filterKey)
-          || order.data.map((item) => item.tableId).includes(filterKey)
+            || order.data.map((item) => item.tableId).includes(filterKey)
         )
       }
     }
@@ -70,7 +70,7 @@ function Kitchen() {
   }
 
   const paginate = (list) => {
-    let paginatedList = list ? [ ...list ] : list
+    let paginatedList = list ? [...list] : list
     if (currentIndex && list && list.length) {
       paginatedList = paginatedList.slice(((currentIndex * PER_PAGE_COUNTS) - PER_PAGE_COUNTS), (currentIndex * PER_PAGE_COUNTS))
     }
@@ -89,7 +89,7 @@ function Kitchen() {
                 setlate(false)
               }}>
               <p>All</p>
-              <p>{dineInCounts+takeawayCounts}</p>
+              <p>{dineInCounts + takeawayCounts}</p>
             </div>
             <div className="TableButtons TableButtonGreen"
               style={{ opacity: category === 'Dine-In' ? 0.5 : '' }}
@@ -123,11 +123,11 @@ function Kitchen() {
             <i
               style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
               className={`fa fa-${filterKey ? 'times-circle' : fetchingDashboard ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))}/>
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))} />
           </div>
         </div>
-      <OrdersList restaurantId={restaurantId} fetchingDashboard={fetchingDashboard} kitchenDashboard={paginate(getFilteredList())} />
-        {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
+        <OrdersList restaurantId={restaurantId} fetchingDashboard={fetchingDashboard} kitchenDashboard={paginate(getFilteredList())} />
+        {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ?
           <Pagination
             currentIndex={currentIndex}
             mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
@@ -135,7 +135,7 @@ function Kitchen() {
             perPageCounts={PER_PAGE_COUNTS}
             onClick={(index) => setcurrentIndex(index)}
           />
-        : null} 
+          : null}
       </div>
     </div>
   )
