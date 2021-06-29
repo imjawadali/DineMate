@@ -5,8 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
+import { ALREADY_IN_CART, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
+import { getItem } from '../../../../helpers';
 
 const MenuListingContainer = props => {
 
@@ -17,6 +18,10 @@ const MenuListingContainer = props => {
     const [viewAddons, setViewAddons] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const { restaurantId } = useParams()
+
+    useEffect(() => {
+        
+    }, [restaurantId])
 
     return (
         <div className="MenuListingContainer">
@@ -73,7 +78,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
     const [totalPrice, setTotalPrice] = useState(0);
     const [updateComponent, setUpdateComponent] = useState(true);
-    const [updatePrice,setupdatePrice] = useState(false)
+    const [updatePrice, setupdatePrice] = useState(false)
 
     let [obj, setObj] = useState({
         // combo: {
@@ -85,7 +90,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
         // }
     })
 
-    let [price,setPrice] = useState(selectedItem.price);
+    let [price, setPrice] = useState(selectedItem.price);
     useEffect(() => {
         // for (let key in itemToAdd) {
         //     if (key == 'addOns') {
@@ -105,7 +110,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
         setTotalPrice(price * itemCount)
         setupdatePrice(false)
         // console.log(price * itemCount)
-    }, [itemToAdd, itemCount, obj,price,updatePrice]);
+    }, [itemToAdd, itemCount, obj, price, updatePrice]);
 
     const saveCart = (obj) => {
         // let cartMenu = localStorage.getItem('cartMenu') ? localStorage.getItem('cartMenu') : '';
@@ -146,7 +151,19 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             orderNumber: "000000032"
         }
         console.log(objItem);
-        saveCart(objItem)
+
+        let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
+        if (cartMenu.length) {
+            if (cartMenu[0].restaurantId === restaurantId) {
+                saveCart(objItem)
+            } else if (cartMenu[0].restaurantId != restaurantId) {
+                dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'success' }))
+            }
+        } else {
+
+            saveCart(objItem)
+
+        }
         // console.log(itemToAdd)
         // console.log(obj)
 

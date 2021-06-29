@@ -11,9 +11,13 @@ export const API_ENDPOINTS = {
         initializeOrder: 'customer/initializeOrder',
         getMenuItems: 'customer/getMenuItems',
         signUp: 'customer/signUp',
-        forgetPassword: '/admin/forgotPassword',
+        forgetPassword: '/customer/forgotPassword',
         addSingleItem: '/customer/addSingleItem',
         submitOrder: '/customer/submitOrder',
+        getProfile: '/customer/getProfile',
+        callForService: '/customer/requestService',
+        doNotDisturb: '/customer/doNotDisturb',
+        getOrderItem: '/customer/getOrderItems',
         
     }
 }

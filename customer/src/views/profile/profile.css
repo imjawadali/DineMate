@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    height: 180px;
+    height: 130px;
 }
 .centerAb {
     position: absolute;
@@ -34,6 +34,7 @@
     color: black;
     font-weight: 800;
     font-size: 45px;
+    margin: 0px;
 }
 .profile .profileName p {
     font-size: 21px;

@@ -7,8 +7,9 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { SUBMIT_ORDER_ITEM } from '../../constants';
+import { INITIALIZE_ORDER, SUBMIT_ORDER_ITEM } from '../../constants';
 import { customisedAction } from '../../redux/actions';
+import { getItem } from '../../helpers';
 
 const Header = props => {
 
@@ -32,13 +33,37 @@ const Header = props => {
     }, [window.location.search])
 
     useEffect(() => {
+        let arr = []
         if (cartItemR) {
-            setItems(cartItemR)
+            cartItemR.map((a, i) => {
+                arr.push({
+                    "quantity": a.quantity,
+                    "name": a.name,
+                    "price": a.price,
+                    "totalPrice": a.totalPrice,
+                    "specialInstructions": a.shortDescription,
+                    "addOns": a.addOns,
+                    "restaurantId": a.restaurantId
+                })
+            })
+            // console.log(arr)
+            setItems(arr)
         } else {
             let data = JSON.parse(localStorage.getItem('cartMenu'))
             if (data) {
-                setItems(data)
-                console.log(data)
+                data.map((a, i) => {
+                    arr.push({
+                        "quantity": a.quantity,
+                        "name": a.name,
+                        "price": a.price,
+                        "totalPrice": a.totalPrice,
+                        "specialInstructions": a.shortDescription,
+                        "addOns": a.addOns,
+                        "restaurantId": a.restaurantId
+                    })
+                })
+                setItems(arr)
+                // console.log(arr)
             } else {
                 setItems([])
             }
@@ -58,9 +83,15 @@ const Header = props => {
     }
 
     const submitOrder = () => {
+        let obj2 = {
+            "restaurantId": items[0].restaurantId,
+            "tableId": "10",
+            "customerId": getItem("customer").id
+        }
+        dispatch(customisedAction(INITIALIZE_ORDER,obj2))
         let obj = {
             "restaurantId": items[0].restaurantId,
-            "orderNumber": "000000032",
+            "orderNumber": "0002",
             "items": items
         }
         console.log(obj)
@@ -190,7 +221,7 @@ const Header = props => {
                                                 // items.reduce((prevItem, currentItem) => prevItem.totalPrice + currentItem.totalPrice)
                                                 // :
                                                 // 0
-                                            totalAmountFn()
+                                                totalAmountFn()
                                             }
                                         </span>
                                     </div>

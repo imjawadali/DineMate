@@ -7,25 +7,29 @@ import {
   SET_ORDER,
   API_ENDPOINTS,
   SUBMIT_ORDER_ITEM,
-  SUBMIT_ORDER_ITEM_FAILED
+  SUBMIT_ORDER_ITEM_FAILED,
+  GET_ORDER_ITEMS,
+  SET_ORDER_ITEM,
+  GET_ORDER_ITEMS_SUCCESS,
+  GET_ORDER_ITEMS_FAILURE
 } from '../../../constants'
 import { removeItem, setItem } from '../../../helpers'
 
-export class submitOrderEpic {
-  static submitOrder = action$ =>
+export class getOrderItemEpic {
+  static getOrder = action$ =>
     action$.pipe(
-      ofType(SUBMIT_ORDER_ITEM),
+      ofType(GET_ORDER_ITEMS),
       switchMap(
         async ({ payload: obj}) => {
           return generalizedEpic(
             'post', 
-            API_ENDPOINTS.customer.submitOrder,
+            API_ENDPOINTS.customer.getOrderItem,
             obj,
             (resObj) => {
               removeItem('cartMenu')
-              return customisedAction(SET_ORDER, { orderDetails: resObj.body, toast: { message: resObj.message, type: 'success' }, cartMenu: [] })
+              return customisedAction(GET_ORDER_ITEMS_SUCCESS, { OrderItems: resObj.body, toast: { message: resObj.message, type: 'success' }})
             },
-            SUBMIT_ORDER_ITEM_FAILED
+            GET_ORDER_ITEMS_FAILURE
           )
         }
       )

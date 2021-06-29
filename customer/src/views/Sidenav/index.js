@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import { customisedAction } from '../../redux/actions'
-import { LOGOUT } from '../../constants'
+import { GET_RPOFILE, LOGOUT } from '../../constants'
 import { removeItem } from '../../helpers'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,6 +18,7 @@ import arrowright from '../../assets/arrowright.png';
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 
 import './sidenav.css';
+import { useEffect } from 'react';
 
 function SideNav(props) {
     let { path } = useRouteMatch()
@@ -26,7 +27,13 @@ function SideNav(props) {
     const dispatch = useDispatch()
 
     const { sidebarOpen, closeSidebar, history } = props
-    const profile = useSelector(({ sessionReducer }) => sessionReducer)
+    const profile = useSelector(({ profileReducer }) => profileReducer.profile)
+    console.log(profile)
+    
+    
+    useEffect(() => {
+        dispatch(customisedAction(GET_RPOFILE))
+      }, [])
 
     console.log(profile)
 
@@ -40,11 +47,11 @@ function SideNav(props) {
                     !!customer ?
                         <>
                             <div className="dp-div">
-                                <img className="profile-picture" src={logo} />
+                                <img className="profile-picture" src={profile && profile.imageUrl ? profile.imageUrl : logo } />
                             </div>
 
                             <div className="name-points-div">
-                                <div className="username">Rayan Levin</div>
+                                <div className="username">{profile && profile.firstName} {profile && profile.lastName}</div>
 
                                 <div className="reward-points">
                                     <img style={{ width: 23, marginRight: 8 }} src={badge} />
