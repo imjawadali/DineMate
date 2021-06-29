@@ -727,8 +727,8 @@ module.exports = app => {
                             })
                     else return res.send({
                         status: false,
-                        message: 'Failed to get profile!',
-                        errorCode: 422
+                        message: 'Invalid Session!',
+                        errorCode: 401
                     })
                 }
             )
@@ -923,6 +923,11 @@ module.exports = app => {
                                     }
                                 })
                             })
+                    else return res.send({
+                        status: false,
+                        message: 'Invalid Session!',
+                        errorCode: 401
+                    })
                 }
             )
         } catch (error) {
