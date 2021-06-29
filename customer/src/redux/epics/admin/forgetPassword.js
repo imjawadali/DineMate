@@ -25,7 +25,7 @@ export class forgotPsswordEpic {
             (resObj) => {
               setItem('customer', resObj.body)
               RestClient.setHeader('Authorization', resObj.body.id)
-              return customisedAction(SET_SESSION, { customer: resObj })
+              return customisedAction(SET_SESSION, { customer: resObj, toast: { message: resObj.message, type: 'success' } })
             },
             FORGOT_PASSWORD_FAILURE
           )

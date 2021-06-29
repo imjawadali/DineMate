@@ -8,6 +8,8 @@ import { signUpEpic } from './admin/singUpEpic'
 import { forgotPsswordEpic } from './admin/forgetPassword'
 import { addOrderEpic } from './admin/addOrderEpic'
 import { submitOrderEpic } from './admin/submitOrder'
+import { callForServiceEpic } from './admin/callForServiceEpic'
+import { getOrderItemEpic } from './admin/getOrderItem'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -18,5 +20,10 @@ export const epics = combineEpics(
     signUpEpic.signUp,
     forgotPsswordEpic.forgetPassword,
     addOrderEpic.addOrder,
-    submitOrderEpic.submitOrder
+    submitOrderEpic.submitOrder,
+    loginEpic.getProfile,
+    callForServiceEpic.addService,
+    callForServiceEpic.doNotDisturb,
+    getOrderItemEpic.getOrder
+
 )

@@ -16,11 +16,12 @@ export class initializeOrderEpic {
     action$.pipe(
       ofType(INITIALIZE_ORDER),
       switchMap(
-        async ({ payload: { restaurantId, tableId }}) => {
+        async (obj) => {
+          console.log(obj.payload)
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.initializeOrder,
-            { restaurantId, tableId },
+            obj.payload,
             (resObj) => {
               setItem('orderDetails', resObj.body)
               return customisedAction(SET_ORDER, { orderDetails: resObj.body, toast: { message: resObj.message, type: 'success' } })

@@ -1,4 +1,4 @@
-import { 
+import {
   SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
   GET_ALL_RESTAURANTS_FAILURE,
   GET_MENU_FAILURE,
@@ -11,7 +11,14 @@ import {
   SIGN_IN,
   SET_SESSION,
   SIGN_IN_FAILURE,
-  SIGN_UP
+  SIGN_UP,
+  ALREADY_IN_CART,
+  CALL_FOR_SERVICE,
+  CALL_FOR_SERVICE_SUCCESS,
+  CALL_FOR_SERVICE_FAILURE,
+  DONOTDISTURB,
+  DONOTDISTURB_SUCCESS,
+  DONOTDISTURB_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -23,9 +30,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
     case SIGN_IN:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' }}
-      case SIGN_UP:
-        return { ...state, toastSetDismiss: true, toast: { message: 'Sign Up Succes', type: 'success' }}
+      return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' } }
+    case SIGN_UP:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Sign Up Succes', type: 'success' } }
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
     case SIGN_IN_FAILURE:
@@ -35,13 +42,34 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_MENU_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_RESTAURANT_DETAILS:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Fetching restaurant data', type: 'success' }}
+      return { ...state, toastSetDismiss: true, toast: { message: 'Fetching restaurant data', type: 'success' } }
     case GET_RESTAURANT_DETAILS_SUCCESS:
       return { ...state, toastSetDismiss: true }
     case GET_RESTAURANT_DETAILS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case SET_ORDER:
       return { ...state, toast: payload.toast }
+    case ALREADY_IN_CART:
+      return { ...state, toast: payload }
+
+    case CALL_FOR_SERVICE:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CALL_FOR_SERVICE_SUCCESS:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CALL_FOR_SERVICE_FAILURE:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case DONOTDISTURB:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case DONOTDISTURB_SUCCESS:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case DONOTDISTURB_FAILURE:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:
