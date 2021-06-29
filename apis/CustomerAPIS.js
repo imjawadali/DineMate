@@ -1329,19 +1329,11 @@ module.exports = app => {
             customerId,
             `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
             { doNotDisturb: enabled },
-            (result) => {
-                if (result.changedRows) {
-                    return res.send({
-                        status: true,
-                        message: 'Do not disturb status changed!'
-                    })
-                } else {
-                    return res.send({
-                        status: false,
-                        message: 'Failed to update do not disturb status',
-                        errorCode: 422
-                    })
-                }
+            () => {
+                return res.send({
+                    status: true,
+                    message: 'Do not disturb status changed!'
+                })
             }
         )
     })
