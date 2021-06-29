@@ -10,7 +10,10 @@ import {
   API_ENDPOINTS,
   GET_RPOFILE,
   GET_RPOFILE_FAILURE,
-  GET_RPOFILE_SUCCESS
+  GET_RPOFILE_SUCCESS,
+  UPDATE_RPOFILE,
+  UPDATE_RPOFILE_SUCCESS,
+  UPDATE_RPOFILE_FAILURE
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
@@ -54,6 +57,28 @@ export class loginEpic {
               return customisedAction(GET_RPOFILE_SUCCESS,resObj.body )
             },
             GET_RPOFILE_FAILURE
+          )
+        }
+      )
+    )
+
+    static updateProfile = action$ =>
+    action$.pipe(
+      ofType(UPDATE_RPOFILE),
+      switchMap(
+        async () => {
+          console.log('runn')
+          return generalizedEpic(
+            'post', 
+            API_ENDPOINTS.customer.updateProfile,
+            null,
+            (resObj) => {
+              let id = getItem('customer').id
+              console.log(id)
+              RestClient.setHeader('Authorization', id)
+              return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
+            },
+            UPDATE_RPOFILE_FAILURE
           )
         }
       )

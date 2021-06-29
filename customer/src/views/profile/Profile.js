@@ -11,23 +11,23 @@ import { useEffect } from 'react'
 function Profile() {
     const [email, setEmail] = useState("rayan@email.com")
     const [phoneNumber, setPhoneNumber] = useState("+1 343 2541 254")
-    const [password,setPassword] = useState('sdaddsd')
+    const [password, setPassword] = useState('sdaddsd')
     const [address, setAddress] = useState("xyz street area abc")
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
-console.log(profile)
-const dispatch = useDispatch()
+    console.log(profile)
+    const dispatch = useDispatch()
 
 
-useEffect(() => {
-    dispatch(customisedAction(GET_RPOFILE))
-  }, [])
+    useEffect(() => {
+        dispatch(customisedAction(GET_RPOFILE))
+    }, [])
     return (
         <div className="profile">
             <h1>Profile Details</h1>
             <div className="profileImageDiv">
                 <h2>Profile Picture</h2>
                 <div className="profileImage centerAb">
-                    <img src={profile && profile.imageUrl ? profile.imageUrl : profilePicture } />
+                    <img src={profile && profile.imageUrl ? profile.imageUrl : profilePicture} />
                 </div>
             </div>
 
@@ -57,20 +57,20 @@ useEffect(() => {
             <div className="profileImageDiv profileInputDIv">
                 <h2>Phone Number</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={profile && profile.phoneNumber ? profile.phoneNumber : '' } />
+                    <input value={profile && profile.phoneNumber ? profile.phoneNumber : ''} />
                 </div>
             </div>
 
             <div className="profileImageDiv profileInputDIv">
                 <h2>Address</h2>
                 <div className="inputDiv centerAb">
-                    <input value={profile && profile.address ? profile.address : '' } />
+                    <input value={profile && profile.address ? profile.address : ''} />
                 </div>
             </div>
-            
+
             <div className="profileImageDiv profileSaveBtn ">
                 <div className="saveBtn centerAb">
-                   <button>Save Changes</button>
+                    <button>Save Changes</button>
                 </div>
             </div>
         </div>

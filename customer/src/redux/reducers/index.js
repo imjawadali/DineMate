@@ -7,6 +7,8 @@ import toastReducer from './toastReducer'
 import profileReducer from './profileReducer'
 import serviceReducer from './serviceReducer'
 import getOrderItemsReducer from './getOrderItemsReducer'
+import closeOrderReducer from './closeOrderReducer'
+import updateProfileReducer from './updateProfileReducer'
 
 
 
@@ -19,6 +21,8 @@ export default combineReducers({
     toastReducer,
     profileReducer,
     serviceReducer,
-    getOrderItemsReducer
+    getOrderItemsReducer,
+    closeOrderReducer,
+    updateProfileReducer
 
 })

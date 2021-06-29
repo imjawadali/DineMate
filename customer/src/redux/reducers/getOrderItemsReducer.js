@@ -11,7 +11,7 @@ export default (state = { fetchingOrderItems: false, OrderItems: null }, { type,
     case GET_ORDER_ITEMS:
       return { ...state, fetchingOrderItems: true }
     case GET_ORDER_ITEMS_SUCCESS:
-      return { ...state, fetchingOrderItems: false, OrderItems: payload }
+      return { ...state, fetchingOrderItems: false, OrderItems: payload.OrderItems }
     case GET_ORDER_ITEMS_FAILURE:
       return { ...state, fetchingOrderItems: false }
     default:

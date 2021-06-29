@@ -12,6 +12,7 @@ import NoRoute from '../NoRoute'
 import './styles.css'
 import CheckOut from './checkout/CheckOut'
 import Profile from '../profile/Profile'
+import SetPassword from './Set-Password'
 
 export default function Customer(props) {
 
@@ -50,6 +51,7 @@ export default function Customer(props) {
         <Route exact path={`${path}/:restaurantId/menu`} component={Menu} />
         <Route exact path={`${path}/checkout`} component={CheckOut} />
         <Route exact path={`${path}/profile`} component={Profile} />
+        <Route exact path={`${path}/setNewPassword/:email/:hashString`} component={SetPassword} />
         <Route component={NoRoute} />
       </Switch>
     </div>

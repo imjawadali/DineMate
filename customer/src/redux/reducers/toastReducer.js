@@ -18,7 +18,10 @@ import {
   CALL_FOR_SERVICE_FAILURE,
   DONOTDISTURB,
   DONOTDISTURB_SUCCESS,
-  DONOTDISTURB_FAILURE
+  DONOTDISTURB_FAILURE,
+  CLOSE_ORDER,
+  CLOSE_ORDER_SUCCESS,
+  CLOSE_ORDER_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -70,6 +73,15 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DONOTDISTURB_FAILURE:
       console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
+      case CLOSE_ORDER:
+        console.log(payload)
+        return { ...state, toastSetDismiss: true, toast: payload.toast }
+      case CLOSE_ORDER_SUCCESS:
+        console.log(payload)
+        return { ...state, toastSetDismiss: true, toast: payload.toast }
+      case CLOSE_ORDER_FAILURE:
+        console.log(payload)
+        return { ...state, toastSetDismiss: true, toast: payload.toast }
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:

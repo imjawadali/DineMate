@@ -6,7 +6,10 @@ import {
   SET_ORDER_ITEM,
   SET_ORDER_ITEM_FAILED,
   SUBMIT_ORDER_ITEM,
-  SUBMIT_ORDER_ITEM_FAILED
+  SUBMIT_ORDER_ITEM_FAILED,
+  SET_ORDER_ITEM_SUCCESS,
+  TAKIE_AWAY_ORDER,
+  TAKIE_AWAY_ORDER_FAILED
 } from '../../constants'
 
 export default (state = {
@@ -24,14 +27,21 @@ export default (state = {
       return { ...state, checkingOrder: false }
     case SET_ORDER_ITEM:
       console.log(payload)
-      return { ...state, initializingOrder: false, checkingOrder: false, setOrder: payload.orderDetails, cartMenu: payload.cartMenu }
+      return { ...state, initializingOrder: false, checkingOrder: false, setOrder: payload.orderDetails, }
     case SET_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
+    case SET_ORDER_ITEM_SUCCESS:
+      return { ...state, settingOrder: false, cartMenu: payload.cartMenu }
     case SUBMIT_ORDER_ITEM:
       console.log(payload)
       return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, }
     case SUBMIT_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
+      case TAKIE_AWAY_ORDER:
+        console.log(payload)
+        return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, }
+      case TAKIE_AWAY_ORDER_FAILED:
+        return { ...state, settingOrder: false }
     default:
       return state
   }
