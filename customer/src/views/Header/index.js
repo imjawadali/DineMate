@@ -14,6 +14,7 @@ import { getItem } from '../../helpers';
 const Header = props => {
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
@@ -27,7 +28,6 @@ const Header = props => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         let value = urlParams.get("value")
-        console.log(urlParams)
         if (value) {
             setSearch(value)
         } else {
@@ -35,8 +35,11 @@ const Header = props => {
             setSearch('')
         }
     }, [window.location.search])
-    console.log(OrderItems)
+    useEffect(() => {
+        
+        dispatch(customisedAction(INITIALIZE_ORDER))
 
+    }, [])
 
     useEffect(() => {
         let arr = []
@@ -90,10 +93,15 @@ const Header = props => {
     }, [cartItemR, OrderItems])
 
     useEffect(() => {
-        setOrderDetail(getItem("orderDetails"))
+        setOrderDetail(orderDetails)
+        console.log(orderDetails)
 
-    }, [])
+    }, [orderDetails])
+    useEffect(() => {
+        console.log(orderDetails)
 
+    }, [orderDetails])
+    
     const toggleCartModal = () => {
         let cartModal = document.getElementById("cart_modal");
         let justificationDiv = document.getElementById("justification_div");
@@ -114,7 +122,6 @@ const Header = props => {
                 orderNumber: orderDetail.orderNumber,
 
             }
-            console.log('runnn')
             dispatch(customisedAction(GET_ORDER_ITEMS, obj))
         }
 
@@ -283,7 +290,7 @@ const Header = props => {
                                                             items.length ? items.filter((a) => a.status).map((item, i) => {
                                                                 return (
                                                                     <>
-                                                                        <div onClick={() => console.log(item)} className="details" key={i}>
+                                                                        <div className="details" key={i}>
                                                                             <div>
                                                                                 <div className="selected-quantity">
                                                                                     {item.quantity}
@@ -315,7 +322,7 @@ const Header = props => {
                                                             items.length ? items.filter((a) => !a.status).map((item, i) => {
                                                                 return (
                                                                     <>
-                                                                        <div onClick={() => console.log(item)} className="details" key={i}>
+                                                                        <div  className="details" key={i}>
                                                                             <div>
                                                                                 <div className="selected-quantity">
                                                                                     {item.quantity}
@@ -348,7 +355,7 @@ const Header = props => {
                                                 items.length ? items.map((item, i) => {
                                                     return (
                                                         <>
-                                                            <div onClick={() => console.log(item)} className="details" key={i}>
+                                                            <div  className="details" key={i}>
                                                                 <div>
                                                                     <div className="selected-quantity">
                                                                         {item.quantity}
@@ -378,28 +385,10 @@ const Header = props => {
                                         </div>
                                     </div>
 
-                                    <div className="checkout-button" >
-                                        <span>
-                                            {
-                                               
-                                                totalQuantityFn()
-                                            }
-                                        </span>
-
-                                        <span>
-                                            Next: Checkout
-                                        </span>
-
-                                        <span>
-                                            ${
-                                              
-                                                totalAmountFn()
-                                            }
-                                        </span>
-                                    </div>
+                                  
                                     <div className="orderSubBtn">
-                                        <button className="submitOrder" onClick={() => { orderDetail ? submitOrder() : submitTakeAway() }}>{OrderItems && orderDetail ? `Add Items` : `Submit Order`}</button>
-                                        <button className="addItem" onClick={() => props.history.push('/customer/checkout')}>Close Order</button>
+                                        <button className="submitOrder" onClick={() => { orderDetail ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail ? `Add to Order` : `Submit Order`}</button>
+                                        <button className="addItem" onClick={() => {props.history.push('/customer/checkout'); toggleCartModal();}} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
                                     </div>
                                 </div>
                             </div>

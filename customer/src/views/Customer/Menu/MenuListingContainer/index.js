@@ -31,7 +31,7 @@ const MenuListingContainer = props => {
             </h1>
 
             <div className="MenuListingContainerItemContainer">
-                {data.map(menuItem => {
+                {data.map((menuItem, i) => {
                     return (
                         <div className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}>
                             <MenuListItemComponent
@@ -77,7 +77,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const [updateComponent, setUpdateComponent] = useState(true);
     const [updatePrice, setupdatePrice] = useState(false)
     const [initOrder, setInitOrder] = useState(false)
-    
+
+    console.log(orderDetails)
 
     let [obj, setObj] = useState({
     })
@@ -88,9 +89,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
         for (let keys in obj) {
             arr.push(obj[keys])
         }
-        console.log(arr)
         arr.map((a, i) => price += Number(a.price))
-        console.log(arr.map((a, i) => a.price))
         setTotalPrice(price * itemCount)
         setupdatePrice(false)
     }, [itemToAdd, itemCount, obj, price, updatePrice]);
@@ -99,17 +98,14 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
 
         dispatch(customisedAction(SET_ORDER_ITEM, obj))
+        setViewAddons(false)
 
 
 
     }
-    useEffect(() => {
-        console.log(restaurantId)
-    }, [restaurantId])
     // FINAL CALL
     const addToCart = e => {
         e.preventDefault();
-        // console.log(orderDetails)
         let arr = []
         for (let keys in obj) {
             arr.push(obj[keys])
@@ -123,7 +119,6 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             restaurantId: restaurantId,
             orderNumber: "000000032"
         }
-        console.log(objItem);
 
         let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
         if (cartMenu.length) {
@@ -143,26 +138,18 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
     useEffect(() => {
         setInitOrder(getItem("orderDetails"))
-     
+
     }, [])
- 
+
     // this is order initializing api for QR CODE
-    // useEffect(() => {
-    //     if (!initOrder) {
-    //         let obj2 = {
-    //             "restaurantId": restaurantId,
-    //             "tableId": "10",
-    //             "customerId": getItem("customer").id
-    //         }
-    //         dispatch(customisedAction(INITIALIZE_ORDER, obj2))
-    //     }
-    // }, [initOrder])
 
 
-    useEffect(() => {
+        
+    
 
 
-    }, [obj])
+    
+   
 
     return (
         <div className="add-on-dialog">
@@ -173,7 +160,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                         <FontAwesomeIcon icon={faTimes} className="icon-starz" onClick={() => setViewAddons(false)} />
                     </div>
 
-                    <div className="item-iamge" onClick={() => console.log(selectedItem, itemToAdd)} >
+                    <div className="item-iamge" >
                         <img
                             width='90px'
                             height='90px'

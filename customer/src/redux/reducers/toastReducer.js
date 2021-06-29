@@ -56,31 +56,22 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
 
     case CALL_FOR_SERVICE:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CALL_FOR_SERVICE_SUCCESS:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CALL_FOR_SERVICE_FAILURE:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DONOTDISTURB:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DONOTDISTURB_SUCCESS:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DONOTDISTURB_FAILURE:
-      console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload.toast }
       case CLOSE_ORDER:
-        console.log(payload)
         return { ...state, toastSetDismiss: true, toast: payload.toast }
       case CLOSE_ORDER_SUCCESS:
-        console.log(payload)
         return { ...state, toastSetDismiss: true, toast: payload.toast }
       case CLOSE_ORDER_FAILURE:
-        console.log(payload)
         return { ...state, toastSetDismiss: true, toast: payload.toast }
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }

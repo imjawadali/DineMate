@@ -14,7 +14,6 @@ function Profile() {
     const [password, setPassword] = useState('sdaddsd')
     const [address, setAddress] = useState("xyz street area abc")
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
-    console.log(profile)
     const dispatch = useDispatch()
 
 

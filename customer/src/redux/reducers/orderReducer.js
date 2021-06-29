@@ -26,19 +26,16 @@ export default (state = {
     case ORDER_CHECK_DONE:
       return { ...state, checkingOrder: false }
     case SET_ORDER_ITEM:
-      console.log(payload)
       return { ...state, initializingOrder: false, checkingOrder: false, setOrder: payload.orderDetails, }
     case SET_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
     case SET_ORDER_ITEM_SUCCESS:
       return { ...state, settingOrder: false, cartMenu: payload.cartMenu }
     case SUBMIT_ORDER_ITEM:
-      console.log(payload)
       return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, }
     case SUBMIT_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
       case TAKIE_AWAY_ORDER:
-        console.log(payload)
         return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, }
       case TAKIE_AWAY_ORDER_FAILED:
         return { ...state, settingOrder: false }

@@ -28,14 +28,12 @@ function SideNav(props) {
 
     const { sidebarOpen, closeSidebar, history } = props
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
-    console.log(profile)
     
     
     useEffect(() => {
         dispatch(customisedAction(GET_RPOFILE))
       }, [])
 
-    console.log(profile)
 
 
     return (
