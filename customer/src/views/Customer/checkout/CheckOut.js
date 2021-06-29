@@ -6,7 +6,7 @@ import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
-import { CALL_FOR_SERVICE, DONOTDISTURB } from '../../../constants'
+import { CALL_FOR_SERVICE, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS } from '../../../constants'
 import { getItem, setItem } from '../../../helpers'
 
 
@@ -27,20 +27,58 @@ function CheckOut() {
     const [message, setMessage] = useState('')
     const [doNotDisturb, setDoNotDisturb] = useState(false)
     const [doNotDisturbActive, setDoNotDisturbActive] = useState()
-    const [testArr,setTestArr] = useState([])
+    const [testArr, setTestArr] = useState([])
+    const [orderDetail, setOrderDetail] = useState("")
+
     const dispatch = useDispatch()
 
-
+    useEffect(() => {
+        setOrderDetail(getItem("orderDetails"))
+    }, [])
 
 
     useEffect(() => {
-        let data = JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []  
-        if (data.length) {
-        console.log(data)
-        setProducts(data)
+        if (orderDetail) {
+
+            let obj = {
+                restaurantId: orderDetail.restaurantId,
+                orderNumber: orderDetail.orderNumber,
+
+            }
+            console.log('ddd')
+            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+        } else {
+            // setProducts(getItem("cartMenu"))
         }
+
     }, [])
- 
+    useEffect(() => {
+        if (orderDetail) {
+            let obj = {
+                'restaurantId': orderDetail.restaurantId,
+            }
+            dispatch(customisedAction(GET_RESTAURANT_DETAILS, obj))
+        }
+    }, [orderDetail])
+
+
+    let dataOrder = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
+    let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
+    console.log(resturantDetail)
+    useEffect(() => {
+        let data = dataOrder ? dataOrder : []
+        if (data.length) {
+            console.log(data)
+            setProducts([...data])
+        }
+    }, [dataOrder])
+
+    useEffect(() => {
+        if (resturantDetail) {
+            setPickUpLocation(resturantDetail.address)
+        }
+    }, [resturantDetail])
+
 
     useEffect(() => {
         setDoNotDisturbActive(getItem('doNotDisturb'))
@@ -73,6 +111,28 @@ function CheckOut() {
         dispatch(customisedAction(CALL_FOR_SERVICE, obj))
     }
 
+    function totalAmount() {
+        let price = 0
+        if (products) {
+            products.map((a, i) => {
+                price += a.totalPrice
+            })
+        }
+        return price
+    }
+
+
+    const payNow = () => {
+        let obj = {
+            "restaurantId": orderDetail.restaurantId,
+            "orderNumber": orderDetail.orderNumber,
+            "type": orderDetail.type
+        }
+        dispatch(customisedAction(CLOSE_ORDER, obj))
+    }
+
+
+
     return (
         <div className="CheckOut">
             <div className="checkoutForm">
@@ -93,7 +153,8 @@ function CheckOut() {
                     }) : null}
                     <div className="totalCart">
                         <p>Total</p>
-                        <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p>
+                        {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
+                        <p>$ {totalAmount()}</p>
                     </div>
                 </div>
                 <div className="pickUpTime">
@@ -105,7 +166,7 @@ function CheckOut() {
                 <div className="pickUpLocation">
                     <h2>Pick Up Location</h2>
                     <div>
-                        <textarea onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
+                        <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
                     </div>
                 </div>
                 <div className="pickUpPayment">
@@ -139,7 +200,7 @@ function CheckOut() {
                 <div className="Ammount">
                     <div>
                         <h2><span>Payment Amount</span> $4.28</h2>
-                        <button className="payBtn">Pay Now</button>
+                        <button className="payBtn" onClick={payNow}>Pay Now</button>
                     </div>
                     <div>
                         <img src={serviceIcon} onClick={() => setOpenCall(true)} />
@@ -169,7 +230,7 @@ function CheckOut() {
                                     className={selectedServices.includes("WATER") ? "service" : "service warn-service"}
                                     onClick={() => {
                                         callService("water")
-                                        
+
                                     }}
                                 >
                                     <div>
@@ -183,7 +244,7 @@ function CheckOut() {
                                     onClick={() => {
                                         callService("help")
 
-                                        
+
                                     }}
                                     style={{ position: 'relative' }}
                                 >
@@ -215,7 +276,7 @@ function CheckOut() {
                                     onClick={() => {
                                         callService("bill")
 
-                                       
+
                                     }}
                                 >
                                     <div>

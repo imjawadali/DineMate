@@ -10,6 +10,8 @@ import { addOrderEpic } from './admin/addOrderEpic'
 import { submitOrderEpic } from './admin/submitOrder'
 import { callForServiceEpic } from './admin/callForServiceEpic'
 import { getOrderItemEpic } from './admin/getOrderItem'
+import { closeOrderViaCashEpic } from './admin/closeOrder'
+import { takeAwayOrderEpic } from './admin/takeAwayOrder'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -19,11 +21,15 @@ export const epics = combineEpics(
     getMenuEpic.getMenu,
     signUpEpic.signUp,
     forgotPsswordEpic.forgetPassword,
+    forgotPsswordEpic.setNewPassword,
     addOrderEpic.addOrder,
     submitOrderEpic.submitOrder,
     loginEpic.getProfile,
+    loginEpic.updateProfile,
     callForServiceEpic.addService,
     callForServiceEpic.doNotDisturb,
-    getOrderItemEpic.getOrder
+    getOrderItemEpic.getOrder,
+    closeOrderViaCashEpic.closeOrderViaCash,
+    takeAwayOrderEpic.takeAwayOrder
 
 )

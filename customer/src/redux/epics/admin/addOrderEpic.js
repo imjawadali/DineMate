@@ -8,7 +8,8 @@ import {
   SET_ORDER_ITEM,
   INITIALIZE_ORDER_FAILURE,
   API_ENDPOINTS,
-  SET_ORDER_ITEM_FAILED
+  SET_ORDER_ITEM_FAILED,
+  SET_ORDER_ITEM_SUCCESS
 } from '../../../constants'
 import { setItem } from '../../../helpers'
 
@@ -19,29 +20,21 @@ export class addOrderEpic {
       switchMap(
         async ({ payload: obj }) => {
           console.log('runn')
-          return generalizedEpic(
-            'post',
-            API_ENDPOINTS.customer.addSingleItem,
-            obj,
-            (resObj) => {
-              let cartMenu = localStorage.getItem('cartMenu') ? localStorage.getItem('cartMenu') : '';
-              let updatedCart = []
-              if (cartMenu) {
-                updatedCart = JSON.parse(cartMenu)
-                console.log('NOT OKK')
-                updatedCart.push(obj)
-                console.log(updatedCart)
-                localStorage.setItem('cartMenu', JSON.stringify(updatedCart))
-              } else {
-                console.log('OKK')
-                let cart = JSON.stringify([obj])
-                updatedCart = [obj]
-                localStorage.setItem('cartMenu', cart)
-              }
-              return customisedAction(SET_ORDER_ITEM, { orderDetails: resObj.body, toast: { message: resObj.message, type: 'success' }, cartMenu: updatedCart })
-            },
-            SET_ORDER_ITEM_FAILED
-          )
+          let cartMenu = localStorage.getItem('cartMenu') ? localStorage.getItem('cartMenu') : '';
+          let updatedCart = []
+          if (cartMenu) {
+            updatedCart = JSON.parse(cartMenu)
+            console.log('NOT OKK')
+            updatedCart.push(obj)
+            console.log(updatedCart)
+            localStorage.setItem('cartMenu', JSON.stringify(updatedCart))
+          } else {
+            console.log('OKK')
+            let cart = JSON.stringify([obj])
+            updatedCart = [obj]
+            localStorage.setItem('cartMenu', cart)
+          }
+          return customisedAction(SET_ORDER_ITEM_SUCCESS, {cartMenu: updatedCart })
         }
       )
     )

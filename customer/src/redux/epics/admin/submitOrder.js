@@ -7,7 +7,8 @@ import {
   SET_ORDER,
   API_ENDPOINTS,
   SUBMIT_ORDER_ITEM,
-  SUBMIT_ORDER_ITEM_FAILED
+  SUBMIT_ORDER_ITEM_FAILED,
+  SET_ORDER_ITEM_SUCCESS
 } from '../../../constants'
 import { removeItem, setItem } from '../../../helpers'
 
@@ -16,14 +17,15 @@ export class submitOrderEpic {
     action$.pipe(
       ofType(SUBMIT_ORDER_ITEM),
       switchMap(
-        async ({ payload: obj}) => {
+        async ({ payload: obj }) => {
           return generalizedEpic(
-            'post', 
+            'post',
             API_ENDPOINTS.customer.submitOrder,
             obj,
             (resObj) => {
               removeItem('cartMenu')
-              return customisedAction(SET_ORDER, { orderDetails: resObj.body, toast: { message: resObj.message, type: 'success' }, cartMenu: [] })
+              return customisedAction(SET_ORDER_ITEM_SUCCESS, { cartMenu:[] })
+
             },
             SUBMIT_ORDER_ITEM_FAILED
           )

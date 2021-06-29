@@ -7,7 +7,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { INITIALIZE_ORDER, SUBMIT_ORDER_ITEM } from '../../constants';
+import { GET_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 
@@ -17,13 +17,17 @@ const Header = props => {
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
+    const [updateState, setUpdateState] = useState(true)
+    const [orderDetail, setOrderDetail] = useState("")
     let dispatch = useDispatch()
 
     let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
+    let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         let value = urlParams.get("value")
+        console.log(urlParams)
         if (value) {
             setSearch(value)
         } else {
@@ -31,6 +35,8 @@ const Header = props => {
             setSearch('')
         }
     }, [window.location.search])
+    console.log(OrderItems)
+
 
     useEffect(() => {
         let arr = []
@@ -43,10 +49,10 @@ const Header = props => {
                     "totalPrice": a.totalPrice,
                     "specialInstructions": a.shortDescription,
                     "addOns": a.addOns,
-                    "restaurantId": a.restaurantId
+                    "restaurantId": a.restaurantId,
+                    "status": true
                 })
             })
-            // console.log(arr)
             setItems(arr)
         } else {
             let data = JSON.parse(localStorage.getItem('cartMenu'))
@@ -59,16 +65,34 @@ const Header = props => {
                         "totalPrice": a.totalPrice,
                         "specialInstructions": a.shortDescription,
                         "addOns": a.addOns,
-                        "restaurantId": a.restaurantId
+                        "restaurantId": a.restaurantId,
+                        "status": true
+
                     })
                 })
                 setItems(arr)
-                // console.log(arr)
             } else {
                 setItems([])
             }
         }
-    }, [cartItemR])
+        if (OrderItems) {
+            OrderItems.map((a, i) => {
+                arr.push({
+                    "id": a.id,
+                    "name": a.name,
+                    "quantity": a.quantity,
+                    "totalPrice": a.totalPrice,
+                    "status": false
+                })
+            })
+            setItems(arr)
+        }
+    }, [cartItemR, OrderItems])
+
+    useEffect(() => {
+        setOrderDetail(getItem("orderDetails"))
+
+    }, [])
 
     const toggleCartModal = () => {
         let cartModal = document.getElementById("cart_modal");
@@ -82,26 +106,100 @@ const Header = props => {
         }
     }
 
-    const submitOrder = () => {
-        let obj2 = {
-            "restaurantId": items[0].restaurantId,
-            "tableId": "10",
-            "customerId": getItem("customer").id
-        }
-        dispatch(customisedAction(INITIALIZE_ORDER,obj2))
-        let obj = {
-            "restaurantId": items[0].restaurantId,
-            "orderNumber": "0002",
-            "items": items
-        }
-        console.log(obj)
-        dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
+    useEffect(() => {
+        if (orderDetail) {
 
+            let obj = {
+                restaurantId: orderDetail.restaurantId,
+                orderNumber: orderDetail.orderNumber,
+
+            }
+            console.log('runnn')
+            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+        }
+
+    }, [orderDetail, updateState])
+
+    const submitOrder = () => {
+        setUpdateState(false)
+
+        if (!OrderItems) {
+            if (orderDetail) {
+
+                let obj = {
+                    "restaurantId": orderDetail.restaurantId,
+                    "orderNumber": orderDetail.orderNumber,
+                    "items": items
+                }
+                dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
+                setTimeout(() => {
+                    dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+                }, [300])
+                setNetItems()
+                setUpdateState(true)
+            } else {
+                let itemsArr = getItem('cartMenu')
+                let obj = {
+                    "restaurantId": itemsArr[0].restaurantId,
+                    "items": itemsArr
+                }
+                dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
+                setTakeAway(itemsArr)
+            }
+
+
+        } else {
+            if (orderDetail) {
+                let obj = {
+                    "restaurantId": orderDetail.restaurantId,
+                    "orderNumber": orderDetail.orderNumber,
+                    "items": getItem('cartMenu')
+                }
+                dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
+                setTimeout(() => {
+                    dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+                }, [300])
+                setNetItems()
+                setUpdateState(true)
+            }
+
+        }
+
+    }
+    const setTakeAway = (itemsArr) => {
+        let arr = []
+        itemsArr.map((a, i) => {
+            arr.push({
+                "id": a.id,
+                "name": a.name,
+                "quantity": a.quantity,
+                "totalPrice": a.totalPrice,
+                "status": false
+            })
+        })
+        setItems([])
+        setItems(arr)
+    }
+    const setNetItems = () => {
+        let arr = []
+        if (OrderItems) {
+            OrderItems.map((a, i) => {
+                arr.push({
+                    "id": a.id,
+                    "name": a.name,
+                    "quantity": a.quantity,
+                    "totalPrice": a.totalPrice,
+                    "status": false
+                })
+            })
+            setItems([])
+            setItems(arr)
+        }
     }
     const totalAmountFn = () => {
         let price = 0
         if (items.length) {
-            items.map((a, i) => price += a.price)
+            items.map((a, i) => price += a.price ? a.price : a.totalPrice)
         }
         return price
     }
@@ -111,6 +209,13 @@ const Header = props => {
             items.map((a, i) => quantity += a.quantity)
         }
         return quantity
+    }
+    function submitTakeAway() {
+        // let obj = {
+        //     "restaurantId": products[0].restaurantId,
+        //     "items": products
+        // }
+        // dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
     }
 
 
@@ -170,43 +275,113 @@ const Header = props => {
                                         </div>
 
                                         <div className="item-details">
-                                            {
+                                            {orderDetail ?
+                                                <>
+                                                    <div className="unlockItems">
+                                                        <p>New Items</p>
+                                                        {
+                                                            items.length ? items.filter((a) => a.status).map((item, i) => {
+                                                                return (
+                                                                    <>
+                                                                        <div onClick={() => console.log(item)} className="details" key={i}>
+                                                                            <div>
+                                                                                <div className="selected-quantity">
+                                                                                    {item.quantity}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="item-description">
+                                                                                <div className="item-title">
+                                                                                    {item.name}
+                                                                                </div>
+
+                                                                                <div className="size-title">
+                                                                                    {item.shortDescription}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="amount">
+                                                                                ${item.totalPrice}
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+                                                                )
+                                                            }) : null
+                                                        }
+                                                    </div>
+                                                    <div className="lockItem">
+                                                        <p>Submitted Item</p>
+                                                        {
+                                                            items.length ? items.filter((a) => !a.status).map((item, i) => {
+                                                                return (
+                                                                    <>
+                                                                        <div onClick={() => console.log(item)} className="details" key={i}>
+                                                                            <div>
+                                                                                <div className="selected-quantity">
+                                                                                    {item.quantity}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="item-description">
+                                                                                <div className="item-title">
+                                                                                    {item.name}
+                                                                                </div>
+
+                                                                                <div className="size-title">
+                                                                                    {item.shortDescription}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="amount">
+                                                                                ${item.totalPrice}
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+                                                                )
+                                                            }) : null
+                                                        }
+                                                    </div>
+                                                </>
+                                                :
+
+
                                                 items.length ? items.map((item, i) => {
                                                     return (
-                                                        <div onClick={() => console.log(item)} className="details" key={i}>
-                                                            <div>
-                                                                <div className="selected-quantity">
-                                                                    {item.quantity}
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="item-description">
-                                                                <div className="item-title">
-                                                                    {item.name}
+                                                        <>
+                                                            <div onClick={() => console.log(item)} className="details" key={i}>
+                                                                <div>
+                                                                    <div className="selected-quantity">
+                                                                        {item.quantity}
+                                                                    </div>
                                                                 </div>
 
-                                                                <div className="size-title">
-                                                                    {item.shortDescription}
+                                                                <div className="item-description">
+                                                                    <div className="item-title">
+                                                                        {item.name}
+                                                                    </div>
+
+                                                                    <div className="size-title">
+                                                                        {item.shortDescription}
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="amount">
+                                                                    ${item.totalPrice}
                                                                 </div>
                                                             </div>
-
-                                                            <div className="amount">
-                                                                ${item.totalPrice}
-                                                            </div>
-                                                        </div>
+                                                        </>
                                                     )
                                                 }) : null
+
                                             }
+
                                         </div>
                                     </div>
 
-                                    <div className="checkout-button">
+                                    <div className="checkout-button" >
                                         <span>
                                             {
-                                                // items && items.length > 0 ?
-                                                //     items.reduce((prevItem, currentItem) => Number(prevItem.quantity) + Number(currentItem.quantity))
-                                                //     :
-                                                //     0
+                                               
                                                 totalQuantityFn()
                                             }
                                         </span>
@@ -217,17 +392,14 @@ const Header = props => {
 
                                         <span>
                                             ${
-                                                // items && items.length > 0 ?
-                                                // items.reduce((prevItem, currentItem) => prevItem.totalPrice + currentItem.totalPrice)
-                                                // :
-                                                // 0
+                                              
                                                 totalAmountFn()
                                             }
                                         </span>
                                     </div>
                                     <div className="orderSubBtn">
-                                        <button className="submitOrder" onClick={submitOrder}>Submit Order</button>
-                                        <button className="addItem">Close Order</button>
+                                        <button className="submitOrder" onClick={() => { orderDetail ? submitOrder() : submitTakeAway() }}>{OrderItems && orderDetail ? `Add Items` : `Submit Order`}</button>
+                                        <button className="addItem" onClick={() => props.history.push('/customer/checkout')}>Close Order</button>
                                     </div>
                                 </div>
                             </div>

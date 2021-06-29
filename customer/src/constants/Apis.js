@@ -18,6 +18,10 @@ export const API_ENDPOINTS = {
         callForService: '/customer/requestService',
         doNotDisturb: '/customer/doNotDisturb',
         getOrderItem: '/customer/getOrderItems',
-        
+        closeOrderViaCash: '/customer/closeOrderViaCash',
+        takeAwayOrder: '/customer/takeAwayOrder',
+        updateProfile: '/customer/updateProfile',
+        setNewPassword:'/customer/setNewPassword'
+
     }
 }
