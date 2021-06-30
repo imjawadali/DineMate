@@ -33,7 +33,8 @@ const Menu = props => {
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))
-    }, [])
+        console.log(restaurantId)
+    }, [restaurantId])
 
     useEffect(() => {
         if (categorie === 'All') {
@@ -41,7 +42,7 @@ const Menu = props => {
         } else if (categorie != 'All') {
             setSelectedCategory(menu.filter((a, i) => a.categoryName === categorie))
         }
-    }, [categorie,menu])
+    }, [categorie, menu])
 
 
     const addToCart = id => {
@@ -71,7 +72,10 @@ const Menu = props => {
                             : null}
                     </div>
                     <div className="menuListingImagewithTextContainer" style={{ position: 'absolute', width: '90%', left: '5%', right: '5%', height: '20vh' }}>
-                        <h2>{restaurant && restaurant.restaurantName}</h2>
+                        <h2 onClick={() => console.log(
+                            dispatch(customisedAction(GET_MENU, { restaurantId }))
+
+                        )}>{restaurant && restaurant.restaurantName}</h2>
                         {restaurant ?
                             restaurant.categories && restaurant.categories.length ?
                                 <span className="divider">
@@ -108,13 +112,13 @@ const Menu = props => {
                 {restaurant && restaurant.categories && restaurant.categories.length ?
                     <div className="menuListingFeatured">
                         <div className="menuListingFeaturedContainer">
-                            <div onClick={() => setCategorie('All')} className={categorie === "All" ? "menuListingFeaturedContainerItem selectedItem" :"menuListingFeaturedContainerItem"}>
+                            <div onClick={() => setCategorie('All')} className={categorie === "All" ? "menuListingFeaturedContainerItem selectedItem" : "menuListingFeaturedContainerItem"}>
                                 <h3>
                                     All
                                 </h3>
                             </div>
                             {restaurant.categories.map(category =>
-                                <div onClick={() => setCategorie(category.name)} className={categorie === category.name ? "menuListingFeaturedContainerItem selectedItem" :"menuListingFeaturedContainerItem"}>
+                                <div onClick={() => setCategorie(category.name)} className={categorie === category.name ? "menuListingFeaturedContainerItem selectedItem" : "menuListingFeaturedContainerItem"}>
                                     <h3>
                                         {category.name}
                                     </h3>

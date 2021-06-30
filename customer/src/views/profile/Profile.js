@@ -5,14 +5,16 @@ import badge from './../../assets/badge.png'
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../redux/actions'
-import { GET_RPOFILE } from '../../constants'
+import { GET_RPOFILE, UPDATE_RPOFILE } from '../../constants'
 import { useEffect } from 'react'
 
 function Profile() {
-    const [email, setEmail] = useState("rayan@email.com")
-    const [phoneNumber, setPhoneNumber] = useState("+1 343 2541 254")
+    const [email, setEmail] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState("")
     const [password, setPassword] = useState('sdaddsd')
-    const [address, setAddress] = useState("xyz street area abc")
+    const [address, setAddress] = useState("")
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
     const dispatch = useDispatch()
 
@@ -20,6 +22,37 @@ function Profile() {
     useEffect(() => {
         dispatch(customisedAction(GET_RPOFILE))
     }, [])
+    // useEffect(()=>{
+    // },[profile])
+
+    console.log(profile)
+
+    useEffect(() => {
+        if (profile) {
+            setEmail(profile.email)
+            setPhoneNumber(profile.phoneNumber)
+            // setPassword(profile.password)
+            setAddress(profile.address)
+            setFirstName(profile.firstName)
+            setLastName(profile.lastName)
+        }
+    }, [profile])
+
+
+    const edit = () => {
+        let obj = {
+            "updatedData": {
+                "address": address,
+                "email": email,
+                "firstName": "test",
+                "imageUrl": null,
+                "lastName": "test",
+                "phoneNumber": null
+            }
+        }
+        dispatch(customisedAction(UPDATE_RPOFILE,obj))
+    }
+
     return (
         <div className="profile">
             <h1>Profile Details</h1>
@@ -33,7 +66,7 @@ function Profile() {
             <div className="profileImageDiv">
                 <h2>Name</h2>
                 <div className="profileName centerAb">
-                    <h1>{profile && profile.firstName} {profile && profile.lastName}</h1>
+                    <h1>{firstName} {lastName}</h1>
                     <p><span className="pointBadge"><img src={badge} /></span> Reward Point: <span className="point">297</span></p>
                 </div>
             </div>
@@ -49,27 +82,27 @@ function Profile() {
             <div className="profileImageDiv profileInputDIv">
                 <h2>Email Address</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={profile && profile.email} />
+                    <input value={email} onChange={(ev) => setEmail(ev.target.value)} />
                 </div>
             </div>
 
             <div className="profileImageDiv profileInputDIv">
                 <h2>Phone Number</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={profile && profile.phoneNumber ? profile.phoneNumber : ''} />
+                    <input value={phoneNumber} onChange={(ev) => setPhoneNumber(ev.target.value)} />
                 </div>
             </div>
 
             <div className="profileImageDiv profileInputDIv">
                 <h2>Address</h2>
                 <div className="inputDiv centerAb">
-                    <input value={profile && profile.address ? profile.address : ''} />
+                    <input value={address} onChange={(ev) => setAddress(ev.target.value)} />
                 </div>
             </div>
 
             <div className="profileImageDiv profileSaveBtn ">
                 <div className="saveBtn centerAb">
-                    <button>Save Changes</button>
+                    <button onClick={edit}>Save Changes</button>
                 </div>
             </div>
         </div>

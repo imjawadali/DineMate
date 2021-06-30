@@ -1,0 +1,32 @@
+.pastOrderPage {
+    padding: 0px 5vw;
+    padding-top: 30px;
+}
+.pastOrderPage .pastOrders {
+    padding: 0px 50px;
+}
+.pastOrderPage .pastOrders .pastTabs {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.pastOrderPage .pastOrders .pastTabs .tab {
+    width: 50%;
+    text-align: center;
+    font-size: 27px;
+}
+.pastOrderPage .pastOrders .pastTabs .tab.active {
+    font-weight: bolder;
+}
+.pastOrderPage .orderDetail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pastOrderPage .orderDetail h5 {
+    font-size: 25px;
+}
+.pastOrderPage .orderDetail h3 {
+    font-size: 30px;
+}

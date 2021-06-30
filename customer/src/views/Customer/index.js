@@ -13,6 +13,7 @@ import './styles.css'
 import CheckOut from './checkout/CheckOut'
 import Profile from '../profile/Profile'
 import SetPassword from './Set-Password'
+import PastOrder from '../pastOrder/PastOrder'
 
 export default function Customer(props) {
 
@@ -24,17 +25,17 @@ export default function Customer(props) {
   let { path } = useRouteMatch()
 
   const CustomerLanding = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          !!customer ? 
-          <Component {...props} /> : <Redirect to={{ pathname: '/customer/signin', state: { from: props.location.pathname }}} />
-      )} />
+    <Route {...rest} render={(props) => (
+      !!customer ?
+        <Component {...props} /> : <Redirect to={{ pathname: '/customer/signin', state: { from: props.location.pathname } }} />
+    )} />
   )
 
   const NonCustomerLanding = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          !customer ? 
-          <Component {...props} /> : <Redirect to={{ pathname: '/' }} />
-      )} />
+    <Route {...rest} render={(props) => (
+      !customer ?
+        <Component {...props} /> : <Redirect to={{ pathname: '/' }} />
+    )} />
   )
 
   return (
@@ -52,6 +53,8 @@ export default function Customer(props) {
         <Route exact path={`${path}/checkout`} component={CheckOut} />
         <Route exact path={`${path}/profile`} component={Profile} />
         <Route exact path={`${path}/setNewPassword/:email/:hashString`} component={SetPassword} />
+        <Route exact path={`${path}/pastOrder`} component={PastOrder} />
+
         <Route component={NoRoute} />
       </Switch>
     </div>

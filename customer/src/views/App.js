@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_ORDER, SET_SESSION, ORDER_CHECK_DONE } from '../constants'
+import { SESSION_CHECK_DONE, SET_ORDER, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS } from '../constants'
 import { RestClient } from '../services/network'
-import { getItem } from '../helpers'
+import { getItem, removeItem } from '../helpers'
 
 import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
@@ -31,8 +31,11 @@ export default function App() {
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
+    const closeOrder = useSelector(({ closeOrderReducer }) => closeOrderReducer.closeOrder)
+    console.log(closeOrder)
     const dispatch = useDispatch()
-
+    console.log(orderStatusDetails)
     useEffect(() => {
         if (!customer || !orderDetails) {
             const storedCustomer = getItem('customer')
@@ -46,27 +49,66 @@ export default function App() {
                 setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
 
             if (storedOrderDetails && !orderDetails)
-                setTimeout(() => {
-                    dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                }, 300)
-            else
-                setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
+                if (storedOrderDetails.type.toLowerCase() === 'dine-in') {
+
+                    setTimeout(() => {
+                        let obj = {
+                            "restaurantId": storedOrderDetails.restaurantId,
+                            "orderNumber": storedOrderDetails.orderNumber
+                        }
+                        dispatch(customisedAction(GET_STATUS, obj))
+                        if (orderStatusDetails && orderStatusDetails.active) {
+                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                        } else if (orderStatusDetails && !orderStatusDetails.active) {
+                            removeItem('orderDetails')
+                        }
+                    }, 300)
+                } else if (storedOrderDetails.type.toLowerCase() === 'take-away') {
+                    setTimeout(() => {
+                        let obj = {
+                            "restaurantId": storedOrderDetails.restaurantId,
+                            "orderNumber": storedOrderDetails.orderNumber
+                        }
+                        dispatch(customisedAction(GET_STATUS, obj))
+                        if (orderStatusDetails && !orderStatusDetails.active) {
+                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                        } else if (orderStatusDetails && orderStatusDetails.active) {
+                            removeItem('orderDetails')
+                            removeItem('cartMenu')
+                        }
+                    }, 300)
+                }else {
+                    setTimeout(() => {
+                        let obj = {
+                            "restaurantId": storedOrderDetails.restaurantId,
+                            "orderNumber": storedOrderDetails.orderNumber
+                        }
+                        dispatch(customisedAction(GET_STATUS, obj))
+                        if (orderStatusDetails && orderStatusDetails.active) {
+                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                        } else if (orderStatusDetails && !orderStatusDetails.active) {
+                            removeItem('orderDetails')
+                        }
+                    }, 300)
+                }
+                else
+                    setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
-    }, [])
+    }, [orderStatusDetails,closeOrder])
 
     const openSidebar = () => {
         setSidebarOpen(true)
     }
-  
+
     const closeSidebar = () => {
         setSidebarOpen(false)
     }
 
-    useEffect(()=>{
-        console.log = function() {}
-        console.warn = function() {}
-        console.error = function() {}
-    },[])
+    // useEffect(()=>{
+    //     console.log = function() {}
+    //     console.warn = function() {}
+    //     console.error = function() {}
+    // },[])
 
     return (!checkingSignIn && !checkingOrder ?
         <ToastProvider
@@ -75,11 +117,11 @@ export default function App() {
             <Router>
                 <Toaster />
                 <ScrollToTop closeSidebar={closeSidebar}>
-                    <SideNav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar}/>
+                    <SideNav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
                     <Header openSidebar={openSidebar} />
                     <Switch>
                         <Route exact path='/'>
-                            <Home openSidebar={openSidebar}/>
+                            <Home openSidebar={openSidebar} />
                         </Route>
                         <Route path='/customer' component={Customer} />
                         <Route exact path='/:restaurantId/:tableId' component={ContinueWith} />
@@ -91,7 +133,7 @@ export default function App() {
                 </ScrollToTop>
             </Router>
         </ToastProvider> :
-        <div className="full-screen-container" style={{ background: '#b5c9bf'}}>
+        <div className="full-screen-container" style={{ background: '#b5c9bf' }}>
             <img src={logo} style={{ width: '120px' }} alt="logo" />
         </div>
     )

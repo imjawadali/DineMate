@@ -21,7 +21,8 @@ export const API_ENDPOINTS = {
         closeOrderViaCash: '/customer/closeOrderViaCash',
         takeAwayOrder: '/customer/takeAwayOrder',
         updateProfile: '/customer/updateProfile',
-        setNewPassword:'/customer/setNewPassword'
+        setNewPassword: '/customer/setNewPassword',
+        getOrderStatus: '/customer/getOrderStatus'
 
     }
 }

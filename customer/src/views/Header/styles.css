@@ -140,6 +140,19 @@ input.HeaderInput {
 .details.not{
     background-color: rgb(209, 209, 209);
 }
+.details .editDelete{
+    display: flex;
+    align-items: center;
+}
+.details .editDelete .edit{
+    color: #3dcaba;
+    width: 21px;
+}
+
+.details .editDelete .delete{
+    color: #ea4d4a;
+    width: 21px;
+}
 
 .item-description {
     margin-bottom: -44px;
