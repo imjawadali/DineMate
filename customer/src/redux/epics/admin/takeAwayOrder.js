@@ -25,8 +25,8 @@ export class takeAwayOrderEpic {
             API_ENDPOINTS.customer.takeAwayOrder,
             obj,
             (resObj) => {
-              // removeItem('cartMenu')
-              return customisedAction(SET_ORDER_ITEM_SUCCESS, )
+              setItem('orderDetails',resObj.body)
+              return customisedAction(SET_ORDER_ITEM_SUCCESS, obj)
 
             },
             TAKIE_AWAY_ORDER_FAILED

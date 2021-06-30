@@ -7,6 +7,8 @@ import google from '../../assets/google.png';
 import apple from '../../assets/apple.png';
 import computer from '../../assets/computer.png';
 import './styles.css';
+import { customisedAction } from '../../redux/actions';
+import { INITIALIZE_ORDER } from '../../constants';
 
 function ContinueWith(props) {
 
@@ -17,10 +19,16 @@ function ContinueWith(props) {
 
     let { restaurantId, tableId } = useParams();
 
-    useEffect(() => {
-        // if (tableId && !checkingOrder && !initializingOrder && !orderDetails)
-        //     dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
-    }, [])
+    // useEffect(() => {
+    //     if (tableId && !checkingOrder && !initializingOrder && !orderDetails){
+    //         dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
+    //     }
+    // }, [])
+    const initOrder = () => {
+        if (tableId && !checkingOrder && !initializingOrder && !orderDetails) {
+            dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
+        }
+    }
 
     return (
         <div className="ContinueWith">
@@ -46,7 +54,7 @@ function ContinueWith(props) {
                 <div style={{ marginBottom: 50, fontSize: 24, fontWeight: 'bolder' }}>Start Using</div>
 
                 <div style={{ display: 'flex', marginBottom: 20, cursor: 'pointer', background: '#0000001c', padding: 10, borderRadius: 5, alignItems: 'center' }}
-                    onClick={() => props.history.push(`/customer/${restaurantId}/menu`)}>
+                    onClick={() => { initOrder(); props.history.push(`/customer/${restaurantId}/menu`) }}>
                     <img className="computer-img" src={computer} />
                     <span style={{ margin: 10, fontSize: 24, fontWeight: 'bolder' }}>The Web</span>
                 </div>

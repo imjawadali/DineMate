@@ -8,6 +8,7 @@ import { customisedAction } from '../../../../redux/actions';
 import { ALREADY_IN_CART, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
+import ViewAddon from './ViewAddon'
 
 const MenuListingContainer = props => {
 
@@ -58,6 +59,8 @@ const MenuListingContainer = props => {
                         setViewAddons={setViewAddons}
                         selectedItem={selectedItem}
                         restaurantId={restaurantId}
+                        edit={false}
+
                     />
                     :
                     null
@@ -66,82 +69,82 @@ const MenuListingContainer = props => {
     )
 }
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId }) => {
+// const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId }) => {
 
-    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
-    const dispatch = useDispatch()
+//     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+//     const dispatch = useDispatch()
 
-    const [itemCount, setItemCount] = useState(1);
-    const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
-    const [totalPrice, setTotalPrice] = useState(0);
-    const [updateComponent, setUpdateComponent] = useState(true);
-    const [updatePrice, setupdatePrice] = useState(false)
-    const [initOrder, setInitOrder] = useState(false)
+//     const [itemCount, setItemCount] = useState(1);
+//     const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
+//     const [totalPrice, setTotalPrice] = useState(0);
+//     const [updateComponent, setUpdateComponent] = useState(true);
+//     const [updatePrice, setupdatePrice] = useState(false)
+//     const [initOrder, setInitOrder] = useState(false)
 
-    console.log(orderDetails)
+//     console.log(orderDetails)
 
-    let [obj, setObj] = useState({
-    })
+//     let [obj, setObj] = useState({
+//     })
 
-    let [price, setPrice] = useState(selectedItem.price);
-    useEffect(() => {
-        let arr = []
-        for (let keys in obj) {
-            arr.push(obj[keys])
-        }
-        arr.map((a, i) => price += Number(a.price))
-        setTotalPrice(price * itemCount)
-        setupdatePrice(false)
-    }, [itemToAdd, itemCount, obj, price, updatePrice]);
+//     let [price, setPrice] = useState(selectedItem.price);
+//     useEffect(() => {
+//         let arr = []
+//         for (let keys in obj) {
+//             arr.push(obj[keys])
+//         }
+//         arr.map((a, i) => price += Number(a.price))
+//         setTotalPrice(price * itemCount)
+//         setupdatePrice(false)
+//     }, [itemToAdd, itemCount, obj, price, updatePrice]);
 
-    const saveCart = (obj) => {
-
-
-        dispatch(customisedAction(SET_ORDER_ITEM, obj))
-        setViewAddons(false)
+//     const saveCart = (obj) => {
 
 
+//         dispatch(customisedAction(SET_ORDER_ITEM, obj))
+//         setViewAddons(false)
 
-    }
-    // FINAL CALL
-    const addToCart = e => {
-        e.preventDefault();
-        let arr = []
-        for (let keys in obj) {
-            arr.push(obj[keys])
-        }
 
-        let objItem = {
-            ...selectedItem,
-            addOns: arr,
-            quantity: itemCount,
-            totalPrice: totalPrice,
-            restaurantId: restaurantId,
-            orderNumber: "000000032"
-        }
 
-        let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
-        if (cartMenu.length) {
-            if (cartMenu[0].restaurantId === restaurantId) {
-                saveCart(objItem)
-            } else if (cartMenu[0].restaurantId != restaurantId) {
-                dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'success' }))
-            }
-        } else {
+//     }
+//     // FINAL CALL
+//     const addToCart = e => {
+//         e.preventDefault();
+//         let arr = []
+//         for (let keys in obj) {
+//             arr.push(obj[keys])
+//         }
 
-            saveCart(objItem)
+//         let objItem = {
+//             ...selectedItem,
+//             addOns: arr,
+//             quantity: itemCount,
+//             totalPrice: totalPrice,
+//             restaurantId: restaurantId,
+//             orderNumber: "000000032"
+//         }
 
-        }
+//         let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
+//         if (cartMenu.length) {
+//             if (cartMenu[0].restaurantId === restaurantId) {
+//                 saveCart(objItem)
+//             } else if (cartMenu[0].restaurantId != restaurantId) {
+//                 dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'success' }))
+//             }
+//         } else {
 
-    }
-    let arrr = []
+//             saveCart(objItem)
 
-    useEffect(() => {
-        setInitOrder(getItem("orderDetails"))
+//         }
 
-    }, [])
+//     }
+//     let arrr = []
 
-    // this is order initializing api for QR CODE
+//     useEffect(() => {
+//         setInitOrder(getItem("orderDetails"))
+
+//     }, [])
+
+//     // this is order initializing api for QR CODE
 
 
         
@@ -151,293 +154,293 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     
    
 
-    return (
-        <div className="add-on-dialog">
-            <form onSubmit={e => addToCart(e)}>
-                <div className="dialog">
+//     return (
+//         <div className="add-on-dialog">
+//             <form onSubmit={e => addToCart(e)}>
+//                 <div className="dialog">
 
-                    <div style={{ display: 'flex', padding: '10px 20px' }}>
-                        <FontAwesomeIcon icon={faTimes} className="icon-starz" onClick={() => setViewAddons(false)} />
-                    </div>
+//                     <div style={{ display: 'flex', padding: '10px 20px' }}>
+//                         <FontAwesomeIcon icon={faTimes} className="icon-starz" onClick={() => setViewAddons(false)} />
+//                     </div>
 
-                    <div className="item-iamge" >
-                        <img
-                            width='90px'
-                            height='90px'
-                            src={selectedItem.imageUrl}
-                            alt="image"
-                        />
-                    </div>
+//                     <div className="item-iamge" >
+//                         <img
+//                             width='90px'
+//                             height='90px'
+//                             src={selectedItem.imageUrl}
+//                             alt="image"
+//                         />
+//                     </div>
 
-                    <div className="ice-cap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h3 className="ice-cap" style={{ maxWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedItem.name}</h3>
-                        <span style={{ marginRight: 8 }}>${totalPrice}</span>
-                    </div>
+//                     <div className="ice-cap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//                         <h3 className="ice-cap" style={{ maxWidth: 200, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedItem.name}</h3>
+//                         <span style={{ marginRight: 8 }}>${totalPrice}</span>
+//                     </div>
 
-                    <div className="addon-selection-content">
-                        {
-                            selectedItem.addOns.filter(addOn => addOn.addOnOptions.length > 0).map(addOn => {
-                                return (
-                                    addOn.mandatory ?
-                                        <React.Fragment key={addOn.id}>
-                                            <div className="acrdn-hdng" >
-                                                <h3 className='acrdn-title'>{addOn.name}</h3>
-                                                <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
-                                            </div>
+//                     <div className="addon-selection-content">
+//                         {
+//                             selectedItem.addOns.filter(addOn => addOn.addOnOptions.length > 0).map(addOn => {
+//                                 return (
+//                                     addOn.mandatory ?
+//                                         <React.Fragment key={addOn.id}>
+//                                             <div className="acrdn-hdng" >
+//                                                 <h3 className='acrdn-title'>{addOn.name}</h3>
+//                                                 <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
+//                                             </div>
 
-                                            <div
-                                                style={{ position: 'relative' }}>
-                                                {
-                                                    document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
-                                                        ?
-                                                        <FontAwesomeIcon
-                                                            icon={faAngleUp}
-                                                            className="toggle-accordion"
-                                                            onClick={() => {
-                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                                addonItemsList.style.display = 'flex';
-                                                                setUpdateComponent(!updateComponent)
-                                                            }}
-                                                        />
-                                                        :
-                                                        <FontAwesomeIcon
-                                                            icon={faAngleDown}
-                                                            className="toggle-accordion"
-                                                            onClick={() => {
-                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                                addonItemsList.style.display = 'none';
-                                                                setUpdateComponent(!updateComponent)
-                                                            }}
-                                                        />
-                                                }
-                                            </div>
+//                                             <div
+//                                                 style={{ position: 'relative' }}>
+//                                                 {
+//                                                     document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+//                                                         ?
+//                                                         <FontAwesomeIcon
+//                                                             icon={faAngleUp}
+//                                                             className="toggle-accordion"
+//                                                             onClick={() => {
+//                                                                 let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                                 addonItemsList.style.display = 'flex';
+//                                                                 setUpdateComponent(!updateComponent)
+//                                                             }}
+//                                                         />
+//                                                         :
+//                                                         <FontAwesomeIcon
+//                                                             icon={faAngleDown}
+//                                                             className="toggle-accordion"
+//                                                             onClick={() => {
+//                                                                 let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                                 addonItemsList.style.display = 'none';
+//                                                                 setUpdateComponent(!updateComponent)
+//                                                             }}
+//                                                         />
+//                                                 }
+//                                             </div>
 
-                                            <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
-                                                {
-                                                    addOn.addOnOptions.length > 0 && addOn.addOnOptions.map(addOnOption => {
-                                                        return (
-                                                            <React.Fragment key={addOnOption.id}>
-                                                                <div className="addon-radio">
-                                                                    <div className="addon-check">
-                                                                        <input
-                                                                            type="radio"
-                                                                            required={!!addOn.mandatory}
-                                                                            name={addOn.name}
-                                                                            className="check"
-                                                                            onChange={() => {
-                                                                                setupdatePrice(true)
+//                                             <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+//                                                 {
+//                                                     addOn.addOnOptions.length > 0 && addOn.addOnOptions.map(addOnOption => {
+//                                                         return (
+//                                                             <React.Fragment key={addOnOption.id}>
+//                                                                 <div className="addon-radio">
+//                                                                     <div className="addon-check">
+//                                                                         <input
+//                                                                             type="radio"
+//                                                                             required={!!addOn.mandatory}
+//                                                                             name={addOn.name}
+//                                                                             className="check"
+//                                                                             onChange={() => {
+//                                                                                 setupdatePrice(true)
 
-                                                                                let objj = { ...obj }
-                                                                                objj[addOn.name] = {
-                                                                                    "addOnId": addOnOption.id,
-                                                                                    "addOnName": addOn.name,
-                                                                                    "addOnOptionId": addOnOption.id,
-                                                                                    "addOnOption": addOnOption.name,
-                                                                                    "price": addOnOption.price
-                                                                                }
-                                                                                setObj(objj)
-                                                                            }}
-                                                                        />
-                                                                        <small className='radio-txt'>{addOnOption.name}</small>
-                                                                    </div>
+//                                                                                 let objj = { ...obj }
+//                                                                                 objj[addOn.name] = {
+//                                                                                     "addOnId": addOnOption.id,
+//                                                                                     "addOnName": addOn.name,
+//                                                                                     "addOnOptionId": addOnOption.id,
+//                                                                                     "addOnOption": addOnOption.name,
+//                                                                                     "price": addOnOption.price
+//                                                                                 }
+//                                                                                 setObj(objj)
+//                                                                             }}
+//                                                                         />
+//                                                                         <small className='radio-txt'>{addOnOption.name}</small>
+//                                                                     </div>
 
-                                                                    <div className="addon-info">
-                                                                        <span className="addon-price">+${addOnOption.price}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </React.Fragment>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </React.Fragment>
-                                        :
-                                        <React.Fragment key={addOn.id}>
-                                            <div className="acrdn-hdng" >
-                                                <h3 className='acrdn-title'>{addOn.name}</h3>
-                                                <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
-                                            </div>
+//                                                                     <div className="addon-info">
+//                                                                         <span className="addon-price">+${addOnOption.price}</span>
+//                                                                     </div>
+//                                                                 </div>
+//                                                             </React.Fragment>
+//                                                         )
+//                                                     })
+//                                                 }
+//                                             </div>
+//                                         </React.Fragment>
+//                                         :
+//                                         <React.Fragment key={addOn.id}>
+//                                             <div className="acrdn-hdng" >
+//                                                 <h3 className='acrdn-title'>{addOn.name}</h3>
+//                                                 <small className='req'>{addOn.mandatory ? 'Required' : 'Optional'}</small>
+//                                             </div>
 
-                                            <div
-                                                style={{ position: 'relative' }}>
-                                                {
-                                                    document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
-                                                        ?
-                                                        <FontAwesomeIcon
-                                                            icon={faAngleUp}
-                                                            className="toggle-accordion"
-                                                            onClick={() => {
-                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                                addonItemsList.style.display = 'flex';
-                                                                setUpdateComponent(!updateComponent)
-                                                            }}
-                                                        />
-                                                        :
-                                                        <FontAwesomeIcon
-                                                            icon={faAngleDown}
-                                                            className="toggle-accordion"
-                                                            onClick={() => {
-                                                                let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                                addonItemsList.style.display = 'none';
-                                                                setUpdateComponent(!updateComponent)
-                                                            }}
-                                                        />
-                                                }
-                                            </div>
+//                                             <div
+//                                                 style={{ position: 'relative' }}>
+//                                                 {
+//                                                     document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+//                                                         ?
+//                                                         <FontAwesomeIcon
+//                                                             icon={faAngleUp}
+//                                                             className="toggle-accordion"
+//                                                             onClick={() => {
+//                                                                 let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                                 addonItemsList.style.display = 'flex';
+//                                                                 setUpdateComponent(!updateComponent)
+//                                                             }}
+//                                                         />
+//                                                         :
+//                                                         <FontAwesomeIcon
+//                                                             icon={faAngleDown}
+//                                                             className="toggle-accordion"
+//                                                             onClick={() => {
+//                                                                 let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                                 addonItemsList.style.display = 'none';
+//                                                                 setUpdateComponent(!updateComponent)
+//                                                             }}
+//                                                         />
+//                                                 }
+//                                             </div>
 
-                                            <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
-                                                {
-                                                    addOn.addOnOptions.map(addOnOption => {
-                                                        return (
-                                                            <React.Fragment key={addOnOption.id}>
-                                                                <div className="addon-radio">
-                                                                    <div className="addon-check" >
-                                                                        <input
-                                                                            type="checkbox"
-                                                                            required={!!addOn.mandatory}
-                                                                            onChange={() => {
-                                                                                setupdatePrice(true)
-                                                                                if (!obj[addOn.name]) {
+//                                             <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+//                                                 {
+//                                                     addOn.addOnOptions.map(addOnOption => {
+//                                                         return (
+//                                                             <React.Fragment key={addOnOption.id}>
+//                                                                 <div className="addon-radio">
+//                                                                     <div className="addon-check" >
+//                                                                         <input
+//                                                                             type="checkbox"
+//                                                                             required={!!addOn.mandatory}
+//                                                                             onChange={() => {
+//                                                                                 setupdatePrice(true)
+//                                                                                 if (!obj[addOn.name]) {
 
-                                                                                    let objj = { ...obj }
-                                                                                    objj[addOn.name] = {
-                                                                                        "addOnId": addOn.id,
-                                                                                        "addOnName": addOn.name,
-                                                                                        "addOnOptionId": addOn.id,
-                                                                                        "addOnOption": addOn.name,
-                                                                                        "price": addOn.price
-                                                                                    }
-                                                                                    setObj(objj)
-                                                                                } else {
-                                                                                    let objj = { ...obj }
+//                                                                                     let objj = { ...obj }
+//                                                                                     objj[addOn.name] = {
+//                                                                                         "addOnId": addOn.id,
+//                                                                                         "addOnName": addOn.name,
+//                                                                                         "addOnOptionId": addOn.id,
+//                                                                                         "addOnOption": addOn.name,
+//                                                                                         "price": addOn.price
+//                                                                                     }
+//                                                                                     setObj(objj)
+//                                                                                 } else {
+//                                                                                     let objj = { ...obj }
 
-                                                                                    delete obj[addOn.name]
+//                                                                                     delete obj[addOn.name]
 
-                                                                                }
-                                                                            }}
-                                                                            name={addOnOption.name}
-                                                                            className="check"
-                                                                        />
-                                                                        <small className='radio-txt'>{addOnOption.name}</small>
-                                                                    </div>
+//                                                                                 }
+//                                                                             }}
+//                                                                             name={addOnOption.name}
+//                                                                             className="check"
+//                                                                         />
+//                                                                         <small className='radio-txt'>{addOnOption.name}</small>
+//                                                                     </div>
 
-                                                                    <div className="addon-info">
-                                                                        <span className="addon-price">+${addOnOption.price}</span>
-                                                                    </div>
-                                                                </div>
-                                                            </React.Fragment>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                        </React.Fragment>
-                                )
-                            })
-                        }
+//                                                                     <div className="addon-info">
+//                                                                         <span className="addon-price">+${addOnOption.price}</span>
+//                                                                     </div>
+//                                                                 </div>
+//                                                             </React.Fragment>
+//                                                         )
+//                                                     })
+//                                                 }
+//                                             </div>
+//                                         </React.Fragment>
+//                                 )
+//                             })
+//                         }
 
-                        {
-                            selectedItem.addOns.filter(addOn => addOn.addOnOptions.length == 0).map(addOn => {
-                                return (
-                                    <React.Fragment key={addOn.id}>
-                                        <div className="acrdn-hdng" style={{ padding: '10px 18px' }}>
-                                            <h3 className='acrdn-title'>Optional</h3>
-                                        </div>
+//                         {
+//                             selectedItem.addOns.filter(addOn => addOn.addOnOptions.length == 0).map(addOn => {
+//                                 return (
+//                                     <React.Fragment key={addOn.id}>
+//                                         <div className="acrdn-hdng" style={{ padding: '10px 18px' }}>
+//                                             <h3 className='acrdn-title'>Optional</h3>
+//                                         </div>
 
-                                        <div
-                                            style={{ position: 'relative' }}>
-                                            {
-                                                document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
-                                                    ?
-                                                    <FontAwesomeIcon
-                                                        icon={faAngleUp}
-                                                        className="toggle-accordion"
-                                                        onClick={() => {
-                                                            let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                            addonItemsList.style.display = 'flex';
-                                                            setUpdateComponent(!updateComponent)
-                                                        }}
-                                                    />
-                                                    :
-                                                    <FontAwesomeIcon
-                                                        icon={faAngleDown}
-                                                        className="toggle-accordion"
-                                                        onClick={() => {
-                                                            let addonItemsList = document.getElementById("addon_" + addOn.id);
-                                                            addonItemsList.style.display = 'none';
-                                                            setUpdateComponent(!updateComponent)
-                                                        }}
-                                                    />
-                                            }
-                                        </div>
+//                                         <div
+//                                             style={{ position: 'relative' }}>
+//                                             {
+//                                                 document?.getElementById("addon_" + addOn.id)?.style?.display == 'none'
+//                                                     ?
+//                                                     <FontAwesomeIcon
+//                                                         icon={faAngleUp}
+//                                                         className="toggle-accordion"
+//                                                         onClick={() => {
+//                                                             let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                             addonItemsList.style.display = 'flex';
+//                                                             setUpdateComponent(!updateComponent)
+//                                                         }}
+//                                                     />
+//                                                     :
+//                                                     <FontAwesomeIcon
+//                                                         icon={faAngleDown}
+//                                                         className="toggle-accordion"
+//                                                         onClick={() => {
+//                                                             let addonItemsList = document.getElementById("addon_" + addOn.id);
+//                                                             addonItemsList.style.display = 'none';
+//                                                             setUpdateComponent(!updateComponent)
+//                                                         }}
+//                                                     />
+//                                             }
+//                                         </div>
 
-                                        <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
-                                            <div className="addon-radio">
-                                                <div className="addon-check" >
-                                                    <input
-                                                        type="checkbox"
-                                                        onChange={() => {
-                                                            setupdatePrice(true)
+//                                         <div id={"addon_" + addOn.id} style={{ display: 'flex', flexDirection: 'column', padding: '10px 20px' }}>
+//                                             <div className="addon-radio">
+//                                                 <div className="addon-check" >
+//                                                     <input
+//                                                         type="checkbox"
+//                                                         onChange={() => {
+//                                                             setupdatePrice(true)
 
-                                                            if (!obj[addOn.name]) {
+//                                                             if (!obj[addOn.name]) {
 
-                                                                let objj = { ...obj }
-                                                                objj[addOn.name] = {
-                                                                    "addOnId": addOn.id,
-                                                                    "addOnName": addOn.name,
-                                                                    "addOnOptionId": addOn.id,
-                                                                    "addOnOption": addOn.name,
-                                                                    "price": addOn.price
-                                                                }
-                                                                setObj(objj)
-                                                            } else {
-                                                                let objj = { ...obj }
+//                                                                 let objj = { ...obj }
+//                                                                 objj[addOn.name] = {
+//                                                                     "addOnId": addOn.id,
+//                                                                     "addOnName": addOn.name,
+//                                                                     "addOnOptionId": addOn.id,
+//                                                                     "addOnOption": addOn.name,
+//                                                                     "price": addOn.price
+//                                                                 }
+//                                                                 setObj(objj)
+//                                                             } else {
+//                                                                 let objj = { ...obj }
 
-                                                                delete obj[addOn.name]
-                                                            }
-                                                        }}
-                                                        name={addOn.name}
-                                                        className="check"
-                                                    />
-                                                    <small className='radio-txt'>{addOn.name}</small>
-                                                </div>
+//                                                                 delete obj[addOn.name]
+//                                                             }
+//                                                         }}
+//                                                         name={addOn.name}
+//                                                         className="check"
+//                                                     />
+//                                                     <small className='radio-txt'>{addOn.name}</small>
+//                                                 </div>
 
-                                                <div className="addon-info">
-                                                    <span className="addon-price">+${addOn.price}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </React.Fragment>
-                                )
-                            })
-                        }
-                        <div className="acrdn-hdng" >
-                            <h3 className='acrdn-title'>Special Instructions</h3>
-                        </div>
+//                                                 <div className="addon-info">
+//                                                     <span className="addon-price">+${addOn.price}</span>
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                     </React.Fragment>
+//                                 )
+//                             })
+//                         }
+//                         <div className="acrdn-hdng" >
+//                             <h3 className='acrdn-title'>Special Instructions</h3>
+//                         </div>
 
-                        <small className="special-instruction">Please let us know if your are allergic to anything or if we need to avoid anything.</small>
+//                         <small className="special-instruction">Please let us know if your are allergic to anything or if we need to avoid anything.</small>
 
-                        <div className="instrct-layout">
-                            <textarea className='instrctn-txt' placeholder="eg . No mayo" id="special_instructions" name="special_notes" rows="4" cols="40" />
-                        </div>
-                    </div>
+//                         <div className="instrct-layout">
+//                             <textarea className='instrctn-txt' placeholder="eg . No mayo" id="special_instructions" name="special_notes" rows="4" cols="40" />
+//                         </div>
+//                     </div>
 
-                    <div className="addon-dialog-footer">
-                        <div className="mrgn-tp">
+//                     <div className="addon-dialog-footer">
+//                         <div className="mrgn-tp">
 
-                            <FontAwesomeIcon icon={faMinus} className="icon-add" onClick={() => setItemCount(itemCount > 1 ? itemCount - 1 : 1)} />
-                            <span className='quntty'>{itemCount}</span>
-                            <FontAwesomeIcon icon={faPlus} className="icon-add" onClick={() => setItemCount(itemCount > 98 ? 99 : itemCount + 1)} />
-                        </div>
+//                             <FontAwesomeIcon icon={faMinus} className="icon-add" onClick={() => setItemCount(itemCount > 1 ? itemCount - 1 : 1)} />
+//                             <span className='quntty'>{itemCount}</span>
+//                             <FontAwesomeIcon icon={faPlus} className="icon-add" onClick={() => setItemCount(itemCount > 98 ? 99 : itemCount + 1)} />
+//                         </div>
 
-                        <button className="Add-to-Order" type="submit">
-                            Add to Order
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    )
-}
+//                         <button className="Add-to-Order" type="submit">
+//                             Add to Order
+//                         </button>
+//                     </div>
+//                 </div>
+//             </form>
+//         </div>
+//     )
+// }
 
 export default withRouter(MenuListingContainer)
 

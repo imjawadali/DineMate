@@ -9,6 +9,7 @@ import serviceReducer from './serviceReducer'
 import getOrderItemsReducer from './getOrderItemsReducer'
 import closeOrderReducer from './closeOrderReducer'
 import updateProfileReducer from './updateProfileReducer'
+import orderStatusReducer from './orderStatusReducer'
 
 
 
@@ -23,6 +24,7 @@ export default combineReducers({
     serviceReducer,
     getOrderItemsReducer,
     closeOrderReducer,
-    updateProfileReducer
+    updateProfileReducer,
+    orderStatusReducer
 
 })

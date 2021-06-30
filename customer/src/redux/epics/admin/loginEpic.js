@@ -17,6 +17,9 @@ import {
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
+import { useDispatch } from 'react-redux'
+
+// let dispatch = useDispatch()
 
 let Authorization = '';
 export class loginEpic {
@@ -64,14 +67,15 @@ export class loginEpic {
     action$.pipe(
       ofType(UPDATE_RPOFILE),
       switchMap(
-        async () => {
+        async (obj) => {
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.updateProfile,
-            null,
+            obj,
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
+              // dispatch(customisedAction(GET_RPOFILE))
               return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
             },
             UPDATE_RPOFILE_FAILURE

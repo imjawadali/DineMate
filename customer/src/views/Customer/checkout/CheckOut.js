@@ -10,7 +10,7 @@ import { CALL_FOR_SERVICE, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTA
 import { getItem, setItem } from '../../../helpers'
 
 
-function CheckOut() {
+function CheckOut(props) {
 
     const [products, setProducts] = useState([])
 
@@ -29,13 +29,24 @@ function CheckOut() {
     const [doNotDisturbActive, setDoNotDisturbActive] = useState()
     const [testArr, setTestArr] = useState([])
     const [orderDetail, setOrderDetail] = useState("")
+    const [TakeAwayOrder, setTakeAwayOrder] = useState("")
 
     const dispatch = useDispatch()
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     useEffect(() => {
-        setOrderDetail(orderDetails)
+        setTimeout(() => {
+            setOrderDetail(getItem('orderDetails'))
+            console.log(getItem('orderDetails'))
+        }, [1000])
+        // if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
+        setProducts(getItem('cartMenu'))
+        // }
+    }, [])
+    useEffect(() => {
+        setOrderDetail(getItem('orderDetails'))
         console.log(orderDetails)
     }, [orderDetails])
+    console.log(orderDetail, 'order detail')
 
 
     useEffect(() => {
@@ -66,11 +77,25 @@ function CheckOut() {
     let dataOrder = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
     useEffect(() => {
-        let data = dataOrder ? dataOrder : []
-        if (data.length) {
-            setProducts([...data])
+
+        console.log('timeout')
+        console.log(orderDetail)
+        // setTimeout(() => {
+        if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
+            console.log(dataOrder)
+            let data = dataOrder ? dataOrder.orderItems : []
+            if (data.length) {
+                setProducts([...data])
+            }
+        } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
+            let data = TakeAwayOrder ? TakeAwayOrder : []
+            if (data.length) {
+                setProducts(data)
+            }
         }
-    }, [dataOrder])
+        // }, [500])
+
+    }, [dataOrder, TakeAwayOrder, orderDetails])
 
     useEffect(() => {
         if (resturantDetail) {
@@ -121,12 +146,14 @@ function CheckOut() {
 
 
     const payNow = () => {
+        console.log(orderDetail)
         let obj = {
             "restaurantId": orderDetail.restaurantId,
             "orderNumber": orderDetail.orderNumber,
             "type": orderDetail.type
         }
         dispatch(customisedAction(CLOSE_ORDER, obj))
+        props.history.push('/customer/xyz_restaurant/menu')
     }
 
 
@@ -141,7 +168,7 @@ function CheckOut() {
                     <p className="from">From: <span>Tim Hortons</span></p>
                 </div>
                 <div className="menuCart">
-                    {products.length ? products.map((a, i) => {
+                    {products && products.length ? products.map((a, i) => {
                         return (
                             <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
@@ -155,18 +182,39 @@ function CheckOut() {
                         <p>$ {totalAmount()}</p>
                     </div>
                 </div>
-                <div className="pickUpTime">
-                    <h2>Pick Up Time</h2>
-                    <label >
-                        <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
-                    </label>
-                </div>
-                <div className="pickUpLocation">
-                    <h2>Pick Up Location</h2>
-                    <div>
-                        <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
-                    </div>
-                </div>
+                {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
+                    ?
+                    <>
+                        <div className="pickUpTime">
+                            <h2>Pick Up Time</h2>
+                            <label >
+                                <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
+                            </label>
+                        </div>
+                        <div className="pickUpLocation">
+                            <h2>Pick Up Location</h2>
+                            <div>
+                                <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
+                            </div>
+                        </div>
+                    </>
+                    : orderDetail && orderDetail.type.toLowerCase() === 'take-away'
+                        ?
+                        <>
+                            <div className="pickUpTime">
+                                <h2>Pick Up Time</h2>
+                                <label >
+                                    <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
+                                </label>
+                            </div>
+                            <div className="pickUpLocation">
+                                <h2>Pick Up Location</h2>
+                                <div>
+                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
+                                </div>
+                            </div>
+                        </> : null}
+
                 <div className="pickUpPayment">
                     <h2>Payment</h2>
                     <div>
