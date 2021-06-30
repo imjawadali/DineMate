@@ -124,9 +124,9 @@ function AddRestaurant(props) {
               />
             </div>
             <div className="InputsInnerContainer">
-              <SmallTitle text="Cuisine" />
+              <SmallTitle text="Cuisine(s)" />
               <Input 
-                placeholder="Traditional"
+                placeholder="Traditional, Continental, ..."
                 value={cuisine}
                 onChange={({ target: { value } }) => setcuisine(value)}
               />

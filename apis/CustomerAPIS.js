@@ -354,7 +354,15 @@ module.exports = app => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         getConnection(
             res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    DISTINCT CONCAT(
+                        '{"id":',c.id,
+                        ',"name":"',c.name,'"}'
+                    ) ORDER BY c.createdAt DESC
+                ),
+            ']') as categories
             FROM restaurants R 
             JOIN categories c on c.restaurantId = R.restaurantId
             JOIN menu m on m.restaurantId = R.restaurantId
@@ -363,10 +371,17 @@ module.exports = app => {
             null,
             (body) => {
                 if (body.length) {
+                    const data = []
+                    for (let i = 0; i < body.length; i++) {
+                        const temp = body[i]
+                        if (temp.categories)
+                            temp.categories = JSON.parse(temp.categories)
+                        data.push(temp)
+                    }
                     return res.send({
                         status: true,
                         message: '',
-                        body
+                        body: data
                     })
                 } else {
                     return res.send({
@@ -389,11 +404,20 @@ module.exports = app => {
         })
         getConnection(
             res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    DISTINCT CONCAT(
+                        '{"id":',c.id,
+                        ',"name":"',c.name,'"}'
+                    ) ORDER BY c.createdAt DESC
+                ),
+            ']') as categories
             FROM restaurants R 
             JOIN categories c on c.restaurantId = R.restaurantId
             JOIN menu m on m.restaurantId = R.restaurantId
             WHERE R.restaurantName LIKE '%${searchBy}%'
+            OR R.cuisine LIKE '%${searchBy}%'
             OR c.name LIKE '%${searchBy}%'
             OR m.name LIKE '%${searchBy}%'
             GROUP BY R.restaurantId
@@ -401,10 +425,17 @@ module.exports = app => {
             null,
             (body) => {
                 if (body.length) {
+                    const data = []
+                    for (let i = 0; i < body.length; i++) {
+                        const temp = body[i]
+                        if (temp.categories)
+                            temp.categories = JSON.parse(temp.categories)
+                        data.push(temp)
+                    }
                     return res.send({
                         status: true,
                         message: '',
-                        body
+                        body: data
                     })
                 } else {
                     return res.send({
@@ -431,15 +462,16 @@ module.exports = app => {
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
             CONCAT('[',
                 GROUP_CONCAT(
-                    CONCAT(
+                    DISTINCT CONCAT(
                         '{"id":',c.id,
                         ',"name":"',c.name,'"}'
                     ) ORDER BY c.createdAt DESC
                 ),
             ']') as categories
-            FROM restaurants R 
+            FROM restaurants R
             LEFT JOIN categories c on c.restaurantId = R.restaurantId
-            WHERE R.restaurantId = '${restaurantId}' 
+            JOIN menu m on m.categoryId = c.id AND m.restaurantId = '${restaurantId}'
+            WHERE R.restaurantId = '${restaurantId}'
             GROUP BY R.restaurantId
             ORDER BY R.createdAt DESC`,
             null,
