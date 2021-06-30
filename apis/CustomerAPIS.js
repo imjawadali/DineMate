@@ -145,6 +145,53 @@ module.exports = app => {
         }
     })
 
+    app.get('/customer/getMyOrders', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/getMyOrders")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            getSecureConnection(
+                res,
+                customerId,
+                `SELECT o.restaurantId, r.restaurantName, o.orderNumber,
+                SUM(oi.totalPrice) as billAmount,
+                o.status as active, o.type
+                FROM orders o
+                JOIN restaurants r ON r.restaurantId = o.restaurantId
+                LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
+                WHERE customerId = ${customerId}
+                GROUP BY o.orderNumber`,
+                null,
+                (body) => {
+                    if (body.length)
+                        return res.send({
+                            status: true,
+                            message: 'Orders list fetched successfully!',
+                            body
+                        })
+                    else
+                        return res.send({
+                            status: false,
+                            message: 'No past or active orders!',
+                            errorCode: 422
+                        })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
     app.post('/customer/updateProfile', async (req, res) => {
         try {
             console.log("\n\n>>> /customer/updateProfile")
@@ -307,38 +354,62 @@ module.exports = app => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         getConnection(
             res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
-            CONCAT('[',
-                GROUP_CONCAT(
-                    CONCAT(
-                        '{"id":',c.id,
-                        ',"name":"',c.name,'"}'
-                    ) ORDER BY c.createdAt DESC
-                ),
-            ']') as categories
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address
             FROM restaurants R 
-            LEFT JOIN categories c on c.restaurantId = R.restaurantId
+            JOIN categories c on c.restaurantId = R.restaurantId
+            JOIN menu m on m.restaurantId = R.restaurantId
             GROUP BY R.restaurantId
             ORDER BY R.createdAt DESC`,
             null,
             (body) => {
                 if (body.length) {
-                    const data = []
-                    for (let i = 0; i < body.length; i++) {
-                        const temp = body[i]
-                        if (temp.categories)
-                            temp.categories = JSON.parse(temp.categories)
-                        data.push(temp)
-                    }
                     return res.send({
                         status: true,
                         message: '',
-                        body: data
+                        body
                     })
                 } else {
                     return res.send({
                         status: false,
                         message: 'No reastaurants available!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
+    app.post('/customer/searchRestaurants', async (req, res) => {
+        console.log("\n\n>>> /customer/searchRestaurants")
+        const { searchBy } = req.body
+        if (!searchBy) return res.send({
+            status: false,
+            message: 'No !',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address
+            FROM restaurants R 
+            JOIN categories c on c.restaurantId = R.restaurantId
+            JOIN menu m on m.restaurantId = R.restaurantId
+            WHERE R.restaurantName LIKE '%${searchBy}%'
+            OR c.name LIKE '%${searchBy}%'
+            OR m.name LIKE '%${searchBy}%'
+            GROUP BY R.restaurantId
+            ORDER BY R.createdAt DESC`,
+            null,
+            (body) => {
+                if (body.length) {
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No match found!',
                         errorCode: 422
                     })
                 }
@@ -1169,17 +1240,21 @@ module.exports = app => {
             `SELECT id, quantity, name, totalPrice FROM orderItems
             WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             null,
-            (body) => {
-                if (body.length) {
+            (data) => {
+                if (data.length) {
                     return res.send({
                         status: true,
                         message: '',
-                        body
+                        body: {
+                            billAmount: data.map(item => item.totalPrice).reduce((a, b) => a + b, 0) - 2,
+                            rewardPoints: 2,
+                            orderItems: data
+                        }
                     })
                 } else {
                     return res.send({
                         status: false,
-                        message: 'No reastaurants available!',
+                        message: 'No items submitted!',
                         errorCode: 422
                     })
                 }
@@ -1252,13 +1327,7 @@ module.exports = app => {
     app.post('/customer/getOrderStatus', async (req, res) => {
         console.log("\n\n>>> /customer/getOrderStatus")
         console.log(req.body)
-        const customerId = decrypt(req.header('authorization'))
         const { restaurantId, orderNumber } = req.body
-        if (!customerId) return res.send({
-            status: false,
-            message: 'Not Authorized!',
-            errorCode: 401
-        })
         if (!restaurantId) return res.send({
             status: false,
             message: 'Restuatant Id is required!',
@@ -1269,9 +1338,8 @@ module.exports = app => {
             message: 'Order number is required!',
             errorCode: 422
         })
-        getSecureConnection(
+        getConnection(
             res,
-            customerId,
             `SELECT status, customerStatus FROM orders WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
             null,
             (result) => {
