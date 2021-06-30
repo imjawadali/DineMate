@@ -77,7 +77,7 @@ module.exports = app => {
             })
             getConnection(
                 res,
-                `SELECT id, email FROM customers
+                `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers
                 WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}'`,
                 null,
                 (data) => {
@@ -223,10 +223,25 @@ module.exports = app => {
                     updatedData,
                     (result) => {
                         if (result.changedRows)
-                            return res.send({
-                                status: true,
-                                message: 'Profile updated successfully!'
-                            })
+                            getConnection(
+                                res,
+                                `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                                null,
+                                (data) => {
+                                    if (data.length)
+                                        return res.send({
+                                            status: true,
+                                            message: 'Profile updated successfully!',
+                                            body: data[0]
+                                        })
+                                    else
+                                        return res.send({
+                                            status: false,
+                                            message: 'Profile updated, failed to get updated profile!',
+                                            errorCode: 422
+                                        })
+                                }
+                            )
                         else
                             return res.send({
                                 status: false,
