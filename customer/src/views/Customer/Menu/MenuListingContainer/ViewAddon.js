@@ -9,7 +9,7 @@ import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDE
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId,edit }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
@@ -25,6 +25,13 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
     let [obj, setObj] = useState({
     })
+    console.log(obj)
+    useEffect(() => {
+        if (addedAddons) {
+            setObj(addedAddons)
+            console.log(addedAddons)
+        }
+    }, [addedAddons])
 
     let [price, setPrice] = useState(selectedItem.price);
     useEffect(() => {
@@ -64,20 +71,37 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 quantity: itemCount,
                 totalPrice: totalPrice,
                 restaurantId: restaurantId,
-                orderNumber: "000000032"
+                orderNumber: "000000032",
+                addOnObj: obj
             }
+            if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
-            let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
-            if (cartMenu.length) {
-                if (cartMenu[0].restaurantId === restaurantId) {
+                let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
+                if (cartMenu) {
+                    if (cartMenu.restaurantId === restaurantId) {
+                        saveCart(objItem)
+                    } else if (cartMenu.restaurantId != restaurantId) {
+                        dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                    }
+                } else {
+
                     saveCart(objItem)
-                } else if (cartMenu[0].restaurantId != restaurantId) {
-                    dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'success' }))
+
                 }
             } else {
 
-                saveCart(objItem)
+                let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
+                if (cartMenu.length) {
+                    if (cartMenu[0].restaurantId === restaurantId) {
+                        saveCart(objItem)
+                    } else if (cartMenu[0].restaurantId != restaurantId) {
+                        dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                    }
+                } else {
 
+                    saveCart(objItem)
+
+                }
             }
         } else {
             console.log('edit')
@@ -85,7 +109,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             for (let keys in obj) {
                 arr.push(obj[keys])
             }
-            
+
             let objItem = {
                 ...selectedItem,
                 addOns: arr,
@@ -93,8 +117,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 totalPrice: totalPrice,
                 restaurantId: restaurantId,
                 orderNumber: "000000032"
+
             }
-            dispatch(customisedAction(EDIT_ORDER_ITEM, objItem))
+            dispatch(customisedAction(EDIT_ORDER_ITEM, { objItem: objItem, i: editInded }))
         }
 
     }
@@ -188,6 +213,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                             required={!!addOn.mandatory}
                                                                             name={addOn.name}
                                                                             className="check"
+                                                                            checked={obj[addOn.name] && obj[addOn.name].addOnOption === addOnOption.name ? true : false}
                                                                             onChange={() => {
                                                                                 setupdatePrice(true)
 
@@ -259,6 +285,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                         <input
                                                                             type="checkbox"
                                                                             required={!!addOn.mandatory}
+                                                                            checked={obj[addOn.name] ? true : false}
                                                                             onChange={() => {
                                                                                 setupdatePrice(true)
                                                                                 if (!obj[addOn.name]) {
@@ -339,6 +366,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                 <div className="addon-check" >
                                                     <input
                                                         type="checkbox"
+                                                        checked={obj[addOn.name] ? true : false}
                                                         onChange={() => {
                                                             setupdatePrice(true)
 

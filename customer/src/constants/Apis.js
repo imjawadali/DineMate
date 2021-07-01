@@ -22,7 +22,9 @@ export const API_ENDPOINTS = {
         takeAwayOrder: '/customer/takeAwayOrder',
         updateProfile: '/customer/updateProfile',
         setNewPassword: '/customer/setNewPassword',
-        getOrderStatus: '/customer/getOrderStatus'
+        getOrderStatus: '/customer/getOrderStatus',
+        getAllOrders: '/customer/getMyOrders',
+        searchResturant: '/customer/searchRestaurants'
 
     }
 }

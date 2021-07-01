@@ -45,7 +45,6 @@
     color: #00000057;
 }
 .profile .profileName p .pointBadge {
-
     display: flex;
     margin-right: 10px;
     align-items: center;
@@ -63,10 +62,10 @@
 }
 .profile .profileName p .point {
     color: #eb4744;
-    font-weight:bolder ;
+    font-weight: bolder;
     margin-left: 10px;
 }
-.profile .inputDiv input{
+.profile .inputDiv input {
     border: none;
     box-shadow: 0px 0px 16px 0px #31c6b6b5;
     width: calc(100% - 20px);
@@ -75,13 +74,13 @@
     margin: 8px 0px;
     width: 350px;
 }
-.profile .profileInputDIv{
-    height: 70PX;
-}
-.profile .profileSaveBtn{
+.profile .profileInputDIv {
     height: 70px;
-} 
-.profile .saveBtn button{
+}
+.profile .profileSaveBtn {
+    height: 70px;
+}
+.profile .saveBtn button {
     background-color: #2ec3b3;
     color: white;
     font-size: 18px;
@@ -93,6 +92,28 @@
     width: 350px;
     border: 2px solid white;
 }
+.profileImage .editImage {
+    position: absolute;
+    background: white;
+    width: 42px;
+    border-radius: 50%;
+    border: 1px solid #ea4744;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 20px;
+    cursor: pointer;
+    right: -15px;
+}
+.profileImage .editImage svg {
+    width: 22px;
+    height: 22px;
+    color: #ea4744;
+}
+.profileImage .editImage .fileUploadInput {
+    display: none;
+}
 @media screen and (max-width: 600px) {
     .profile .profileImageDiv {
         flex-direction: column;
@@ -102,21 +123,20 @@
         margin-bottom: 20px;
     }
     .profile .profileImageDiv h2 {
-    margin-bottom: 10px;
+        margin-bottom: 10px;
     }
-    .profile .centerAb{
+    .profile .centerAb {
         position: unset;
         transform: unset;
     }
-    .profile .centerAb h1{
-    margin-bottom: 0px;
-    margin-top: 0px;
+    .profile .centerAb h1 {
+        margin-bottom: 0px;
+        margin-top: 0px;
     }
-    .profile .inputDiv{
+    .profile .inputDiv {
         width: calc(100% - 5vw);
     }
-    .profile .inputDiv input{
+    .profile .inputDiv input {
         width: calc(100% - 5vw);
-
     }
 }

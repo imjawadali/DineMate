@@ -22,11 +22,31 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    box-shadow: 0px 0.5vw 1vw 0.5vw rgb(193 246 241);
+    padding: 20px 20px 10px 35px;
+    margin-bottom: 40px;
 }
 
 .pastOrderPage .orderDetail h5 {
     font-size: 25px;
+    font-weight: 400;
+    margin-bottom: 10px;
 }
 .pastOrderPage .orderDetail h3 {
     font-size: 30px;
+    margin-bottom: 10px;
+}
+.pastOrderPage .orderDetail button {
+
+    background-color: #35c8b8;
+    border: none;
+    font-size: 17px;
+    color: white;
+    padding: 6px 25px;
+}
+.pastOrderPage .orderDetail .detailDiv h3{
+    text-align: right;
+}
+.pastOrderPage .orderDetail .fromDiv h3{
+    color: #ea3936;
 }

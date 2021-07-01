@@ -30,6 +30,9 @@ const Menu = props => {
 
     let { restaurantId } = useParams();
 
+
+ 
+
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))

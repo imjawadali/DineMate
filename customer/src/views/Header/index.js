@@ -25,6 +25,7 @@ const Header = props => {
     const [restaurantId, setRestaurantId] = useState()
 
     const [selectedItem, setSelectedItem] = useState({});
+    const [addedAddons, setAddedAddons] = useState({});
 
 
     let dispatch = useDispatch()
@@ -49,6 +50,19 @@ const Header = props => {
     // }, [])
 
     useEffect(() => {
+        if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
+
+            let obj3 = {
+                "restaurantId": orderDetail.restaurantId,
+                "orderNumber": orderDetail.orderNumber,
+                "items": items
+            }
+            dispatch(customisedAction(GET_ORDER_ITEMS, obj3))
+        }
+
+    }, [cartItemR])
+
+    useEffect(() => {
         let arr = []
         if (cartItemR) {
             cartItemR.map((a, i) => {
@@ -61,7 +75,8 @@ const Header = props => {
                     "addOns": a.addOns,
                     "restaurantId": a.restaurantId,
                     "status": true,
-                    "id": a.id
+                    "id": a.id,
+                    "addOnObj": a.addOnObj
                 })
             })
             setItems(arr)
@@ -78,7 +93,9 @@ const Header = props => {
                         "addOns": a.addOns,
                         "restaurantId": a.restaurantId,
                         "status": true,
-                        "id": a.id
+                        "id": a.id,
+                        "addOnObj": a.addOnObj
+
 
 
                     })
@@ -103,6 +120,7 @@ const Header = props => {
                 setItems(arr)
             }
         }
+        console.log('runn')
 
     }, [cartItemR, OrderItems])
 
@@ -155,7 +173,7 @@ const Header = props => {
                 }
                 dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
                 setTimeout(() => {
-                    dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+                    // dispatch(customisedAction(GET_ORDER_ITEMS, obj))
                 }, [300])
                 setNetItems()
                 setUpdateState(true)
@@ -246,30 +264,41 @@ const Header = props => {
 
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
 
-    // useEffect(() => {
-    //     if (items.length) {
-    //         console.log(items)
-    //         dispatch(customisedAction(GET_MENU, { restaurantId: items[0].restaurantId }))
-    //     }
-    // }, [items])
+    useEffect(() => {
+        if ((!orderDetail) || (orderDetail && orderDetail.type.toLowerCase() === 'take-away')) {
+            if (items.length) {
+                console.log(items)
+                dispatch(customisedAction(GET_MENU, { restaurantId: items[0].restaurantId }))
+            }
 
+        }
+        
 
-    function editItem(id, restId) {
+    }, [items])
+    const [editInded, setEditInded] = useState('')
+
+    function editItem(id, restId, addons, i) {
         console.log(menu, id)
         setSelectedItem(
             menu.filter((a, i) => a.id === id)[0]
         )
         setRestaurantId(restId)
         setViewAddons(true)
+        setAddedAddons(addons)
+        setEditInded(i)
 
     }
     console.log(selectedItem)
 
-    function deleteItem(id, restId) {
+    function deleteItem(id, restId, i) {
         // setSelectedItem(
         let obj = menu.filter((a, i) => a.id === id)[0]
+        let obj2 = {
 
-        dispatch(customisedAction(DELETE_ORDER_ITEM, obj))
+        }
+        console.log(i)
+
+        dispatch(customisedAction(DELETE_ORDER_ITEM, { i }))
 
     }
 
@@ -304,6 +333,12 @@ const Header = props => {
                                             placeholder="What are you craving?"
                                             value={search}
                                             onChange={(ev) => setSearch(ev.target.value)}
+                                            onKeyDown={(ev) => {
+                                                if (ev.keyCode === 13) {
+                                                    props.history.push(`/customer/restaurants/?value=${ev.target.value}`)
+                                                }
+                                            }
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -360,10 +395,10 @@ const Header = props => {
                                                                                     ${item.totalPrice}
                                                                                 </div>
                                                                                 <div className="editDelete">
-                                                                                    <svg onClick={() => editItem(item.id, item.restaurantId)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
+                                                                                    <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
                                                                                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                                                                                     </svg>
-                                                                                    <svg onClick={() => deleteItem(item.id, item.restaurantId)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
+                                                                                    <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
                                                                                         <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
                                                                                     </svg>
                                                                                 </div>
@@ -437,6 +472,14 @@ const Header = props => {
                                                                     <div className="amount">
                                                                         ${item.totalPrice}
                                                                     </div>
+                                                                    <div className="editDelete">
+                                                                        <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, i) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
+                                                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                                                        </svg>
+                                                                        <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
+                                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                                                                        </svg>
+                                                                    </div>
                                                                 </div>
                                                             </>
                                                         )
@@ -499,6 +542,8 @@ const Header = props => {
                         selectedItem={selectedItem}
                         restaurantId={restaurantId}
                         edit={true}
+                        addedAddons={addedAddons}
+                        editInded={editInded}
 
                     />
                     :
