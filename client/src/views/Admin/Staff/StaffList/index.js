@@ -1,10 +1,8 @@
 import React from 'react'
 
-import { TableActionicons } from '../../../../components'
-
 function StaffList(props) {
   
-  const { history, restaurantId, fetchingStaffAssignedTables, staffAssignedTables } = props
+  const { fetchingStaffAssignedTables, staffAssignedTables } = props
 
   return (
     <div className="TableDataContainer">

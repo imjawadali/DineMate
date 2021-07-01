@@ -22,7 +22,7 @@ select.Input {
 
 .Input:focus {
     outline: none !important;
-    box-shadow: 0 0 10px #719ECE;
+    box-shadow: 1px 1px 10px -5px;
 }
 
 @media screen and (max-width: 978px) {

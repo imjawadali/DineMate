@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
 import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../constants'
 
-import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
+import { Button, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
 import './styles.css'
 import { capitalizeFirstLetter } from '../../../helpers'
 
@@ -110,7 +110,10 @@ function AddRestaurant(props) {
 
   return (
     <div className="Container">
-      <h2>Add Restaurant</h2>
+      <TitleWithAction
+        text="Add Restaurant"
+        noMargin
+      />
       <div className="FormContainer">
         <div className="FormInnerContainer">
           <SectionHeading text="Restaurant Information" />

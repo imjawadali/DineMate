@@ -6,7 +6,7 @@ function DashboardBatches({ text, iconName, onClick }) {
   return (
     <div className="DashboardBatch" 
       onClick={onClick}>
-      <i className={`${iconName || 'fa-user'} fa-5x`} />
+      <i className={`${iconName || 'fa-user'} fa-5x DashboardBatchIcon`} />
       <p>{text}</p>
     </div>
   )

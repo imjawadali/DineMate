@@ -31,8 +31,8 @@ function Orders() {
     if (filterKey && filterKey.length && orders) {
       filteredQrs = orders.filter(
         (ord) =>
-          (type === 'Dine-In' && ord.tableId.toLowerCase().includes(filterKey.toLowerCase())) ||
-          ord.orderNumber.toLowerCase().includes(filterKey.toLowerCase())
+          (type === 'Dine-In' && ord.tableId.includes(filterKey)) ||
+          ord.orderNumber.includes(filterKey)
       )
     }
     return filteredQrs
