@@ -60,6 +60,8 @@ const MenuListingContainer = props => {
                         selectedItem={selectedItem}
                         restaurantId={restaurantId}
                         edit={false}
+                        addedAddons={false}
+
 
                     />
                     :

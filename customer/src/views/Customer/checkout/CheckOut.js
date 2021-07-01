@@ -48,6 +48,8 @@ function CheckOut(props) {
     }, [orderDetails])
     console.log(orderDetail, 'order detail')
 
+ 
+
 
     useEffect(() => {
         if (orderDetail) {
@@ -110,28 +112,54 @@ function CheckOut(props) {
     }, [doNotDisturb])
 
     const disturb = () => {
-        if (products) {
+
+
+        if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
             setItem('doNotDisturb', doNotDisturb)
             let obj = {
-                "restaurantId": products && products[0].restaurantId,
+                "restaurantId": orderDetails.restaurantId,
+                "orderNumber": "000000005",
+                "enabled": getItem('doNotDisturb')
+            }
+            dispatch(customisedAction(DONOTDISTURB, obj))
+        } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
+            setItem('doNotDisturb', doNotDisturb)
+            let obj = {
+                "restaurantId": getItem(orderDetail).restaurantId,
                 "orderNumber": "000000005",
                 "enabled": getItem('doNotDisturb')
             }
             dispatch(customisedAction(DONOTDISTURB, obj))
         }
 
+        // if (products) {
+
+        // }
+
     }
 
     const callService = (msg) => {
-        let obj = {
-            "restaurantId": products[0].restaurantId,
-            "tableId": "1",
-            "orderNumber": "000000005",
-            "type": 1,
-            "text": msg
+
+        if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
+            let obj = {
+                "restaurantId": orderDetails.restaurantId,
+                "tableId": orderDetails.tableId,
+                "orderNumber": orderDetails.orderNumber,
+                "text": msg
+            }
+            console.log(obj)
+            dispatch(customisedAction(CALL_FOR_SERVICE, obj))
+        } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
+            let obj = {
+                "restaurantId": getItem(orderDetail).restaurantId,
+                "tableId": getItem(orderDetail).tableId,
+                "orderNumber": getItem(orderDetail).orderNumber,
+                "text": msg
+            }
+            console.log(obj)
+            dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         }
 
-        dispatch(customisedAction(CALL_FOR_SERVICE, obj))
     }
 
     function totalAmount() {
@@ -170,7 +198,7 @@ function CheckOut(props) {
                 <div className="menuCart">
                     {products && products.length ? products.map((a, i) => {
                         return (
-                            <div className="itemCart">
+                            <div className="itemCart" onClick={() => console.log(a)}>
                                 <p>{a.quantity}x {a.name}</p>
                                 <p>$ {a.totalPrice}</p>
                             </div>

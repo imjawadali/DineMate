@@ -68,15 +68,17 @@ export class loginEpic {
       ofType(UPDATE_RPOFILE),
       switchMap(
         async (obj) => {
+          console.log(obj)
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.updateProfile,
-            obj,
+            obj.payload,
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
               // dispatch(customisedAction(GET_RPOFILE))
-              return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
+              return customisedAction(UPDATE_RPOFILE_SUCCESS,{data: resObj.body, toast: { message: resObj.message, type: 'success' }} )
+              // return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
             },
             UPDATE_RPOFILE_FAILURE
           )

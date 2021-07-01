@@ -19,6 +19,7 @@ function SignUp() {
             "lastName": lastName,
             "email": email,
             "password": password,
+            "phoneNumber":phoneNumber
         }
 
         dispatch(customisedAction(SIGN_UP, obj))

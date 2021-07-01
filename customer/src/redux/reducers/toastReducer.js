@@ -21,7 +21,8 @@ import {
   DONOTDISTURB_FAILURE,
   CLOSE_ORDER,
   CLOSE_ORDER_SUCCESS,
-  CLOSE_ORDER_FAILURE
+  CLOSE_ORDER_FAILURE,
+  UPDATE_RPOFILE_SUCCESS
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -73,6 +74,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
         return { ...state, toastSetDismiss: true, toast: payload.toast }
       case CLOSE_ORDER_FAILURE:
         return { ...state, toastSetDismiss: true, toast: payload.toast }
+        case UPDATE_RPOFILE_SUCCESS:
+        return { ...state, toastSetDismiss: true, toast: payload.toast }
+        
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:
