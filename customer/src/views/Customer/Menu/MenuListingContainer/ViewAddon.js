@@ -9,7 +9,7 @@ import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDE
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
@@ -31,7 +31,14 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             setObj(addedAddons)
             console.log(addedAddons)
         }
+        
     }, [addedAddons])
+    useEffect(()=>{
+        if(edit){
+            setItemCount(editedQuantity)
+            console.log(selectedItem)
+        }
+    },[editedQuantity])
 
     let [price, setPrice] = useState(selectedItem.price);
     useEffect(() => {
@@ -76,6 +83,15 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
+                let objItem = {
+                    ...selectedItem,
+                    addOns: arr,
+                    quantity: itemCount,
+                    totalPrice: totalPrice,
+                    restaurantId: restaurantId,
+                    orderNumber: getItem('orderDetails').orderNumber,
+                    addOnObj: obj
+                }
                 let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
                 if (cartMenu) {
                     if (cartMenu.restaurantId === restaurantId) {
@@ -89,6 +105,14 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
                 }
             } else {
+                let objItem = {
+                    ...selectedItem,
+                    addOns: arr,
+                    quantity: itemCount,
+                    totalPrice: totalPrice,
+                    restaurantId: restaurantId,
+                    addOnObj: obj
+                }
 
                 let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
                 if (cartMenu.length) {
@@ -116,10 +140,14 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 quantity: itemCount,
                 totalPrice: totalPrice,
                 restaurantId: restaurantId,
-                orderNumber: "000000032"
+                orderNumber: "000000032",
+                addOnObj: obj
+
 
             }
             dispatch(customisedAction(EDIT_ORDER_ITEM, { objItem: objItem, i: editInded }))
+        setViewAddons(false)
+
         }
 
     }

@@ -25,7 +25,15 @@ export class takeAwayOrderEpic {
             API_ENDPOINTS.customer.takeAwayOrder,
             obj,
             (resObj) => {
-              setItem('orderDetails',resObj.body)
+              let arr = []
+              obj.items && obj.items.map((a, i) => {
+                arr.push({
+                  ...a,
+                  status: 'locked'
+                })
+              })
+              setItem('cartMenu', arr)
+              setItem('orderDetails', resObj.body)
               return customisedAction(SET_ORDER_ITEM_SUCCESS, obj)
 
             },

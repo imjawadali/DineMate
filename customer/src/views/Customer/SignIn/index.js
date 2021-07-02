@@ -12,8 +12,12 @@ function SignIn(props) {
     const [isEmailSignIn, setIsEmailSignIn] = useState(false);
     const [email, setemail] = useState('');
     const [password, setpassword] = useState('');
+    const [redirect, setRedirect] = useState('');
     const dispatch = useDispatch()
     const { history } = props
+
+    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+
     // const signInSuccess = useSelector(({ sessionReducer }) => sessionReducer.customer)
     // const [resturantId, setResturantId] = useState('')
     // const [tableId, setTableId] = useState('')
@@ -36,6 +40,30 @@ function SignIn(props) {
     // }, [
     //     signInSuccess
     // ])
+
+
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        setRedirect(urlParams.get("redirect"))
+
+    }, [window.location.search])
+
+    console.log(redirect)
+
+    useEffect(() => {
+        if (customer && redirect) {
+            props.history.push(redirect)
+        }
+        else if(!redirect && customer){
+            props.history.push('/')
+        }
+    }, [customer])
+    
+    const redirectFn = () =>{
+        dispatch(customisedAction(SIGN_IN, { email, password }))
+        
+    }
 
     return (
         <>
@@ -70,7 +98,7 @@ function SignIn(props) {
                         </div>
 
                         <div className="login-div">
-                            <div className="login-text" onClick={() => dispatch(customisedAction(SIGN_IN, { email, password, history }))}>
+                            <div className="login-text" onClick={() => redirectFn()}>
                                 Log In
                             </div>
                         </div>
@@ -116,6 +144,6 @@ function SignIn(props) {
                 </div>}
         </>
     )
-}
+    }
 
-export default SignIn
+    export default SignIn

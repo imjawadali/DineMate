@@ -7,7 +7,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -26,7 +26,7 @@ const Header = props => {
 
     const [selectedItem, setSelectedItem] = useState({});
     const [addedAddons, setAddedAddons] = useState({});
-
+    const [editedQuantity, setEditedQuantity] = useState('')
 
     let dispatch = useDispatch()
 
@@ -48,6 +48,8 @@ const Header = props => {
     //     dispatch(customisedAction(INITIALIZE_ORDER))
 
     // }, [])
+
+
 
     useEffect(() => {
         if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
@@ -155,11 +157,34 @@ const Header = props => {
 
             }
             dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+
+
         }
 
     }, [orderDetail, updateState])
 
+    useEffect(() => {
+        if (orderDetail) {
+
+            let obj = {
+                restaurantId: orderDetail.restaurantId
+
+            }
+
+
+            dispatch(customisedAction(GET_RESTAURANT_DETAILS, obj))
+        }
+
+    }, [orderDetail])
+
+    let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
+
+
     const submitOrder = () => {
+        let customer = getItem('customer') ? getItem('customer') : false
+        if(!customer){
+            return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
+        }
         console.log('submit')
         setUpdateState(false)
 
@@ -251,6 +276,9 @@ const Header = props => {
         return quantity
     }
     function submitTakeAway() {
+        if(!customer){
+            return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
+        }
         console.log('takeAway')
         let obj = {
             "restaurantId": items[0].restaurantId,
@@ -264,20 +292,31 @@ const Header = props => {
 
     const menu = useSelector(({ menuReducer }) => menuReducer.menu)
 
+
     useEffect(() => {
-        if ((!orderDetail) || (orderDetail && orderDetail.type.toLowerCase() === 'take-away')) {
-            if (items.length) {
-                console.log(items)
-                dispatch(customisedAction(GET_MENU, { restaurantId: items[0].restaurantId }))
+        if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
+            if (orderDetail) {
+                // console.log(items)
+                dispatch(customisedAction(GET_MENU, { restaurantId: orderDetail.restaurantId }))
             }
 
         }
-        
 
-    }, [items])
+
+    }, [])
+
+    useEffect(() => {
+        if ((!orderDetail) || (orderDetail && orderDetail.type.toLowerCase() === 'take-away')) {
+            if (getItem('cartMenu') && getItem('cartMenu').length > 0) {
+                console.log(items)
+                dispatch(customisedAction(GET_MENU, { restaurantId: getItem('cartMenu')[0].restaurantId }))
+            }
+        }
+    }, [])
+
     const [editInded, setEditInded] = useState('')
 
-    function editItem(id, restId, addons, i) {
+    function editItem(id, restId, addons, i, quantity) {
         console.log(menu, id)
         setSelectedItem(
             menu.filter((a, i) => a.id === id)[0]
@@ -286,6 +325,7 @@ const Header = props => {
         setViewAddons(true)
         setAddedAddons(addons)
         setEditInded(i)
+        setEditedQuantity(quantity)
 
     }
     console.log(selectedItem)
@@ -361,7 +401,7 @@ const Header = props => {
 
                                             <div className="restaurant-name-div">
                                                 <span>From: </span>
-                                                <span className="restaurant-title">Tim Hortons </span>
+                                                <span className="restaurant-title">{resturantDetail ? resturantDetail.restaurantName : ""}</span>
                                             </div>
 
                                             <div className="item-details">
@@ -395,7 +435,7 @@ const Header = props => {
                                                                                     ${item.totalPrice}
                                                                                 </div>
                                                                                 <div className="editDelete">
-                                                                                    <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
+                                                                                    <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, '', item.quantity) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
                                                                                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                                                                                     </svg>
                                                                                     <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
@@ -452,7 +492,7 @@ const Header = props => {
                                                     items.length ? items.map((item, i) => {
                                                         return (
                                                             <>
-                                                                <div className="details" key={i}>
+                                                                <div className="details" key={i} onClick={() => console.log(item)}>
                                                                     <div>
                                                                         <div className="selected-quantity">
                                                                             {item.quantity}
@@ -473,7 +513,7 @@ const Header = props => {
                                                                         ${item.totalPrice}
                                                                     </div>
                                                                     <div className="editDelete">
-                                                                        <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, i) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
+                                                                        <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, i, item.quantity) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
                                                                             <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
                                                                         </svg>
                                                                         <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
@@ -492,7 +532,7 @@ const Header = props => {
 
 
                                         <div className="orderSubBtn">
-                                            <button className="submitOrder" onClick={() => { orderDetail ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail ? `Add to Order` : `Submit Order`}</button>
+                                            <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : `Submit Order`}</button>
                                             {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
                                                 <button className="addItem" onClick={() => { props.history.push('/customer/checkout'); toggleCartModal(); }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
                                                 : null}
@@ -544,6 +584,7 @@ const Header = props => {
                         edit={true}
                         addedAddons={addedAddons}
                         editInded={editInded}
+                        editedQuantity={editedQuantity}
 
                     />
                     :

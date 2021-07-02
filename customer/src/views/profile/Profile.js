@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../redux/actions'
 import { GET_RPOFILE, UPDATE_RPOFILE } from '../../constants'
 import { useEffect } from 'react'
+import { getItem } from '../../helpers'
 
 function Profile() {
     const [email, setEmail] = useState("")
@@ -21,7 +22,9 @@ function Profile() {
 
 
     useEffect(() => {
-        dispatch(customisedAction(GET_RPOFILE))
+        if(getItem('customer')){
+            dispatch(customisedAction(GET_RPOFILE))
+        }
     }, [])
     // useEffect(()=>{
     // },[profile])
