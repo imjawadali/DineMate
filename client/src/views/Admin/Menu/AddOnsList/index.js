@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Separator, SmallButton, TableActionicons } from '../../../../components'
+import { Separator, TableActionicons } from '../../../../components'
 
 function AddOnsList(props) {
 

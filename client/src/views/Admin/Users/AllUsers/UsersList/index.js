@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { customisedAction } from '../../../../../redux/actions'
 import { UPDATE_USER } from '../../../../../constants'
 
-import { SmallButton, TableActionicons } from '../../../../../components'
+import { TableActionicons } from '../../../../../components'
 
 function UsersList(props) {
   

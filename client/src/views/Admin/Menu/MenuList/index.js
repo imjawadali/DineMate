@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import { Separator, SmallButton, TableActionicons } from '../../../../components'
+import { Separator, TableActionicons } from '../../../../components'
 import { getNameById } from '../../../../helpers'
 
 function MenuList(props) {

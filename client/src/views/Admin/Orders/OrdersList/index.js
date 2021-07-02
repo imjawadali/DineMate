@@ -1,5 +1,5 @@
 import React from 'react'
-import { SmallButton, TableActionicons } from '../../../../components'
+import { TableActionicons } from '../../../../components'
 
 function OrdersList(props) {
     const { fetchingOrders, orders } = props

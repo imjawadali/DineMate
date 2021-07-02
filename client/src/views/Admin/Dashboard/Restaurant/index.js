@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Button, DashboardGridItem, DashboardTimer, DropDown, ServiceQueItem } from '../../../../components'
+import { Button, ButtonRed, DashboardGridItem, DashboardTimer, DropDown, ServiceQueItem, TitleWithAction } from '../../../../components'
 import { ASSIGN_TABLES_TO_STAFF, CLEAR_TABLE_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
@@ -184,65 +184,68 @@ function Restaurant(props) {
   let row = 1
   return (
     <div className="Container">
-      <div className="PageTitleContainer">
-        <h2>Dashboard</h2>
-        <div className="PageTitleButtonContainer">
-          {managingStaff ?
-            <div>
-              <DropDown
-                style={{ marginTop: '0px', marginBottom: '0px' }}
-                placeholder="Select staff"
-                options={users ? users.filter(user => user.role === 'Staff').map(user => {
-                  return {
-                    label: user.name,
-                    value: user.id
+      <TitleWithAction
+        text="Dashboard"
+        noMargin
+        button={
+          <div style={{ display: 'flex' }}>
+            {managingStaff ?
+              <div>
+                <DropDown
+                  style={{ marginTop: '0px', marginBottom: '0px' }}
+                  placeholder="Select staff"
+                  options={users ? users.filter(user => user.role === 'Staff').map(user => {
+                    return {
+                      label: user.name,
+                      value: user.id
+                    }
+                  }) : []}
+                  value={selectedStaff}
+                  onChange={({ target: { value } }) => setAssignedTablesView(value)}
+                />
+              </div> : null
+            }
+            {restaurantDashboard && !merging ?
+              <Button
+                style={{ marginLeft: managingStaff ? '10px' : '' }}
+                text={`${managingStaff ? "Cancel " : "Manage Staff"}`}
+                light={fetchingDashboard || managingStaff || mergingTables || unMergingTables || assigningTablesToStaff}
+                lightAction={() => {
+                  if (managingStaff) {
+                    cancelStaffManagement()
                   }
-                }) : []}
-                value={selectedStaff}
-                onChange={({ target: { value } }) => setAssignedTablesView(value)}
-              />
-            </div> : null
-          }
-          {restaurantDashboard && !merging ?
-            <Button
-              style={{ marginLeft: managingStaff ? '10px' : '' }}
-              text={`${managingStaff ? "Cancel " : "Manage Staff"}`}
-              light={fetchingDashboard || managingStaff || mergingTables || unMergingTables || assigningTablesToStaff}
-              lightAction={() => {
-                if (managingStaff) {
-                  cancelStaffManagement()
-                }
-              }}
-              iconLeft={<i className={`fa ${managingStaff ? 'fa-times-circle' : 'fa-user'}`} />}
-              onClick={() => setmanagingStaff(true)}
-            /> : null
-          }
-          {role !== 'Staff' && restaurantDashboard && !managingStaff ?
+                }}
+                iconLeft={<i className={`fa ${managingStaff ? 'fa-times-circle' : 'fa-user'}`} />}
+                onClick={() => setmanagingStaff(true)}
+              /> : null
+            }
+            {role !== 'Staff' && restaurantDashboard && !managingStaff ?
+              <Button
+                style={{ marginLeft: '10px' }}
+                text={`${merging ? "Cancel " : "Merge"}`}
+                light={fetchingDashboard || merging || mergingTables || unMergingTables || assigningTablesToStaff}
+                lightAction={() => merging ? cancelMerge() : null}
+                iconLeft={<i className={`fa ${merging ? 'fa-times-circle' : 'fa-columns'} fa-rotate-90`} />}
+                onClick={() => setmerging(true)}
+              /> : null
+            }
             <Button
               style={{ marginLeft: '10px' }}
-              text={`${merging ? "Cancel " : "Merge"}`}
-              light={fetchingDashboard || merging || mergingTables || unMergingTables || assigningTablesToStaff}
-              lightAction={() => merging ? cancelMerge() : null}
-              iconLeft={<i className={`fa ${merging ? 'fa-times-circle' : 'fa-columns'} fa-rotate-90`} />}
-              onClick={() => setmerging(true)}
-            /> : null
-          }
-          <Button
-            style={{ marginLeft: '10px' }}
-            text={fetchingDashboard || fetchingServicesQue ? "Syncing" : merging || managingStaff ? "Submit" : "Refresh"}
-            light={fetchingDashboard || fetchingServicesQue || mergingTables || unMergingTables || assigningTablesToStaff}
-            lightAction={() => null}
-            iconLeft={<i className={`fa ${merging || managingStaff ? 'fa-send' : 'fa-refresh'} ${fetchingDashboard || fetchingServicesQue ? 'fa-pulse' : ''}`} />}
-            onClick={() => {
-              if (merging) mergeTables()
-              else if (managingStaff) assignTables()
-              else {
-                sethoveredTable(null)
-                dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-              }
-            }} />
-        </div>
-      </div>
+              text={fetchingDashboard || fetchingServicesQue ? "Syncing" : merging || managingStaff ? "Submit" : "Refresh"}
+              light={fetchingDashboard || fetchingServicesQue || mergingTables || unMergingTables || assigningTablesToStaff}
+              lightAction={() => null}
+              iconLeft={<i className={`fa ${merging || managingStaff ? 'fa-send' : 'fa-refresh'} ${fetchingDashboard || fetchingServicesQue ? 'fa-pulse' : ''}`} />}
+              onClick={() => {
+                if (merging) mergeTables()
+                else if (managingStaff) assignTables()
+                else {
+                  sethoveredTable(null)
+                  dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+                }
+              }} />
+          </div>
+        }
+      />
       {fetchingDashboard && !restaurantDashboard ?
         <div className="DashBoardContainer">
           <div className="loadingContainer">

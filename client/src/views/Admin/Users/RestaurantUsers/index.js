@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../redux/actions'
-import { ADD_USER, GET_USERS, SET_TOAST, SET_TOAST_DISMISSING } from '../../../../constants'
+import { ADD_USER, GET_USERS, PER_PAGE_COUNTS, SET_TOAST, SET_TOAST_DISMISSING } from '../../../../constants'
 
-import { Button, DropDown, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../../components'
+import { Button, DropDown, Input, Pagination, SectionHeading, SmallTitle, TitleWithAction } from '../../../../components'
 
 import UsersList from './UsersList'
 
-function RestaurantUsers(props) {
+function RestaurantUsers() {
 
   const [userDialogOpen, setuserDialogOpen] = useState(false)
   const [name, setname] = useState('')
@@ -16,6 +16,7 @@ function RestaurantUsers(props) {
   const [role, setrole] = useState('')
   const [contactNumber, setcontactNumber] = useState('')
   const [filterKey, setfilterKey] = useState('')
+  const [currentIndex, setcurrentIndex] = useState(1)
 
   const fetchingUsers = useSelector(({ usersReducer }) => usersReducer.fetchingUsers)
   const addingUser = useSelector(({ usersReducer }) => usersReducer.addingUser)
@@ -56,11 +57,19 @@ function RestaurantUsers(props) {
     if (filterKey && filterKey.length && users) {
       filteredUsers = users.filter(
         (user) => user.name.toLowerCase().includes(filterKey.toLowerCase())
-        || user.role.toLowerCase().includes(filterKey.toLowerCase())
-        || user.email.toLowerCase().includes(filterKey.toLowerCase())
+          || user.role.toLowerCase().includes(filterKey.toLowerCase())
+          || user.email.toLowerCase().includes(filterKey.toLowerCase())
       )
     }
     return filteredUsers
+  }
+
+  const paginate = (list) => {
+    let paginatedList = list ? [...list] : list
+    if (currentIndex && list && list.length) {
+      paginatedList = paginatedList.slice(((currentIndex * PER_PAGE_COUNTS) - PER_PAGE_COUNTS), (currentIndex * PER_PAGE_COUNTS))
+    }
+    return paginatedList
   }
 
   return (
@@ -76,7 +85,7 @@ function RestaurantUsers(props) {
           onClick={() => setuserDialogOpen(true)}
         />}
       />
-      {userDialogOpen ? 
+      {userDialogOpen ?
         <div className="FormContainer" style={{ justifyContent: 'center' }}>
           <div className="FormInnerContainer">
             <SectionHeading text="User Details" />
@@ -84,7 +93,7 @@ function RestaurantUsers(props) {
               <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
                 <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                   <SmallTitle text="Name" />
-                  <Input 
+                  <Input
                     placeholder="John Doe"
                     value={name}
                     onChange={({ target: { value } }) => setname(value)}
@@ -92,7 +101,7 @@ function RestaurantUsers(props) {
                 </div>
                 <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                   <SmallTitle text="Role" />
-                  <DropDown 
+                  <DropDown
                     placeholder="Select role"
                     options={['Admin', 'Kitchen', 'Staff']}
                     value={role}
@@ -102,7 +111,7 @@ function RestaurantUsers(props) {
               </div>
               <div className="InputsInnerContainer">
                 <SmallTitle text="Email" />
-                <Input 
+                <Input
                   placeholder={`john.doe@${restaurantId}.com`}
                   value={email}
                   onChange={({ target: { value } }) => setemail(value)}
@@ -110,7 +119,7 @@ function RestaurantUsers(props) {
               </div>
               <div className="InputsInnerContainer">
                 <SmallTitle text="Contact Number (Optional)" />
-                <Input 
+                <Input
                   placeholder={`+923158731014`}
                   type="number"
                   value={contactNumber}
@@ -124,9 +133,10 @@ function RestaurantUsers(props) {
                   lightAction={() => {
                     dispatch(customisedAction(SET_TOAST_DISMISSING))
                     dispatch(customisedAction(SET_TOAST, {
-                    message: validate() || 'Adding user in progress',
-                    type: validate() ? 'error' : 'success'
-                  }))}}
+                      message: validate() || 'Adding user in progress',
+                      type: validate() ? 'error' : 'success'
+                    }))
+                  }}
                   iconLeft={<i className={`fa fa-${addingUser ? 'refresh' : 'send'} ${addingUser ? 'fa-pulse' : ''}`} />}
                   onClick={() => addUser()}
                 />
@@ -134,26 +144,38 @@ function RestaurantUsers(props) {
             </div>
           </div>
         </div>
-      : <>
-      <div className="TopOptionsContainer">
-        <div className="TopInputContainer">
-          <Input 
-            placeholder="Search Users (by Name, Restaurant Name, Role, Email)"
-            value={filterKey}
-            onChange={({ target: { value } }) => setfilterKey(value)}
-          />
-        </div>
-        <div className="TopButtonContainer">
-          <Button
-            text={filterKey ? "Clear" : fetchingUsers ? "Syncing" : "Refresh"}
-            light={fetchingUsers}
-            lightAction={() => null}
-            iconLeft={<i className={`fa fa-${filterKey ? 'times-circle' : fetchingUsers ? 'refresh fa-pulse' : 'refresh'}`} />}
-            onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS, { restaurantId }))} />
-        </div>
-      </div>
-      <UsersList adminId={id} fetchingUsers={fetchingUsers} restaurantId={restaurantId} users={getFilteredList()} />
-      </>}
+        : <>
+          <div className="TabularContentContainer">
+            <div className="TableTopContainer">
+              <div className="TopLeftContainer" />
+              <div className="TopRightContainer">
+                <Input
+                  style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
+                  placeholder="Search Users (by Name, Role, Email)"
+                  value={filterKey}
+                  onChange={({ target: { value } }) => {
+                    setfilterKey(value)
+                    setcurrentIndex(1)
+                  }}
+                />
+                <i
+                  style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
+                  className={`fa fa-${filterKey ? 'times-circle' : fetchingUsers ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+                  onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_USERS, { restaurantId }))} />
+              </div>
+            </div>
+            <UsersList adminId={id} fetchingUsers={fetchingUsers} restaurantId={restaurantId} users={paginate(getFilteredList())} />
+          </div>
+          {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ?
+            <Pagination
+              currentIndex={currentIndex}
+              mappingCounts={Array(parseInt(getFilteredList().length / PER_PAGE_COUNTS) + 1).fill('0')}
+              totalCounts={getFilteredList().length}
+              perPageCounts={PER_PAGE_COUNTS}
+              onClick={(index) => setcurrentIndex(index)}
+            />
+            : null}
+        </>}
     </div>
   )
 }
