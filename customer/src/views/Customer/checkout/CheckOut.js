@@ -30,6 +30,8 @@ function CheckOut(props) {
     const [testArr, setTestArr] = useState([])
     const [orderDetail, setOrderDetail] = useState("")
     const [TakeAwayOrder, setTakeAwayOrder] = useState("")
+    // const resDet = useSelector(({ menuReducer }) => menuReducer.restaurant)
+
 
     const dispatch = useDispatch()
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
@@ -40,6 +42,7 @@ function CheckOut(props) {
         }, [1000])
         // if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
         setProducts(getItem('cartMenu'))
+
         // }
     }, [])
     useEffect(() => {
@@ -48,7 +51,7 @@ function CheckOut(props) {
     }, [orderDetails])
     console.log(orderDetail, 'order detail')
 
- 
+
 
 
     useEffect(() => {
@@ -59,6 +62,7 @@ function CheckOut(props) {
                 orderNumber: orderDetail.orderNumber,
 
             }
+            // dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId: orderDetail.restaurantId }))
 
             dispatch(customisedAction(GET_ORDER_ITEMS, obj))
         } else {
@@ -149,11 +153,11 @@ function CheckOut(props) {
             }
             console.log(obj)
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
-        } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
+        } else if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
             let obj = {
-                "restaurantId": getItem(orderDetail).restaurantId,
-                "tableId": getItem(orderDetail).tableId,
-                "orderNumber": getItem(orderDetail).orderNumber,
+                "restaurantId": orderDetail.restaurantId,
+                "tableId": orderDetail.tableId,
+                "orderNumber": orderDetail.orderNumber,
                 "text": msg
             }
             console.log(obj)
@@ -193,7 +197,7 @@ function CheckOut(props) {
                     <h1>
                         Order Details
                     </h1>
-                    <p className="from">From: <span>Tim Hortons</span></p>
+                    <p className="from">From: <span>{resturantDetail ? resturantDetail.restaurantName : ''}</span></p>
                 </div>
                 <div className="menuCart">
                     {products && products.length ? products.map((a, i) => {
@@ -365,7 +369,7 @@ function CheckOut(props) {
                             </div>
 
                             <div className="send-button-div">
-                                <div onClick={() => callService(message)} className={selectedServices.length > 0 ? "send-button" : "send-button disabled-send-button"} onClick={callService}>
+                                <div onClick={() => callService(message)} className="send-button">
                                     <div>Send Message</div>
                                 </div>
                             </div>

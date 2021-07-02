@@ -13,6 +13,7 @@ function Restaurants(props) {
   const allRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurants)
   const searchResturant = useSelector(({ serachResturantReducer }) => serachResturantReducer.restaurants)
   const [resturants, setResturants] = useState([])
+  const [showMore, setShowMore] = useState(true)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -26,11 +27,15 @@ function Restaurants(props) {
       let obj = {
         "searchBy": value
       }
+
       dispatch(customisedAction(SEARCH_RESTURANT, obj))
+      setShowMore(false)
       // setResturants(searchResturant)
       // console.log(value)
     } else {
       dispatch(customisedAction(GET_ALL_RESTAURANTS))
+      setShowMore(true)
+
       // setResturants(allRestaurants)
 
     }
@@ -48,7 +53,7 @@ function Restaurants(props) {
       console.log(allRestaurants)
 
     }
-  }, [window.location.search,searchResturant,allRestaurants])
+  }, [window.location.search, searchResturant, allRestaurants])
 
   return (
     <div>
@@ -86,10 +91,11 @@ function Restaurants(props) {
 
 
 
-
-      <div style={{ display: 'flex', justifyContent: 'center', }} className="button-container-resturant">
-        <button className="resturant-button">Show More</button>
-      </div>
+      {showMore ?
+        <div style={{ display: 'flex', justifyContent: 'center', }} className="button-container-resturant">
+          <button className="resturant-button">Show More</button>
+        </div>
+        : null}
     </div>
   )
 }

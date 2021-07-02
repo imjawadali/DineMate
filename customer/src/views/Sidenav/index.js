@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 
 import { customisedAction } from '../../redux/actions'
 import { GET_RPOFILE, LOGOUT } from '../../constants'
-import { removeItem } from '../../helpers'
+import { getItem, removeItem } from '../../helpers'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -28,11 +28,13 @@ function SideNav(props) {
 
     const { sidebarOpen, closeSidebar, history } = props
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
-    
-    
+
+
     useEffect(() => {
-        dispatch(customisedAction(GET_RPOFILE))
-      }, [])
+        if (getItem('customer')) {
+            dispatch(customisedAction(GET_RPOFILE))
+        }
+    }, [])
 
 
 
@@ -45,7 +47,7 @@ function SideNav(props) {
                     !!customer ?
                         <>
                             <div className="dp-div">
-                                <img className="profile-picture" src={profile && profile.imageUrl ? profile.imageUrl : logo } />
+                                <img className="profile-picture" src={profile && profile.imageUrl ? profile.imageUrl : logo} />
                             </div>
 
                             <div className="name-points-div">
@@ -67,10 +69,10 @@ function SideNav(props) {
 
                             <div className="route-section">
                                 <img style={{ width: 23, marginRight: 8 }} src={usericon} />
-                                <span className="route" onClick={()=>props.history.push(`/customer/profile`)}>Profiles</span>
+                                <span className="route" onClick={() => props.history.push(`/customer/profile`)}>Profiles</span>
                             </div>
 
-                            <div 
+                            <div
                                 className="route-section"
                                 style={{ borderBottom: 'none' }}
                                 onClick={() => {
@@ -89,7 +91,7 @@ function SideNav(props) {
                             </div>
 
                             <div className="create-add-div">
-                                <div className="create-add" 
+                                <div className="create-add"
                                     onClick={() => history.push('/customer/signup')}
                                     style={{ borderBottom: '1px solid black' }}>
                                     Create an account
@@ -105,7 +107,7 @@ function SideNav(props) {
 
                 <div className="dinemate-intro">
                     <img className="dinemate-logo" src={logo}
-                        onClick={() => history.push('/')}/>
+                        onClick={() => history.push('/')} />
                     <span className="dinemate-slogan">
                         There's more to love in the app
                     </span>
