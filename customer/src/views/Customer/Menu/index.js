@@ -16,7 +16,7 @@ import { getItem, setItem } from '../../../helpers';
 
 
 const Menu = props => {
-    
+
     const [orderDetail, setOrderDetail] = useState("")
     const [cart, setCart] = useState([])
 
@@ -30,7 +30,7 @@ const Menu = props => {
     const [openCall, setOpenCall] = useState(false);
     const [selectedServices, setSelectedServices] = useState([]);
     const [categorie, setCategorie] = useState('All')
-    const [doNotDisturb, setDoNotDisturb] = useState(false)
+    const [doNotDisturb, setDoNotDisturb] = useState(true)
     const [doNotDisturbActive, setDoNotDisturbActive] = useState()
     const [message, setMessage] = useState('')
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
@@ -41,7 +41,7 @@ const Menu = props => {
     let { restaurantId } = useParams();
 
 
- 
+
 
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
@@ -50,13 +50,13 @@ const Menu = props => {
     }, [restaurantId])
 
     useEffect(() => {
-        
+
         if (categorie === 'All') {
-            if(menu){
+            if (menu) {
                 setSelectedCategory(menu)
             }
         } else if (categorie != 'All') {
-            if(menu){
+            if (menu) {
                 setSelectedCategory(menu.filter((a, i) => a.categoryName === categorie))
             }
         }
@@ -137,11 +137,11 @@ const Menu = props => {
         <>
             <div className="menuListing">
                 {/* searchbar */}
-                <div className="menu-searchbar menuListingSearch">
+                {/* <div className="menu-searchbar menuListingSearch">
                     <div className="menu-searchbar-container">
                         <SearchBar iconName={faSearch} text="Missigua, Ontario" />
                     </div>
-                </div>
+                </div> */}
 
 
                 {/* image background with text */}
@@ -165,16 +165,17 @@ const Menu = props => {
                                             ` ${category.name}${index !== restaurant.categories.length - 1 ? ' • ' : ''}`
                                         )}
                                     </h3>
+                                    {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
+                                        <div className="my-dinemate-div" onClick={() => setOpenCall(true)}>
+                                            <div className="my-dinemate">
+                                                My DineMate
+                                            </div>
 
-                                    <div className="my-dinemate-div" onClick={() => setOpenCall(true)}>
-                                        <div className="my-dinemate">
-                                            My DineMate
+                                            <div className="dinemate-logo">
+                                                <img src={require("../../../assets/cart.png").default} className="searchbar-image-cart" />
+                                            </div>
                                         </div>
-
-                                        <div className="dinemate-logo">
-                                            <img src={require("../../../assets/cart.png").default} className="searchbar-image-cart" />
-                                        </div>
-                                    </div>
+                                        : null}
                                 </span>
                                 : <h3>$$$: Bakery • Cafe • Donuts</h3>
                             : <h3>$$$: Loading data . . .</h3>}
@@ -220,94 +221,94 @@ const Menu = props => {
 
                 {
                     openCall ?
-                    <div className="call-service-div">
-                        <div className="call-service-dialog">
-                            <div className="close-dialog-div">
-                                <div className="icon-title-div">
-                                    <span className="dialog-icon">
-                                        <img src={require("../../../assets/Group 6409.png").default} className="searchbar-image-cart" />
-                                    </span>
+                        <div className="call-service-div">
+                            <div className="call-service-dialog">
+                                <div className="close-dialog-div">
+                                    <div className="icon-title-div">
+                                        <span className="dialog-icon">
+                                            <img src={require("../../../assets/Group 6409.png").default} className="searchbar-image-cart" />
+                                        </span>
 
-                                    <span className="call-for-service">Call For Services</span>
-                                </div>
-
-                                <div>
-                                    <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => setOpenCall(false)} />
-                                </div>
-                            </div>
-
-                            <div className="services-div">
-                                <div
-                                    className={selectedServices.includes("WATER") ? "service" : "service warn-service"}
-                                    onClick={() => {
-                                        callService("water")
-
-                                    }}
-                                >
-                                    <div>
-                                        <img src={require("../../../assets/Group 6410.png").default} className="service-icon" />
+                                        <span className="call-for-service">Call For Services</span>
                                     </div>
-                                    Water
-                                </div>
 
-                                <div
-                                    className={selectedServices.includes("HELP") ? "service" : "service warn-service"}
-                                    onClick={() => {
-                                        callService("help")
-
-
-                                    }}
-                                    style={{ position: 'relative' }}
-                                >
                                     <div>
-                                        <img src={require("../../../assets/Path 7705.png").default} className="service-icon" />
+                                        <FontAwesomeIcon icon={faTimes} className="close-icon" onClick={() => setOpenCall(false)} />
                                     </div>
-                                    <div style={{ position: 'absolute', bottom: 8 }}>Help</div>
                                 </div>
 
-                                <div
-                                    className={doNotDisturbActive ? "service" : "service warn-service"}
-                                    // className={selectedServices.includes("DISTURB") ? "service" : "service warn-service"}
-                                    onClick={() => {
-                                        setDoNotDisturb(!doNotDisturb)
-                                        disturb()
-                                        selectedServices.includes("DISTURB") ?
-                                            setSelectedServices(selectedServices.filter(service => service !== 'DISTURB')) :
-                                            setSelectedServices([...selectedServices, "DISTURB"])
-                                    }}
-                                >
-                                    <div>
-                                        <img src={require("../../../assets/Group 4691.png").default} className="service-icon" />
+                                <div className="services-div">
+                                    <div
+                                        className={selectedServices.includes("WATER") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            callService("water")
+
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 6410.png").default} className="service-icon" />
+                                        </div>
+                                        Water
                                     </div>
-                                    Do not Disturb
+
+                                    <div
+                                        className={selectedServices.includes("HELP") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            callService("help")
+
+
+                                        }}
+                                        style={{ position: 'relative' }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Path 7705.png").default} className="service-icon" />
+                                        </div>
+                                        <div style={{ position: 'absolute', bottom: 8 }}>Help</div>
+                                    </div>
+
+                                    <div
+                                        className={doNotDisturbActive ? "service" : "service warn-service"}
+                                        // className={selectedServices.includes("DISTURB") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            setDoNotDisturb(!doNotDisturb)
+                                            disturb()
+                                            selectedServices.includes("DISTURB") ?
+                                                setSelectedServices(selectedServices.filter(service => service !== 'DISTURB')) :
+                                                setSelectedServices([...selectedServices, "DISTURB"])
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 4691.png").default} className="service-icon" />
+                                        </div>
+                                        Do not Disturb
+                                    </div>
+
+                                    <div
+                                        className={selectedServices.includes("BILL") ? "service" : "service warn-service"}
+                                        onClick={() => {
+                                            callService("bill")
+
+
+                                        }}
+                                    >
+                                        <div>
+                                            <img src={require("../../../assets/Group 6412.png").default} className="service-icon" />
+                                        </div>
+                                        Bill
+                                    </div>
                                 </div>
 
-                                <div
-                                    className={selectedServices.includes("BILL") ? "service" : "service warn-service"}
-                                    onClick={() => {
-                                        callService("bill")
-
-
-                                    }}
-                                >
-                                    <div>
-                                        <img src={require("../../../assets/Group 6412.png").default} className="service-icon" />
-                                    </div>
-                                    Bill
+                                <div className="description-div">
+                                    <textarea onChange={(ev) => setMessage(ev.target.value)} type="text" placeholder="Description" className="text-area" />
                                 </div>
-                            </div>
 
-                            <div className="description-div">
-                                <textarea onChange={(ev) => setMessage(ev.target.value)} type="text" placeholder="Description" className="text-area" />
-                            </div>
-
-                            <div className="send-button-div">
-                                <div onClick={() => callService(message)} className="send-button">
-                                    <div>Send Message</div>
+                                <div className="send-button-div">
+                                    <div onClick={() => callService(message)} className="send-button">
+                                        <div>Send Message</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
                         : null
                 }
 

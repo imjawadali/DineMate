@@ -280,9 +280,12 @@ function CheckOut(props) {
                         <h2><span>Payment Amount</span> ${totalAmount()}</h2>
                         <button className="payBtn" onClick={payNow}>Pay Now</button>
                     </div>
-                    <div>
-                        <img src={serviceIcon} onClick={() => setOpenCall(true)} />
-                    </div>
+                    {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
+
+                        <div>
+                            <img src={serviceIcon} onClick={() => setOpenCall(true)} />
+                        </div>
+                        : null}
                 </div>
             </div>
             {

@@ -10,7 +10,8 @@ import {
   SUBMIT_ORDER_ITEM_FAILED,
   SET_ORDER_ITEM_SUCCESS,
   TAKIE_AWAY_ORDER,
-  TAKIE_AWAY_ORDER_FAILED
+  TAKIE_AWAY_ORDER_FAILED,
+  SET_TAKE_ORDER_ITEM_SUCCESS
 } from '../../../constants'
 import { removeItem, setItem } from '../../../helpers'
 
@@ -32,9 +33,11 @@ export class takeAwayOrderEpic {
                   status: 'locked'
                 })
               })
-              setItem('cartMenu', arr)
+              // setItem('cartMenu', arr)
               setItem('orderDetails', resObj.body)
-              return customisedAction(SET_ORDER_ITEM_SUCCESS, obj)
+              removeItem('cartMenu')
+              console.log(resObj,obj)
+              return customisedAction(SET_TAKE_ORDER_ITEM_SUCCESS, resObj.body)
 
             },
             TAKIE_AWAY_ORDER_FAILED
