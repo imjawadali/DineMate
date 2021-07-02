@@ -1264,13 +1264,7 @@ module.exports = app => {
     app.post('/customer/getOrderItems', async (req, res) => {
         console.log("\n\n>>> /customer/getOrderItems")
         console.log(req.body)
-        const customerId = decrypt(req.header('authorization'))
         const { restaurantId, orderNumber } = req.body
-        if (!customerId) return res.send({
-            status: false,
-            message: 'Not Authorized!',
-            errorCode: 401
-        })
         if (!restaurantId) return res.send({
             status: false,
             message: 'Restuatant Id is required!',
@@ -1281,9 +1275,8 @@ module.exports = app => {
             message: 'Order number is required!',
             errorCode: 422
         })
-        getSecureConnection(
+        getConnection(
             res,
-            customerId,
             `SELECT id, quantity, name, totalPrice FROM orderItems
             WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             null,
