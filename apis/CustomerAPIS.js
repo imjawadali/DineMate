@@ -887,8 +887,10 @@ module.exports = app => {
                 message: 'No items to submit!',
                 errorCode: 422
             })
+            let amount = 0
             for (var i = 0; i < items.length; i++) {
                 const { quantity, name, price, totalPrice, addOns } = items[i]
+                amount += totalPrice
                 if (!quantity) return res.send({
                     status: false,
                     message: 'Quantity is required!',
@@ -904,7 +906,7 @@ module.exports = app => {
                     message: 'Item price is required!',
                     errorCode: 422
                 })
-                if (!totalPrice) return res.send({
+                if (!totalPrice && totalPrice !== 0) return res.send({
                     status: false,
                     message: 'Total price is required!',
                     errorCode: 422
@@ -965,7 +967,7 @@ module.exports = app => {
                                         })
                                     }
                                     if (items && items.length) {
-                                        tempDb.query(`UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function (error, result) {
+                                        tempDb.query(`UPDATE orders SET ready = 0, amount = amount + ${amount} WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function (error, result) {
                                             if (!!error) {
                                                 console.log('TableError', error.sqlMessage)
                                                 tempDb.rollback(function () {
@@ -1080,8 +1082,10 @@ module.exports = app => {
                 message: 'No items to submit!',
                 errorCode: 422
             })
+            let amount = 0
             for (var i = 0; i < items.length; i++) {
                 const { quantity, name, price, totalPrice, addOns } = items[i]
+                amount += totalPrice
                 if (!quantity) return res.send({
                     status: false,
                     message: 'Quantity is required!',
@@ -1097,7 +1101,7 @@ module.exports = app => {
                     message: 'Item price is required!',
                     errorCode: 422
                 })
-                if (!totalPrice) return res.send({
+                if (!totalPrice && totalPrice !== 0) return res.send({
                     status: false,
                     message: 'Total price is required!',
                     errorCode: 422
@@ -1158,8 +1162,8 @@ module.exports = app => {
                                         errorCode: 422
                                     })
                                 }
-                                tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status ) 
-                                VALUES ( '${restaurantId}', ${customerId}, 'Take-Away', ${orderNumber}, 0)`,
+                                tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status, amount ) 
+                                VALUES ( '${restaurantId}', ${customerId}, 'Take-Away', ${orderNumber}, 0, ${amount})`,
                                     function (error, result2) {
                                         if (!!error) {
                                             console.log('TableError', error.sqlMessage)
