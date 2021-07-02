@@ -1,6 +1,7 @@
 .DashboardGridItem {
-    width: 100%;
+    width: 70%;
     max-width: 180px;
+    aspect-ratio: 1.5;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -25,9 +26,18 @@
 @media only screen and (max-width: 978px) {
     .DashboardGridItem {
         padding: 5px;
+        width: 80%;
+        aspect-ratio: 1;
     }
 
     .DashboardGridItemText {
         font-size: 10px;
     }
 }
+
+@media only screen and (max-width: 480px) {
+    .DashboardGridItem {
+        aspect-ratio: 1;
+        width: 100%;
+    }
+}   

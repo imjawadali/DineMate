@@ -674,7 +674,9 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT * FROM orders WHERE
+            `SELECT *, 
+            CONVERT(orderNumber, CHAR) as orderNumber
+            FROM orders WHERE
             restaurantId = '${restaurantId}'
             AND status = ${status}
             AND type = '${type}'
@@ -684,7 +686,7 @@ module.exports = app => {
                 if (data.length) {
                     return res.send(data)
                 } else {
-                    return res.status(422).send({ 'msg': `No Open ${type} Orders!` })
+                    return res.status(422).send({ 'msg': `No ${status ? 'Open' : 'Closed'}, ${type} Orders!` })
                 }
             }
         )

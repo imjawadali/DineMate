@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import './styles.css'
 
-function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMerging, merged, onMouseEnter, onMouseLeave, onClick }) {
+function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMerging, merged, serviceIncludes, onClick }) {
   return (
     <div className="DashboardGridItem"
       style={{
@@ -19,16 +19,19 @@ function DashboardGridItem({ text, doNotDisturb, occupiedBy, merging, includesMe
         color: includesMerging ? 'white' : '',
         boxShadow: merging && (merged || occupiedBy) ? 'none' : ''
       }}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
-      <p className="DashboardGridItemText">{text}{!!doNotDisturb && ` - Don't Disturb`}</p>
-      {(merged || occupiedBy) ? <p className="DashboardGridItemText">
-        {merged ? 'Merged' : ''}
-        {merged && occupiedBy ? ' & ' : ''}
-        {occupiedBy ? 'Occupied' : ''}
-      </p> : null}
+      {occupiedBy ? <div style={{ width: '100%', display: 'flex' }}>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>Diner(s): {occupiedBy}</p>
+        {!!serviceIncludes && <i className="DashboardGridItemText fa fa-bell" />}
+      </div> : null}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <p className="DashboardGridItemText" style={{ fontWeight: 'bold' }}>{text}</p>
+      </div>
+      {!!occupiedBy ? <div style={{ width: '100%', display: 'flex' }}>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>Amount: $ {0}</p>
+        {!!doNotDisturb && <i className="DashboardGridItemText fa fa-ban" />}
+      </div> : null}
     </div>
   )
 }

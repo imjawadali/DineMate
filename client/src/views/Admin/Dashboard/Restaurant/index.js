@@ -12,7 +12,7 @@ function Restaurant(props) {
   const [managingStaff, setmanagingStaff] = useState(false)
   const [selectedStaff, setselectedStaff] = useState(null)
   const [assignedTables, setassignedTables] = useState([])
-  const [hoveredTable, sethoveredTable] = useState(null)
+  const [serviceTables, setserviceTables] = useState([])
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const fetchingDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingDashboard)
@@ -31,9 +31,15 @@ function Restaurant(props) {
 
   useEffect(() => {
     if (!mergingTables) cancelMerge()
-    if (!mergingTables && !unMergingTables) sethoveredTable(null)
     if (!assigningTablesToStaff) cancelStaffManagement()
   }, [mergingTables, unMergingTables, assigningTablesToStaff])
+
+  useEffect(() => {
+    if (servicesQue) {
+      const temp = servicesQue.map(service => service.tableNumber)
+      setserviceTables(temp)
+    } else setserviceTables([])
+  }, [servicesQue])
 
   const getUnmergedTables = () => {
     let unMergedTables = restaurantDashboard
@@ -238,10 +244,7 @@ function Restaurant(props) {
               onClick={() => {
                 if (merging) mergeTables()
                 else if (managingStaff) assignTables()
-                else {
-                  sethoveredTable(null)
-                  dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-                }
+                else dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
               }} />
           </div>
         }
@@ -276,8 +279,7 @@ function Restaurant(props) {
                         occupiedBy={!managingStaff && occupiedBy}
                         merging={merging || managingStaff}
                         includesMerging={selectedTables.includes(id) || assignedTables.includes(value)}
-                        onMouseEnter={() => merging ? null : sethoveredTable(table)}
-                        onMouseLeave={() => merging ? null : sethoveredTable(null)}
+                        serviceIncludes={serviceTables.includes(value)}
                         onClick={() => {
                           if (merging && !occupiedBy) selectTable(id)
                           else if (managingStaff) assignTable(value)
@@ -312,8 +314,6 @@ function Restaurant(props) {
                           backgroundColor: merging ? 'white' : managingStaff ? 'rgb(245, 222, 179)' : '',
                           cursor: 'pointer'
                         }}
-                        onMouseEnter={() => merging ? null : sethoveredTable(mergedTables)}
-                        onMouseLeave={() => merging ? null : sethoveredTable(null)}
                         onClick={() => {
                           if (managingStaff) assignTable(table.mergeId)
                           else if (mergedTables.filter(table => table.occupiedBy).length && !merging) {
@@ -333,7 +333,8 @@ function Restaurant(props) {
                               float: 'right',
                               position: 'absolute',
                               top: 5,
-                              right: 5
+                              right: 5,
+                              zIndex: 1
                             }}
                             onClick={() => unMergeTables(mergeId)}
                           /> : null}
@@ -342,6 +343,7 @@ function Restaurant(props) {
                           doNotDisturb={mergedTables.filter(table => table.doNotDisturb).length}
                           occupiedBy={!managingStaff && mergedTables.filter(table => table.occupiedBy).length}
                           includesMerging={assignedTables.includes(mergeId)}
+                          serviceIncludes={serviceTables.includes(mergeId)}
                           merging={merging || managingStaff}
                           merged={!managingStaff}
                         />
@@ -350,7 +352,7 @@ function Restaurant(props) {
                   })
                 }
               </div>
-              <div className="DashboardTableDetailsContainer"
+              {/* <div className="DashboardTableDetailsContainer"
                 style={{
                   justifyContent: hoveredTable ? '' : 'center'
                 }}>
@@ -375,10 +377,10 @@ function Restaurant(props) {
                   </>
                   : <p>Hover on a table to show details!</p>
                 }
-              </div>
+              </div> */}
             </div>
             <div className="DashBoardServicesContainer">
-              <p>Services Que</p>
+              <h2>Services Que</h2>
               <div>
                 {servicesQue ?
                   servicesQue.map(item => {

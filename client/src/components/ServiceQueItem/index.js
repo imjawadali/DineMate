@@ -20,7 +20,9 @@ function ServiceQueItem({ tableNumber, orderNumber, textArray, timeStamp, onClic
         backgroundColor: colors[time.mints < 10 ? time.mints < 5 ? 2 : 1 : 0],
         border: '1px solid',
         borderColor: bdColors[time.mints < 10 ? time.mints < 5 ? 2 : 1 : 0],
-        margin: '20px 0px'
+        margin: '20px 0px',
+        aspectRatio: 0,
+        width: '100%'
       }}
       onClick={onClick}
     >

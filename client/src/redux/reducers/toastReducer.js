@@ -166,8 +166,6 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: { message: 'Un-Merging Tables', type: 'warning' } }
     case UN_MERGE_TABLES_FAILURE:
       return { ...state, toast: payload }
-    case GET_SERVICES_QUE_FAILURE:
-      return { ...state, toast: payload }
     case GET_STAFF_ASSIGNED_TABLES_SUCCESS:
       return { ...state, toastSetDismiss: true}
     case GET_STAFF_ASSIGNED_TABLES_FAILURE:
