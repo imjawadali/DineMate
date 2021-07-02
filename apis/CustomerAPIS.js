@@ -158,7 +158,8 @@ module.exports = app => {
             getSecureConnection(
                 res,
                 customerId,
-                `SELECT o.restaurantId, r.restaurantName, o.orderNumber,
+                `SELECT o.restaurantId, r.restaurantName,
+                CONVERT(o.orderNumber, CHAR) as orderNumber,
                 SUM(oi.totalPrice) as billAmount,
                 o.status as active, o.type
                 FROM orders o
