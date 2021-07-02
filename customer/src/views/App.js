@@ -72,12 +72,31 @@ export default function App() {
                         dispatch(customisedAction(GET_STATUS, obj))
                         if (orderStatusDetails && !orderStatusDetails.active) {
                             dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        } else if (orderStatusDetails && orderStatusDetails.active) {
+                        } else if (orderStatusDetails && !orderStatusDetails.active) {
                             removeItem('orderDetails')
-                            removeItem('cartMenu')
+                            // removeItem('cartMenu')
                         }
+
+
+                        // dispatch(customisedAction(GET_STATUS, obj))
+                        // if (orderStatusDetails && orderStatusDetails.closeRequested) {
+                        // if (orderStatusDetails && orderStatusDetails.active) {
+                        //     dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                        // } else {
+                        //     removeItem('orderDetails')
+                        //     }
+                        // }
+                        // else {
+                        // window.location.href = '/customer/checkout'
+                        // }
+
+                        // if (orderStatusDetails && orderStatusDetails.active) {
+                        //     removeItem('orderDetails')
+                        //     removeItem('cartMenu')
+                        // }
+
                     }, 300)
-                }else {
+                } else {
                     setTimeout(() => {
                         let obj = {
                             "restaurantId": storedOrderDetails.restaurantId,
@@ -91,10 +110,10 @@ export default function App() {
                         }
                     }, 300)
                 }
-                else
-                    setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
+            else
+                setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
-    }, [orderStatusDetails,closeOrder])
+    }, [orderStatusDetails, closeOrder])
 
     const openSidebar = () => {
         setSidebarOpen(true)

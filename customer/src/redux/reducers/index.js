@@ -12,6 +12,7 @@ import updateProfileReducer from './updateProfileReducer'
 import orderStatusReducer from './orderStatusReducer'
 import allOrderReducer from './allOrderReducer'
 import serachResturantReducer from './serachResturantReducer'
+import getTakeOrderItemsReducer from './getTakeOrderItemsReducer'
 
 
 
@@ -29,7 +30,9 @@ export default combineReducers({
     updateProfileReducer,
     orderStatusReducer,
     allOrderReducer,
-    serachResturantReducer
+    serachResturantReducer,
+    getTakeOrderItemsReducer
+
 
 
 })

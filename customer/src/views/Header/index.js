@@ -7,7 +7,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -16,6 +16,7 @@ const Header = props => {
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const submitOrderDetail = useSelector(({ orderReducer }) => orderReducer.submitDetail)
 
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
@@ -30,8 +31,12 @@ const Header = props => {
 
     let dispatch = useDispatch()
 
+    let submitTakeOrder = useSelector(({ orderReducer }) => orderReducer.cartTakeItem)
     let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
+    let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
+
+console.log(submitOrderDetail,'submitOrderDetail')
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -49,6 +54,10 @@ const Header = props => {
 
     // }, [])
 
+    console.log(submitTakeOrder)
+    console.log(takeOrderItems)
+
+
 
 
     useEffect(() => {
@@ -62,7 +71,31 @@ const Header = props => {
             dispatch(customisedAction(GET_ORDER_ITEMS, obj3))
         }
 
+
+
     }, [cartItemR])
+
+    useEffect(() => {
+        if (submitOrderDetail){
+            setOrderDetail(getItem('orderDetails'))
+        }
+    }, [submitOrderDetail])
+
+    useEffect(() => {
+        console.log('runn1',submitTakeOrder)
+        if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
+        console.log('runn2')
+
+
+            let obj3 = {
+                "restaurantId": orderDetail.restaurantId,
+                "orderNumber": orderDetail.orderNumber,
+                "items": items
+            }
+            dispatch(customisedAction(GET_TAKE_ORDER_ITEMS, obj3))
+        }
+
+    }, [submitTakeOrder, orderDetail,updateState])
 
     useEffect(() => {
         let arr = []
@@ -122,9 +155,24 @@ const Header = props => {
                 setItems(arr)
             }
         }
-        console.log('runn')
+        if (getItem('orderDetails') && getItem('orderDetails').type === "Take-Away") {
+            if (takeOrderItems) {
+                console.log(takeOrderItems)
+                takeOrderItems.orderItems.map((a, i) => {
+                    arr.push({
+                        "id": a.id,
+                        "name": a.name,
+                        "quantity": a.quantity,
+                        "totalPrice": a.totalPrice,
+                        "status": false
+                    })
+                })
+                setItems(arr)
+            }
+        }
+        console.log(takeOrderItems)
 
-    }, [cartItemR, OrderItems])
+    }, [cartItemR, OrderItems, takeOrderItems])
 
     useEffect(() => {
         setOrderDetail(getItem('orderDetails'))
@@ -182,7 +230,7 @@ const Header = props => {
 
     const submitOrder = () => {
         let customer = getItem('customer') ? getItem('customer') : false
-        if(!customer){
+        if (!customer) {
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
         console.log('submit')
@@ -276,7 +324,9 @@ const Header = props => {
         return quantity
     }
     function submitTakeAway() {
-        if(!customer){
+        setUpdateState(false)
+
+        if (!customer) {
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
         console.log('takeAway')
@@ -287,6 +337,8 @@ const Header = props => {
         console.log(obj)
         dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
         props.history.push('/customer/checkout');
+        setUpdateState(true)
+
 
     }
 
@@ -487,43 +539,84 @@ const Header = props => {
                                                         </div>
                                                     </>
                                                     :
+                                                    <>
+                                                        <div className="unlockItems">
+                                                            <p>New Items</p>
+                                                            {items.length ? items.filter((a, i) => a.status).map((item, i) => {
+                                                                return (
+                                                                    <>
+                                                                        <div className="details" key={i} onClick={() => console.log(item)}>
+                                                                            <div>
+                                                                                <div className="selected-quantity">
+                                                                                    {item.quantity}
+                                                                                </div>
+                                                                            </div>
 
+                                                                            <div className="item-description">
+                                                                                <div className="item-title">
+                                                                                    {item.name}
+                                                                                </div>
 
-                                                    items.length ? items.map((item, i) => {
-                                                        return (
-                                                            <>
-                                                                <div className="details" key={i} onClick={() => console.log(item)}>
-                                                                    <div>
-                                                                        <div className="selected-quantity">
-                                                                            {item.quantity}
+                                                                                <div className="size-title">
+                                                                                    {item.shortDescription}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div className="amount">
+                                                                                ${item.totalPrice}
+                                                                            </div>
+                                                                            <div className="editDelete">
+                                                                                <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, i, item.quantity) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
+                                                                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                                                                </svg>
+                                                                                <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
+                                                                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
+                                                                                </svg>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                    </>
+                                                                )
+                                                            }) : null}
+                                                        </div>
+                                                        <div className="lockItem">
+                                                            <p>Submitted Item</p>
+                                                            {
+                                                                items.length ? items.filter((a) => !a.status).map((item, i) => {
+                                                                    return (
+                                                                        <>
+                                                                            <div className="details" key={i}>
+                                                                                <div>
+                                                                                    <div className="selected-quantity">
+                                                                                        {item.quantity}
+                                                                                    </div>
+                                                                                </div>
 
-                                                                    <div className="item-description">
-                                                                        <div className="item-title">
-                                                                            {item.name}
-                                                                        </div>
+                                                                                <div className="item-description">
+                                                                                    <div className="item-title">
+                                                                                        {item.name}
+                                                                                    </div>
 
-                                                                        <div className="size-title">
-                                                                            {item.shortDescription}
-                                                                        </div>
-                                                                    </div>
+                                                                                    <div className="size-title">
+                                                                                        {item.shortDescription}
+                                                                                    </div>
+                                                                                </div>
 
-                                                                    <div className="amount">
-                                                                        ${item.totalPrice}
-                                                                    </div>
-                                                                    <div className="editDelete">
-                                                                        <svg onClick={() => { editItem(item.id, item.restaurantId, item.addOnObj, i, item.quantity) }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil edit" viewBox="0 0 16 16">
-                                                                            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
-                                                                        </svg>
-                                                                        <svg onClick={() => deleteItem(item.id, item.restaurantId, i)} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill delete" viewBox="0 0 16 16">
-                                                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z" />
-                                                                        </svg>
-                                                                    </div>
-                                                                </div>
-                                                            </>
-                                                        )
-                                                    }) : null
+                                                                                <div className="amount">
+                                                                                    ${item.totalPrice}
+                                                                                </div>
+                                                                                {/* <div>
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                                                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                                                                    </svg>
+                                                                                </div> */}
+                                                                            </div>
+                                                                        </>
+                                                                    )
+                                                                }) : null
+                                                            }
+                                                        </div>
+                                                    </>
+
 
                                                 }
 
