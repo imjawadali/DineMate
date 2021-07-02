@@ -467,7 +467,7 @@ module.exports = app => {
             SUM(o.doNotDisturb) as doNotDisturb,
             SUM(o.customerStatus) as closeRequests,
             COUNT(o.orderNumber) as occupiedBy,
-            MIN(o.createdAt) as createdAt
+            TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
             (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')
@@ -806,7 +806,8 @@ module.exports = app => {
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
             SUM(o.doNotDisturb) as doNotDisturb,
             SUM(o.customerStatus) as closeRequests,
-            GROUP_CONCAT(o.orderNumber) as occupiedBy
+            GROUP_CONCAT(o.orderNumber) as occupiedBy,
+            TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON
             (o.tableId = rq.value AND o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.type = 'Dine-In')

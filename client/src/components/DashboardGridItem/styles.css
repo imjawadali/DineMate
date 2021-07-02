@@ -40,4 +40,8 @@
         aspect-ratio: 1;
         width: 100%;
     }
+
+    .ResponsiveDirection {
+        flex-direction: column;
+    }
 }   

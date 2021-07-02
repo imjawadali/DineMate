@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Button, ButtonRed, DashboardGridItem, DashboardTimer, DropDown, ServiceQueItem, TitleWithAction } from '../../../../components'
+import { Button, DashboardGridItem, DropDown, ServiceQueItem, TitleWithAction } from '../../../../components'
 import { ASSIGN_TABLES_TO_STAFF, CLEAR_TABLE_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
@@ -263,7 +263,7 @@ function Restaurant(props) {
               <div className="DashBoardGrids">
                 {
                   getUnmergedTables().map((table, index) => {
-                    const { id, value, doNotDisturb, occupiedBy } = table
+                    const { id, value, doNotDisturb, occupiedBy, time } = table
                     if (index >= getUnmergedColumnCounts() && index % getUnmergedColumnCounts() === 0) {
                       row = row + 1
                     }
@@ -280,6 +280,7 @@ function Restaurant(props) {
                         merging={merging || managingStaff}
                         includesMerging={selectedTables.includes(id) || assignedTables.includes(value)}
                         serviceIncludes={serviceTables.includes(value)}
+                        timeStamp={time}
                         onClick={() => {
                           if (merging && !occupiedBy) selectTable(id)
                           else if (managingStaff) assignTable(value)
@@ -311,8 +312,8 @@ function Restaurant(props) {
                           borderBottomRightRadius: index === mergedTables.length - 1 ? '10px' : '0px',
                           borderTop: index === 0 ? '1px solid black' : 'none',
                           borderBottom: index === mergedTables.length - 1 ? '1px solid black' : 'none',
-                          backgroundColor: merging ? 'white' : managingStaff ? 'rgb(245, 222, 179)' : '',
-                          cursor: 'pointer'
+                          backgroundColor: merging ? 'white' : managingStaff ? 'rgb(245, 222, 179)' : 'rgba(150, 150, 150, 0.1)',
+                          cursor: 'pointer',
                         }}
                         onClick={() => {
                           if (managingStaff) assignTable(table.mergeId)
@@ -340,10 +341,13 @@ function Restaurant(props) {
                           /> : null}
                         <DashboardGridItem
                           text={"Table " + value}
+                          currentIndex={index}
+                          lastIndex={mergedTables.length - 1}
                           doNotDisturb={mergedTables.filter(table => table.doNotDisturb).length}
-                          occupiedBy={!managingStaff && mergedTables.filter(table => table.occupiedBy).length}
+                          occupiedBy={!managingStaff && mergedTables[0].occupiedBy}
                           includesMerging={assignedTables.includes(mergeId)}
                           serviceIncludes={serviceTables.includes(mergeId)}
+                          timeStamp={mergedTables[0].time}
                           merging={merging || managingStaff}
                           merged={!managingStaff}
                         />

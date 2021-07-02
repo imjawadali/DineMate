@@ -899,7 +899,7 @@ module.exports = app => {
                     message: 'Item name is required!',
                     errorCode: 422
                 })
-                if (!price) return res.send({
+                if (!price && price !== 0) return res.send({
                     status: false,
                     message: 'Item price is required!',
                     errorCode: 422
@@ -1092,7 +1092,7 @@ module.exports = app => {
                     message: 'Item name is required!',
                     errorCode: 422
                 })
-                if (!price) return res.send({
+                if (!price && price !== 0) return res.send({
                     status: false,
                     message: 'Item price is required!',
                     errorCode: 422
