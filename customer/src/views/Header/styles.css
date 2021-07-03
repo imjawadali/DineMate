@@ -194,6 +194,25 @@ input.HeaderInput {
     padding: 20px 0px;
 
 }
+
+.unlockItems .deleteDiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.unlockItems .deleteDiv button{
+    width: 80px;
+    height: 28px;
+    background: #36c8b9;
+    border: none;
+    /* border-radius: 40%; */
+    /* PADDING: 10px 9px; */
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    outline: navajowhite;
+
+}
 .item-details .lockItem  {
 font-style: italic;
 background: #80808014;
