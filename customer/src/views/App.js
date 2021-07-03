@@ -95,9 +95,10 @@ export default function App() {
                             }
                         }
                         else {
-                            // if(window.location.pathname !== "/customer/checkout"){
-                            //     window.location.pathname = '/customer/checkout'
-                            // }
+                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                            if(window.location.pathname !== "/customer/checkout"){
+                                window.location.pathname = '/customer/checkout'
+                            }
                         }
 
                         // if (orderStatusDetails && orderStatusDetails.active) {
