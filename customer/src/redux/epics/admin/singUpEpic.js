@@ -25,7 +25,7 @@ export class signUpEpic {
             (resObj) => {
               setItem('customer', resObj.body)
               RestClient.setHeader('Authorization', resObj.body.id)
-              // return customisedAction(SET_SESSION, { customer: resObj })
+              return customisedAction(SET_SESSION, { customer: resObj })
             },
             SIGN_UP_FAILURE
           )
