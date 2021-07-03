@@ -9,7 +9,7 @@ import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDE
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity,...props }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
@@ -21,6 +21,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const [updatePrice, setupdatePrice] = useState(false)
     const [initOrder, setInitOrder] = useState(false)
 
+    const [specialInstructions, setSpecialIntstruction] = useState("")
+
     console.log(orderDetails)
 
     let [obj, setObj] = useState({
@@ -31,14 +33,14 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
             setObj(addedAddons)
             console.log(addedAddons)
         }
-        
+
     }, [addedAddons])
-    useEffect(()=>{
-        if(edit){
+    useEffect(() => {
+        if (edit) {
             setItemCount(editedQuantity)
             console.log(selectedItem)
         }
-    },[editedQuantity])
+    }, [editedQuantity])
 
     let [price, setPrice] = useState(selectedItem.price);
     useEffect(() => {
@@ -79,7 +81,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 totalPrice: totalPrice,
                 restaurantId: restaurantId,
                 orderNumber: "000000032",
-                addOnObj: obj
+                addOnObj: obj,
+                specialInstructions,
             }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
@@ -90,7 +93,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     totalPrice: totalPrice,
                     restaurantId: restaurantId,
                     orderNumber: getItem('orderDetails').orderNumber,
-                    addOnObj: obj
+                    addOnObj: obj,
+                    specialInstructions,
                 }
                 let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
                 if (cartMenu) {
@@ -111,7 +115,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     quantity: itemCount,
                     totalPrice: totalPrice,
                     restaurantId: restaurantId,
-                    addOnObj: obj
+                    addOnObj: obj,
+                    specialInstructions,
                 }
 
                 let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
@@ -141,12 +146,13 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 totalPrice: totalPrice,
                 restaurantId: restaurantId,
                 orderNumber: "000000032",
-                addOnObj: obj
+                addOnObj: obj,
+                specialInstructions,
 
 
             }
             dispatch(customisedAction(EDIT_ORDER_ITEM, { objItem: objItem, i: editInded }))
-        setViewAddons(false)
+            setViewAddons(false)
 
         }
 
@@ -163,7 +169,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
 
 
-
+    useEffect(()=>{
+        setSpecialIntstruction(props.specialInstructions)
+    },[selectedItem])
 
 
 
@@ -437,7 +445,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                         <small className="special-instruction">Please let us know if your are allergic to anything or if we need to avoid anything.</small>
 
                         <div className="instrct-layout">
-                            <textarea className='instrctn-txt' placeholder="eg . No mayo" id="special_instructions" name="special_notes" rows="4" cols="40" />
+                            <textarea value={specialInstructions} onChange={(e) => setSpecialIntstruction(e.target.value)} className='instrctn-txt' placeholder="eg . No mayo" id="special_instructions" name="special_notes" rows="4" cols="40" />
                         </div>
                     </div>
 
