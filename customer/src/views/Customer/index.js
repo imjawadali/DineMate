@@ -14,6 +14,7 @@ import CheckOut from './checkout/CheckOut'
 import Profile from '../profile/Profile'
 import SetPassword from './Set-Password'
 import PastOrder from '../pastOrder/PastOrder'
+import Detail from '../pastOrder/details'
 
 export default function Customer(props) {
 
@@ -54,6 +55,7 @@ export default function Customer(props) {
         <Route exact path={`${path}/profile`} component={Profile} />
         <Route exact path={`${path}/setNewPassword/:email/:hashString`} component={SetPassword} />
         <Route exact path={`${path}/pastOrder`} component={PastOrder} />
+        <Route exact path={`${path}/pastOrder/orderDetails`} component={Detail} />
 
         <Route component={NoRoute} />
       </Switch>

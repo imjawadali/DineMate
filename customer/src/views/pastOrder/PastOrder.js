@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { GET_ALL_ORDERS } from '../../constants'
 import { customisedAction } from '../../redux/actions'
 import './pastOrder.css'
-function PastOrder() {
+function PastOrder(props) {
     let dispatch = useDispatch()
     const pastOrder = useSelector(({ allOrderReducer }) => allOrderReducer.orders)
     const [pastHistory, setPastHistory] = useState([])
@@ -53,8 +54,8 @@ function PastOrder() {
                                     <h3>{a.restaurantName}</h3>
                                 </div>
                                 <div className="detailDiv">
-                                    <h3>$ {a.billAmount}</h3>
-                                    <button onClick={()=>console.log(a)}>View Detail</button>
+                                    <h3 onClick={()=>console.log(a)}>$ {a.billAmount}</h3>
+                                    <button onClick={()=>props.history.push(`/customer/pastOrder/orderDetails?restaurantId=${a.restaurantId}&restaurantName=${a.restaurantName}&orderNumber=${a.orderNumber}`)}>View Detail</button>
                                 </div>
                             </div>
 
@@ -68,4 +69,4 @@ function PastOrder() {
     )
 }
 
-export default PastOrder
+export default withRouter(PastOrder)

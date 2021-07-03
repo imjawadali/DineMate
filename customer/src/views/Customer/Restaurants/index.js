@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import ResturantListComponent from '../../../components/ResturantListComponent'
 import { Title } from '../../../components/Title'
 import { GET_ALL_RESTAURANTS, SEARCH_RESTURANT } from '../../../constants'
+import { getItem } from '../../../helpers'
 import { customisedAction } from '../../../redux/actions'
 import './styles.css'
 
@@ -17,6 +19,16 @@ function Restaurants(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
+  }, [])
+
+  useEffect(() => {
+    const OrderDetails = getItem('orderDetails')
+    if (OrderDetails && OrderDetails.type.toLowerCase() === 'dine-in') {
+      if (window.location.pathname !== `/customer/${OrderDetails.restaurantId}/menu`) {
+        props.history.push(`/customer/${OrderDetails.restaurantId}/menu`)
+      }
+    }
+
   }, [])
 
   useEffect(() => {
@@ -100,4 +112,4 @@ function Restaurants(props) {
   )
 }
 
-export default Restaurants
+export default withRouter(Restaurants)

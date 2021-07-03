@@ -64,7 +64,7 @@ function SideNav(props) {
 
                             <div className="route-section" style={{ marginTop: 40 }}>
                                 <img style={{ width: 23, marginRight: 8 }} src={serve} />
-                                <span className="route">Orders</span>
+                                <span className="route" onClick={() => props.history.push(`/customer/pastOrder`)}>Orders</span>
                             </div>
 
                             <div className="route-section">

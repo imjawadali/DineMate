@@ -197,18 +197,21 @@ const Header = props => {
     }
 
     useEffect(() => {
-        if (orderDetail) {
+        if(window.location.pathname !== "/customer/pastOrder/orderDetails"){
 
-            let obj = {
-                restaurantId: orderDetail.restaurantId,
-                orderNumber: orderDetail.orderNumber,
-
+            if (orderDetail) {
+                
+                let obj = {
+                    restaurantId: orderDetail.restaurantId,
+                    orderNumber: orderDetail.orderNumber,
+                    
+                }
+                dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+                
+                
             }
-            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
-
-
+            
         }
-
     }, [orderDetail, updateState])
 
     useEffect(() => {
@@ -323,6 +326,9 @@ const Header = props => {
         }
         return quantity
     }
+
+    let [submitted, setSubmitted] = useState(false)
+
     function submitTakeAway() {
         setUpdateState(false)
 
@@ -338,7 +344,8 @@ const Header = props => {
         dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
         props.history.push('/customer/checkout');
         setUpdateState(true)
-
+        setSubmitted(true)
+        toggleCartModal()
 
     }
 
@@ -397,6 +404,12 @@ const Header = props => {
     const deleteAll = () => {
         dispatch(customisedAction(DELETE_ALL_ORDER_ITEM))
     }
+
+    useEffect(() => {
+        if (takeOrderItems) {
+            setItems(takeOrderItems.orderItems)
+        }
+    }, [takeOrderItems])
 
     return (
         <>
@@ -552,7 +565,7 @@ const Header = props => {
                                                                 <p>New Items</p>
                                                                 <button onClick={deleteAll}>Delete All</button>
                                                             </div>
-                                                            {items.length ? items.filter((a, i) => a.status).map((item, i) => {
+                                                            {!submitted && items.length ? items.filter((a, i) => a.status).map((item, i) => {
                                                                 return (
                                                                     <>
                                                                         <div className="details" key={i} onClick={() => console.log(item)}>
