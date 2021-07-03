@@ -31,10 +31,10 @@ function SideNav(props) {
 
 
     useEffect(() => {
-        if (getItem('customer')) {
+        if (!profile && getItem('customer')) {
             dispatch(customisedAction(GET_RPOFILE))
         }
-    }, [])
+    }, [getItem('customer')])
 
 
 
