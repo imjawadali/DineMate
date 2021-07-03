@@ -36,7 +36,7 @@ const Header = props => {
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
 
-console.log(submitOrderDetail,'submitOrderDetail')
+    console.log(submitOrderDetail, 'submitOrderDetail')
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -76,15 +76,15 @@ console.log(submitOrderDetail,'submitOrderDetail')
     }, [cartItemR])
 
     useEffect(() => {
-        if (submitOrderDetail){
+        if (submitOrderDetail) {
             setOrderDetail(getItem('orderDetails'))
         }
     }, [submitOrderDetail])
 
     useEffect(() => {
-        console.log('runn1',submitTakeOrder)
+        console.log('runn1', submitTakeOrder)
         if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
-        console.log('runn2')
+            console.log('runn2')
 
 
             let obj3 = {
@@ -95,7 +95,7 @@ console.log(submitOrderDetail,'submitOrderDetail')
             dispatch(customisedAction(GET_TAKE_ORDER_ITEMS, obj3))
         }
 
-    }, [submitTakeOrder, orderDetail,updateState])
+    }, [submitTakeOrder, orderDetail, updateState])
 
     useEffect(() => {
         let arr = []
@@ -323,6 +323,9 @@ console.log(submitOrderDetail,'submitOrderDetail')
         }
         return quantity
     }
+
+    let [submitted, setSubmitted] = useState(false)
+
     function submitTakeAway() {
         setUpdateState(false)
 
@@ -338,7 +341,7 @@ console.log(submitOrderDetail,'submitOrderDetail')
         dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
         props.history.push('/customer/checkout');
         setUpdateState(true)
-
+        setSubmitted(true)
 
     }
 
@@ -393,6 +396,13 @@ console.log(submitOrderDetail,'submitOrderDetail')
         dispatch(customisedAction(DELETE_ORDER_ITEM, { i }))
 
     }
+
+
+    useEffect(() => {
+        if (takeOrderItems) {
+            setItems(takeOrderItems.orderItems)
+        }
+    }, [takeOrderItems])
 
     return (
         <>
@@ -542,7 +552,7 @@ console.log(submitOrderDetail,'submitOrderDetail')
                                                     <>
                                                         <div className="unlockItems">
                                                             <p>New Items</p>
-                                                            {items.length ? items.filter((a, i) => a.status).map((item, i) => {
+                                                            {!submitted && items.length ? items.filter((a, i) => a.status).map((item, i) => {
                                                                 return (
                                                                     <>
                                                                         <div className="details" key={i} onClick={() => console.log(item)}>

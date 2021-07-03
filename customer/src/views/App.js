@@ -23,6 +23,8 @@ import Footer from './Footer'
 import logo from '../assets/logo.png'
 import './styles.css'
 
+
+
 export default function App() {
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -69,26 +71,31 @@ export default function App() {
                             "restaurantId": storedOrderDetails.restaurantId,
                             "orderNumber": storedOrderDetails.orderNumber
                         }
-                        dispatch(customisedAction(GET_STATUS, obj))
-                        if (orderStatusDetails && !orderStatusDetails.active) {
-                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        } else if (orderStatusDetails && !orderStatusDetails.active) {
-                            removeItem('orderDetails')
-                            // removeItem('cartMenu')
-                        }
-
-
-                        // dispatch(customisedAction(GET_STATUS, obj))
-                        // if (orderStatusDetails && orderStatusDetails.closeRequested) {
-                        // if (orderStatusDetails && orderStatusDetails.active) {
+                        // if(!orderStatusDetails){
+                        //     dispatch(customisedAction(GET_STATUS, obj))
+                        // }
+                        // if (orderStatusDetails && !orderStatusDetails.active) {
                         //     dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        // } else {
+                        // } else if (orderStatusDetails && !orderStatusDetails.active) {
                         //     removeItem('orderDetails')
-                        //     }
+                        //     // removeItem('cartMenu')
                         // }
-                        // else {
-                        // window.location.href = '/customer/checkout'
-                        // }
+
+                        if (!orderStatusDetails) {
+                            dispatch(customisedAction(GET_STATUS, obj))
+                        }
+                        if (orderStatusDetails && orderStatusDetails.closeRequested) {
+                            if (orderStatusDetails && orderStatusDetails.active) {
+                                dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
+                            } else {
+                                removeItem('orderDetails')
+                            }
+                        }
+                        else {
+                            // if(window.location.pathname !== "/customer/checkout"){
+                            //     window.location.pathname = '/customer/checkout'
+                            // }
+                        }
 
                         // if (orderStatusDetails && orderStatusDetails.active) {
                         //     removeItem('orderDetails')

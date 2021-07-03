@@ -35,6 +35,9 @@ function CheckOut(props) {
 
     const dispatch = useDispatch()
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+
+    let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
+
     useEffect(() => {
         setTimeout(() => {
             setOrderDetail(getItem('orderDetails'))
@@ -188,6 +191,11 @@ function CheckOut(props) {
         props.history.push('/customer/xyz_restaurant/menu')
     }
 
+    useEffect(()=>{
+        if(takeOrderItems){
+            setProducts(takeOrderItems.orderItems)
+        }
+    },[takeOrderItems])
 
 
     return (
