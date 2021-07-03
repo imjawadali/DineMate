@@ -11,7 +11,8 @@ import {
   SET_ORDER_ITEM_SUCCESS,
   TAKIE_AWAY_ORDER,
   TAKIE_AWAY_ORDER_FAILED,
-  SET_TAKE_ORDER_ITEM_SUCCESS
+  SET_TAKE_ORDER_ITEM_SUCCESS,
+  GET_TAKE_ORDER_ITEMS
 } from '../../../constants'
 import { removeItem, setItem } from '../../../helpers'
 
@@ -36,8 +37,10 @@ export class takeAwayOrderEpic {
               // setItem('cartMenu', arr)
               setItem('orderDetails', resObj.body)
               removeItem('cartMenu')
-              console.log(resObj,obj)
-              return customisedAction(SET_TAKE_ORDER_ITEM_SUCCESS, resObj.body)
+              console.log(resObj,obj,"abcdefg")
+
+              // return customisedAction(SET_TAKE_ORDER_ITEM_SUCCESS, resObj.body)
+              return customisedAction(GET_TAKE_ORDER_ITEMS, {orderNumber: resObj.body.orderNumber, restaurantId: resObj.body.restaurantId})
 
             },
             TAKIE_AWAY_ORDER_FAILED
