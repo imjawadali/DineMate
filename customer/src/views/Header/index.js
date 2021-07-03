@@ -7,7 +7,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -36,7 +36,7 @@ const Header = props => {
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
 
-console.log(submitOrderDetail,'submitOrderDetail')
+    console.log(submitOrderDetail, 'submitOrderDetail')
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -76,15 +76,15 @@ console.log(submitOrderDetail,'submitOrderDetail')
     }, [cartItemR])
 
     useEffect(() => {
-        if (submitOrderDetail){
+        if (submitOrderDetail) {
             setOrderDetail(getItem('orderDetails'))
         }
     }, [submitOrderDetail])
 
     useEffect(() => {
-        console.log('runn1',submitTakeOrder)
+        console.log('runn1', submitTakeOrder)
         if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
-        console.log('runn2')
+            console.log('runn2')
 
 
             let obj3 = {
@@ -95,7 +95,7 @@ console.log(submitOrderDetail,'submitOrderDetail')
             dispatch(customisedAction(GET_TAKE_ORDER_ITEMS, obj3))
         }
 
-    }, [submitTakeOrder, orderDetail,updateState])
+    }, [submitTakeOrder, orderDetail, updateState])
 
     useEffect(() => {
         let arr = []
@@ -394,6 +394,10 @@ console.log(submitOrderDetail,'submitOrderDetail')
 
     }
 
+    const deleteAll = () => {
+        dispatch(customisedAction(DELETE_ALL_ORDER_ITEM))
+    }
+
     return (
         <>
             {props && props.location && props.location.pathname !== '/' ?
@@ -461,7 +465,10 @@ console.log(submitOrderDetail,'submitOrderDetail')
                                                     orderDetail.type.toLowerCase() !== 'take-away' ?
                                                     <>
                                                         <div className="unlockItems">
-                                                            <p>New Items</p>
+                                                            <div className="deleteDiv">
+                                                                <p>New Items</p>
+                                                                <button onClick={deleteAll}>Delete All</button>
+                                                            </div>
                                                             {
                                                                 items.length ? items.filter((a) => a.status).map((item, i) => {
                                                                     return (
@@ -541,7 +548,10 @@ console.log(submitOrderDetail,'submitOrderDetail')
                                                     :
                                                     <>
                                                         <div className="unlockItems">
-                                                            <p>New Items</p>
+                                                            <div className="deleteDiv">
+                                                                <p>New Items</p>
+                                                                <button onClick={deleteAll}>Delete All</button>
+                                                            </div>
                                                             {items.length ? items.filter((a, i) => a.status).map((item, i) => {
                                                                 return (
                                                                     <>

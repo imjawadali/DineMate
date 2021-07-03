@@ -11,7 +11,8 @@ import {
   SET_ORDER_ITEM_FAILED,
   SET_ORDER_ITEM_SUCCESS,
   EDIT_ORDER_ITEM,
-  DELETE_ORDER_ITEM
+  DELETE_ORDER_ITEM,
+  DELETE_ALL_ORDER_ITEM
 } from '../../../constants'
 import { getItem, removeItem, setItem } from '../../../helpers'
 
@@ -119,4 +120,21 @@ export class addOrderEpic {
         }
       )
     )
+static deleteAllOrder = action$ =>
+action$.pipe(
+  ofType(DELETE_ALL_ORDER_ITEM),
+  switchMap(
+    async ({ payload: iObj }) => {
+    
+       removeItem('cartMenu')
+      
+      // setTimeout(()=>{
+      // let cartMenu2 = getItem('cartMenu') ? getItem('cartMenu') : '';
+
+
+      // },[200])
+      return customisedAction(SET_ORDER_ITEM_SUCCESS, { cartMenu: [] })
+    }
+  )
+)
 }

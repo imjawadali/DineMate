@@ -54,6 +54,7 @@ const Menu = props => {
         if (categorie === 'All') {
             if (menu) {
                 setSelectedCategory(menu)
+                let arr = []
             }
         } else if (categorie != 'All') {
             if (menu) {
@@ -83,7 +84,7 @@ const Menu = props => {
             setItem('doNotDisturb', doNotDisturb)
             let obj = {
                 "restaurantId": orderDetails.restaurantId,
-                "orderNumber": "000000005",
+                "orderNumber": orderDetails.orderNumber,
                 "enabled": getItem('doNotDisturb')
             }
             dispatch(customisedAction(DONOTDISTURB, obj))
@@ -213,11 +214,21 @@ const Menu = props => {
 
 
 
-                {selectedCategory && selectedCategory.length ?
-                    <div className="menulistingcontainer">
-                        <MenuListingContainer heading="Picked for you" data={selectedCategory} onClick={(id) => addToCart(id)} cart={cart} />
-                    </div>
-                    : null}
+                {categorie === 'All' ?
+                    restaurant && restaurant.categories.map(category =>
+                        selectedCategory && selectedCategory.length ?
+                            <div className="menulistingcontainer">
+                                <MenuListingContainer heading={category.name} data={selectedCategory.filter((a, i) => a.categoryName === category.name)} onClick={(id) => addToCart(id)} cart={cart} />
+                            </div>
+                            : null
+                    ) :
+                    selectedCategory && selectedCategory.length ?
+                        <div className="menulistingcontainer">
+                            <MenuListingContainer heading={categorie} data={selectedCategory} onClick={(id) => addToCart(id)} cart={cart} />
+                        </div>
+                        : null
+                }
+
 
                 {
                     openCall ?

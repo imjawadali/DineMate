@@ -92,18 +92,18 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     orderNumber: getItem('orderDetails').orderNumber,
                     addOnObj: obj
                 }
-                let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
-                if (cartMenu) {
-                    if (cartMenu.restaurantId === restaurantId) {
-                        saveCart(objItem)
-                    } else if (cartMenu.restaurantId != restaurantId) {
-                        dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
-                    }
-                } else {
+                // let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
+                // if (cartMenu) {
+                //     if (cartMenu.restaurantId === restaurantId) {
+                //         saveCart(objItem)
+                //     } else if (cartMenu.restaurantId != restaurantId) {
+                //         dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                //     }
+                // } else {
 
                     saveCart(objItem)
 
-                }
+                // }
             } else {
                 let objItem = {
                     ...selectedItem,

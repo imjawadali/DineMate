@@ -29,6 +29,7 @@ export const epics = combineEpics(
     addOrderEpic.addOrder,
     addOrderEpic.editOrder,
     addOrderEpic.deleteOrder,
+    addOrderEpic.deleteAllOrder,
     submitOrderEpic.submitOrder,
     loginEpic.getProfile,
     loginEpic.updateProfile,
@@ -41,5 +42,6 @@ export const epics = combineEpics(
     getAllOrdersEpic.getAllOrders,
     searchResturantEpic.searchResturant,
     getTakeAwayOrderItemEpic.getTakeAwayOrder
+
 
 )

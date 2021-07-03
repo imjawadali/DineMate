@@ -24,6 +24,37 @@ const MenuListingContainer = props => {
 
     }, [restaurantId])
 
+    const opennAddOn = () => {
+        if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
+            let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
+            if (cartMenu) {
+                if (cartMenu.restaurantId === restaurantId) {
+                    setViewAddons(true)
+                } else if (cartMenu.restaurantId != restaurantId) {
+                    dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                }
+            } else {
+                setViewAddons(true)
+
+            }
+        } else {
+
+            let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
+            if (cartMenu.length) {
+                if (cartMenu[0].restaurantId === restaurantId) {
+                    setViewAddons(true)
+                } else if (cartMenu[0].restaurantId != restaurantId) {
+                    dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                }
+
+            } else {
+                setViewAddons(true)
+
+            }
+        }
+    }
+
+
     return (
         <div className="MenuListingContainer">
 
@@ -42,7 +73,8 @@ const MenuListingContainer = props => {
                                 price={menuItem.price}
                                 onClick={() => {
                                     setSelectedItem(menuItem);
-                                    setViewAddons(true);
+                                    opennAddOn()
+                                    // setViewAddons(true);
                                 }}
                                 updateCart={onClick}
                                 addToCart={cart.find(item => item.id == menuItem.id)}
@@ -149,12 +181,12 @@ const MenuListingContainer = props => {
 //     // this is order initializing api for QR CODE
 
 
-        
-    
 
 
-    
-   
+
+
+
+
 
 //     return (
 //         <div className="add-on-dialog">
