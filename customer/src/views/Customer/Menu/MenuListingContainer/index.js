@@ -76,6 +76,7 @@ const MenuListingContainer = props => {
                                     opennAddOn()
                                     // setViewAddons(true);
                                 }}
+                                menuItem={menuItem}
                                 updateCart={onClick}
                                 addToCart={cart.find(item => item.id == menuItem.id)}
                                 image={menuItem.imageUrl} />

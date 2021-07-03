@@ -1,34 +1,51 @@
-.MLIComponent{
+.MLIComponent {
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
     height: 100%;
 }
-.MLIComponent-Left{
+.MenuListingContainerItem {
+    position: relative;
+}
+.MenuListingContainerItem .quantity {
+    position: absolute;
+    right: 0;
+    background: blue;
+    width: 26px;
+    color: white;
+    text-align: center;
+    font-size: 13px;
+    height: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.MLIComponent-Left {
     width: 47%;
     height: 100%;
     padding-left: 3%;
 }
-.MLIComponent-Left-top{
+.MLIComponent-Left-top {
     width: 100%;
     height: 70%;
     padding-top: 10%;
 }
-.MLIComponent-Left-top h2{
+.MLIComponent-Left-top h2 {
     font-weight: 400;
     font-size: 24px;
 }
-.MLIComponent-Left-top h3{
+.MLIComponent-Left-top h3 {
     color: rgb(173, 173, 173);
     font-weight: 400;
     font-size: 18px;
 }
-.MLIComponent-Left-bottom{
+.MLIComponent-Left-bottom {
     width: 100%;
     height: 20%;
 }
-.MLIComponent-Right{
+.MLIComponent-Right {
     width: 35%;
     height: 100%;
     display: flex;
@@ -36,7 +53,7 @@
     justify-content: center;
     align-items: center;
 }
-.MLIComponent-Right-img{
+.MLIComponent-Right-img {
     width: 90% !important;
     display: flex;
     flex-direction: row;
@@ -44,11 +61,11 @@
     align-items: center;
     height: 100%;
 }
-.MLIComponent-Right-img img{
+.MLIComponent-Right-img img {
     width: 80%;
     aspect-ratio: 1;
 }
-.MLIComponent-Right-cart{
+.MLIComponent-Right-cart {
     /* width: 100%; */
     flex: 1;
     height: 100%;
@@ -56,7 +73,7 @@
     /* background-color: rosybrown; */
     justify-content: flex-end;
 }
-.MLIComponent-Right-cart-added{
+.MLIComponent-Right-cart-added {
     width: 30px;
     height: 30px;
     background-color: #35c8b8;
@@ -66,109 +83,95 @@
     align-items: center;
 }
 
+@media all and (min-width: 1024px) and (max-width: 1280px) {
+}
 
-
-
-@media all and (min-width: 1024px) and (max-width: 1280px) { }
- 
 @media all and (min-width: 768px) and (max-width: 1024px) {
-
-
-    .MLIComponent-Left{
+    .MLIComponent-Left {
         width: 44%;
         height: 100%;
         padding-left: 6%;
     }
-    .MLIComponent-Left-top h2{
+    .MLIComponent-Left-top h2 {
         font-weight: 400;
         font-size: 20px;
     }
-    .MLIComponent-Left-top h3{
+    .MLIComponent-Left-top h3 {
         color: rgb(173, 173, 173);
         font-size: 16px;
         font-weight: 400;
     }
-    
-.MLIComponent-Left-bottom h2 {
-font-size: 18px;
-}
-    .MLIComponent-Right-img{
+
+    .MLIComponent-Left-bottom h2 {
+        font-size: 18px;
+    }
+    .MLIComponent-Right-img {
         width: 150px;
     }
-    
-.MLIComponent-Right-cart-added{
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
+
+    .MLIComponent-Right-cart-added {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
 }
 
-
- }
- 
 @media all and (min-width: 480px) and (max-width: 768px) {
-    .MLIComponent-Left{
+    .MLIComponent-Left {
         width: 44%;
         height: 100%;
         padding-left: 6%;
     }
-    .MLIComponent-Left-top h2{
+    .MLIComponent-Left-top h2 {
         font-weight: 400;
         font-size: 20px;
     }
-    .MLIComponent-Left-top h3{
+    .MLIComponent-Left-top h3 {
         color: rgb(173, 173, 173);
         font-size: 16px;
         font-weight: 400;
     }
-    
-.MLIComponent-Left-bottom h2 {
-font-size: 18px;
-}
-    .MLIComponent-Right-img{
+
+    .MLIComponent-Left-bottom h2 {
+        font-size: 18px;
+    }
+    .MLIComponent-Right-img {
         width: 150px;
     }
-    
-.MLIComponent-Right-cart-added{
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
+
+    .MLIComponent-Right-cart-added {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
 }
 
-
-
- }
- 
 @media all and (max-width: 480px) {
-
-    .MLIComponent-Left{
+    .MLIComponent-Left {
         width: 44%;
         height: 100%;
         padding-left: 6%;
     }
-    .MLIComponent-Left-top h2{
+    .MLIComponent-Left-top h2 {
         font-weight: 400;
         font-size: 18px;
     }
-    .MLIComponent-Left-top h3{
+    .MLIComponent-Left-top h3 {
         color: rgb(173, 173, 173);
         font-size: 16px;
         font-weight: 400;
     }
-    
-.MLIComponent-Left-bottom h2 {
-font-size: 16px;
-}
-    .MLIComponent-Right-img{
+
+    .MLIComponent-Left-bottom h2 {
+        font-size: 16px;
+    }
+    .MLIComponent-Right-img {
         width: 150px;
     }
-    
-.MLIComponent-Right-cart-added{
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
+
+    .MLIComponent-Right-cart-added {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
 }
-
-
-
-
- }
