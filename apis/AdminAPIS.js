@@ -464,7 +464,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
-            SUM(o.doNotDisturb) as doNotDisturb,
+            SUM(o.doNotDisturb) as doNotDisturb, o.amount,
             SUM(o.customerStatus) as closeRequests,
             COUNT(o.orderNumber) as occupiedBy,
             TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
@@ -804,9 +804,9 @@ module.exports = app => {
             res,
             adminId,
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
-            SUM(o.doNotDisturb) as doNotDisturb,
+            SUM(o.doNotDisturb) as doNotDisturb, o.amount,
             SUM(o.customerStatus) as closeRequests,
-            GROUP_CONCAT(o.orderNumber) as occupiedBy,
+            COUNT(o.orderNumber) as occupiedBy,
             TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
             FROM restaurantsQrs rq
             LEFT JOIN orders o ON

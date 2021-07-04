@@ -3,7 +3,7 @@ import { getTimeObject } from '../../helpers'
 
 import './styles.css'
 
-function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupiedBy, merging, includesMerging, merged, serviceIncludes, timeStamp, onClick }) {
+function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupiedBy, merging, includesMerging, merged, serviceIncludes, amount, timeStamp, onClick }) {
 
   const [timer, settimer] = useState(timeStamp)
   const [time, settime] = useState(timeStamp)
@@ -32,7 +32,7 @@ function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupi
       onClick={onClick}
     >
       {occupiedBy && !currentIndex ? <div style={{ width: '100%', display: 'flex' }}>
-        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>Diner(s): {occupiedBy}</p>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>{occupiedBy} (Diners)</p>
         {!!doNotDisturb && <i className="DashboardGridItemText fa fa-ban" style={{ margin: '0px 5px' }} />}
         {!!serviceIncludes && <i className="DashboardGridItemText fa fa-bell" />}
       </div> : null}
@@ -40,7 +40,7 @@ function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupi
         <p className="DashboardGridItemText" style={{ fontWeight: 'bold' }}>{text}</p>
       </div>
       {!!occupiedBy && currentIndex === lastIndex ? <div className="ResponsiveDirection" style={{ width: '100%', display: 'flex' }}>
-        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>$ {0}</p>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>$ {amount}</p>
         <p className="DashboardGridItemText">
           {time.hrs ? time.hrs < 10 ? '0' + time.hrs + ':' : time.hrs + ':' : '00:'}
           {time.mints ? time.mints < 10 ? '0' + time.mints + ':' : time.mints + ':' : '00:'}

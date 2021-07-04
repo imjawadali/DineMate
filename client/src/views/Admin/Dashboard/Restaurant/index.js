@@ -263,7 +263,7 @@ function Restaurant(props) {
               <div className="DashBoardGrids">
                 {
                   getUnmergedTables().map((table, index) => {
-                    const { id, value, doNotDisturb, occupiedBy, time } = table
+                    const { id, value, doNotDisturb, occupiedBy, amount, time } = table
                     if (index >= getUnmergedColumnCounts() && index % getUnmergedColumnCounts() === 0) {
                       row = row + 1
                     }
@@ -280,6 +280,7 @@ function Restaurant(props) {
                         merging={merging || managingStaff}
                         includesMerging={selectedTables.includes(id) || assignedTables.includes(value)}
                         serviceIncludes={serviceTables.includes(value)}
+                        amount={amount}
                         timeStamp={time}
                         onClick={() => {
                           if (merging && !occupiedBy) selectTable(id)
@@ -348,6 +349,7 @@ function Restaurant(props) {
                           includesMerging={assignedTables.includes(mergeId)}
                           serviceIncludes={serviceTables.includes(mergeId)}
                           timeStamp={mergedTables[0].time}
+                          amount={mergedTables[0].amount}
                           merging={merging || managingStaff}
                           merged={!managingStaff}
                         />
@@ -356,35 +358,9 @@ function Restaurant(props) {
                   })
                 }
               </div>
-              {/* <div className="DashboardTableDetailsContainer"
-                style={{
-                  justifyContent: hoveredTable ? '' : 'center'
-                }}>
-                {hoveredTable ?
-                  <>
-                    <p style={{ flex: 1 }}>Amount: $ 0</p>
-                    <p>Table - {
-                      Array.isArray(hoveredTable) ?
-                        hoveredTable.map((table, index) => {
-                          return `
-                              ${index === hoveredTable.length - 1 ? ' & ' : ''}
-                              ${table.value}
-                              ${index < hoveredTable.length - 2 ? ', ' : ''}`
-                        })
-                        : hoveredTable.value
-                    }</p>
-                    <p style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>Duration: {
-                      <DashboardTimer timeStamp={Array.isArray(hoveredTable) ?
-                        hoveredTable[0].createdAt
-                        : hoveredTable.createdAt} />
-                    }</p>
-                  </>
-                  : <p>Hover on a table to show details!</p>
-                }
-              </div> */}
             </div>
             <div className="DashBoardServicesContainer">
-              <h2>Services Que</h2>
+              <h3>Services Que</h3>
               <div>
                 {servicesQue ?
                   servicesQue.map(item => {
