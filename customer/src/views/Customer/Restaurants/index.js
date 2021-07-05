@@ -97,7 +97,11 @@ function Restaurants(props) {
                 />
               </div>)
           })
-          : null
+          : <div className="notFound">
+            <p>
+            not result found
+            </p>
+          </div>
         }
       </div>
 

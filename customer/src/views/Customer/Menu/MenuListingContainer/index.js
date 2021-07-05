@@ -25,34 +25,34 @@ const MenuListingContainer = props => {
     const [items, setItem] = useState([])
 
 
-    // useEffect(() => {
-    //     let orderDetailsLocal = getItem('orderDetails') ? getItem('orderDetails') : getItem('cartMenu') ? getItem('cartMenu')[0] : []
-    //     if (orderDetailsLocal) {
-    //         let obj = {
-    //             "restaurantId": orderDetailsLocal.restaurantId,
-    //             "orderNumber": orderDetailsLocal.orderNumber
-    //         }
-    //         dispatch(customisedAction(GET_ORDER_ITEMS, obj))
-    //     }
-    // }, [])
+    useEffect(() => {
+        let orderDetailsLocal = getItem('orderDetails') ? getItem('orderDetails') : getItem('cartMenu') ? getItem('cartMenu')[0] : []
+        if (orderDetailsLocal) {
+            let obj = {
+                "restaurantId": orderDetailsLocal.restaurantId,
+                "orderNumber": orderDetailsLocal.orderNumber
+            }
+            // dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+        }
+    }, [])
 
-    // useEffect(() => {
-    //     let localItem = cartItemR ? cartItemR : getItem('cartMenu') ? getItem('cartMenu') : []
-    //     let getItemR = orderItem ? orderItem : []
-    //     let mixItem = []
-    //     if (localItem) {
-    //         localItem.map((a, i) => {
-    //             mixItem.push(a)
-    //         })
-    //     }
-    //     if (getItemR && getItemR.orderItems) {
-    //         getItemR.orderItems.map((a, i) => {
-    //             mixItem.push(a)
-    //         })
-    //     }
-    //     setItem(mixItem)
-    // }, [orderItem, cartItemR])
-    // console.log(items)
+    useEffect(() => {
+        let localItem = cartItemR ? cartItemR : getItem('cartMenu') ? getItem('cartMenu') : []
+        let getItemR = orderItem ? orderItem : []
+        let mixItem = []
+        if (localItem) {
+            localItem.map((a, i) => {
+                mixItem.push(a)
+            })
+        }
+        if (getItemR && getItemR.orderItems) {
+            getItemR.orderItems.map((a, i) => {
+                mixItem.push(a)
+            })
+        }
+        setItem(mixItem)
+    }, [orderItem, cartItemR])
+    console.log(items)
 
 
 

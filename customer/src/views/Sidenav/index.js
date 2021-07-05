@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import { customisedAction } from '../../redux/actions'
-import { GET_RPOFILE, LOGOUT } from '../../constants'
+import { CANT_SIGN_OUT, GET_ORDER_ITEMS, GET_RPOFILE, GET_TAKE_ORDER_ITEMS, LOGOUT } from '../../constants'
 import { getItem, removeItem } from '../../helpers'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -36,6 +36,40 @@ function SideNav(props) {
         }
     }, [getItem('customer')])
 
+    let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
+    let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
+    let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
+
+    useEffect(() => {
+        let orderDetail = getItem('orderDetails')
+        if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
+            let obj3 = {
+                "restaurantId": orderDetail.restaurantId,
+                "orderNumber": orderDetail.orderNumber,
+            }
+            dispatch(customisedAction(GET_ORDER_ITEMS, obj3))
+        }
+
+
+
+    }, [])
+
+
+
+    useEffect(() => {
+        let orderDetail = getItem('orderDetails')
+        if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
+            console.log('runn2')
+
+
+            let obj3 = {
+                "restaurantId": orderDetail.restaurantId,
+                "orderNumber": orderDetail.orderNumber,
+            }
+            dispatch(customisedAction(GET_TAKE_ORDER_ITEMS, obj3))
+        }
+
+    }, [])
 
 
     return (
@@ -76,8 +110,16 @@ function SideNav(props) {
                                 className="route-section"
                                 style={{ borderBottom: 'none' }}
                                 onClick={() => {
-                                    removeItem('customer')
-                                    dispatch(customisedAction(LOGOUT))
+                                    console.log(cartItemR,takeOrderItems,OrderItems)
+                                    if ((cartItemR && cartItemR.length > 0) || (takeOrderItems && takeOrderItems.orderItems.length > 0) || (OrderItems && OrderItems.orderItems.length > 0)) {
+                                        dispatch(customisedAction(CANT_SIGN_OUT))
+                                        console.log("this")
+
+                                    } else {
+                                        console.log("that")
+                                        removeItem('customer')
+                                        dispatch(customisedAction(LOGOUT))
+                                    }
                                 }}
                             >
                                 <img style={{ width: 23, marginRight: 8 }} src={arrowright} />

@@ -335,6 +335,7 @@ const Header = props => {
         setUpdateState(false)
 
         if (!customer) {
+            toggleCartModal()
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
         console.log('takeAway')
@@ -347,7 +348,6 @@ const Header = props => {
         props.history.push('/customer/checkout');
         setUpdateState(true)
         setSubmitted(true)
-        toggleCartModal()
 
     }
 
@@ -654,7 +654,7 @@ const Header = props => {
                                         <div className="orderSubBtn">
                                             <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : `Submit Order`}</button>
                                             {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
-                                                <button className="addItem" onClick={() => { props.history.push('/customer/checkout'); toggleCartModal(); }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
+                                                <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout');  }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
                                                 : null}
                                         </div>
                                     </div>

@@ -21,7 +21,7 @@ export class closeOrderEpic {
             API_ENDPOINTS.admin.closeOrder,
             { restaurantId, orderNumber },
             (resObj) => {
-              return customisedAction(CLOSE_ORDER_SUCCESS, { restaurantId, history, toast: { message: 'Please Wait Manager Will Respond You', type: 'success' }})
+              return customisedAction(CLOSE_ORDER_SUCCESS, { restaurantId, history, toast: { message: resObj.msg, type: 'success' }})
             },
             CLOSE_ORDER_FAILURE
           )
