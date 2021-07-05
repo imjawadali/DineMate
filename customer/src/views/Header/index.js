@@ -56,9 +56,6 @@ const Header = props => {
 
     // }, [])
 
-    console.log(submitTakeOrder)
-    console.log(takeOrderItems)
-
 
 
 
@@ -199,20 +196,20 @@ const Header = props => {
     }
 
     useEffect(() => {
-        if(window.location.pathname !== "/customer/pastOrder/orderDetails"){
+        if (window.location.pathname !== "/customer/pastOrder/orderDetails") {
 
             if (orderDetail) {
-                
+
                 let obj = {
                     restaurantId: orderDetail.restaurantId,
                     orderNumber: orderDetail.orderNumber,
-                    
+
                 }
                 dispatch(customisedAction(GET_ORDER_ITEMS, obj))
-                
-                
+
+
             }
-            
+
         }
     }, [orderDetail, updateState])
 
@@ -412,8 +409,9 @@ const Header = props => {
     useEffect(() => {
         if (takeOrderItems) {
             setItems(takeOrderItems.orderItems)
+            console.log(takeOrderItems.orderItems,"checkingg")
         }
-    }, [takeOrderItems])
+    }, [takeOrderItems,OrderItems])
 
     return (
         <>

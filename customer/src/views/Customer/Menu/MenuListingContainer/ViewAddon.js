@@ -321,24 +321,24 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                         <input
                                                                             type="checkbox"
                                                                             required={!!addOn.mandatory}
-                                                                            checked={obj[addOn.name] ? true : false}
+                                                                            checked={obj[addOnOption.name] ? true : false}
                                                                             onChange={() => {
                                                                                 setupdatePrice(true)
-                                                                                if (!obj[addOn.name]) {
-
+                                                                                if (!obj[addOnOption.name]) {
+                                                                                    console.log(addOnOption,"addOnaa")
                                                                                     let objj = { ...obj }
-                                                                                    objj[addOn.name] = {
+                                                                                    objj[addOnOption.name] = {
                                                                                         "addOnId": addOn.id,
                                                                                         "addOnName": addOn.name,
                                                                                         "addOnOptionId": addOn.id,
                                                                                         "addOnOption": addOn.name,
-                                                                                        "price": addOn.price
+                                                                                        "price": addOnOption.price
                                                                                     }
                                                                                     setObj(objj)
                                                                                 } else {
                                                                                     let objj = { ...obj }
 
-                                                                                    delete obj[addOn.name]
+                                                                                    delete obj[addOnOption.name]
 
                                                                                 }
                                                                             }}
