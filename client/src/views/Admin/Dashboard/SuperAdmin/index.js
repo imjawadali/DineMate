@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { Button, DashboardBatches } from '../../../../components'
+import { Button, DashboardBatches, TitleWithAction } from '../../../../components'
 import { GET_SUPER_ADMIN_DASHBOARD } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
@@ -20,17 +20,17 @@ function SuperAdmin(props) {
 
   return (
     <div className="Container">
-      <div className="PageTitleContainer">
-        <h2>Dashboard</h2>
-        <div className="PageTitleButtonContainer">
-          <Button
-            text={fetchingDashboard ? "Syncing" : "Refresh"}
-            light={fetchingDashboard}
-            lightAction={() => null}
-            iconLeft={<i className={`fa fa-refresh ${fetchingDashboard ? 'fa-pulse' : ''}`} />}
-            onClick={() => dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))} />
-        </div>
-      </div>
+      <TitleWithAction
+        text="Dashboard"
+        noMargin
+        button={<Button
+          text={fetchingDashboard ? "Syncing" : "Refresh"}
+          light={fetchingDashboard}
+          lightAction={() => null}
+          iconLeft={<i className={`fa fa-refresh ${fetchingDashboard ? 'fa-pulse' : ''}`} />}
+          onClick={() => dispatch(customisedAction(GET_SUPER_ADMIN_DASHBOARD))}
+        />}
+      />
       <div className="DashBoardContainer">
         {fetchingDashboard ?
           <div className="loadingContainer">

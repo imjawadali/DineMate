@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux'
 import { customisedAction } from '../../../../../redux/actions'
 import { UPDATE_USER } from '../../../../../constants'
 
-import { SmallButton } from '../../../../../components'
+import { TableActionicons } from '../../../../../components'
 
 function UsersList(props) {
   
@@ -16,17 +16,17 @@ function UsersList(props) {
   }
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
+            <th>Manage</th>
             <th>Restaurant Name</th>
             <th>Name</th>
+            <th>Role</th>
             <th>Email</th>
             <th>Contact Number</th>
-            <th>Role</th>
             <th>Status</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -35,22 +35,20 @@ function UsersList(props) {
               const { id, restaurantName, name, email, contactNumber, role, active } = user
               return (
                 <tr key={id}>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                      <TableActionicons
+                        icon={`fa fa-${active ? 'ban' : 'thumbs-up'}`}
+                        onClick={() => enable_disable(id, !active)}
+                      />
+                    </div>
+                  </td>
                   <td>{restaurantName}</td>
                   <td>{name}</td>
+                  <td>{role}</td>
                   <td>{email}</td>
                   <td>{contactNumber || '-'}</td>
-                  <td>{role}</td>
                   <td>{active ? 'Active' : 'In-Active'}</td>
-                  <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text={active ? "Disable" : "Enable"}
-                      light={active}
-                      lightAction={() => enable_disable(id, !active)}
-                      iconLeft={<i className={`fa fa-${active ? 'ban' : 'thumbs-up'}`} />}
-                      onClick={() => enable_disable(id, !active)}
-                    />
-                  </td>
                 </tr>
               )
             }) : 

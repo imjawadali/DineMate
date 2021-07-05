@@ -1,33 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
+import { GET_EXISTING_QRS, PER_PAGE_COUNTS } from '../../../constants'
 
-import { Input, Pagination } from '../../../components'
+import { Pagination, Input } from '../../../components'
 
-import MenuList from './MenuList'
-import { GET_MENU, PER_PAGE_COUNTS } from '../../../constants'
+import StaffList from './StaffList'
 
-function Menu(props) {
+function Staff(props) {
 
   const [filterKey, setfilterKey] = useState('')
   const [currentIndex, setcurrentIndex] = useState(1)
 
-  const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
-  const menu = useSelector(({ menuReducer }) => menuReducer.menu)
+  const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
+  const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
+  const fetchingStaffAssignedTables = useSelector(({ staffReducer }) => staffReducer.fetchingStaffAssignedTables)
+  const staffAssignedTables = useSelector(({ staffReducer }) => staffReducer.staffAssignedTables)
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
 
-  useEffect(() => {
-  }, [])
-
   const getFilteredList = () => {
-    let filteredQrs = menu
-    if (filterKey && filterKey.length && menu) {
-      filteredQrs = menu.filter(
-        (item) => item.name.toLowerCase().includes(filterKey.toLowerCase())
+    let filteredQrs = staffAssignedTables
+    if (filterKey && filterKey.length && staffAssignedTables) {
+      filteredQrs = staffAssignedTables.filter(
+        (staffAssignedTable) => staffAssignedTable.assignedTables.split(',').includes(filterKey)
       )
     }
     return filteredQrs
@@ -43,7 +42,7 @@ function Menu(props) {
 
   return (
     <div className="Container">
-      <h2>Menu Management</h2>
+      <h2>Staff Management</h2>
       <div className="TabularContentContainer">
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
@@ -51,25 +50,20 @@ function Menu(props) {
           <div className="TopRightContainer">
             <Input 
               style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
-              placeholder="Search Item (by Name)"
+              placeholder="Search Table (by Name, Table #)"
               value={filterKey}
               onChange={({ target: { value } }) => {
-                if (value !== '0') {
-                  setfilterKey(value)
-                  setcurrentIndex(1)
-                }
+                setfilterKey(value)
+                setcurrentIndex(1)
               }}
             />
             <i
               style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
-              className={`fa fa-${filterKey ? 'times-circle' : fetchingMenu ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_MENU, { restaurantId }))}/>
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingStaffAssignedTables ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))}/>
           </div>
         </div>
-        <MenuList 
-          history={props.history}
-          fetchingMenu={fetchingMenu}
-          menu={paginate(getFilteredList())} />
+        <StaffList history={props.history} fetchingStaffAssignedTables={fetchingStaffAssignedTables} restaurantId={restaurantId} staffAssignedTables={paginate(getFilteredList())} />
         {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
           <Pagination
             currentIndex={currentIndex}
@@ -84,4 +78,4 @@ function Menu(props) {
   )
 }
 
-export default Menu
+export default Staff

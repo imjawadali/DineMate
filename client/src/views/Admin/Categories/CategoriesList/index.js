@@ -11,8 +11,8 @@ function CategoriesList(props) {
       <table>
         <thead>
           <tr>
-            <th style={{ borderRight: 'none' }}>Manage</th>
-            <th style={{ borderLeft: 'none' }}>Category Name</th>
+            <th>Manage</th>
+            <th>Category Name</th>
           </tr>
         </thead>
         <tbody>

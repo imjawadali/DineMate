@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { GET_CATEGORIES, GET_EXISTING_QRS, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD } from '../../constants'
+import { GET_CATEGORIES, GET_EXISTING_QRS, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -17,6 +17,7 @@ import EditRestaurant from './EditRestaurant'
 import Restaurants from './Restaurants'
 import GenerateQrs from './GenerateQrs'
 import AllUsers from './Users/AllUsers'
+import Staff from './Staff'
 import Tables from './Tables'
 import TableDetails from './Tables/TableDetails'
 import Categories from './Categories'
@@ -45,12 +46,16 @@ function Admin(props) {
         dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
       } else if (role === 'Staff') {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', noToast: true }))
+        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1, noToast: true }))
+        dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
       } else {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', noToast: true }))
+        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1, noToast: true }))
+        dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
       }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
     }
@@ -146,7 +151,8 @@ function Admin(props) {
                 <RestaurantAdminRoutes path={`${path}/usersManagement/restaurantUsers`} component={RestaurantUsers} />
               </Switch>
             </Route>
-            <OthersRoutes path={`${path}/ordersManagement`} component={Orders} />
+            <RestaurantAdminRoutes path={`${path}/ordersManagement`} component={Orders} />
+            <OthersRoutes path={`${path}/staffManagement`} component={Staff} />
             <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
             <Route path={`${path}/tablesManagement`}>
               <Switch>

@@ -4,10 +4,10 @@ import { useDispatch } from 'react-redux'
 import { customisedAction } from '../../../../../redux/actions'
 import { DELETE_USER, SET_TOAST, UPDATE_USER } from '../../../../../constants'
 
-import { SmallButton, SmallButtonRed } from '../../../../../components'
+import { TableActionicons } from '../../../../../components'
 
 function UsersList(props) {
-  
+
   const { adminId, restaurantId, fetchingUsers, users } = props
   const dispatch = useDispatch()
 
@@ -16,18 +16,17 @@ function UsersList(props) {
   }
 
   return (
-    <div className="HorizontalScrollContainer">
+    <div className="TableDataContainer">
       <table>
         <thead>
           <tr>
+            <th>Manage</th>
             <th>Name</th>
-            <th>Email</th>
-            <th>Contact Number</th>
             <th>Role</th>
             <th>Level</th>
+            <th>Email</th>
+            <th>Contact Number</th>
             <th>Status</th>
-            <th>Action</th>
-            <th>Remove</th>
           </tr>
         </thead>
         <tbody>
@@ -36,40 +35,36 @@ function UsersList(props) {
               const { id, name, email, contactNumber, role, primaryContactId, secondaryContactId, active } = user
               return (
                 <tr key={id}>
+                  <td>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                      <TableActionicons
+                        icon={`fa fa-${active ? 'ban' : 'thumbs-up'}`}
+                        onClick={() => enable_disable(id, !active)}
+                      />
+                      <TableActionicons
+                        style={{ color: id === adminId ? 'rgba(0, 0, 0, 0.2)' : '' }}
+                        icon={`fa fa-trash`}
+                        onClick={() => id !== adminId ?
+                          dispatch(customisedAction(DELETE_USER, { id, restaurantId }))
+                          : null
+                        }
+                      />
+                    </div>
+                  </td>
                   <td>{name}</td>
-                  <td>{email}</td>
-                  <td>{contactNumber || '-'}</td>
                   <td>{role}</td>
                   <td>{primaryContactId === id ? 'Primary' : secondaryContactId === id ? 'Secondary' : '-'}</td>
+                  <td>{email}</td>
+                  <td>{contactNumber || '-'}</td>
                   <td>{active ? 'Active' : 'In-Active'}</td>
-                  <td>
-                    <SmallButton
-                      style={{ width: '100%' }}
-                      text={active ? "Disable" : "Enable"}
-                      light={active}
-                      lightAction={() => enable_disable(id, !active)}
-                      iconLeft={<i className={`fa fa-${active ? 'ban' : 'thumbs-up'}`} />}
-                      onClick={() => enable_disable(id, !active)}
-                    />
-                  </td>
-                  <td>
-                    <SmallButtonRed
-                      style={{ width: '100%' }}
-                      text="Delete"
-                      light={adminId === id}
-                      lightAction={() => dispatch(customisedAction(SET_TOAST, { message: 'Can\'t delete own account!', type: 'warning'}))}
-                      iconLeft={<i className="fa fa-trash" />}
-                      onClick={() => dispatch(customisedAction(DELETE_USER, { id, restaurantId }))}
-                    />
-                  </td>
                 </tr>
               )
-            }) : 
+            }) :
             <tr>
               <td colSpan="8" style={{ textAlign: 'center' }}>{
                 fetchingUsers ?
                   <p><i className={`fa fa-refresh ${fetchingUsers ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching / Syncing Users . . .</p>
-                : 'No Data Found!'
+                  : 'No Data Found!'
               }</td>
             </tr>
           }

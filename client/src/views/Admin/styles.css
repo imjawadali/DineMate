@@ -23,16 +23,6 @@
     box-sizing: border-box;
 }
 
-.PageTitleContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.PageTitleButtonContainer {
-    display: flex;
-}
-
 .TabularContentContainer {
     display: flex;
     flex-direction: column;
@@ -109,36 +99,9 @@
     width: 50%;
 }
 
-.TopOptionsContainer {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    margin: 10px 0px;
-}
-
-.TopInputContainer {
-    display: flex;
-    flex: 1;
-    padding-right: 20px;
-    box-sizing: border-box;
-}
-
-.TopButtonContainer {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
 .TableDataContainer {
     height: 100%;
     overflow-x: auto;
-}
-
-.HorizontalScrollContainer {
-    overflow-x: auto;
-    border: 1px solid black;
-    border-radius: 5px;
-    max-height: 70vh;
 }
 
 table {
@@ -182,23 +145,6 @@ tbody > tr:hover {
         padding: 10px;
     }
 
-    .TopOptionsContainer {
-        flex-direction: column;
-    }
-
-    .TopInputContainer {
-        width: 100%;
-        padding-right: 0px;
-    }
-    
-    .TopButtonContainer {
-        width: 100%;
-    }
-
-    .HorizontalScrollContainer {
-        max-height: 65vh;
-    }
-
     td, th {
         font-size: 12px;
     }
@@ -209,14 +155,6 @@ tbody > tr:hover {
 }
 
 @media only screen and (max-width: 480px) {
-    .PageTitleContainer {
-        flex-direction: column;
-    }
-
-    .PageTitleButtonContainer {
-        justify-content: flex-end;
-    }
-
     .TableButtons > p {
         font-size: 50%;
     }

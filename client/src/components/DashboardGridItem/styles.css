@@ -1,6 +1,7 @@
 .DashboardGridItem {
-    width: 100%;
+    width: 70%;
     max-width: 180px;
+    aspect-ratio: 1.5;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -10,7 +11,7 @@
     border-radius: 10px;
     padding: 10px;
     position: relative;
-    box-shadow: 1px 1px 3px;
+    box-shadow: 0px 2px 10px -5px;
     box-sizing: border-box;
 }
 
@@ -25,9 +26,22 @@
 @media only screen and (max-width: 978px) {
     .DashboardGridItem {
         padding: 5px;
+        width: 80%;
+        aspect-ratio: 1;
     }
 
     .DashboardGridItemText {
         font-size: 10px;
     }
 }
+
+@media only screen and (max-width: 480px) {
+    .DashboardGridItem {
+        aspect-ratio: 1;
+        width: 100%;
+    }
+
+    .ResponsiveDirection {
+        flex-direction: column;
+    }
+}   

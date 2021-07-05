@@ -58,7 +58,9 @@ function TableOrders(props) {
           onClick={() => dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))}
         />}
       />
-      <OrdersList restaurantId={restaurantId} fetchingTableOrders={fetchingTableOrders} tableOrders={tableOrders} history={history} />
+      <div className="TabularContentContainer" style={{ marginTop: '0px' }}>
+        <OrdersList restaurantId={restaurantId} fetchingTableOrders={fetchingTableOrders} tableOrders={tableOrders} history={history} />
+      </div>
     </div>
   )
 }

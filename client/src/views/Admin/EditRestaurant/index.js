@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
 import { SET_TOAST, SET_TOAST_DISMISSING, UPDATE_RESTAURANT } from '../../../constants'
 
-import { Button, Input, SectionHeading, SmallTitle } from '../../../components'
+import { Button, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
 import { capitalizeFirstLetter } from '../../../helpers'
 
 function EditRestaurant(props) {
@@ -91,7 +91,10 @@ function EditRestaurant(props) {
 
   return (
     <div className="Container">
-      <h2>Edit Restaurant</h2>
+      <TitleWithAction
+        text="Edit Restaurant"
+        noMargin
+      />
       <div className="FormContainer">
         <div className="FormInnerContainer">
           <SectionHeading text="Restaurant Information" />
@@ -105,9 +108,9 @@ function EditRestaurant(props) {
               />
             </div>
             <div className="InputsInnerContainer">
-              <SmallTitle text="Cuisine" />
+              <SmallTitle text="Cuisine(s)" />
               <Input 
-                placeholder="Traditional"
+                placeholder="Traditional, Continental, ..."
                 value={cuisine}
                 onChange={({ target: { value } }) => setcuisine(value)}
               />

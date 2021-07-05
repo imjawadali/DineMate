@@ -1,18 +1,18 @@
 import React from 'react'
-import { SmallButton } from '../../../../components'
+import { TableActionicons } from '../../../../components'
 
 function OrdersList(props) {
     const { fetchingOrders, orders } = props
     return (
-        <div className="HorizontalScrollContainer">
+        <div className="TableDataContainer">
             <table >
                 <thead>
                     <tr>
+                        <th>Manage</th>
                         <th>Table No</th>
                         <th>Type</th>
                         <th>Check No</th>
                         <th>Status</th>
-                        <th>Actions</th>
 
                     </tr>
                 </thead>
@@ -22,24 +22,22 @@ function OrdersList(props) {
                             const tableNumber = val.tableId
                             return (<>
                                 <tr>
-                                    <td>{tableNumber.length === 1 ? '0' : null}{tableNumber}</td>
+                                    <td>
+                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <TableActionicons
+                                                icon="fa fa-info"
+                                                onClick={() => null}
+                                            />
+                                            <TableActionicons
+                                                icon="fa fa-close"
+                                                onClick={() => null}
+                                            />
+                                        </div>
+                                    </td>
+                                    <td>{tableNumber && tableNumber.length === 1 ? '0' : null}{tableNumber || '-'}</td>
                                     <td>{val.type}</td>
                                     <td>{val.orderNumber}</td>
                                     <td>{val.status ? "Open" : "Close"}</td>
-                                    <td>
-                                        <p style={{ display: 'flex' }}>
-                                            <SmallButton
-                                                style={{ width: '100%', marginRight: '20px' }}
-                                                text="Details"
-                                                iconLeft={<i className="fa fa-info" />}
-                                            />
-                                            <SmallButton
-                                                style={{ width: '100%', marginLeft: '20px' }}
-                                                text="Close"
-                                                iconLeft={<i className="fa fa-info" />}
-                                            />
-                                        </p>
-                                    </td>
                                 </tr></>
                             )
                         })

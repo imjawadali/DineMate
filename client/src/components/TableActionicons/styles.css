@@ -5,3 +5,7 @@
     justify-content: center;
     cursor: pointer;
 }
+
+.TableActionicons > i {
+    text-shadow: 1px 1px 3px;
+}

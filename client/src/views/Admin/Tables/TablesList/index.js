@@ -11,8 +11,8 @@ function TablesList(props) {
       <table>
         <thead>
           <tr>
-            <th style={{ borderRight: 'none' }}>Manage</th>
-            <th style={{ borderLeft: 'none' }}>Table No</th>
+            <th>Manage</th>
+            <th>Table No</th>
             <th>Table Name</th>
             <th>Status</th>
           </tr>
