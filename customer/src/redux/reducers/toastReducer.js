@@ -22,7 +22,8 @@ import {
   CLOSE_ORDER,
   CLOSE_ORDER_SUCCESS,
   CLOSE_ORDER_FAILURE,
-  UPDATE_RPOFILE_SUCCESS
+  UPDATE_RPOFILE_SUCCESS,
+  CANT_SIGN_OUT
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -77,6 +78,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
         case UPDATE_RPOFILE_SUCCESS:
         return { ...state, toastSetDismiss: true, toast: payload.toast }
         
+        case CANT_SIGN_OUT:
+          return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
+     
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:

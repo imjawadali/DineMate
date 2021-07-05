@@ -225,12 +225,7 @@ function CheckOut(props) {
                 {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
                     ?
                     <>
-                        <div className="pickUpTime">
-                            <h2>Pick Up Time</h2>
-                            <label >
-                                <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
-                            </label>
-                        </div>
+                        
                         <div className="pickUpLocation">
                             <h2>Pick Up Location</h2>
                             <div>
@@ -241,16 +236,11 @@ function CheckOut(props) {
                     : orderDetail && orderDetail.type.toLowerCase() === 'take-away'
                         ?
                         <>
-                            <div className="pickUpTime">
-                                <h2>Pick Up Time</h2>
-                                <label >
-                                    <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
-                                </label>
-                            </div>
+                           
                             <div className="pickUpLocation">
                                 <h2>Pick Up Location</h2>
                                 <div>
-                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
+                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3" disabled></textarea>
                                 </div>
                             </div>
                         </> : null}

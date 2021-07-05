@@ -32,7 +32,7 @@ const MenuListingContainer = props => {
                 "restaurantId": orderDetailsLocal.restaurantId,
                 "orderNumber": orderDetailsLocal.orderNumber
             }
-            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+            // dispatch(customisedAction(GET_ORDER_ITEMS, obj))
         }
     }, [])
 
@@ -106,8 +106,8 @@ const MenuListingContainer = props => {
                     return (
                         <div 
                         className={
-                            items.length && items.map((a, i) => a.id === menuItem.id ? "MenuListingContainerItem selected".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") :
-                                "MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : ""))}>
+                            items.length > 0 ? items.map((a, i) => a.id === menuItem.id ? "MenuListingContainerItem selected".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") :
+                                "MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")) : "MenuListingContainerItem".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") }>
                         {/* // className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}> */}
                             <MenuListItemComponent
                                 heading={menuItem.name}

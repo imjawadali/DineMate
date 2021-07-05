@@ -30,15 +30,15 @@ function ContinueWith(props) {
             dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
         }
     }
-    // const redirect = () => {
-    //     let loginCustomer = getItem('customer') ? getItem('customer') : false;
-    //     if(loginCustomer){
-    //         props.history.push(`/customer/${restaurantId}/menu`)
-    //         initOrder();
-    //     } else{
-    //         props.history.push(`/customer/signin/?resturantId=${restaurantId}?tableId=${tableId}`)
-    //     }
-    // }
+    const redirect = () => {
+        let loginCustomer = getItem('customer') ? getItem('customer') : false;
+        if(loginCustomer){
+            props.history.push(`/customer/${restaurantId}/menu`)
+            initOrder();
+        } else{
+            props.history.push(`/customer/signin/?redirect=/${restaurantId}/${tableId}`)
+        }
+    }
 
     return (
         <div className="ContinueWith">
@@ -64,7 +64,7 @@ function ContinueWith(props) {
                 <div style={{ marginBottom: 50, fontSize: 24, fontWeight: 'bolder' }}>Start Using</div>
 
                 <div style={{ display: 'flex', marginBottom: 20, cursor: 'pointer', background: '#0000001c', padding: 10, borderRadius: 5, alignItems: 'center' }}
-                    onClick={() => {   initOrder(); props.history.push(`/customer/${restaurantId}/menu`) }}>
+                    onClick={() => {   redirect(); }}>
                     <img className="computer-img" src={computer} />
                     <span style={{ margin: 10, fontSize: 24, fontWeight: 'bolder' }}>The Web</span>
                 </div>
