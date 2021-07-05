@@ -90,11 +90,13 @@ export default function App() {
                         if (orderStatusDetails && orderStatusDetails.closeRequested) {
                             if (orderStatusDetails && orderStatusDetails.active) {
                                 dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                            } else {
+                                // azadi
+                            } else if(orderStatusDetails) {
+                                dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
                                 removeItem('orderDetails')
                             }
                         }
-                        else {
+                        else if(orderStatusDetails) {
                             dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
                             if(window.location.pathname !== "/customer/checkout"){
                                 window.location.pathname = '/customer/checkout'
