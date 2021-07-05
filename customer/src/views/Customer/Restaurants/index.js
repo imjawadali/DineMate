@@ -34,7 +34,6 @@ function Restaurants(props) {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let value = urlParams.get("value")
-    console.log(value)
     if (value) {
       let obj = {
         "searchBy": value
@@ -43,7 +42,6 @@ function Restaurants(props) {
       dispatch(customisedAction(SEARCH_RESTURANT, obj))
       setShowMore(false)
       // setResturants(searchResturant)
-      // console.log(value)
     } else {
       dispatch(customisedAction(GET_ALL_RESTAURANTS))
       setShowMore(true)
@@ -56,13 +54,10 @@ function Restaurants(props) {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let value = urlParams.get("value")
-    console.log(value)
     if (value) {
       setResturants(searchResturant)
-      console.log(searchResturant)
     } else {
       setResturants(allRestaurants)
-      console.log(allRestaurants)
 
     }
   }, [window.location.search, searchResturant, allRestaurants])

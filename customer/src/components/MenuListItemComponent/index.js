@@ -32,7 +32,7 @@ const MenuListItemComponent = props => {
             <a className="MLIComponent" onClick={onClick}>
                 <div className="MLIComponent-Left">
                     <div className="MLIComponent-Left-top">
-                        <h2 onClick={() => console.log(menuItem)}>{heading}</h2>
+                        <h2>{heading}</h2>
                         <h3>{subHeading}</h3>
                     </div>
                     <div className="MLIComponent-Left-bottom">

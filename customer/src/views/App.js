@@ -35,9 +35,7 @@ export default function App() {
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
     const closeOrder = useSelector(({ closeOrderReducer }) => closeOrderReducer.closeOrder)
-    console.log(closeOrder)
     const dispatch = useDispatch()
-    console.log(orderStatusDetails)
 
 
   

@@ -15,7 +15,7 @@ import {
 
 export default (state = {
   initializingOrder: false, checkingOrder: true, checkingOrderStatus: false, orderDetails: null, settingOrder: false, setOrder: null, cartMenu: null,
-  submitOrder: null, cartTakeItem:null, submitDetail:null
+  submitOrder: null, cartTakeItem: null, submitDetail: null
 }, { type, payload }) => {
   switch (type) {
     case INITIALIZE_ORDER:
@@ -33,18 +33,16 @@ export default (state = {
     case SET_ORDER_ITEM_SUCCESS:
 
       return { ...state, settingOrder: false, cartMenu: payload.cartMenu }
-      case SET_TAKE_ORDER_ITEM_SUCCESS:
-        console.log(payload,'lll')
-        return { ...state, settingOrder: false, cartTakeItem: payload }
+    case SET_TAKE_ORDER_ITEM_SUCCESS:
+      return { ...state, settingOrder: false, cartTakeItem: payload }
     case SUBMIT_ORDER_ITEM:
       return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, }
     case SUBMIT_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
-      case TAKIE_AWAY_ORDER:
-        console.log(payload)
-        return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails,submitDetail:payload }
-      case TAKIE_AWAY_ORDER_FAILED:
-        return { ...state, settingOrder: false }
+    case TAKIE_AWAY_ORDER:
+      return { ...state, initializingOrder: false, checkingOrder: false, submitOrder: payload.orderDetails, submitDetail: payload }
+    case TAKIE_AWAY_ORDER_FAILED:
+      return { ...state, settingOrder: false }
     default:
       return state
   }

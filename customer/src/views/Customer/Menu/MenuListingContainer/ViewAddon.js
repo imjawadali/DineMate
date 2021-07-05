@@ -23,22 +23,18 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
     const [specialInstructions, setSpecialIntstruction] = useState("")
 
-    console.log(orderDetails)
 
     let [obj, setObj] = useState({
     })
-    console.log(obj)
     useEffect(() => {
         if (addedAddons) {
             setObj(addedAddons)
-            console.log(addedAddons)
         }
 
     }, [addedAddons])
     useEffect(() => {
         if (edit) {
             setItemCount(editedQuantity)
-            console.log(selectedItem)
         }
     }, [editedQuantity])
 
@@ -66,7 +62,6 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const addToCart = e => {
         e.preventDefault();
         if (!edit) {
-            console.log('!!edit')
 
 
             let arr = []
@@ -133,7 +128,6 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 }
             }
         } else {
-            console.log('edit')
             let arr = []
             for (let keys in obj) {
                 arr.push(obj[keys])
@@ -325,7 +319,6 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                             onChange={() => {
                                                                                 setupdatePrice(true)
                                                                                 if (!obj[addOnOption.name]) {
-                                                                                    console.log(addOnOption,"addOnaa")
                                                                                     let objj = { ...obj }
                                                                                     objj[addOnOption.name] = {
                                                                                         "addOnId": addOn.id,

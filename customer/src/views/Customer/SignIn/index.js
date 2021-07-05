@@ -49,7 +49,6 @@ function SignIn(props) {
 
     }, [window.location.search])
 
-    console.log(redirect)
 
     useEffect(() => {
         if (customer && redirect) {

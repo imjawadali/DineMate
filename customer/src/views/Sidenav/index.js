@@ -65,7 +65,6 @@ function SideNav(props) {
     useEffect(() => {
         let orderDetail = getItem('orderDetails')
         if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
-            console.log('runn2')
 
 
             let obj3 = {
@@ -116,13 +115,10 @@ function SideNav(props) {
                                 className="route-section"
                                 style={{ borderBottom: 'none' }}
                                 onClick={() => {
-                                    console.log(cartItemR,takeOrderItems,OrderItems)
                                     if ((cartItemR && cartItemR.length > 0) || (takeOrderItems && takeOrderItems.orderItems.length > 0) || (OrderItems && OrderItems.orderItems.length > 0)) {
                                         dispatch(customisedAction(CANT_SIGN_OUT))
-                                        console.log("this")
 
                                     } else {
-                                        console.log("that")
                                         removeItem('customer')
                                         dispatch(customisedAction(LOGOUT))
                                     }

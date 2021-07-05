@@ -45,7 +45,6 @@ export class initializeOrderEpic {
       ofType(INITIALIZE_ORDER),
       switchMap(
         async ({ payload: { restaurantId, tableId }}) => {
-          console.log('okkk')
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.initializeOrder,

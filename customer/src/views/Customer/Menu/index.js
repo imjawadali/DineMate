@@ -35,7 +35,6 @@ const Menu = props => {
     const [message, setMessage] = useState('')
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
 
-    console.log(message)
 
 
     let { restaurantId } = useParams();
@@ -46,7 +45,6 @@ const Menu = props => {
     useEffect(() => {
         dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId }))
         dispatch(customisedAction(GET_MENU, { restaurantId }))
-        console.log(restaurantId)
     }, [restaurantId])
 
     useEffect(() => {
@@ -105,12 +103,10 @@ const Menu = props => {
     }
     useEffect(() => {
         setOrderDetail(getItem('orderDetails'))
-        console.log(orderDetails)
     }, [orderDetails])
-    console.log(orderDetail, 'order detail')
+
 
     const callService = (msg) => {
-        // console.log(msg.target.value)
 
         if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
             let obj = {
@@ -119,7 +115,6 @@ const Menu = props => {
                 "orderNumber": orderDetail.orderNumber,
                 "text": msg
             }
-            console.log(obj)
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
             let obj = {
@@ -128,7 +123,6 @@ const Menu = props => {
                 "orderNumber": getItem(orderDetail).orderNumber,
                 "text": msg
             }
-            console.log(obj)
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         }
 

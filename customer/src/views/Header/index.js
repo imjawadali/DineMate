@@ -38,7 +38,6 @@ const Header = props => {
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
 
-    console.log(submitOrderDetail, 'submitOrderDetail')
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -81,9 +80,7 @@ const Header = props => {
     }, [submitOrderDetail])
 
     useEffect(() => {
-        console.log('runn1', submitTakeOrder)
         if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
-            console.log('runn2')
 
 
             let obj3 = {
@@ -141,7 +138,6 @@ const Header = props => {
         }
         if (getItem('orderDetails') && getItem('orderDetails').type !== "Take-Away") {
             if (OrderItems) {
-                console.log(OrderItems)
                 OrderItems.orderItems.map((a, i) => {
                     arr.push({
                         "id": a.id,
@@ -156,7 +152,6 @@ const Header = props => {
         }
         if (getItem('orderDetails') && getItem('orderDetails').type === "Take-Away") {
             if (takeOrderItems) {
-                console.log(takeOrderItems)
                 takeOrderItems.orderItems.map((a, i) => {
                     arr.push({
                         "id": a.id,
@@ -169,17 +164,14 @@ const Header = props => {
                 setItems(arr)
             }
         }
-        console.log(takeOrderItems)
 
     }, [cartItemR, OrderItems, takeOrderItems])
 
     useEffect(() => {
         setOrderDetail(getItem('orderDetails'))
-        console.log(orderDetails)
 
     }, [orderDetails])
     useEffect(() => {
-        console.log(orderDetails)
 
     }, [orderDetails])
 
@@ -235,7 +227,6 @@ const Header = props => {
         if (!customer) {
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
-        console.log('submit')
         setUpdateState(false)
 
         if (!OrderItems) {
@@ -335,12 +326,10 @@ const Header = props => {
             toggleCartModal()
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
-        console.log('takeAway')
         let obj = {
             "restaurantId": items[0].restaurantId,
             "items": items
         }
-        console.log(obj)
         dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
         props.history.push('/customer/checkout');
         setUpdateState(true)
@@ -354,7 +343,6 @@ const Header = props => {
     useEffect(() => {
         if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
             if (orderDetail) {
-                // console.log(items)
                 dispatch(customisedAction(GET_MENU, { restaurantId: orderDetail.restaurantId }))
             }
 
@@ -366,7 +354,6 @@ const Header = props => {
     useEffect(() => {
         if ((!orderDetail) || (orderDetail && orderDetail.type.toLowerCase() === 'take-away')) {
             if (getItem('cartMenu') && getItem('cartMenu').length > 0) {
-                console.log(items)
                 dispatch(customisedAction(GET_MENU, { restaurantId: getItem('cartMenu')[0].restaurantId }))
             }
         }
@@ -375,7 +362,6 @@ const Header = props => {
     const [editInded, setEditInded] = useState('')
 
     function editItem(id, restId, addons, i, quantity, item) {
-        // console.log(menu, id)
         setSelectedItem(
             menu.filter((a, i) => a.id === id)[0]
         )
@@ -388,7 +374,6 @@ const Header = props => {
         setSpecialIntstruction(item.specialInstructions)
 
     }
-    console.log(selectedItem)
 
     function deleteItem(id, restId, i) {
         // setSelectedItem(
@@ -396,7 +381,6 @@ const Header = props => {
         let obj2 = {
 
         }
-        console.log(i)
 
         dispatch(customisedAction(DELETE_ORDER_ITEM, { i }))
 
@@ -409,7 +393,6 @@ const Header = props => {
     useEffect(() => {
         if (takeOrderItems) {
             setItems(takeOrderItems.orderItems)
-            console.log(takeOrderItems.orderItems,"checkingg")
         }
     }, [takeOrderItems,OrderItems])
 
@@ -570,7 +553,7 @@ const Header = props => {
                                                             {!submitted && items.length ? items.filter((a, i) => a.status).map((item, i) => {
                                                                 return (
                                                                     <>
-                                                                        <div className="details" key={i} onClick={() => console.log(item)}>
+                                                                        <div className="details" key={i}>
                                                                             <div>
                                                                                 <div className="selected-quantity">
                                                                                     {item.quantity}

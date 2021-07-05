@@ -74,7 +74,7 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       case CLOSE_ORDER_SUCCESS:
         return { ...state, toastSetDismiss: true, toast: payload.toast }
       case CLOSE_ORDER_FAILURE:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
+        return { ...state, toastSetDismiss: true, toast: payload }
         case UPDATE_RPOFILE_SUCCESS:
         return { ...state, toastSetDismiss: true, toast: payload.toast }
         

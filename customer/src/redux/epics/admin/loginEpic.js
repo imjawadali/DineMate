@@ -68,7 +68,6 @@ export class loginEpic {
       ofType(UPDATE_RPOFILE),
       switchMap(
         async (obj) => {
-          console.log(obj)
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.updateProfile,

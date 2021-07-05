@@ -52,7 +52,6 @@ const MenuListingContainer = props => {
         }
         setItem(mixItem)
     }, [orderItem, cartItemR])
-    console.log(items)
 
 
 
@@ -91,7 +90,6 @@ const MenuListingContainer = props => {
         }
     }
 
-    console.log(items)
 
 
     return (
@@ -160,7 +158,6 @@ const MenuListingContainer = props => {
 //     const [updatePrice, setupdatePrice] = useState(false)
 //     const [initOrder, setInitOrder] = useState(false)
 
-//     console.log(orderDetails)
 
 //     let [obj, setObj] = useState({
 //     })
