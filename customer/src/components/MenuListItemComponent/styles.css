@@ -8,10 +8,13 @@
 .MenuListingContainerItem {
     position: relative;
 }
+.MenuListingContainerItem.selected{
+    box-shadow: 0px 0px 15px 5px #35c8b8;
+}
 .MenuListingContainerItem .quantity {
     position: absolute;
     right: 0;
-    background: blue;
+    background: #35c8b8;
     width: 26px;
     color: white;
     text-align: center;
