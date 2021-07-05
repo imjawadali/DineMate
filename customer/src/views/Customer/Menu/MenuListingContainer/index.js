@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { ALREADY_IN_CART, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
+import { ALREADY_IN_CART, GET_ORDER_ITEMS, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 import ViewAddon from './ViewAddon'
@@ -19,6 +19,43 @@ const MenuListingContainer = props => {
     const [viewAddons, setViewAddons] = useState(false);
     const [selectedItem, setSelectedItem] = useState({});
     const { restaurantId } = useParams()
+
+    const orderItem = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
+    const cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
+    const [items, setItem] = useState([])
+
+
+    useEffect(() => {
+        let orderDetailsLocal = getItem('orderDetails') ? getItem('orderDetails') : getItem('cartMenu') ? getItem('cartMenu')[0] : []
+        if (orderDetailsLocal) {
+            let obj = {
+                "restaurantId": orderDetailsLocal.restaurantId,
+                "orderNumber": orderDetailsLocal.orderNumber
+            }
+            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
+        }
+    }, [])
+
+    useEffect(() => {
+        let localItem = cartItemR ? cartItemR : getItem('cartMenu') ? getItem('cartMenu') : []
+        let getItemR = orderItem ? orderItem : []
+        let mixItem = []
+        if (localItem) {
+            localItem.map((a, i) => {
+                mixItem.push(a)
+            })
+        }
+        if (getItemR && getItemR.orderItems) {
+            getItemR.orderItems.map((a, i) => {
+                mixItem.push(a)
+            })
+        }
+        setItem(mixItem)
+    }, [orderItem, cartItemR])
+    console.log(items)
+
+
+
 
     useEffect(() => {
 
@@ -54,6 +91,8 @@ const MenuListingContainer = props => {
         }
     }
 
+    console.log(items)
+
 
     return (
         <div className="MenuListingContainer">
@@ -65,7 +104,11 @@ const MenuListingContainer = props => {
             <div className="MenuListingContainerItemContainer">
                 {data.map((menuItem, i) => {
                     return (
-                        <div className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}>
+                        <div 
+                        className={
+                            items.length && items.map((a, i) => a.id === menuItem.id ? "MenuListingContainerItem selected".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") :
+                                "MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : ""))}>
+                        {/* // className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}> */}
                             <MenuListItemComponent
                                 heading={menuItem.name}
                                 subHeading={menuItem.shortDescription || 'Loaded with Cheese, with mayo'}
@@ -79,6 +122,7 @@ const MenuListingContainer = props => {
                                 menuItem={menuItem}
                                 updateCart={onClick}
                                 addToCart={cart.find(item => item.id == menuItem.id)}
+                                items={items}
                                 image={menuItem.imageUrl} />
                         </div>
                     )
@@ -100,7 +144,7 @@ const MenuListingContainer = props => {
                     :
                     null
             }
-        </div>
+        </div >
     )
 }
 
