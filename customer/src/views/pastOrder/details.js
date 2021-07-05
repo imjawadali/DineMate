@@ -43,9 +43,6 @@ function Detail(props) {
         let orderNumber = urlParams.get("orderNumber")
         setRestaurantName(urlParams.get("restaurantName"))
         
-        // console.log(value)
-        console.log(restaurantId,
-            orderNumber)
         if (restaurantId && orderNumber) {
 
             let obj = {
@@ -62,7 +59,6 @@ function Detail(props) {
             setProducts(orderDetail.orderItems)
         }
     },[orderDetail])
-    console.log(products)
 
 
     function totalAmount() {
@@ -88,7 +84,7 @@ function Detail(props) {
                 <div className="menuCart">
                     {products && products.length ? products.map((a, i) => {
                         return (
-                            <div className="itemCart" onClick={() => console.log(a)}>
+                            <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
                                 <p>$ {a.totalPrice}</p>
                             </div>

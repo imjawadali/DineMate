@@ -29,7 +29,6 @@ function Profile() {
     // useEffect(()=>{
     // },[profile])
 
-    console.log(profile)
 
     useEffect(() => {
         if (profile) {

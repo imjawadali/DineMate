@@ -46,7 +46,7 @@ export default function Customer(props) {
           <Redirect to={`${path}/restaurants`} />
         </Route>
         <Route path={`${path}/signin`} component={SignIn} />
-        <NonCustomerLanding path={`${path}/signup`} component={SignUp} />
+        <Route path={`${path}/signup`} component={SignUp} />
         <NonCustomerLanding path={`${path}/forgotPassword`} component={ForgotPassword} />
         <Route exact path={`${path}/restaurants`} component={Restaurants} />
         {/* <Route exact path={`${path}/restaurants`} component={Restaurants} /> */}

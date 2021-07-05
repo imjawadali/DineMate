@@ -35,9 +35,7 @@ export default function App() {
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
     const closeOrder = useSelector(({ closeOrderReducer }) => closeOrderReducer.closeOrder)
-    console.log(closeOrder)
     const dispatch = useDispatch()
-    console.log(orderStatusDetails)
 
 
   
@@ -90,11 +88,13 @@ export default function App() {
                         if (orderStatusDetails && orderStatusDetails.closeRequested) {
                             if (orderStatusDetails && orderStatusDetails.active) {
                                 dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                            } else {
+                                // azadi
+                            } else if(orderStatusDetails) {
+                                dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
                                 removeItem('orderDetails')
                             }
                         }
-                        else {
+                        else if(orderStatusDetails) {
                             dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
                             if(window.location.pathname !== "/customer/checkout"){
                                 window.location.pathname = '/customer/checkout'

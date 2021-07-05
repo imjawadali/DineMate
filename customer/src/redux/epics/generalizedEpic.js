@@ -33,7 +33,7 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         }
         return customisedAction(failureAction, noToast ? null : { message: `Unknown Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
     } catch (error) {
-        console.log(`${failureAction.replace('_FAILURE', '')} Unknown Error`, error)
+        // console.log(`${failureAction.replace('_FAILURE', '')} Unknown Error`, error)
         return customisedAction(failureAction, noToast ? null : { message: error.message, type: 'error' })
     }
 }

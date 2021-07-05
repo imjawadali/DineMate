@@ -24,7 +24,7 @@ export class closeOrderViaCashEpic {
             (resObj) => {
               // removeItem('orderDetails')
               // removeItem('cartMenu')
-              return customisedAction(CLOSE_ORDER_SUCCESS,{ closeOrder: resObj.body, toast: { message: resObj.message, type: 'success' }})
+              return customisedAction(CLOSE_ORDER_SUCCESS,{ closeOrder: resObj.body, toast: { message: 'Please Wait Manager Will Respond You Soon', type: 'success' }})
             },
             CLOSE_ORDER_FAILURE
           )

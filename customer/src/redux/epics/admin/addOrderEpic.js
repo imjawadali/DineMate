@@ -42,8 +42,6 @@ export class addOrderEpic {
               delete objData.totalPrice
               delete objMap.totalPrice
 
-              console.log(a)
-              console.log(objData, objMap)
 
               if (JSON.stringify(objMap) === JSON.stringify(objData)) {
 
@@ -55,7 +53,6 @@ export class addOrderEpic {
                     totalPrice: a.totalPrice + obj.totalPrice
                   })
                 updatedCart = menu
-                console.log(updatedCart)
                 localStorage.setItem('cartMenu', JSON.stringify(updatedCart))
 
               } else {
@@ -86,7 +83,6 @@ export class addOrderEpic {
           if (cartMenu) {
             let index = cartMenu.indexOf(cartMenu.filter((a, i) => i === obj.i)[0])
             cartMenu.splice(index, 1, obj.objItem)
-            console.log(obj)
             // updatedCart = JSON.parse(cartMenu)
             // updatedCart.push(obj)
             localStorage.setItem('cartMenu', JSON.stringify(cartMenu))
@@ -104,11 +100,9 @@ export class addOrderEpic {
           let updatedCart = []
           if (cartMenu) {
             let index = cartMenu.indexOf(cartMenu.filter((a, i) => i === iObj["i"])[0])
-            console.log(iObj["i"],index)
             cartMenu.splice(index, 1)
             // updatedCart = JSON.parse(cartMenu)
             // updatedCart.push(obj)
-            // console.log(cartMenu)
             localStorage.setItem('cartMenu', JSON.stringify(cartMenu))
           }
           // setTimeout(()=>{

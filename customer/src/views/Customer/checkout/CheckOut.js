@@ -41,7 +41,6 @@ function CheckOut(props) {
     useEffect(() => {
         setTimeout(() => {
             setOrderDetail(getItem('orderDetails'))
-            console.log(getItem('orderDetails'))
         }, [1000])
         // if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
         setProducts(getItem('cartMenu'))
@@ -50,9 +49,7 @@ function CheckOut(props) {
     }, [])
     useEffect(() => {
         setOrderDetail(getItem('orderDetails'))
-        console.log(orderDetails)
     }, [orderDetails])
-    console.log(orderDetail, 'order detail')
 
 
 
@@ -87,11 +84,10 @@ function CheckOut(props) {
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
     useEffect(() => {
 
-        console.log('timeout')
-        console.log(orderDetail)
+        
         // setTimeout(() => {
         if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
-            console.log(dataOrder)
+            
             let data = dataOrder ? dataOrder.orderItems : []
             if (data.length) {
                 setProducts([...data])
@@ -154,7 +150,6 @@ function CheckOut(props) {
                 "orderNumber": orderDetails.orderNumber,
                 "text": msg
             }
-            console.log(obj)
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         } else if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
             let obj = {
@@ -163,7 +158,6 @@ function CheckOut(props) {
                 "orderNumber": orderDetail.orderNumber,
                 "text": msg
             }
-            console.log(obj)
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         }
 
@@ -181,7 +175,6 @@ function CheckOut(props) {
 
 
     const payNow = () => {
-        console.log(orderDetail)
         let obj = {
             "restaurantId": orderDetail.restaurantId,
             "orderNumber": orderDetail.orderNumber,
@@ -210,7 +203,7 @@ function CheckOut(props) {
                 <div className="menuCart">
                     {products && products.length ? products.map((a, i) => {
                         return (
-                            <div className="itemCart" onClick={() => console.log(a)}>
+                            <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
                                 <p>$ {a.totalPrice}</p>
                             </div>
@@ -225,12 +218,7 @@ function CheckOut(props) {
                 {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
                     ?
                     <>
-                        <div className="pickUpTime">
-                            <h2>Pick Up Time</h2>
-                            <label >
-                                <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
-                            </label>
-                        </div>
+                        
                         <div className="pickUpLocation">
                             <h2>Pick Up Location</h2>
                             <div>
@@ -241,16 +229,11 @@ function CheckOut(props) {
                     : orderDetail && orderDetail.type.toLowerCase() === 'take-away'
                         ?
                         <>
-                            <div className="pickUpTime">
-                                <h2>Pick Up Time</h2>
-                                <label >
-                                    <input onChange={(ev) => setPickUpTime(ev.target.value)} type="date"></input>
-                                </label>
-                            </div>
+                           
                             <div className="pickUpLocation">
                                 <h2>Pick Up Location</h2>
                                 <div>
-                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
+                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3" disabled></textarea>
                                 </div>
                             </div>
                         </> : null}

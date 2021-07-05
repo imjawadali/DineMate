@@ -16,7 +16,6 @@ export class getMenuEpic {
       ofType(GET_MENU),
       switchMap(
         async ({ payload: { restaurantId }}) => {
-            console.log(restaurantId)
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.getMenuItems,

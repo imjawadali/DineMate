@@ -49,7 +49,6 @@ function SignIn(props) {
 
     }, [window.location.search])
 
-    console.log(redirect)
 
     useEffect(() => {
         if (customer && redirect) {
@@ -108,7 +107,7 @@ function SignIn(props) {
                         </div>
 
                         <div className="no-account">
-                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => history.push('/customer/signup')}>&nbsp;Sign Up</span>
+                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => history.push(`/customer/signup/?redirect=${redirect}`)}>&nbsp;Sign Up</span>
                         </div>
                     </div>
                 </div>
