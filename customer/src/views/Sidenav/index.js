@@ -31,8 +31,14 @@ function SideNav(props) {
 
 
     useEffect(() => {
-        if (!profile && getItem('customer')) {
-            dispatch(customisedAction(GET_RPOFILE))
+        if (getItem('customer')) {
+            if (profile) {
+                if (profile.email !== getItem('customer').email) {
+                    dispatch(customisedAction(GET_RPOFILE))
+                }
+            } else {
+                dispatch(customisedAction(GET_RPOFILE))
+            }
         }
     }, [getItem('customer')])
 
