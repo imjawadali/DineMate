@@ -178,6 +178,10 @@ const Header = props => {
 
     }, [orderDetails])
     useEffect(() => {
+        setOrderDetail(getItem('orderDetails'))
+
+    }, [])
+    useEffect(() => {
 
     }, [orderDetails])
 
@@ -226,7 +230,6 @@ const Header = props => {
     }, [orderDetail])
 
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
-
 
     const submitOrder = () => {
         let customer = getItem('customer') ? getItem('customer') : false
@@ -464,7 +467,7 @@ const Header = props => {
 
                                             <div className="restaurant-name-div">
                                                 <span onClick={() => console.log(items)}>From: </span>
-                                                <span className="restaurant-title">{orderDetail ? orderDetail.restaurantName : items && items[0] ? items[0].RestaurantName : ""}</span>
+                                                <span className="restaurant-title">{items && items[0] ? items[0].RestaurantName : orderDetail ? orderDetail.restaurantName : ""}</span>
                                             </div>
 
                                             <div className="item-details">
