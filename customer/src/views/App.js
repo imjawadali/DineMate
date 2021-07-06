@@ -38,7 +38,7 @@ export default function App() {
     const dispatch = useDispatch()
 
 
-  
+
     useEffect(() => {
         if (!customer || !orderDetails) {
             const storedCustomer = getItem('customer')
@@ -52,79 +52,17 @@ export default function App() {
                 setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
 
             if (storedOrderDetails && !orderDetails)
-                if (storedOrderDetails.type.toLowerCase() === 'dine-in') {
-
-                    setTimeout(() => {
-                        let obj = {
-                            "restaurantId": storedOrderDetails.restaurantId,
-                            "orderNumber": storedOrderDetails.orderNumber
-                        }
-                        dispatch(customisedAction(GET_STATUS, obj))
-                        if (orderStatusDetails && orderStatusDetails.active) {
-                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        } else if (orderStatusDetails && !orderStatusDetails.active) {
-                            removeItem('orderDetails')
-                        }
-                    }, 300)
-                } else if (storedOrderDetails.type.toLowerCase() === 'take-away') {
-                    setTimeout(() => {
-                        let obj = {
-                            "restaurantId": storedOrderDetails.restaurantId,
-                            "orderNumber": storedOrderDetails.orderNumber
-                        }
-                        // if(!orderStatusDetails){
-                        //     dispatch(customisedAction(GET_STATUS, obj))
-                        // }
-                        // if (orderStatusDetails && !orderStatusDetails.active) {
-                        //     dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        // } else if (orderStatusDetails && !orderStatusDetails.active) {
-                        //     removeItem('orderDetails')
-                        //     // removeItem('cartMenu')
-                        // }
-
-                        if (!orderStatusDetails) {
-                            dispatch(customisedAction(GET_STATUS, obj))
-                        }
-                        if (orderStatusDetails && orderStatusDetails.closeRequested) {
-                            if (orderStatusDetails && orderStatusDetails.active) {
-                                dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                                // azadi
-                            } else if(orderStatusDetails) {
-                                dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                                removeItem('orderDetails')
-                            }
-                        }
-                        else if(orderStatusDetails) {
-                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                            if(window.location.pathname !== "/customer/checkout"){
-                                window.location.pathname = '/customer/checkout'
-                            }
-                        }
-
-                        // if (orderStatusDetails && orderStatusDetails.active) {
-                        //     removeItem('orderDetails')
-                        //     removeItem('cartMenu')
-                        // }
-
-                    }, 300)
-                } else {
-                    setTimeout(() => {
-                        let obj = {
-                            "restaurantId": storedOrderDetails.restaurantId,
-                            "orderNumber": storedOrderDetails.orderNumber
-                        }
-                        dispatch(customisedAction(GET_STATUS, obj))
-                        if (orderStatusDetails && orderStatusDetails.active) {
-                            dispatch(customisedAction(SET_ORDER, { orderDetails: storedOrderDetails }))
-                        } else if (orderStatusDetails && !orderStatusDetails.active) {
-                            removeItem('orderDetails')
-                        }
-                    }, 300)
-                }
+                setTimeout(() => {
+                    let obj = {
+                        "restaurantId": storedOrderDetails.restaurantId,
+                        "orderNumber": storedOrderDetails.orderNumber
+                    }
+                    dispatch(customisedAction(GET_STATUS, obj))
+                }, 300)
             else
                 setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
-    }, [orderStatusDetails, closeOrder])
+    }, [closeOrder])
 
     const openSidebar = () => {
         setSidebarOpen(true)
