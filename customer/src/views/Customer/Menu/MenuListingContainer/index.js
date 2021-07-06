@@ -83,6 +83,19 @@ const MenuListingContainer = props => {
 
             } 
         }
+        else if (JSON.parse(localStorage.getItem('cartMenu'))) {
+            console.log('that')
+
+            let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
+            if (cartMenu.length) {
+                if (cartMenu[0].restaurantId === restaurantId) {
+                    setViewAddons(true)
+                } else if (cartMenu[0].restaurantId != restaurantId) {
+                    dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
+                }
+
+            } 
+        }
         else {
             setViewAddons(true)
 
