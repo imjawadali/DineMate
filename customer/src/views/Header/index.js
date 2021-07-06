@@ -37,6 +37,8 @@ const Header = props => {
     let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
+    let takeOrderNumber = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.orderNumber)
+
 
 
     useEffect(() => {
@@ -107,7 +109,9 @@ const Header = props => {
                     "restaurantId": a.restaurantId,
                     "status": true,
                     "id": a.id,
-                    "addOnObj": a.addOnObj
+                    "addOnObj": a.addOnObj,
+                    "RestaurantName": a.RestaurantName
+
                 })
             })
             setItems(arr)
@@ -125,7 +129,9 @@ const Header = props => {
                         "restaurantId": a.restaurantId,
                         "status": true,
                         "id": a.id,
-                        "addOnObj": a.addOnObj
+                        "addOnObj": a.addOnObj,
+                        "RestaurantName": a.RestaurantName
+
 
 
 
@@ -394,7 +400,7 @@ const Header = props => {
         if (takeOrderItems) {
             setItems(takeOrderItems.orderItems)
         }
-    }, [takeOrderItems,OrderItems])
+    }, [takeOrderItems, OrderItems])
 
     return (
         <>
@@ -451,11 +457,14 @@ const Header = props => {
                                         </div>
 
                                         <div className="content">
-                                            <div className="your-order-title">Your Order</div>
+                                            <div className="yourOrderDetail">
+                                                <div className="your-order-title">Your Order </div>
+                                                <div className="your-order-number">Order Number: {orderDetails ? orderDetails.orderNumber : orderDetail ? orderDetail.orderNumber : takeOrderNumber ? takeOrderNumber : ''} </div>
+                                            </div>
 
                                             <div className="restaurant-name-div">
-                                                <span>From: </span>
-                                                <span className="restaurant-title">{resturantDetail ? resturantDetail.restaurantName : ""}</span>
+                                                <span onClick={() => console.log(items)}>From: </span>
+                                                <span className="restaurant-title">{orderDetail ? orderDetail.restaurantName : items && items[0] ? items[0].RestaurantName : ""}</span>
                                             </div>
 
                                             <div className="item-details">
@@ -635,7 +644,7 @@ const Header = props => {
                                         <div className="orderSubBtn">
                                             <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : `Submit Order`}</button>
                                             {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
-                                                <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout');  }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
+                                                <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout'); }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
                                                 : null}
                                         </div>
                                     </div>

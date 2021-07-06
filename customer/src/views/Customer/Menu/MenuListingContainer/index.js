@@ -62,6 +62,7 @@ const MenuListingContainer = props => {
 
     const opennAddOn = () => {
         if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
+            console.log('this')
             let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
             if (cartMenu) {
                 if (cartMenu.restaurantId === restaurantId) {
@@ -73,20 +74,18 @@ const MenuListingContainer = props => {
                 setViewAddons(true)
 
             }
-        } else {
+        } else if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'take-away') {
+            console.log('that')
 
-            let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
-            if (cartMenu.length) {
-                if (cartMenu[0].restaurantId === restaurantId) {
-                    setViewAddons(true)
-                } else if (cartMenu[0].restaurantId != restaurantId) {
-                    dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
-                }
+            let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
+            if (cartMenu) {
+                dispatch(customisedAction(ALREADY_IN_CART, { message: `You Have Already Submitted The Order Please Wait For Manager Response`, type: 'warning' }))
 
-            } else {
-                setViewAddons(true)
+            } 
+        }
+        else {
+            setViewAddons(true)
 
-            }
         }
     }
 
@@ -102,11 +101,11 @@ const MenuListingContainer = props => {
             <div className="MenuListingContainerItemContainer">
                 {data.map((menuItem, i) => {
                     return (
-                        <div 
-                        className={
-                            items.length > 0 ? items.map((a, i) => a.id === menuItem.id ? "MenuListingContainerItem selected".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") :
-                                "MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")) : "MenuListingContainerItem".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") }>
-                        {/* // className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}> */}
+                        <div
+                            className={
+                                items.length > 0 ? items.map((a, i) => a.id === menuItem.id ? "MenuListingContainerItem selected".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "") :
+                                    "MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")) : "MenuListingContainerItem".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}>
+                            {/* // className={"MenuListingContainerItem ".concat(cart.find(item => item.id == menuItem.id) ? "selectedItemContainer" : "")}> */}
                             <MenuListItemComponent
                                 heading={menuItem.name}
                                 subHeading={menuItem.shortDescription || 'Loaded with Cheese, with mayo'}
@@ -136,6 +135,7 @@ const MenuListingContainer = props => {
                         restaurantId={restaurantId}
                         edit={false}
                         addedAddons={false}
+                        RestaurantDetails={props.RestaurantDetails}
 
 
                     />

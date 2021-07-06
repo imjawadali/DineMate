@@ -181,7 +181,7 @@ function CheckOut(props) {
             "type": orderDetail.type
         }
         dispatch(customisedAction(CLOSE_ORDER, obj))
-        props.history.push('/customer/xyz_restaurant/menu')
+        props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
     }
 
     useEffect(()=>{
