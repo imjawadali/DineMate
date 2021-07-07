@@ -95,3 +95,6 @@ export const TAKIE_AWAY_ORDER_FAILED = 'TAKIE_AWAY_ORDER_FAILED'
 
 export const ALREADY_IN_CART = 'ALREADY_IN_CART'
 export const CANT_SIGN_OUT = 'CANT_SIGN_OUT'
+
+export const CANT_PAY = 'CANT_PAY'
+

@@ -23,7 +23,8 @@ import {
   CLOSE_ORDER_SUCCESS,
   CLOSE_ORDER_FAILURE,
   UPDATE_RPOFILE_SUCCESS,
-  CANT_SIGN_OUT
+  CANT_SIGN_OUT,
+  CANT_PAY
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -69,18 +70,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DONOTDISTURB_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER_SUCCESS:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER_FAILURE:
-        return { ...state, toastSetDismiss: true, toast: payload }
-        case UPDATE_RPOFILE_SUCCESS:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-        
-        case CANT_SIGN_OUT:
-          return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
-     
+    case CLOSE_ORDER:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RPOFILE_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+
+    case CANT_SIGN_OUT:
+      return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
+    case CANT_PAY:
+      return { ...state, toastSetDismiss: true, toast: { message: "Submit Your Order From Your Cart Before Pay ", type: 'warning' } }
+
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:
