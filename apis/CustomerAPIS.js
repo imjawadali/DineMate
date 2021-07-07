@@ -620,10 +620,10 @@ module.exports = app => {
                 (result) => {
                     getConnection(
                         res,
-                        `SELECT restuarantName FROM restaurants WHERE restaurantID = '${restaurantId}'`,
+                        `SELECT restaurantName FROM restaurants WHERE restaurantID = '${restaurantId}'`,
                         null,
                         (restuarantData) => {
-                            const restuarantName = restuarantData[0].restuarantName
+                            const restaurantName = restuarantData[0].restaurantName
                             getConnection(
                                 res,
                                 `SELECT mergeId FROM restaurantsQrs WHERE value = '${tableId}' AND restaurantID = '${restaurantId}'`,
@@ -643,7 +643,7 @@ module.exports = app => {
                                                     body: {
                                                         orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
                                                         restaurantId,
-                                                        restuarantName,
+                                                        restaurantName,
                                                         tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId,
                                                         type: 'Dine-In'
                                                     }
@@ -1155,10 +1155,10 @@ module.exports = app => {
                     const orderNumber = padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3)
                     getConnection(
                         res,
-                        `SELECT restuarantName FROM restaurants WHERE restaurantID = '${restaurantId}'`,
+                        `SELECT restaurantName FROM restaurants WHERE restaurantID = '${restaurantId}'`,
                         null,
                         (restuarantData) => {
-                            const restuarantName = restuarantData[0].restuarantName
+                            const restaurantName = restuarantData[0].restaurantName
                             getTransactionalConnection()
                                 .getConnection(function (error, tempDb) {
                                     if (!!error) {
@@ -1254,7 +1254,7 @@ module.exports = app => {
                                                             body: {
                                                                 orderNumber,
                                                                 restaurantId,
-                                                                restuarantName,
+                                                                restaurantName,
                                                                 tableId: null,
                                                                 type: 'Take-Away'
                                                             }
