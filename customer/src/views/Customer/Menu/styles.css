@@ -31,13 +31,19 @@
     border-radius: 100px;
     align-items: center;
     cursor: pointer;
+    padding: 4px;
 }
-
+.call-service-div .dialog-icon img{
+    width: 60px;
+    height: 60px;
+}
 .my-dinemate {
-    margin-left: 15px;
+    /* margin-left: 15px; */
     font-weight: bolder;
-    font-size: 18px;
-    margin-right: 8px;
+    font-size: 14px;
+    /* margin-right: 8px; */
+    margin: 10px;
+
 }
 
 .dinemate-logo {
@@ -75,10 +81,10 @@
     justify-content: space-between;
 }
 
-.searchbar-image-cart {
+/* .searchbar-image-cart {
     width: 60px;
     height: 60px;
-}
+} */
 
 .icon-title-div {
     margin: 16px;

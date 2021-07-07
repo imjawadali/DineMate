@@ -6,10 +6,11 @@ import {
   GET_TAKE_ORDER_ITEMS_SUCCESS,
 } from '../../constants'
 
-export default (state = { fetchingTakeOrderItems: false, takeOrderItems: null }, { type, payload }) => {
+export default (state = { fetchingTakeOrderItems: false, takeOrderItems: null, orderNumber: null }, { type, payload }) => {
   switch (type) {
     case GET_TAKE_ORDER_ITEMS:
-      return { ...state, fetchingTakeOrderItems: true }
+      console.log(payload, 'sss')
+      return { ...state, fetchingTakeOrderItems: true, orderNumber: payload.orderNumber }
     case GET_TAKE_ORDER_ITEMS_SUCCESS:
       return { ...state, fetchingTakeOrderItems: false, takeOrderItems: payload.OrderItems }
     case GET_TAKE_ORDER_ITEMS_FAILURE:

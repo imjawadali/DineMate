@@ -99,10 +99,18 @@ input.HeaderInput {
 .content {
     padding: 0 20px;
 }
-
+.yourOrderDetail{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .your-order-title {
     font-weight: bolder;
     font-size: x-large;
+    margin-top: 10px;
+}
+.your-order-number{
+  
     margin-top: 10px;
 }
 

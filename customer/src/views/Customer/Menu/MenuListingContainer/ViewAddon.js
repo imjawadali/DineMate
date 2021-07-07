@@ -9,7 +9,7 @@ import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDE
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity,...props }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity,RestaurantDetails,...props }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
@@ -78,6 +78,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 orderNumber: "000000032",
                 addOnObj: obj,
                 specialInstructions,
+                RestaurantName:RestaurantDetails.restaurantName
             }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
@@ -90,7 +91,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     orderNumber: getItem('orderDetails').orderNumber,
                     addOnObj: obj,
                     specialInstructions,
-                }
+                RestaurantName:RestaurantDetails.restaurantName
+            }
                 // let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
                 // if (cartMenu) {
                 //     if (cartMenu.restaurantId === restaurantId) {
@@ -112,7 +114,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     restaurantId: restaurantId,
                     addOnObj: obj,
                     specialInstructions,
-                }
+                RestaurantName:RestaurantDetails.restaurantName
+            }
 
                 let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
                 if (cartMenu.length) {
@@ -144,6 +147,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 specialInstructions,
 
 
+                // RestaurantName:RestaurantDetails.restaurantName
             }
             dispatch(customisedAction(EDIT_ORDER_ITEM, { objItem: objItem, i: editInded }))
             setViewAddons(false)
@@ -185,6 +189,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                             height='90px'
                             src={selectedItem.imageUrl}
                             alt="image"
+                            onClick={()=>console.log(RestaurantDetails)}
                         />
                     </div>
 
