@@ -175,7 +175,8 @@ function CheckOut(props) {
 
 
     const payNow = () => {
-        if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))) {
+        if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))){
+
             let obj = {
                 "restaurantId": orderDetail.restaurantId,
                 "orderNumber": orderDetail.orderNumber,
@@ -183,9 +184,8 @@ function CheckOut(props) {
             }
             dispatch(customisedAction(CLOSE_ORDER, obj))
             props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
-        } else {
+        }else{
             dispatch(customisedAction(CANT_PAY))
-
         }
     }
 
@@ -195,17 +195,13 @@ function CheckOut(props) {
         }
     }, [takeOrderItems])
 
-
     useEffect(() => {
-        // if(products.length){
-        // window.history.back()
-        // }
-        // console.log(products && products.length)
-        if (!products) {
-            window.history.back()
-
+        let order = getItem('orderDetails') ? getItem('orderDetails') : false
+        if (order === false) {
+            props.history.push('/customer/restaurants')
+            console.log(order, 'order')
         }
-    }, [products])
+    }, [])
 
 
     return (
@@ -393,3 +389,5 @@ function CheckOut(props) {
 }
 
 export default CheckOut
+
+

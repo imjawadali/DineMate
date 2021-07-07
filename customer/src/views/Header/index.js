@@ -28,8 +28,10 @@ const Header = props => {
     const [selectedItem, setSelectedItem] = useState({});
     const [addedAddons, setAddedAddons] = useState({});
     const [editedQuantity, setEditedQuantity] = useState('')
+    const [returantNameTake, setReturantNameTake] = useState('')
 
     const [specialInstructions, setSpecialIntstruction] = useState("")
+    const [orderNumberTake,setOrderNumberTake] = useState('')
 
     let dispatch = useDispatch()
 
@@ -51,11 +53,16 @@ const Header = props => {
             setSearch('')
         }
     }, [window.location.search])
-    // useEffect(() => {
 
-    //     dispatch(customisedAction(INITIALIZE_ORDER))
 
-    // }, [])
+
+    useEffect(() => {
+        // setOrderDetail(getItem('orderDetails'))
+        if (takeOrderItems) {
+            props.history.push('/customer/checkout');
+        }
+        // console.log(takeOrderItems,'takeOrderItems')
+    }, [takeOrderItems])
 
 
 
@@ -335,12 +342,12 @@ const Header = props => {
             toggleCartModal()
             return props.history.push(`/customer/signin/?redirect=${window.location.pathname}`)
         }
+        setReturantNameTake(items[0].RestaurantName)
         let obj = {
             "restaurantId": items[0].restaurantId,
             "items": items
         }
         dispatch(customisedAction(TAKIE_AWAY_ORDER, obj))
-        props.history.push('/customer/checkout');
         setUpdateState(true)
         setSubmitted(true)
 
@@ -405,6 +412,14 @@ const Header = props => {
         }
     }, [takeOrderItems, OrderItems])
 
+
+    useEffect(() => {
+        setReturantNameTake(getItem('orderDetails') ? getItem('orderDetails').restaurantName : '')
+        setOrderNumberTake(getItem('orderDetails') ? getItem('orderDetails').orderNumber : '')
+        // setReturantNameTake(getItem('orderDetails') ? getItem('orderDetails').restaurantName : '')
+        // setOrderDetail(getItem('orderDetails'))
+    }, [items, orderDetail, orderDetails, takeOrderItems])
+
     return (
         <>
             {props && props.location && props.location.pathname !== '/' ?
@@ -462,13 +477,18 @@ const Header = props => {
                                         <div className="content">
                                             <div className="yourOrderDetail">
                                                 <div className="your-order-title">Your Order </div>
-                                                <div className="your-order-number">Order Number: {orderDetails ? orderDetails.orderNumber : orderDetail ? orderDetail.orderNumber : takeOrderNumber ? takeOrderNumber : ''} </div>
+                                                {orderDetails || orderNumberTake ?
+                                                    <div className="your-order-number">Order Number: {orderDetails ? orderDetails.orderNumber : orderDetail ? orderDetail.orderNumber : takeOrderNumber ? takeOrderNumber : orderNumberTake} </div>
+                                                    : null}
                                             </div>
 
-                                            <div className="restaurant-name-div">
-                                                <span onClick={() => console.log(items)}>From: </span>
-                                                <span className="restaurant-title">{items && items[0] ? items[0].RestaurantName : orderDetail ? orderDetail.restaurantName : ""}</span>
-                                            </div>
+                                            {orderDetails || returantNameTake ?
+
+                                                <div className="restaurant-name-div">
+                                                    <span onClick={() => console.log(items)}>From: </span>
+                                                    <span className="restaurant-title">{returantNameTake ? returantNameTake : (items && items[0] && items[0].RestaurantName)}</span>
+                                                </div>
+                                                : null}
 
                                             <div className="item-details">
                                                 {orderDetail &&
