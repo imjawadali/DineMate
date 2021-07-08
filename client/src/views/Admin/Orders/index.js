@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { DropDown, Input, Pagination } from '../../../components'
+import { Input, Pagination } from '../../../components'
 import { customisedAction } from '../../../redux/actions'
 import { GET_ORDERS, PER_PAGE_COUNTS } from '../../../constants'
 
 import OrdersList from './OrdersList'
 
-function Orders() {
+function Orders(props) {
 
-  const [filterKey, setfilterKey] = useState("")
+  const [searchKey, setsearchKey] = useState("")
+  const [filterKey, setfilterKey] = useState("All")
   const [currentIndex, setcurrentIndex] = useState(1)
-  const [type, settype] = useState('Dine-In')
-  const [status, setstatus] = useState(1)
 
   const fetchingOrders = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrders)
   const orders = useSelector(({ ordersReducer }) => ordersReducer.orders)
@@ -21,18 +20,13 @@ function Orders() {
 
   const { restaurantId } = admin
 
-  useEffect(() => {
-    setcurrentIndex(1)
-    dispatch(customisedAction(GET_ORDERS, { restaurantId, type, status: status == 1 ? 1 : '0' }))
-  }, [type, status])
-
   const getFilteredList = () => {
     let filteredQrs = orders
-    if (filterKey && filterKey.length && orders) {
+    if (searchKey && searchKey.length && orders) {
       filteredQrs = orders.filter(
         (ord) =>
-          (type === 'Dine-In' && ord.tableId.includes(filterKey)) ||
-          ord.orderNumber.includes(filterKey)
+          (ord.tableId && ord.tableId.includes(searchKey)) ||
+          ord.orderNumber.includes(searchKey)
       )
     }
     return filteredQrs
@@ -52,47 +46,78 @@ function Orders() {
       <div className="TabularContentContainer">
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
-            <DropDown
-              style={{ border: 'none', borderBottom: 'none', borderRight: '1px solid black', background: type ? 'white' : 'transparent' }}
-              placeholder="Select type"
-              options={['Dine-In','Take-Away']}
-              value={type}
-              onChange={({ target: { value } }) => settype(value)}
-            />
-            <DropDown
-              style={{ border: 'none', borderBottom: 'none', borderRight: '1px solid black', background: status ? 'white' : 'transparent' }}
-              placeholder="Select status"
-              options={[{
-                label: 'Open',
-                value: 1
-              },{
-                label: 'Close',
-                value: 0
-              }]}
-              value={status}
-              onChange={({ target: { value } }) => setstatus(value)}
-            />
+            <div className="TableButtons TableButtonGreen"
+              style={{ opacity: filterKey === 'All' ? 0.5 : '' }}
+              onClick={() => {
+                setfilterKey('All')
+                setcurrentIndex(1)
+                dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+              }}>
+              <p>All</p>
+            </div>
+            <div className="TableButtons TableButtonGreen"
+              style={{ opacity: filterKey === 'Dine-In' ? 0.5 : '' }}
+              onClick={() => {
+                setfilterKey('Dine-In')
+                setcurrentIndex(1)
+                dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1 }))
+              }}>
+              <p>Dine-In</p>
+            </div>
+            <div className="TableButtons TableButtonGreen"
+              style={{ opacity: filterKey === 'Take-Away' ? 0.5 : '' }}
+              onClick={() => {
+                setfilterKey('Take-Away')
+                setcurrentIndex(1)
+                dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Take-Away', status: 1 }))
+              }}>
+              <p>Take-Away</p>
+            </div>
+            <div className="TableButtons TableButtonGreen"
+              style={{ opacity: filterKey === 'Closed' ? 0.5 : '' }}
+              onClick={() => {
+                setfilterKey('Closed')
+                setcurrentIndex(1)
+                dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 0 }))
+              }}>
+              <p>Closed</p>
+            </div>
           </div>
           <div className="TopRightContainer">
             <Input
-              style={{ border: 'none', borderBottom: 'none', background: filterKey ? 'white' : 'transparent' }}
-              placeholder={type === 'Dine-In' ? "Search (by Check #, Table #)" : "Search (by Check #)"}
+              style={{ border: 'none', borderBottom: 'none', background: searchKey ? 'white' : 'transparent' }}
+              placeholder={filterKey !== 'Take-Away' ? "Search (by Check #, Table #)" : "Search (by Check #)"}
               type="number"
-              value={filterKey}
+              value={searchKey}
               onChange={({ target: { value } }) => {
                 if (value !== '0') {
-                  setfilterKey(value < 0 ? `${value * -1}` : value)
+                  setsearchKey(value < 0 ? `${value * -1}` : value)
                   setcurrentIndex(1)
                 }
               }}
             />
             <i
-              style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
-              className={`fa fa-${filterKey ? 'times-circle' : fetchingOrders ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ORDERS, { restaurantId, type, status: status == 1 ? 1 : '0' }))} />
+              style={{ margin: '0px 10px', color: searchKey ? 'red' : '' }}
+              className={`fa fa-${searchKey ? 'times-circle' : fetchingOrders ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => {
+                if (searchKey) setsearchKey('')
+                else {
+                  setfilterKey('All')
+                  setcurrentIndex(1)
+                  dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+                }
+              }} />
+            <div className="TableButtons TableButtonOrange"
+              style={{ marginRight: '5px' }}
+              onClick={() => {
+                setfilterKey('Closed')
+                setcurrentIndex(1)
+              }}>
+              <p>New Order</p>
+            </div>
           </div>
         </div>
-        <OrdersList orders={paginate(getFilteredList())} fetchingOrders={fetchingOrders} restaurantId={restaurantId} />
+        <OrdersList orders={paginate(getFilteredList())} fetchingOrders={fetchingOrders} restaurantId={restaurantId} history={props.history} />
         {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ?
           <Pagination
             currentIndex={currentIndex}

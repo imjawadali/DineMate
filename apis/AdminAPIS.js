@@ -619,10 +619,12 @@ module.exports = app => {
     })
 
     app.post('/admin/getOrderItemDetails', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
         const { id } = req.body
         if (!id) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        getConnection(
+        getSecureConnection(
             res,
+            adminId,
             `SELECT oi.name, oi.quantity, oi.status, oi.price, oi.totalPrice, oi.specialInstructions,
             CONCAT('[',
                 GROUP_CONCAT(
@@ -646,48 +648,88 @@ module.exports = app => {
         )
     })
 
-    app.post('/admin/closeOrder', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, orderNumber } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
-            { status: false },
-            (result) => {
-                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
-                else return res.status(422).send({ 'msg': 'Order closed already!' })
-            }
-        )
-    })
-
     app.post('/admin/getOrders', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, type, status } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
-        if (!status && status !== 0) return res.status(422).send({ 'msg': 'Order Status is required!' })
         getSecureConnection(
             res,
             adminId,
-            `SELECT *, 
-            CONVERT(orderNumber, CHAR) as orderNumber
-            FROM orders WHERE
-            restaurantId = '${restaurantId}'
+            `SELECT o.id, o.tableId,
+            CONVERT(o.orderNumber, CHAR) as orderNumber,
+            IF ((o.status = 0),
+                TIMESTAMPDIFF(SECOND, o.createdAt, o.closedAt),
+                TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
+            ) as time,
+            o.amount, o.status,
+            GROUP_CONCAT(u.name) as staff
+            FROM orders o 
+            LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
+            LEFT JOIN users u ON u.id = sat.staffId
+            WHERE o.restaurantId = '${restaurantId}'
+            ${type ? 'AND type = ' + `'${type}'` : ''}
             AND status = ${status}
-            AND type = '${type}'
-            ORDER BY createdAt DESC `,
+            GROUP BY o.orderNumber
+            ORDER BY o.createdAt DESC `,
             null,
             (data) => {
                 if (data.length) {
                     return res.send(data)
                 } else {
-                    return res.status(422).send({ 'msg': `No ${status ? 'Open' : 'Closed'}, ${type} Orders!` })
+                    return res.status(422).send({ 'msg': `No Orders Found!` })
                 }
+            }
+        )
+    })
+
+    app.post('/admin/getOrderDetails', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'OrderNumber is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT oi.id, oi.quantity, oi.name, oi.totalPrice, oi.specialInstructions,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oia.id,
+                        ',"name":"',oia.addOnName,
+                        '","option":"',oia.addOnOption,
+                        '","price":',oia.price,'}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as addOns
+            FROM orderItems oi
+            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+            WHERE oi.restaurantId = '${restaurantId}'
+            AND oi.orderNumber = '${orderNumber}'
+            GROUP BY oi.id`,
+            null,
+            (items) => {
+                getConnection(
+                    res,
+                    `SELECT id, tableId,
+                    CONVERT(orderNumber, CHAR) as orderNumber,
+                    IF ((status = 0),
+                        TIMESTAMPDIFF(SECOND, createdAt, closedAt),
+                        TIMESTAMPDIFF(SECOND, createdAt, CURRENT_TIMESTAMP)
+                    ) as time, status, amount
+                    FROM orders
+                    WHERE restaurantId = '${restaurantId}'
+                    AND orderNumber = '${orderNumber}'`,
+                    null,
+                    (data) => {
+                        if (data.length) {
+                            let orderdetails = { ...data[0], items }
+                            return res.send(orderdetails)
+                        } else {
+                            return res.status(422).send({ 'msg': `No Order details available!` })
+                        }
+                    }
+                )
             }
         )
     })
@@ -891,13 +933,13 @@ module.exports = app => {
             `SET SQL_SAFE_UPDATES=0`,
             null,
             (result) => {
-                getSecureConnection(
+                getConnection(
                     res,
                     adminId,
                     `UPDATE orderItems SET status = 'R' WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 'P'`,
                     null,
                     () => {
-                        getSecureConnection(
+                        getConnection(
                             res,
                             adminId,
                             `UPDATE orders SET ready = 1 WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`,
@@ -909,6 +951,24 @@ module.exports = app => {
                         )
                     }
                 )
+            }
+        )
+    })
+
+    app.post('/admin/closeOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orders SET status = false, closedAt = CURRENT_TIMESTAMP WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { status: false },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
+                else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
     })

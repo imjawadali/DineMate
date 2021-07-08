@@ -185,7 +185,7 @@ function AddRestaurant(props) {
               <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Country" />
                 <Input 
-                  placeholder="Pakistan"
+                  placeholder="Canada"
                   value={country}
                   onChange={({ target: { value } }) => setcountry(value)}
                 />
@@ -193,7 +193,7 @@ function AddRestaurant(props) {
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="City" />
                 <Input 
-                  placeholder="Karachi"
+                  placeholder="Toronto"
                   value={city}
                   onChange={({ target: { value } }) => setcity(value)}
                 />
@@ -234,7 +234,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
               <Input 
-                placeholder="+92 315 8731014"
+                placeholder="+1 315-8731014"
                 value={pPhoneNumber}
                 onChange={({ target: { value } }) => setpPhoneNumber(value)}
               />
@@ -263,7 +263,7 @@ function AddRestaurant(props) {
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
               <Input 
-                placeholder="+92 315 8731014"
+                placeholder="+1 315-8731014"
                 value={sPhoneNumber}
                 onChange={({ target: { value } }) => setsPhoneNumber(value)}
               />

@@ -166,7 +166,7 @@ function EditRestaurant(props) {
               <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Country" />
                 <Input 
-                  placeholder="Pakistan"
+                  placeholder="Canada"
                   value={country}
                   onChange={({ target: { value } }) => setcountry(value)}
                 />
@@ -174,7 +174,7 @@ function EditRestaurant(props) {
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="City" />
                 <Input 
-                  placeholder="Karachi"
+                  placeholder="Toronto"
                   value={city}
                   onChange={({ target: { value } }) => setcity(value)}
                 />

@@ -12,6 +12,8 @@ import Restaurant from './Dashboard/Restaurant'
 import Kitchen from './Dashboard/Kitchen'
 import TableOrders from './Dashboard/Restaurant/TableOrders'
 import OrderItemDetails from './Dashboard/Restaurant/TableOrders/ItemDetails'
+import Orders from './Orders'
+import OrderDetails from './Orders/OrderDetails'
 import AddRestaurant from './AddRestaurant'
 import EditRestaurant from './EditRestaurant'
 import Restaurants from './Restaurants'
@@ -25,7 +27,6 @@ import Menu from './Menu'
 import ItemDetails from './Menu/ItemDetails'
 import AddMenuItem from './AddMenuItem'
 import RestaurantUsers from './Users/RestaurantUsers'
-import Orders from './Orders'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -46,12 +47,12 @@ function Admin(props) {
         dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
       } else if (role === 'Staff') {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1, noToast: true }))
+        dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
         dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
       } else {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-        dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1, noToast: true }))
+        dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
         dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
@@ -151,7 +152,12 @@ function Admin(props) {
                 <RestaurantAdminRoutes path={`${path}/usersManagement/restaurantUsers`} component={RestaurantUsers} />
               </Switch>
             </Route>
-            <RestaurantAdminRoutes path={`${path}/ordersManagement`} component={Orders} />
+            <Route path={`${path}/ordersManagement`}>
+              <Switch>
+                <RestaurantAdminRoutes exact path={`${path}/ordersManagement`} component={Orders}/>
+                <RestaurantAdminRoutes path={`${path}/ordersManagement/orderDetails`} component={OrderDetails} />
+              </Switch>
+            </Route>
             <OthersRoutes path={`${path}/staffManagement`} component={Staff} />
             <SuperAdminRoutes exact path={`${path}/qrsManagement`} component={GenerateQrs} />
             <Route path={`${path}/tablesManagement`}>

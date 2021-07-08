@@ -17,6 +17,8 @@ import { markOrderReadyEpic } from './admin/markOrderReadyEpic'
 import { getTableOrdersEpic } from './admin/getTableOrdersEpic'
 import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
+import { getOrdersEpic } from './admin/getOrdersEpic'
+import { getOrderDetailsEpic } from './admin/getOrderDetailsEpic'
 import { mergeTablesEpic } from './admin/mergeTablesEpic'
 import { unMergeTablesEpic } from './admin/unMergeTablesEpic'
 import { getServicesQueEpic } from './admin/getServicesQueEpic'
@@ -37,7 +39,6 @@ import { updateAddOnEpic } from './admin/updateAddOnEpic'
 import { addAddOnEpic } from './admin/addAddOnEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
-import { getOrdersEpic } from './admin/getOrdersEpic'
 export const epics = combineEpics(
     loginEpic.login,
     forgotPasswordEpic.forgotPassword,
@@ -56,6 +57,8 @@ export const epics = combineEpics(
     markOrderReadyEpic.markOrderReady,
     getTableOrdersEpic.getTableOrders,
     getOrderItemDetailsEpic.getOrderItemDetails,
+    getOrdersEpic.getOrders,
+    getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,
     mergeTablesEpic.mergeTables,
     unMergeTablesEpic.unMergeTables,
@@ -76,6 +79,5 @@ export const epics = combineEpics(
     updateAddOnEpic.updateAddOn,
     addAddOnEpic.addAddOn,
     uploadToS3Epic.uploadToS3,
-    deleteFromS3Epic.deleteFromS3,
-    getOrdersEpic.getOrders
+    deleteFromS3Epic.deleteFromS3
 )
