@@ -1319,8 +1319,8 @@ module.exports = app => {
                             let discountAmount = data.discount.toFixed(2)
                             if (data.discountType === '%')
                                 discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
-                            const amount = data.amount - discountAmount
-                            const taxAmount = (((amount) * data.taxPercentage) / 100).toFixed(2)
+                            const subtotal = data.amount - discountAmount
+                            const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
                             for (let i = 0; i<orderItems.length; i++) {
                                 orderItems[i].totalPrice = orderItems[i].totalPrice.toFixed(2)
                             }
@@ -1328,13 +1328,14 @@ module.exports = app => {
                                 status: true,
                                 message: '',
                                 body: {
-                                    subtotal: data.amount.toFixed(2),
+                                    foodTotal: data.amount.toFixed(2),
                                     discount: data.discount + `${data.discountType}`,
                                     discountAmount,
+                                    subtotal: subtotal.toFixed(2),
                                     taxPercentage: data.taxPercentage + '%',
                                     taxAmount,
                                     tip: data.tip.toFixed(2),
-                                    billAmount: (amount + Number(taxAmount) + data.tip).toFixed(2),
+                                    billAmount: (subtotal + Number(taxAmount) + data.tip).toFixed(2),
                                     orderItems
                                 }
                             })
