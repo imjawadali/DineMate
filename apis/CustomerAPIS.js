@@ -1270,7 +1270,7 @@ module.exports = app => {
                                         )
                                     })
                                 }
-                            )
+                                )
                         }
                     )
                 }
@@ -1304,24 +1304,49 @@ module.exports = app => {
             `SELECT id, quantity, name, totalPrice FROM orderItems
             WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             null,
-            (data) => {
-                if (data.length) {
-                    return res.send({
-                        status: true,
-                        message: '',
-                        body: {
-                            billAmount: data.map(item => item.totalPrice).reduce((a, b) => a + b, 0) - 2,
-                            rewardPoints: 2,
-                            orderItems: data
+            (orderItems) => {
+                getConnection(
+                    res,
+                    `SELECT o.amount, o.discount, o.discountType, o.tip, r.taxPercentage
+                    FROM orders o
+                    JOIN restaurants r on o.restaurantId = r.restaurantId
+                    WHERE o.restaurantId = '${restaurantId}'
+                    AND o.orderNumber = '${orderNumber}'`,
+                    null,
+                    (result) => {
+                        if (result.length) {
+                            const data = result[0]
+                            let discountAmount = data.discount.toFixed(2)
+                            if (data.discountType === '%')
+                                discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
+                            const amount = data.amount - discountAmount
+                            const taxAmount = (((amount) * data.taxPercentage) / 100).toFixed(2)
+                            for (let i = 0; i<orderItems.length; i++) {
+                                orderItems[i].totalPrice = orderItems[i].totalPrice.toFixed(2)
+                            }
+                            return res.send({
+                                status: true,
+                                message: '',
+                                body: {
+                                    subtotal: data.amount.toFixed(2),
+                                    discount: data.discount + `${data.discountType}`,
+                                    discountAmount,
+                                    taxPercentage: data.taxPercentage + '%',
+                                    taxAmount,
+                                    tip: data.tip.toFixed(2),
+                                    billAmount: (amount + Number(taxAmount) + data.tip).toFixed(2),
+                                    orderItems
+                                }
+                            })
+                        } else {
+                            return res.send({
+                                status: false,
+                                message: 'No Order details available!',
+                                errorCode: 422
+                            })
                         }
-                    })
-                } else {
-                    return res.send({
-                        status: false,
-                        message: 'No items submitted!',
-                        errorCode: 422
-                    })
-                }
+                    }
+                )
             }
         )
     })
@@ -1331,7 +1356,7 @@ module.exports = app => {
             console.log("\n\n>>> /customer/closeOrderViaCash")
             console.log(req.body)
             const customerId = decrypt(req.header('authorization'))
-            const { restaurantId, orderNumber, type } = req.body
+            const { restaurantId, orderNumber, type, tip } = req.body
             if (!customerId) return res.send({
                 status: false,
                 message: 'Not Authorized!',
@@ -1352,10 +1377,19 @@ module.exports = app => {
                 message: 'Type is required!',
                 errorCode: 422
             })
+            if (tip && tip < 0) return res.send({
+                status: false,
+                message: 'Tip can\'t be negative!',
+                errorCode: 422
+            })
             let data
             if (type.toLowerCase() === 'take-away')
                 data = { status: true, customerStatus: true }
             else data = { customerStatus: true }
+
+            if (tip) {
+                data.tip = tip
+            }
             getSecureConnection(
                 res,
                 customerId,

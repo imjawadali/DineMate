@@ -360,7 +360,7 @@ function Restaurant(props) {
               </div>
             </div>
             <div className="DashBoardServicesContainer">
-              <h3>Services Que</h3>
+              <h3>Request Queue</h3>
               <div>
                 {servicesQue ?
                   servicesQue.map(item => {

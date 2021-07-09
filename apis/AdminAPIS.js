@@ -743,7 +743,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT sat.staffId as id, u.name,
-            GROUP_CONCAT(sat.tableNumber) as assignedTables
+            GROUP_CONCAT(sat.tableNumber ORDER BY cast(sat.tableNumber as unsigned) ASC) as assignedTables
             FROM staffAssignedTables sat
             JOIN users u on u.id = sat.staffId
             WHERE sat.restaurantId = '${restaurantId}'
