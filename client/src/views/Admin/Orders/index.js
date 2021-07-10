@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Input, Pagination } from '../../../components'
@@ -19,6 +19,10 @@ function Orders(props) {
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
+
+  useEffect(() => {
+    dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+  }, [])
 
   const getFilteredList = () => {
     let filteredQrs = orders
@@ -102,15 +106,26 @@ function Orders(props) {
               onClick={() => {
                 if (searchKey) setsearchKey('')
                 else {
-                  setfilterKey('All')
                   setcurrentIndex(1)
-                  dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+                  switch (filterKey) {
+                    case 'Dine-In':
+                      dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Dine-In', status: 1 }))
+                      break;
+                    case 'Take-Away':
+                      dispatch(customisedAction(GET_ORDERS, { restaurantId, type: 'Take-Away', status: 1 }))
+                      break;
+                    case 'Closed':
+                      dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 0 }))
+                      break;
+                    default:
+                      dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+                      break;
+                  }
                 }
               }} />
             <div className="TableButtons TableButtonOrange"
               style={{ marginRight: '5px' }}
               onClick={() => {
-                setfilterKey('Closed')
                 setcurrentIndex(1)
               }}>
               <p>New Order</p>

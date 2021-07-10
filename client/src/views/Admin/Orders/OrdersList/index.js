@@ -28,19 +28,19 @@ function OrdersList(props) {
                 <tbody>
                     {orders && orders.length ?
                         orders.map((order) => {
-                            const { tableId, orderNumber, status, time, amount, staff } = order
+                            const { id, tableId, orderNumber, status, time, amount, staff } = order
                             return (<>
-                                <tr>
+                                <tr key={id}>
                                     <td>
-                                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                             <TableActionicons
                                                 icon="fa fa-info"
                                                 onClick={() => {
                                                   dispatch(customisedAction(CLEAR_ORDER_DETAILS))
-                                                //   history.push({
-                                                //     pathname: '/client/admin/ordersManagement/orderDetails',
-                                                //     state: { restaurantId, orderNumber }
-                                                //   })
+                                                  history.push({
+                                                    pathname: '/client/admin/ordersManagement/orderDetails',
+                                                    state: { restaurantId, orderNumber }
+                                                  })
                                                 }}
                                             />
                                             <TableActionicons

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { TitleWithAction, Button } from '../../../../components'
-import { GET_ORDER_DETAILS } from '../../../../constants'
+import { TitleWithAction, Button, OrderTimer } from '../../../../components'
+import { CLOSE_ORDER, GET_ORDER_DETAILS } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
+import { getFormatedDateTime } from '../../../../helpers'
 
+import ItemsList from './ItemsList'
 import './styles.css'
 
 function OrderDetails(props) {
@@ -14,6 +16,7 @@ function OrderDetails(props) {
 
   const fetchingOrderDetails = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrderDetails)
   const orderDetails = useSelector(({ ordersReducer }) => ordersReducer.orderDetails)
+  const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
 
   const dispatch = useDispatch()
 
@@ -60,34 +63,66 @@ function OrderDetails(props) {
         </div> : null
       }
       {orderDetails ? <>
-        <div className="ItemContainer">
-          <div className="ItemDetailsContainer">
-            <div className="ItemDetailsSections">
-              <h4>Item Name:</h4>
-              <p>{orderDetails.name}</p>
+        <div className="OrderDetailsContainer">
+          <div className="OrderDetailsSection">
+            <div className="OrderDetailsLabel">
+              <p className="OrderDetailsText">Check Opened:</p>
+              <p className="OrderDetailsText">Duration:</p>
             </div>
-            <div className="ItemDetailsSections">
-              <h4>Quantity:</h4>
-              <p>{orderDetails.quantity}</p>
-            </div>
-            <div className="ItemDetailsSections">
-              <h4>Status:</h4>
-              <p>{statuses[0]}</p>
-            </div>
-            <div className="ItemDetailsSections">
-              <h4>Total Price (including add-ons):</h4>
-              <p>$ {orderDetails.totalPrice}</p>
+            <div className="OrderDetailsData">
+              <p className="OrderDetailsText">{getFormatedDateTime(orderDetails.createdAt)}</p>
+              <OrderTimer status={orderDetails.status} timeStamp={orderDetails.duration} textOnly />
             </div>
           </div>
-          <div className="InstructionsContainer">
-            <h4>Special Instructions:</h4>
-            <div className="InstructionsTextContainer">
-              <p>{orderDetails.specialInstructions}</p>
+          <div className="OrderDetailsSectionMiddle"></div>
+          <div className="OrderDetailsSection">
+            <div className="OrderDetailsLabel">
+              <p className="OrderDetailsText">Check Closed:</p>
+              <p className="OrderDetailsText">Status:</p>
+            </div>
+            <div className="OrderDetailsData">
+              <p className="OrderDetailsText">{!orderDetails.status ? getFormatedDateTime(orderDetails.closedAt) : '-'}</p>
+              <p className="OrderDetailsText" style={{ color: orderDetails.status ? 'green' : 'red' }}>{orderDetails.status ? "Open" : "Closed"}</p>
             </div>
           </div>
         </div>
-        <div className="ItemDetailsSections">
-          <h4>Add-Ons:</h4>
+        <ItemsList orderDetails={orderDetails} items={orderDetails.items} restaurantId={restaurantId} history={history} />
+        <div className="OrderDetailsBottomButtonsContainer">
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              <td style={{ color: 'white', padding: '0px' }}>Add Item</td>
+            </div>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              <td style={{ color: 'white', padding: '0px' }}>Discount</td>
+            </div>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              <td style={{ color: 'white', padding: '0px' }}>Split</td>
+            </div>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              <td style={{ color: 'white', padding: '0px' }}>Void</td>
+            </div>
+          </div>
+          <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              <td style={{ color: 'white', padding: '0px' }}>Cash</td>
+            </div>
+            <div className="OrderDetailsBottomButtons"
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}
+              onClick={() => orderDetails.status && closingId !== orderNumber ?
+                dispatch(customisedAction(CLOSE_ORDER, { restaurantId, orderNumber }))
+                : null
+              }>
+              <td style={{ color: 'white', padding: '0px' }}>Close</td>
+            </div>
+            <div className="OrderDetailsBottomButtons">
+              <td style={{ color: 'white', padding: '0px' }}>Print</td>
+            </div>
+          </div>
         </div>
       </> : null}
     </div>

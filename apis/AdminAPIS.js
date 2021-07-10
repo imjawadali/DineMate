@@ -536,9 +536,10 @@ module.exports = app => {
             `SELECT GROUP_CONCAT(sq.id) as ids, sq.tableNumber, sq.orderNumber, GROUP_CONCAT(sq.text) as text,
             TIMESTAMPDIFF(SECOND, MIN(sq.createdAt), CURRENT_TIMESTAMP) as time
             FROM servicesQue sq
-            LEFT JOIN orders o ON o.orderNumber = sq.orderNumber AND sq.status = 1 
-            WHERE sq.restaurantId = '${restaurantId}' AND o.status = 1
-            GROUP BY sq.orderNumber
+            JOIN orders o ON sq.orderNumber = o.orderNumber AND sq.restaurantId = o.restaurantId
+            WHERE sq.restaurantId = '${restaurantId}'
+            AND sq.status = 1 AND o.status = 1
+            GROUP BY o.orderNumber
             ORDER BY sq.createdAt ASC`,
             null,
             (data) => {
@@ -653,6 +654,7 @@ module.exports = app => {
         const { restaurantId, type, status } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        const active = status || status === 0 ? status : 1
         getSecureConnection(
             res,
             adminId,
@@ -669,9 +671,9 @@ module.exports = app => {
             LEFT JOIN users u ON u.id = sat.staffId
             WHERE o.restaurantId = '${restaurantId}'
             ${type ? 'AND type = ' + `'${type}'` : ''}
-            AND status = ${status}
+            AND status = ${active}
             GROUP BY o.orderNumber
-            ORDER BY o.createdAt DESC `,
+            ORDER BY ${active ? 'o.createdAt' : 'o.closedAt'} DESC `,
             null,
             (data) => {
                 if (data.length) {
@@ -711,25 +713,63 @@ module.exports = app => {
             (items) => {
                 getConnection(
                     res,
-                    `SELECT id, tableId,
-                    CONVERT(orderNumber, CHAR) as orderNumber,
-                    IF ((status = 0),
-                        TIMESTAMPDIFF(SECOND, createdAt, closedAt),
-                        TIMESTAMPDIFF(SECOND, createdAt, CURRENT_TIMESTAMP)
-                    ) as time, status, amount
-                    FROM orders
-                    WHERE restaurantId = '${restaurantId}'
-                    AND orderNumber = '${orderNumber}'`,
+                    `SELECT o.createdAt, o.closedAt,
+                    IF ((o.status = 0),
+                        TIMESTAMPDIFF(SECOND, o.createdAt, closedAt),
+                        TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
+                    ) as duration,
+                    o.status, o.amount, o.discount, o.discountType, o.tip, r.taxPercentage
+                    FROM orders o
+                    JOIN restaurants r on o.restaurantId = r.restaurantId
+                    WHERE o.restaurantId = '${restaurantId}'
+                    AND o.orderNumber = '${orderNumber}'`,
                     null,
-                    (data) => {
-                        if (data.length) {
-                            let orderdetails = { ...data[0], items }
-                            return res.send(orderdetails)
+                    (result) => {
+                        if (result.length) {
+                            const data = result[0]
+                            let discountAmount = data.discount.toFixed(2)
+                            if (data.discountType === '%')
+                                discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
+                            const subtotal = data.amount - discountAmount
+                            const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
+                            return res.send({
+                                createdAt: data.createdAt,
+                                closedAt: data.closedAt,
+                                duration: data.duration,
+                                status: data.status,
+                                foodTotal: data.amount.toFixed(2),
+                                discount: data.discount + `${data.discountType}`,
+                                discountAmount,
+                                subtotal: subtotal.toFixed(2),
+                                taxPercentage: data.taxPercentage + '%',
+                                taxAmount,
+                                tip: data.tip.toFixed(2),
+                                billAmount: (subtotal + Number(taxAmount) + data.tip).toFixed(2),
+                                items
+                            })
                         } else {
                             return res.status(422).send({ 'msg': `No Order details available!` })
                         }
                     }
                 )
+            }
+        )
+    })
+
+    app.post('/admin/closeOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orders SET status = false, closedAt = CURRENT_TIMESTAMP WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { status: false },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
+                else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
     })
@@ -951,24 +991,6 @@ module.exports = app => {
                         )
                     }
                 )
-            }
-        )
-    })
-
-    app.post('/admin/closeOrder', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, orderNumber } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `UPDATE orders SET status = false, closedAt = CURRENT_TIMESTAMP WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
-            { status: false },
-            (result) => {
-                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
-                else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
     })

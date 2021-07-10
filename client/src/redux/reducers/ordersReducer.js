@@ -28,13 +28,13 @@ export default (state = {
     case CLEAR_ORDER_ITEM_DETAILS:
       return { ...state, orderItemDetails: null }
     case GET_ORDERS:
-      return { ...state, fetchingOrders: true, orders: null }
+      return { ...state, fetchingOrders: true }
     case GET_ORDERS_SUCCESS:
       return { ...state, fetchingOrders: false, orders: payload }
     case GET_ORDERS_FAILURE:
       return { ...state, fetchingOrders: false }
     case GET_ORDER_DETAILS:
-      return { ...state, fetchingOrderDetails: true, orderDetails: null }
+      return { ...state, fetchingOrderDetails: true }
     case GET_ORDER_DETAILS_SUCCESS:
       return { ...state, fetchingOrderDetails: false, orderDetails: payload }
     case GET_ORDER_DETAILS_FAILURE:

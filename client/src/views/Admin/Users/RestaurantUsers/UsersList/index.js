@@ -36,7 +36,7 @@ function UsersList(props) {
               return (
                 <tr key={id}>
                   <td>
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                       <TableActionicons
                         icon={`fa fa-${active ? 'ban' : 'thumbs-up'}`}
                         onClick={() => enable_disable(id, !active)}

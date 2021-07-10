@@ -20,7 +20,7 @@ function StaffList(props) {
               return (
                 <tr key={id}>
                   <td>{name}</td>
-                  <td>{assignedTables}</td>
+                  <td style={{ width: '60vw'}}>{assignedTables}</td>
                 </tr>
               )
             }) : 
