@@ -125,9 +125,7 @@ function Orders(props) {
               }} />
             <div className="TableButtons TableButtonOrange"
               style={{ marginRight: '5px' }}
-              onClick={() => {
-                setcurrentIndex(1)
-              }}>
+              onClick={() => props.history.push('/client/admin/ordersManagement/newOrder')}>
               <p>New Order</p>
             </div>
           </div>

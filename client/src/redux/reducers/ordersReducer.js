@@ -44,7 +44,7 @@ export default (state = {
     case CLOSE_ORDER:
       return { ...state, closingId: payload.orderNumber }
     case CLOSE_ORDER_SUCCESS:
-      return { ...state, closingId: null }
+      return { ...state }
     case CLOSE_ORDER_FAILURE:
       return { ...state, closingId: null }
     default:

@@ -20,9 +20,6 @@ function Menu(props) {
 
   const { restaurantId } = admin
 
-  useEffect(() => {
-  }, [])
-
   const getFilteredList = () => {
     let filteredQrs = menu
     if (filterKey && filterKey.length && menu) {

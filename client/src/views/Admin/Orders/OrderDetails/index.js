@@ -21,11 +21,6 @@ function OrderDetails(props) {
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
-  const statuses = {
-    P: 'Pending',
-    A: 'In-que',
-    S: 'Served'
-  }
 
   useEffect(() => {
     if (!state)
@@ -86,11 +81,20 @@ function OrderDetails(props) {
             </div>
           </div>
         </div>
-        <ItemsList orderDetails={orderDetails} items={orderDetails.items} restaurantId={restaurantId} history={history} />
+        <ItemsList orderDetails={orderDetails} items={orderDetails.items} />
         <div className="OrderDetailsBottomButtonsContainer">
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}
+              onClick={() => {
+                if (orderDetails.status && closingId !== orderNumber) {
+                  history.push({
+                    pathname: '/client/admin/ordersManagement/newOrder', state: {
+                      orderDetails: { ...orderDetails, orderNumber }
+                    }
+                  })
+                }
+              }}>
               <td style={{ color: 'white', padding: '0px' }}>Add Item</td>
             </div>
             <div className="OrderDetailsBottomButtons"

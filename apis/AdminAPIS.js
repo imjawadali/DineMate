@@ -26,7 +26,8 @@ module.exports = app => {
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         getConnection(
             res,
-            `SELECT U.id, U.name, U.email, U.role, U.restaurantId, R.restaurantName
+            `SELECT U.id, U.name, U.email, U.role, U.restaurantId,
+            R.restaurantName, R.taxPercentage, R.lateTime
             FROM users U
             LEFT JOIN restaurants R on U.restaurantId = R.restaurantId
             WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`,
@@ -579,7 +580,7 @@ module.exports = app => {
                                         return res.status(422).send({ 'msg': "Failed to assign tables to staff!" })
                                     })
                                 } else {
-                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus,
+                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus, c.firstName, c.lastName,
                                         CONCAT('[',
                                             GROUP_CONCAT(
                                                 CONCAT(
@@ -593,6 +594,7 @@ module.exports = app => {
                                         ']') as items
                                         FROM orders o
                                         LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
+                                        LEFT JOIN customers c ON o.customerId = c.id
                                         WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
                                         GROUP BY o.orderNumber
                                         ORDER BY o.createdAt DESC`, null, function (error, result) {
@@ -631,8 +633,8 @@ module.exports = app => {
                 GROUP_CONCAT(
                     CONCAT(
                         '{"id":',oia.id,
-                        ',"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,
+                        ',"addOnName":"',oia.addOnName,
+                        '","addOnOption":"',oia.addOnOption,
                         '","price":',oia.price,'}'
                     ) ORDER BY oi.createdAt DESC
                 ),
@@ -698,8 +700,10 @@ module.exports = app => {
                 GROUP_CONCAT(
                     CONCAT(
                         '{"id":',oia.id,
-                        ',"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,
+                        ',"addOnId":',oia.addOnId,
+                        ',"addOnName":"',oia.addOnName,
+                        '","addOnOptionId":',oia.addOnOptionId,
+                        ',"addOnOption":"',oia.addOnOption,
                         '","price":',oia.price,'}'
                     ) ORDER BY oi.createdAt DESC
                 ),
@@ -713,7 +717,7 @@ module.exports = app => {
             (items) => {
                 getConnection(
                     res,
-                    `SELECT o.createdAt, o.closedAt,
+                    `SELECT o.createdAt, o.closedAt, o.type,
                     IF ((o.status = 0),
                         TIMESTAMPDIFF(SECOND, o.createdAt, closedAt),
                         TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
@@ -737,6 +741,7 @@ module.exports = app => {
                                 closedAt: data.closedAt,
                                 duration: data.duration,
                                 status: data.status,
+                                type: data.type,
                                 foodTotal: data.amount.toFixed(2),
                                 discount: data.discount + `${data.discountType}`,
                                 discountAmount,
@@ -922,8 +927,8 @@ module.exports = app => {
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
-                        '{"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,'"}'
+                        '{"addOnName":"',oia.addOnName,
+                        '","addOnOption":"',oia.addOnOption,'"}'
                     ) ORDER BY oi.createdAt DESC
                 ),
             ']') as addOns

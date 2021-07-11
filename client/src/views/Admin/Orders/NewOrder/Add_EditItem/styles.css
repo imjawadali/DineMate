@@ -1,0 +1,66 @@
+.NewOrderItemModalContainer {
+    padding: 20px;
+}
+
+.NewOrderItemHeading {
+    font-size: 18px;
+}
+
+.NewOrderAddOnHeading {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 16px;
+}
+
+.NewOrderAddOnText {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.NewOrderAddOnBottomOptions {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+    padding-top: 5px;
+    border-top: 1px solid grey;
+}
+
+.NewOrderAddOnQuantity {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+@media only screen and (max-width: 978px) {
+    .NewOrderItemHeading {
+        font-size: 17px;
+    }
+
+    .NewOrderAddOnHeading {
+        font-size: 15px;
+    }
+
+    .NewOrderAddOnText {
+        font-size: 15px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .NewOrderItemModalContainer {
+        padding: 5px;
+    }
+
+    .NewOrderItemHeading {
+        font-size: 16px;
+    }
+
+    .NewOrderAddOnHeading {
+        font-size: 14px;
+    }
+
+    .NewOrderAddOnText {
+        font-size: 14px;
+    }
+}

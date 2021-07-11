@@ -1,15 +1,8 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
-
-import { TableActionicons, OrderTimer } from '../../../../../components'
-import { CLEAR_ORDER_DETAILS } from '../../../../../constants'
-import { customisedAction } from '../../../../../redux/actions'
 
 function ItemsList(props) {
 
-    const dispatch = useDispatch()
-
-    const { items, orderDetails, restaurantId, history } = props
+    const { items, orderDetails } = props
 
     return (
         <div className="TableDataContainer">
@@ -37,8 +30,8 @@ function ItemsList(props) {
                                         <p>{addOnsArray && addOnsArray.length ?
                                             addOnsArray.map((addon, index) => {
                                                 return (`
-                                                    ${addon.option && addon.option !== 'null' ?
-                                                    addon.option : addon.name}
+                                                    ${addon.addOnOption && addon.addOnOption !== 'null' ?
+                                                    addon.addOnOption : addon.addOnName}
                                                     ${addon.price ? '($ ' + addon.price + ')' : ''}
                                                     ${index !== addOnsArray.length - 1 ? ',' : ''}
                                                 `)

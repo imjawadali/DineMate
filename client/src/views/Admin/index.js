@@ -14,6 +14,7 @@ import TableOrders from './Dashboard/Restaurant/TableOrders'
 import OrderItemDetails from './Dashboard/Restaurant/TableOrders/ItemDetails'
 import Orders from './Orders'
 import OrderDetails from './Orders/OrderDetails'
+import NewOrder from './Orders/NewOrder'
 import AddRestaurant from './AddRestaurant'
 import EditRestaurant from './EditRestaurant'
 import Restaurants from './Restaurants'
@@ -156,6 +157,7 @@ function Admin(props) {
               <Switch>
                 <RestaurantAdminRoutes exact path={`${path}/ordersManagement`} component={Orders}/>
                 <RestaurantAdminRoutes path={`${path}/ordersManagement/orderDetails`} component={OrderDetails} />
+                <RestaurantAdminRoutes path={`${path}/ordersManagement/newOrder`} component={NewOrder} />
               </Switch>
             </Route>
             <OthersRoutes path={`${path}/staffManagement`} component={Staff} />

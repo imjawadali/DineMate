@@ -74,7 +74,7 @@ function OrdersList(props) {
                           <td>{
                             addOnsArray && addOnsArray.length ?
                               addOnsArray.map((addOn, index) => <p key={index} style={{ display: 'inline' }}>{
-                                addOn.option && addOn.option !== 'null' ? addOn.option : addOn.name
+                                addOn.addOnOption && addOn.addOnOption !== 'null' ? addOn.addOnOption : addOn.addOnName
                               }{index !== addOnsArray.length - 1 ? ', ' : ''}</p>)
                               : '-'
                           }</td>
