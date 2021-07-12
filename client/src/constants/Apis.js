@@ -3,7 +3,7 @@ export const PUBLIC_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.c
 export const CUSTOMER_APP_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/'
 export const BUCKET_URL = 'https://dinematebucket.s3.amazonaws.com/'
 export const BUCKET_URL_2 = 'https://dinematebucket.s3.us-east-2.amazonaws.com/'
-export const BASE_URL = '/dev/'
+export const BASE_URL = LOCAL_URL
 
 export const API_ENDPOINTS = {
     admin: {
@@ -27,6 +27,8 @@ export const API_ENDPOINTS = {
         getOrderItemDetails: 'admin/getOrderItemDetails',
         getOrders:'admin/getOrders',
         getOrderDetails:'admin/getOrderDetails',
+        addItemsToOrder:'admin/addItemsToOrder',
+        submitNewOrder:'admin/submitNewOrder',
         closeOrder: 'admin/closeOrder',
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',

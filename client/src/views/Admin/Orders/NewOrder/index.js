@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { DropDown, TitleWithAction, Button, MenuGridItem } from '../../../../components'
-import { GET_MENU } from '../../../../constants'
+import { GET_MENU, SUBMIT_NEW_ORDER, ADD_ITEMS_TO_ORDER, SET_TOAST } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 import Add_EditItem from './Add_EditItem'
@@ -21,6 +21,7 @@ function NewOrder(props) {
   const [existingOrder, setexistingOrder] = useState(null)
   const [showCart, setshowCart] = useState(false)
 
+  const addingUpdatingOrder = useSelector(({ ordersReducer }) => ordersReducer.addingUpdatingOrder)
   const tables = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
   const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
   const menu = useSelector(({ menuReducer }) => menuReducer.menu)
@@ -70,18 +71,46 @@ function NewOrder(props) {
     setaddingEdittingItem(false)
   }
 
-  const submitItem = async (item) => {
+  const submitItem = (item) => {
     let tempCartItems = cart
     tempCartItems.push(item)
     setcart(tempCartItems)
     cancelModal()
   }
 
-  const updateItem = async (item) => {
+  const updateItem = (item) => {
     let tempCartItems = cart
     tempCartItems[indexOfItemToEdit] = item
     setcart(tempCartItems)
     cancelModal()
+  }
+
+  const disabled = () => {
+    if (!existingOrder && !type) return "Order type is required"
+    if (!existingOrder && type === 'Dine-In' && !table) return "Table number is required"
+    if (!cart || !cart.length) return "No items added to cart"
+    return false
+  }
+
+  const submitNewOrder = () => {
+    const payload = {
+      restaurantId,
+      type,
+      items: cart
+    }
+    if (type === 'Dine-In') {
+      payload.tableId = table.replace('Table # ', '')
+    }
+    dispatch(customisedAction(SUBMIT_NEW_ORDER, payload, { history }))
+  }
+
+  const addItemsToOrder = () => {
+    const payload = {
+      restaurantId,
+      orderNumber: existingOrder.orderNumber,
+      items: cart
+    }
+    dispatch(customisedAction(ADD_ITEMS_TO_ORDER, payload, { history }))
   }
 
   return (
@@ -146,8 +175,11 @@ function NewOrder(props) {
                 <td style={{ color: 'white', padding: '0px' }}>Add More</td>
               </div>
               <div className="OrderDetailsBottomButtons"
-                style={{ opacity: 0.5 }}
-                onClick={() => null}>
+                style={{ opacity: !!disabled() ? 0.5 : '' }}
+                onClick={() => !disabled() ?
+                  existingOrder ? addItemsToOrder() : submitNewOrder()
+                  : dispatch(customisedAction(SET_TOAST, { message: disabled(), type: 'error'}))
+                }>
                 <td style={{ color: 'white', padding: '0px' }}>Submit</td>
               </div>
               <div className="OrderDetailsBottomButtons"

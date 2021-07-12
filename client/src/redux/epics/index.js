@@ -16,6 +16,8 @@ import { markItemReadyEpic } from './admin/markItemReadyEpic'
 import { markOrderReadyEpic } from './admin/markOrderReadyEpic'
 import { getTableOrdersEpic } from './admin/getTableOrdersEpic'
 import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
+import { submitNewOrderEpic } from './admin/submitNewOrderEpic'
+import { addItemsToOrderEpic } from './admin/addItemsToOrderEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
 import { getOrdersEpic } from './admin/getOrdersEpic'
 import { getOrderDetailsEpic } from './admin/getOrderDetailsEpic'
@@ -57,6 +59,8 @@ export const epics = combineEpics(
     markOrderReadyEpic.markOrderReady,
     getTableOrdersEpic.getTableOrders,
     getOrderItemDetailsEpic.getOrderItemDetails,
+    submitNewOrderEpic.submitNewOrder,
+    addItemsToOrderEpic.addItemsToOrder,
     getOrdersEpic.getOrders,
     getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,

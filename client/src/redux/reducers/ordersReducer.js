@@ -4,11 +4,13 @@ import {
   GET_ORDERS, GET_ORDERS_SUCCESS, GET_ORDERS_FAILURE,
   GET_ORDER_DETAILS, GET_ORDER_DETAILS_SUCCESS, GET_ORDER_DETAILS_FAILURE, CLEAR_ORDER_DETAILS,
   CLOSE_ORDER, CLOSE_ORDER_SUCCESS, CLOSE_ORDER_FAILURE,
+  SUBMIT_NEW_ORDER, SUBMIT_NEW_ORDER_SUCCESS, SUBMIT_NEW_ORDER_FAILURE,
+  ADD_ITEMS_TO_ORDER, ADD_ITEMS_TO_ORDER_SUCCESS, ADD_ITEMS_TO_ORDER_FAILURE,
   RESET_RESTAURANT
 } from '../../constants'
   
 export default (state = { 
-  fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false,
+  fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false, addingUpdatingOrder: false,
   tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null
 }, { type, payload }) => {
   switch (type) {
@@ -48,6 +50,20 @@ export default (state = {
     
     case CLEAR_ORDER_DETAILS:
       return { ...state, orderDetails: null }
+    
+    case SUBMIT_NEW_ORDER:
+      return { ...state, addingUpdatingOrder: true }
+    case SUBMIT_NEW_ORDER_SUCCESS:
+      return { ...state, addingUpdatingOrder: false }
+    case SUBMIT_NEW_ORDER_FAILURE:
+      return { ...state, addingUpdatingOrder: false }
+    
+    case ADD_ITEMS_TO_ORDER:
+      return { ...state, addingUpdatingOrder: true }
+    case ADD_ITEMS_TO_ORDER_SUCCESS:
+      return { ...state, addingUpdatingOrder: false }
+    case ADD_ITEMS_TO_ORDER_FAILURE:
+      return { ...state, addingUpdatingOrder: false }
     
     case CLOSE_ORDER:
       return { ...state, closingId: payload.orderNumber }
