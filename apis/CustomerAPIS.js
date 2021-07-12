@@ -671,206 +671,6 @@ module.exports = app => {
         }
     })
 
-    app.post('/customer/addSingleItem', async (req, res) => {
-        try {
-            console.log("\n\n>>> /customer/addSingleItem")
-            console.log(req.body)
-            const customerId = decrypt(req.header('authorization'))
-            const { restaurantId, orderNumber, quantity, name, price, totalPrice, specialInstructions, addOns } = req.body
-            if (!customerId) return res.send({
-                status: false,
-                message: 'Not Authorized!',
-                errorCode: 401
-            })
-            if (!restaurantId) return res.send({
-                status: false,
-                message: 'Restuatant Id is required!',
-                errorCode: 422
-            })
-            if (!orderNumber) return res.send({
-                status: false,
-                message: 'Order number is required!',
-                errorCode: 422
-            })
-            if (!quantity) return res.send({
-                status: false,
-                message: 'Quantity is required!',
-                errorCode: 422
-            })
-            if (!name) return res.send({
-                status: false,
-                message: 'Item name is required!',
-                errorCode: 422
-            })
-            if (!price) return res.send({
-                status: false,
-                message: 'Item price is required!',
-                errorCode: 422
-            })
-            if (!totalPrice) return res.send({
-                status: false,
-                message: 'Total price is required!',
-                errorCode: 422
-            })
-            if (addOns && addOns.length) {
-                for (var i = 0; i < addOns.length; i++) {
-                    if (!addOns[i].addOnId) return res.send({
-                        status: false,
-                        message: 'AddOns ID is required!',
-                        errorCode: 422
-                    })
-                    if (!addOns[i].addOnName) return res.send({
-                        status: false,
-                        message: 'AddOns name is required!',
-                        errorCode: 422
-                    })
-                    if (addOns[i].addOnOptionId && !addOns[i].addOnOption) return res.send({
-                        status: false,
-                        message: 'AddOn option name is required!',
-                        errorCode: 422
-                    })
-                    if (!addOns[i].addOnOptionId && addOns[i].addOnOption) return res.send({
-                        status: false,
-                        message: 'AddOns option Id is required!',
-                        errorCode: 422
-                    })
-                    if (!addOns[i].price && addOns[i].price !== 0) return res.send({
-                        status: false,
-                        message: 'AddOns price is required!',
-                        errorCode: 422
-                    })
-                }
-            }
-            getConnection(
-                res,
-                `SELECT * FROM customers WHERE id = '${customerId}' AND active = 1`,
-                null,
-                (authresult) => {
-                    if (authresult.length)
-                        getTransactionalConnection()
-                            .getConnection(function (error, tempDb) {
-                                if (!!error) {
-                                    console.log('DbConnectionError', error.sqlMessage)
-                                    return res.send({
-                                        status: false,
-                                        message: 'Unable to reach database!',
-                                        errorCode: 503
-                                    })
-                                }
-                                tempDb.beginTransaction(function (error) {
-                                    if (!!error) {
-                                        console.log('TransactionError', error.sqlMessage)
-                                        return res.send({
-                                            status: false,
-                                            message: error.sqlMessage,
-                                            errorCode: 422
-                                        })
-                                    }
-                                    const orderItem = {}
-                                    orderItem.restaurantId = restaurantId
-                                    orderItem.orderNumber = orderNumber
-                                    orderItem.quantity = quantity
-                                    orderItem.name = name
-                                    orderItem.price = price
-                                    orderItem.totalPrice = totalPrice
-                                    if (specialInstructions)
-                                        orderItem.specialInstructions = specialInstructions
-                                    tempDb.query(`UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function (error, result) {
-                                        if (!!error) {
-                                            console.log('TableError', error.sqlMessage)
-                                            tempDb.rollback(function () {
-                                                return res.send({
-                                                    status: false,
-                                                    message: error.sqlMessage,
-                                                    errorCode: 422
-                                                })
-                                            })
-                                        } else {
-                                            tempDb.query('INSERT INTO orderItems SET ?', orderItem, function (error, result) {
-                                                if (!!error) {
-                                                    console.log('TableError', error.sqlMessage)
-                                                    tempDb.rollback(function () {
-                                                        return res.send({
-                                                            status: false,
-                                                            message: error.sqlMessage,
-                                                            errorCode: 422
-                                                        })
-                                                    })
-                                                } else {
-                                                    if (addOns && addOns.length) {
-                                                        let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                                                        for (var i = 0; i < addOns.length; i++) {
-                                                            query = query + ` ( '${result.insertId}', '${addOns[i].addOnId}', '${addOns[i].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[i].price}' )`
-                                                            if (i !== (addOns.length - 1))
-                                                                query = query + ','
-                                                        }
-                                                        tempDb.query(query, function (error) {
-                                                            if (!!error) {
-                                                                console.log('TableError', error.sqlMessage)
-                                                                tempDb.rollback(function () {
-                                                                    return res.send({
-                                                                        status: false,
-                                                                        message: 'Failed to add Item Add-ons',
-                                                                        errorCode: 422
-                                                                    })
-                                                                })
-                                                            } else tempDb.commit(function (error) {
-                                                                if (error) {
-                                                                    tempDb.rollback(function () {
-                                                                        return res.send({
-                                                                            status: false,
-                                                                            message: error.sqlMessage,
-                                                                            errorCode: 422
-                                                                        })
-                                                                    })
-                                                                }
-                                                                tempDb.release()
-                                                                return res.send({
-                                                                    status: true,
-                                                                    message: 'Order item added successfully!'
-                                                                })
-                                                            })
-                                                        })
-                                                    }
-                                                    else tempDb.commit(function (error) {
-                                                        if (error) {
-                                                            tempDb.rollback(function () {
-                                                                return res.send({
-                                                                    status: false,
-                                                                    message: error.sqlMessage,
-                                                                    errorCode: 422
-                                                                })
-                                                            })
-                                                        }
-                                                        tempDb.release()
-                                                        return res.send({
-                                                            status: true,
-                                                            message: 'Order item added successfully!'
-                                                        })
-                                                    })
-                                                }
-                                            })
-                                        }
-                                    })
-                                })
-                            })
-                    else return res.send({
-                        status: false,
-                        message: 'Invalid Session!',
-                        errorCode: 401
-                    })
-                }
-            )
-        } catch (error) {
-            console.log(error)
-            return res.send({
-                status: false,
-                message: 'Service not Available!',
-                errorCode: 422
-            })
-        }
-    })
-
     app.post('/customer/submitOrder', async (req, res) => {
         try {
             console.log("\n\n>>> /customer/submitOrder")
@@ -987,7 +787,7 @@ module.exports = app => {
                                                         errorCode: 422
                                                     })
                                                 })
-                                            } else {
+                                            } else if (result.changedRows) {
                                                 for (var i = 0; i < items.length; i++) {
                                                     const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                                     const orderItem = {}
@@ -1013,7 +813,7 @@ module.exports = app => {
                                                             if (addOns && addOns.length) {
                                                                 let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                                 for (var j = 0; j < addOns.length; j++) {
-                                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', ${addOns[j].addOnOptionId ? `${addOns[j].addOnOptionId}` : null}, ${addOns[j].addOnOption ? `'${addOns[j].addOnOption}'` : null}, '${addOns[j].price}' )`
+                                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
                                                                     if (j !== (addOns.length - 1))
                                                                         query = query + ','
                                                                 }
@@ -1049,7 +849,13 @@ module.exports = app => {
                                                         message: 'Order item(s) added successfully!'
                                                     })
                                                 })
-                                            }
+                                            } else tempDb.rollback(function () {
+                                                return res.send({
+                                                    status: false,
+                                                    message: 'Failed to update order status',
+                                                    errorCode: 422
+                                                })
+                                            })
                                         })
                                     }
                                 })
@@ -1217,7 +1023,7 @@ module.exports = app => {
                                                                 if (addOns && addOns.length) {
                                                                     let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                                     for (var j = 0; j < addOns.length; j++) {
-                                                                        query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', ${addOns[j].addOnOptionId ? `${addOns[j].addOnOptionId}` : null}, ${addOns[j].addOnOption ? `'${addOns[j].addOnOption}'` : null}, '${addOns[j].price}' )`
+                                                                        query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
                                                                         if (j !== (addOns.length - 1))
                                                                             query = query + ','
                                                                     }

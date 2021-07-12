@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
@@ -19,6 +19,10 @@ function Tables(props) {
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
+
+  useEffect(() => {
+    if (!fetchingQrs && !qrs) dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))
+  }, [])
 
   const getFilteredList = () => {
     let filteredQrs = qrs

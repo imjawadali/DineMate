@@ -82,7 +82,8 @@ import {
   ASSIGN_TABLES_TO_STAFF_FAILURE,
   GET_ORDER_DETAILS,
   GET_ORDER_DETAILS_FAILURE,
-  GET_ORDER_DETAILS_SUCCESS
+  GET_ORDER_DETAILS_SUCCESS,
+  RESET_RESTAURANT
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -255,6 +256,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_FROM_S3_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    
+    case RESET_RESTAURANT:
+      return { ...state, users: null }
     default:
       return state
   }

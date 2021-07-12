@@ -15,24 +15,28 @@ export default (state = { checkingSignIn: true,
       return { ...state, checkingSignIn: false }
     case ADMIN_LOGOUT:
       return { ...state, admin: null }
-    case SET_RESTAURANT: {
-      const newAdmin = state.admin
-      newAdmin.restaurantId = payload.restaurantId
-      newAdmin.restaurantName = payload.restaurantName
-      return { ...state, admin: newAdmin }
-    }
-    case RESET_RESTAURANT: {
-      const newAdmin = state.admin
-      newAdmin.restaurantId = null
-      newAdmin.restaurantName = null
-      return { ...state, admin: newAdmin }
-    }
+
     case GET_SUPER_ADMIN_DASHBOARD:
       return { ...state, fetchingDashboard: true }
     case GET_SUPER_ADMIN_DASHBOARD_SUCCESS:
       return { ...state, fetchingDashboard: false, adminDashboard: payload }
     case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
       return { ...state, fetchingDashboard: false }
+    
+    case SET_RESTAURANT: {
+      const newAdmin = state.admin
+      newAdmin.restaurantId = payload.restaurantId
+      newAdmin.restaurantName = payload.restaurantName
+      return { ...state, admin: newAdmin }
+    }
+    
+    case RESET_RESTAURANT: {
+      const newAdmin = state.admin
+      newAdmin.restaurantId = null
+      newAdmin.restaurantName = null
+      return { ...state, admin: newAdmin }
+    }
+    
     default:
       return state
   }

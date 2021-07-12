@@ -96,7 +96,7 @@ function NewOrder(props) {
         icon={<i
           className="fa fa-arrow-left fa-lg"
           style={{ cursor: 'pointer', marginRight: '10px' }}
-          onClick={() => history.goBack()}
+          onClick={() => showCart ? setshowCart(false) : history.goBack()}
         />}
         button={
           <div style={{ display: 'flex' }}>

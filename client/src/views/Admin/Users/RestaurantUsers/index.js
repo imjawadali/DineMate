@@ -30,6 +30,10 @@ function RestaurantUsers() {
     if (fetchingUsers) reset()
   }, [fetchingUsers])
 
+  useEffect(() => {
+    if (!fetchingUsers && !users) dispatch(customisedAction(GET_USERS))
+  }, [])
+
   const reset = () => {
     setname('')
     setemail('')

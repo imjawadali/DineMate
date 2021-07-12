@@ -26,20 +26,25 @@ export default (state = {
       return { ...state, fetchingUsers: false, users: payload }
     case GET_USERS_FAILURE:
       return { ...state, fetchingUsers: false, users: null }
+    
     case ADD_USER:
       return { ...state, addingUser: true }
     case ADD_USER_FAILURE:
       return { ...state, addingUser: false }
+    
     case UPDATE_USER:
       return { ...state, updatingUser: true }
     case UPDATE_USER_FAILURE:
       return { ...state, updatingUser: false }
+    
     case DELETE_USER:
       return { ...state, deletingUser: true }
     case DELETE_USER_FAILURE:
       return { ...state, deletingUser: false }
+    
     case SET_RESTAURANT:
       return { ...state, users: null }
+    
     case RESET_RESTAURANT:
       return { ...state, users: null }
     default:

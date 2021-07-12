@@ -30,6 +30,10 @@ function Categories() {
     if (fetchingCategories) reset()
   }, [fetchingCategories])
 
+  useEffect(() => {
+    if (!fetchingCategories && !categories) dispatch(customisedAction(GET_CATEGORIES, { restaurantId }))
+  }, [])
+
   const reset = () => {
     setcategoryName('')
     setselectedCategory(null)

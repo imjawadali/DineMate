@@ -83,7 +83,7 @@ function OrdersList(props) {
                       )
                     })
                     : null}
-                    <tr><td colSpan="10" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
+                    <tr style={{ color: 'transparent' }}><td colSpan="10" style={{ backgroundColor: 'white' }} />.</tr>
                 </>
               )
             }) :

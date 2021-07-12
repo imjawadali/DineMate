@@ -76,7 +76,7 @@ function ItemsList(props) {
                     <tr style={{ border: orderDetails.tip !== '0.00' ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tax</td>
-                        <td style={{ textAlign: 'center' }}>$ {orderDetails.taxAmount}</td>
+                        <td style={{ textAlign: 'center' }}>$ {orderDetails.taxAmount} ({orderDetails.taxPercentage})</td>
                         <td />
                     </tr>
                     {orderDetails.tip !== '0.00' && <tr>

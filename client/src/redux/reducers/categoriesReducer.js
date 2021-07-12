@@ -25,18 +25,22 @@ export default (state = {
       return { ...state, fetchingCategories: false, categories: payload }
     case GET_CATEGORIES_FAILURE:
       return { ...state, fetchingCategories: false, categories: null }
+
     case ADD_CATEGORY:
       return { ...state, addingCategory: true }
     case ADD_CATEGORY_FAILURE:
       return { ...state, addingCategory: false }
+
     case UPDATE_CATEGORY:
       return { ...state, updatingCategory: true }
     case UPDATE_CATEGORY_FAILURE:
       return { ...state, updatingCategory: false }
+
     case DELETE_CATEGORY:
       return { ...state, deletingCategory: true }
     case DELETE_CATEGORY_FAILURE:
       return { ...state, deletingCategory: false }
+
     case RESET_RESTAURANT:
       return { ...state, categories: null }
     default:

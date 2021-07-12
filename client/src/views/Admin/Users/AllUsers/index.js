@@ -9,8 +9,6 @@ import { Input, Pagination } from '../../../../components'
 import UsersList from './UsersList'
 
 function AllUsers() {
-
-  const [usersFetchCalled, setusersFetchCalled] = useState(false)
   const [filterKey, setfilterKey] = useState('')
   const [currentIndex, setcurrentIndex] = useState(1)
 
@@ -19,10 +17,7 @@ function AllUsers() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!usersFetchCalled && !fetchingUsers && !users) {
-      setusersFetchCalled(true)
-      dispatch(customisedAction(GET_USERS))
-    }
+    if (!fetchingUsers && !users) dispatch(customisedAction(GET_USERS))
   }, [])
 
   const getFilteredList = () => {

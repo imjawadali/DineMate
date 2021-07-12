@@ -20,6 +20,10 @@ function Menu(props) {
 
   const { restaurantId } = admin
 
+  useEffect(() => {
+    if (!fetchingMenu && !menu) dispatch(customisedAction(GET_MENU, { restaurantId }))
+  }, [])
+
   const getFilteredList = () => {
     let filteredQrs = menu
     if (filterKey && filterKey.length && menu) {
