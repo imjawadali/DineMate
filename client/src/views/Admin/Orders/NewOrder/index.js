@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { DropDown, TitleWithAction, Button, MenuGridItem } from '../../../../components'
+import { GET_MENU } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 import Add_EditItem from './Add_EditItem'
@@ -33,6 +34,8 @@ function NewOrder(props) {
     if (state && state.orderDetails) {
       setexistingOrder(state.orderDetails)
     }
+
+    if (!fetchingMenu && !menu) dispatch(customisedAction(GET_MENU, { restaurantId }))
   }, [])
 
   const editItem = (item, index) => {
@@ -92,18 +95,18 @@ function NewOrder(props) {
         cancelModal={cancelModal}
       />
       <TitleWithAction
-        text={existingOrder ? `Existing Order (${existingOrder.orderNumber})` : "New Order"}
-        icon={<i
+        text={existingOrder ? `Existing Check (${existingOrder.orderNumber})` : "New Check"}
+        icon={showCart ? null : <i
           className="fa fa-arrow-left fa-lg"
           style={{ cursor: 'pointer', marginRight: '10px' }}
-          onClick={() => showCart ? setshowCart(false) : history.goBack()}
+          onClick={() => history.goBack()}
         />}
         button={
           <div style={{ display: 'flex' }}>
             <div>
               <DropDown
                 style={{ marginTop: '0px', marginBottom: '0px' }}
-                placeholder="Select Order Type"
+                placeholder="Select Check Type"
                 options={['Dine-In', 'Take-Away']}
                 disabled={!!existingOrder}
                 value={existingOrder ? existingOrder.type : type}
@@ -159,6 +162,10 @@ function NewOrder(props) {
         </>
         :
         <div className="NewOrderMenuContainer">
+          <i className={`fa fa-refresh ${fetchingMenu ? 'fa-pulse' : ''} fa-lg`}
+            style={{ position: 'absolute', right: 10, opacity: fetchingMenu ? 0.5 : '', zIndex: 1, cursor: 'pointer' }}
+            onClick={() => fetchingMenu ? null : dispatch(customisedAction(GET_MENU, { restaurantId }))}
+          />
           {!menu ?
             <div className="DashBoardContainer">
               <div className="loadingContainer">

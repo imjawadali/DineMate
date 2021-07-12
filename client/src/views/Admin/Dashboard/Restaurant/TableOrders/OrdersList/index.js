@@ -99,7 +99,7 @@ function OrdersList(props) {
             <tr>
               <td colSpan="8" style={{ textAlign: 'center' }}>
                 {fetchingTableOrders ?
-                  <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Table Order(s) . . .</p>
+                  <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Table Check(s) . . .</p>
                   : 'No Data Found!'}
               </td>
             </tr>

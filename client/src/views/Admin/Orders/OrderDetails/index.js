@@ -53,7 +53,7 @@ function OrderDetails(props) {
       {fetchingOrderDetails && !orderDetails ?
         <div className="DashBoardContainer">
           <div className="loadingContainer">
-            <p><i className={'fa fa-refresh fa-pulse'} style={{ padding: '0px 5px' }} />Syncing Order Details . . .</p>
+            <p><i className={'fa fa-refresh fa-pulse'} style={{ padding: '0px 5px' }} />Syncing Check Details . . .</p>
           </div>
         </div> : null
       }

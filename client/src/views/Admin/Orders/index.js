@@ -46,7 +46,7 @@ function Orders(props) {
 
   return (
     <div className="Container">
-      <h2>Order Management</h2>
+      <h2>Orders Management</h2>
       <div className="TabularContentContainer">
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
@@ -126,7 +126,7 @@ function Orders(props) {
             <div className="TableButtons TableButtonOrange"
               style={{ marginRight: '5px' }}
               onClick={() => props.history.push('/client/admin/ordersManagement/newOrder')}>
-              <p>New Order</p>
+              <p>New Check</p>
             </div>
           </div>
         </div>

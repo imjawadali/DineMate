@@ -40,7 +40,7 @@ function ServiceQueItem({ tableNumber, orderNumber, textArray, timeStamp, onClic
         {time.mints ? time.mints < 10 ? '0' + time.mints + ':' : time.mints + ':' : '00:'}
         {time.secs ? time.secs < 10 ? '0' + time.secs : time.secs : '00'}
       </p>
-      <p style={{ margin: '5px 0px', fontWeight: 'bold' }} className="DashboardGridItemText">Table: {tableNumber} - Order: {orderNumber}</p>
+      <p style={{ margin: '5px 0px', fontWeight: 'bold' }} className="DashboardGridItemText">Table: {tableNumber} - Check: {orderNumber}</p>
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         {textArray && textArray.length ?
           textArray.map(text => <p className="DashboardGridItemText">- {text}</p>)
