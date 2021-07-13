@@ -99,7 +99,7 @@ input.HeaderInput {
 .content {
     padding: 0 20px;
 }
-.yourOrderDetail{
+.yourOrderDetail {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -109,8 +109,7 @@ input.HeaderInput {
     font-size: x-large;
     margin-top: 10px;
 }
-.your-order-number{
-  
+.your-order-number {
     margin-top: 10px;
 }
 
@@ -145,19 +144,19 @@ input.HeaderInput {
     /* margin-top: 32px; */
 }
 
-.details.not{
+.details.not {
     background-color: rgb(209, 209, 209);
 }
-.details .editDelete{
+.details .editDelete {
     display: flex;
     align-items: center;
 }
-.details .editDelete .edit{
+.details .editDelete .edit {
     color: #3dcaba;
     width: 21px;
 }
 
-.details .editDelete .delete{
+.details .editDelete .delete {
     color: #ea4d4a;
     width: 21px;
 }
@@ -191,24 +190,20 @@ input.HeaderInput {
 }
 
 .item-details {
-    
     height: 210px;
 
     overflow: scroll;
-
 }
-.item-details .unlockItems  {
-
+.item-details .unlockItems {
     padding: 20px 0px;
-
 }
 
-.unlockItems .deleteDiv{
+.unlockItems .deleteDiv {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
-.unlockItems .deleteDiv button{
+.unlockItems .deleteDiv button {
     width: 80px;
     height: 28px;
     background: #36c8b9;
@@ -219,20 +214,20 @@ input.HeaderInput {
     font-weight: bold;
     cursor: pointer;
     outline: navajowhite;
-
 }
-.item-details .lockItem  {
-font-style: italic;
-background: #80808014;
-font-size: 16px;
-padding: 0px 7px;
-}
-
-.item-details .lockItem .selected-quantity, .item-details .lockItem .item-title, .item-details .lockItem .amount{
-font-size: 16px;
-font-weight: normal;
+.item-details .lockItem {
+    font-style: italic;
+    background: #80808014;
+    font-size: 16px;
+    padding: 0px 7px;
 }
 
+.item-details .lockItem .selected-quantity,
+.item-details .lockItem .item-title,
+.item-details .lockItem .amount {
+    font-size: 16px;
+    font-weight: normal;
+}
 
 .checkout-button {
     background-color: #35c8b8;
@@ -268,10 +263,31 @@ font-weight: normal;
     font-weight: bold;
     width: 120px;
 }
-.orderSubBtn button:disabled{
+.orderSubBtn button:disabled {
     opacity: 0.7;
 }
-
+.HeaderRight .takeAwayBtn {
+    padding: 12px 14px;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    background: #36c8b8;
+    border: none;
+    border-radius: 29px;
+    margin-right: 10px;
+    outline: none;
+}
+.HeaderRight .enrollBtn {
+    padding: 12px 14px;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    background: #36c8b8;
+    border: none;
+    border-radius: 29px;
+    margin-right: 10px;
+    outline: none;
+}
 @media only screen and (max-width: 978px) {
     .HeaderContainer {
         height: 11vw;

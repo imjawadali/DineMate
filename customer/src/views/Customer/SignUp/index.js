@@ -13,7 +13,7 @@ function SignUp(props) {
     let [phoneNumber, setPhoneNumber] = useState("")
     const [redirect, setRedirect] = useState('');
     let dispatch = useDispatch()
-    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+    const signUp = useSelector(({ sessionReducer }) => sessionReducer.signUp)
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -23,13 +23,13 @@ function SignUp(props) {
 
 
     useEffect(() => {
-        if (customer && redirect) {
+        if (signUp && redirect) {
             props.history.push(redirect)
         }
-        else if(!redirect && customer){
-            props.history.push('/')
+        else if(!redirect && signUp){
+            props.history.push('/customer/signin')
         }
-    }, [customer])
+    }, [signUp])
     
 
 

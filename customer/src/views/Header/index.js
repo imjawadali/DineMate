@@ -460,6 +460,8 @@ const Header = props => {
                                         />
                                     </div>
                                 </div>
+                                {/* <button className="takeAwayBtn">Take-Away</button>
+                                <button className="enrollBtn">Enroll Your Restaurant</button> */}
                                 <HeaderButton
                                     red
                                     src={require('../../assets/cart.png').default}

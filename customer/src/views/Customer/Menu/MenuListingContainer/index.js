@@ -126,6 +126,7 @@ const MenuListingContainer = props => {
                                 price={menuItem.price}
                                 onClick={() => {
                                     setSelectedItem(menuItem);
+                                    console.log(menuItem);
                                     opennAddOn()
                                     // setViewAddons(true);
                                 }}

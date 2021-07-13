@@ -107,7 +107,7 @@ function SignIn(props) {
                         </div>
 
                         <div className="no-account">
-                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => history.push(`/customer/signup/?redirect=${redirect}`)}>&nbsp;Sign Up</span>
+                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {redirect ? history.push(`/customer/signup/?redirect=${redirect}`): history.push(`/customer/signup`) }}>&nbsp;Sign Up</span>
                         </div>
                     </div>
                 </div>
