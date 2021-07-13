@@ -42,11 +42,11 @@ function NewOrder(props) {
   const editItem = (item, index) => {
     setitemToEdit(item)
     setindexOfItemToEdit(index)
-    showAddOnModal(menu.filter(x => x.id === item.id)[0])
+    showAddOnModal(menu.filter(x => x.id === item.itemId)[0])
   }
 
   const deleteItem = (index) => {
-    const tempCartItems = [ ...cart ]
+    const tempCartItems = [...cart]
     tempCartItems.splice(index, 1)
     setcart(tempCartItems)
     if (!tempCartItems.length) {
@@ -171,21 +171,26 @@ function NewOrder(props) {
           <div className="OrderDetailsBottomButtonsContainer">
             <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
               <div className="OrderDetailsBottomButtons"
-                onClick={() => setshowCart(false)}>
+                style={{ opacity: addingUpdatingOrder ? 0.5 : '' }}
+                onClick={() => addingUpdatingOrder ? null : setshowCart(false)}>
                 <td style={{ color: 'white', padding: '0px' }}>Add More</td>
               </div>
               <div className="OrderDetailsBottomButtons"
-                style={{ opacity: !!disabled() ? 0.5 : '' }}
-                onClick={() => !disabled() ?
+                style={{ opacity: !!disabled() || addingUpdatingOrder ? 0.5 : '' }}
+                onClick={() => !disabled() && !addingUpdatingOrder ?
                   existingOrder ? addItemsToOrder() : submitNewOrder()
-                  : dispatch(customisedAction(SET_TOAST, { message: disabled(), type: 'error'}))
+                  : addingUpdatingOrder ? null
+                    : dispatch(customisedAction(SET_TOAST, { message: disabled(), type: 'error' }))
                 }>
                 <td style={{ color: 'white', padding: '0px' }}>Submit</td>
               </div>
               <div className="OrderDetailsBottomButtons"
+                style={{ opacity: addingUpdatingOrder ? 0.5 : '' }}
                 onClick={() => {
-                  cancel()
-                  history.goBack()
+                  if (!addingUpdatingOrder) {
+                    cancel()
+                    history.goBack()
+                  }
                 }}>
                 <td style={{ color: 'white', padding: '0px' }}>Cancel</td>
               </div>

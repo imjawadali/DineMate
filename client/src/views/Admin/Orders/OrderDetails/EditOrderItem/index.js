@@ -1,34 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import { Modal, Input, Button } from '../../../../../components'
-import { SET_TOAST } from '../../../../../constants'
-import { customisedAction } from '../../../../../redux/actions'
 import './styles.css'
 
-function Add_EditItem(props) {
+function EditOrderItem(props) {
 
     const [radioAddOns, setradioAddOns] = useState([])
     const [checkoxAddOns, setcheckoxAddOns] = useState([])
     const [itemToSubmit, setitemToSubmit] = useState({})
-    const dispatch = useDispatch()
 
     const { addingEdittingItem, item, itemToEdit, submitItem, updateItem, cancelModal } = props
 
     useEffect(() => {
-        if (item) {
-            if (item.addOns && item.addOns.length) {
-                setradioAddOns(item.addOns.filter(addOn => addOn.addOnOptions && addOn.addOnOptions.length))
-                setcheckoxAddOns(item.addOns.filter(addOn => !addOn.addOnOptions || !addOn.addOnOptions.length))
-            } else {
-                setradioAddOns([])
-                setcheckoxAddOns([])
-            }
+        if (item && item.addOns && item.addOns.length) {
+            setradioAddOns(item.addOns.filter(addOn => addOn.addOnOptions && addOn.addOnOptions.length))
+            setcheckoxAddOns(item.addOns.filter(addOn => !addOn.addOnOptions || !addOn.addOnOptions.length))
         } else {
-            cancelModal()
-            if (item === undefined)
-                dispatch(customisedAction(SET_TOAST, { message: 'Item not found in menu', type: 'error' }))
+            setradioAddOns([])
+            setcheckoxAddOns([])
         }
 
         if (item && !itemToEdit) {
@@ -221,4 +211,4 @@ function Add_EditItem(props) {
     )
 }
 
-export default withRouter(Add_EditItem)
+export default withRouter(EditOrderItem)

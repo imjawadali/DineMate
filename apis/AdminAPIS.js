@@ -696,7 +696,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT oi.id, oi.quantity, oi.name, oi.totalPrice, oi.specialInstructions,
+            `SELECT oi.id, oi.itemId, oi.quantity, oi.name, oi.totalPrice, oi.specialInstructions,
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
@@ -771,8 +771,9 @@ module.exports = app => {
         if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
         let amount = 0
         for (var i = 0; i < items.length; i++) {
-            const { quantity, name, price, totalPrice, addOns } = items[i]
+            const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
             amount += totalPrice
+            if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
             if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
             if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
             if (!price && price !== 0) return res.status(422).send({ 'msg': 'Item price is required!' })
@@ -810,10 +811,11 @@ module.exports = app => {
                                     })
                                 } else if (result.changedRows) {
                                     for (var i = 0; i < items.length; i++) {
-                                        const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                        const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                         const orderItem = {}
                                         orderItem.restaurantId = restaurantId
                                         orderItem.orderNumber = orderNumber
+                                        orderItem.itemId = itemId
                                         orderItem.quantity = quantity
                                         orderItem.name = name
                                         orderItem.price = price
@@ -830,7 +832,7 @@ module.exports = app => {
                                             if (addOns && addOns.length) {
                                                 let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                 for (var j = 0; j < addOns.length; j++) {
-                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
+                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
                                                     if (j !== (addOns.length - 1))
                                                         query = query + ','
                                                 }
@@ -875,8 +877,9 @@ module.exports = app => {
         if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
         let amount = 0
         for (var i = 0; i < items.length; i++) {
-            const { quantity, name, price, totalPrice, addOns } = items[i]
+            const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
             amount += totalPrice
+            if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
             if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
             if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
             if (!price && price !== 0) return res.status(422).send({ 'msg': 'Item price is required!' })
@@ -921,10 +924,11 @@ module.exports = app => {
                                     }
                                     else if (result2.affectedRows) {
                                         for (var i = 0; i < items.length; i++) {
-                                            const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                            const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                             const orderItem = {}
                                             orderItem.restaurantId = restaurantId
                                             orderItem.orderNumber = orderNumber
+                                            orderItem.itemId = itemId
                                             orderItem.quantity = quantity
                                             orderItem.name = name
                                             orderItem.price = price
@@ -941,7 +945,7 @@ module.exports = app => {
                                                     if (addOns && addOns.length) {
                                                         let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                         for (var j = 0; j < addOns.length; j++) {
-                                                            query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
+                                                            query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
                                                             if (j !== (addOns.length - 1))
                                                                 query = query + ','
                                                         }

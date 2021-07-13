@@ -699,8 +699,13 @@ module.exports = app => {
             })
             let amount = 0
             for (var i = 0; i < items.length; i++) {
-                const { quantity, name, price, totalPrice, addOns } = items[i]
+                const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
                 amount += totalPrice
+                if (!itemId) return res.send({
+                    status: false,
+                    message: 'Item Id is required!',
+                    errorCode: 422
+                })
                 if (!quantity) return res.send({
                     status: false,
                     message: 'Quantity is required!',
@@ -789,10 +794,11 @@ module.exports = app => {
                                                 })
                                             } else if (result.changedRows) {
                                                 for (var i = 0; i < items.length; i++) {
-                                                    const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                                    const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                                     const orderItem = {}
                                                     orderItem.restaurantId = restaurantId
                                                     orderItem.orderNumber = orderNumber
+                                                    orderItem.itemId = itemId
                                                     orderItem.quantity = quantity
                                                     orderItem.name = name
                                                     orderItem.price = price
@@ -813,7 +819,7 @@ module.exports = app => {
                                                             if (addOns && addOns.length) {
                                                                 let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                                 for (var j = 0; j < addOns.length; j++) {
-                                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
+                                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
                                                                     if (j !== (addOns.length - 1))
                                                                         query = query + ','
                                                                 }
@@ -900,8 +906,13 @@ module.exports = app => {
             })
             let amount = 0
             for (var i = 0; i < items.length; i++) {
-                const { quantity, name, price, totalPrice, addOns } = items[i]
+                const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
                 amount += totalPrice
+                if (!itemId) return res.send({
+                    status: false,
+                    message: 'Item Id is required!',
+                    errorCode: 422
+                })
                 if (!quantity) return res.send({
                     status: false,
                     message: 'Quantity is required!',
@@ -999,10 +1010,11 @@ module.exports = app => {
                                                 }
                                                 else if (result2.affectedRows) {
                                                     for (var i = 0; i < items.length; i++) {
-                                                        const { quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                                        const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                                         const orderItem = {}
                                                         orderItem.restaurantId = restaurantId
                                                         orderItem.orderNumber = orderNumber
+                                                        orderItem.itemId = itemId
                                                         orderItem.quantity = quantity
                                                         orderItem.name = name
                                                         orderItem.price = price
@@ -1023,7 +1035,7 @@ module.exports = app => {
                                                                 if (addOns && addOns.length) {
                                                                     let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
                                                                     for (var j = 0; j < addOns.length; j++) {
-                                                                        query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[i].addOnOptionId}', '${addOns[i].addOnOption}', '${addOns[j].price}' )`
+                                                                        query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
                                                                         if (j !== (addOns.length - 1))
                                                                             query = query + ','
                                                                     }
@@ -1127,21 +1139,18 @@ module.exports = app => {
                                 discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
                             const subtotal = data.amount - discountAmount
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
-                            for (let i = 0; i<orderItems.length; i++) {
-                                orderItems[i].totalPrice = orderItems[i].totalPrice.toFixed(2)
-                            }
                             return res.send({
                                 status: true,
                                 message: '',
                                 body: {
-                                    foodTotal: data.amount.toFixed(2),
+                                    foodTotal: Number(data.amount.toFixed(2)),
                                     discount: data.discount + `${data.discountType}`,
-                                    discountAmount,
-                                    subtotal: subtotal.toFixed(2),
+                                    discountAmount: Number(discountAmount),
+                                    subtotal: Number(subtotal.toFixed(2)),
                                     taxPercentage: data.taxPercentage + '%',
-                                    taxAmount,
-                                    tip: data.tip.toFixed(2),
-                                    billAmount: (subtotal + Number(taxAmount) + data.tip).toFixed(2),
+                                    taxAmount: Number(taxAmount),
+                                    tip: Number(data.tip.toFixed(2)),
+                                    billAmount: Number((subtotal + Number(taxAmount) + data.tip).toFixed(2)),
                                     orderItems
                                 }
                             })

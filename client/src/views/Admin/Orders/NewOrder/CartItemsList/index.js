@@ -49,7 +49,7 @@ function CartItemsList(props) {
                             const { id, quantity, name, totalPrice, specialInstructions, addOns } = item
                             sum += totalPrice
                             return (<>
-                                <tr key={id}>
+                                <tr key={id + index}>
                                     <td style={{ textAlign: 'center' }}>{quantity}</td>
                                     <td>x</td>
                                     <td style={{ width: '30vw' }}>
