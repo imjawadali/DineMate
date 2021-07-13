@@ -7,6 +7,7 @@
 }
 .MenuListingContainerItem {
     position: relative;
+    cursor:pointer
 }
 .MenuListingContainerItem.selected{
     box-shadow: 0px 0px 15px 5px #35c8b8;
@@ -38,6 +39,7 @@
 .MLIComponent-Left-top h2 {
     font-weight: 400;
     font-size: 24px;
+    margin-bottom: 7px;
 }
 .MLIComponent-Left-top h3 {
     color: rgb(173, 173, 173);

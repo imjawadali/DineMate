@@ -24,6 +24,7 @@ export const SET_NEW_PASSWORD_FAILURE = 'SET_NEW_PASSWORD_FAILURE'
 export const SET_SESSION = 'SET_SESSION'
 export const SESSION_CHECK_DONE = 'SESSION_CHECK_DONE'
 export const LOGOUT = 'LOGOUT'
+export const SIGN_UP_SUCESS = 'SIGN_UP_SUCESS'
 
 export const SET_TOAST = 'SET_TOAST'
 export const RESET_TOAST = 'RESET_TOAST'
@@ -95,3 +96,4 @@ export const TAKIE_AWAY_ORDER_FAILED = 'TAKIE_AWAY_ORDER_FAILED'
 
 export const ALREADY_IN_CART = 'ALREADY_IN_CART'
 export const CANT_SIGN_OUT = 'CANT_SIGN_OUT'
+export const CANT_PAY = 'CANT_PAY'

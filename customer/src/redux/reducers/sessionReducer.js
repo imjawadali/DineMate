@@ -1,10 +1,12 @@
-import { 
+import {
   SET_SESSION, SESSION_CHECK_DONE,
-  LOGOUT
+  LOGOUT,
+  SIGN_UP_SUCESS
 } from '../../constants'
 
-export default (state = { checkingSignIn: true,
-  customer: null, fetchingDashboard: false, adminDashboard: null
+export default (state = {
+  checkingSignIn: true,
+  customer: null, fetchingDashboard: false, adminDashboard: null, signUp: null
 }, { type, payload }) => {
   switch (type) {
     case SET_SESSION:
@@ -13,6 +15,8 @@ export default (state = { checkingSignIn: true,
       return { ...state, checkingSignIn: false }
     case LOGOUT:
       return { ...state, customer: null }
+    case SIGN_UP_SUCESS:
+      return { ...state, signUp: payload.signUp }
     default:
       return state
   }

@@ -42,7 +42,7 @@ const MenuListItemComponent = props => {
                 </div>
                 <div className="MLIComponent-Right">
                     <div className="MLIComponent-Right-img">
-                        <img src={require("../../assets/bgimage.png").default} />
+                        <img src={menuItem.imageUrl} />
                     </div>
                     <div className="MLIComponent-Right-cart">
                         {addToCart && <div className="MLIComponent-Right-cart-added">

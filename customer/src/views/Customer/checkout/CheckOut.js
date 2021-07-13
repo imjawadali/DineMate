@@ -6,7 +6,7 @@ import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
-import { CALL_FOR_SERVICE, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS } from '../../../constants'
+import { CALL_FOR_SERVICE, CANT_PAY, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS } from '../../../constants'
 import { getItem, setItem } from '../../../helpers'
 
 
@@ -84,10 +84,10 @@ function CheckOut(props) {
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
     useEffect(() => {
 
-        
+
         // setTimeout(() => {
         if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
-            
+
             let data = dataOrder ? dataOrder.orderItems : []
             if (data.length) {
                 setProducts([...data])
@@ -175,20 +175,33 @@ function CheckOut(props) {
 
 
     const payNow = () => {
-        let obj = {
-            "restaurantId": orderDetail.restaurantId,
-            "orderNumber": orderDetail.orderNumber,
-            "type": orderDetail.type
+        if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))){
+
+            let obj = {
+                "restaurantId": orderDetail.restaurantId,
+                "orderNumber": orderDetail.orderNumber,
+                "type": orderDetail.type
+            }
+            dispatch(customisedAction(CLOSE_ORDER, obj))
+            props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
+        }else{
+            dispatch(customisedAction(CANT_PAY))
         }
-        dispatch(customisedAction(CLOSE_ORDER, obj))
-        props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
     }
 
-    useEffect(()=>{
-        if(takeOrderItems){
+    useEffect(() => {
+        if (takeOrderItems) {
             setProducts(takeOrderItems.orderItems)
         }
-    },[takeOrderItems])
+    }, [takeOrderItems])
+
+    useEffect(() => {
+        let order = getItem('orderDetails') ? getItem('orderDetails') : false
+        if (order === false) {
+            props.history.push('/customer/restaurants')
+            console.log(order, 'order')
+        }
+    }, [])
 
 
     return (
@@ -218,7 +231,7 @@ function CheckOut(props) {
                 {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
                     ?
                     <>
-                        
+
                         <div className="pickUpLocation">
                             <h2>Pick Up Location</h2>
                             <div>
@@ -229,7 +242,7 @@ function CheckOut(props) {
                     : orderDetail && orderDetail.type.toLowerCase() === 'take-away'
                         ?
                         <>
-                           
+
                             <div className="pickUpLocation">
                                 <h2>Pick Up Location</h2>
                                 <div>
@@ -376,3 +389,5 @@ function CheckOut(props) {
 }
 
 export default CheckOut
+
+

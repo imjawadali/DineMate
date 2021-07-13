@@ -9,7 +9,7 @@ import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDE
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 
-const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity,RestaurantDetails,...props }) => {
+const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity, RestaurantDetails, ...props }) => {
 
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
@@ -41,11 +41,15 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     let [price, setPrice] = useState(selectedItem.price);
     useEffect(() => {
         let arr = []
+        let total = 0
         for (let keys in obj) {
             arr.push(obj[keys])
         }
         arr.map((a, i) => price += Number(a.price))
-        setTotalPrice(price * itemCount)
+        total += price * itemCount
+        
+        setTotalPrice(Number(total.toFixed(2).split('.')[1]) > 0 ? total.toFixed(2) : total)
+        // setTotalPrice(total)
         setupdatePrice(false)
     }, [itemToAdd, itemCount, obj, price, updatePrice]);
 
@@ -78,7 +82,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 orderNumber: "000000032",
                 addOnObj: obj,
                 specialInstructions,
-                RestaurantName:RestaurantDetails.restaurantName
+                RestaurantName: RestaurantDetails.restaurantName
             }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
@@ -91,8 +95,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     orderNumber: getItem('orderDetails').orderNumber,
                     addOnObj: obj,
                     specialInstructions,
-                RestaurantName:RestaurantDetails.restaurantName
-            }
+                    RestaurantName: RestaurantDetails.restaurantName
+                }
                 // let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
                 // if (cartMenu) {
                 //     if (cartMenu.restaurantId === restaurantId) {
@@ -102,7 +106,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 //     }
                 // } else {
 
-                    saveCart(objItem)
+                saveCart(objItem)
 
                 // }
             } else {
@@ -114,8 +118,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     restaurantId: restaurantId,
                     addOnObj: obj,
                     specialInstructions,
-                RestaurantName:RestaurantDetails.restaurantName
-            }
+                    RestaurantName: RestaurantDetails.restaurantName
+                }
 
                 let cartMenu = (JSON.parse(localStorage.getItem('cartMenu')) ? JSON.parse(localStorage.getItem('cartMenu')) : []);
                 if (cartMenu.length) {
@@ -167,9 +171,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
 
 
-    useEffect(()=>{
+    useEffect(() => {
         setSpecialIntstruction(props.specialInstructions)
-    },[selectedItem])
+    }, [selectedItem])
 
 
 
@@ -189,7 +193,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                             height='90px'
                             src={selectedItem.imageUrl}
                             alt="image"
-                            onClick={()=>console.log(RestaurantDetails)}
+                            onClick={() => console.log(RestaurantDetails)}
                         />
                     </div>
 

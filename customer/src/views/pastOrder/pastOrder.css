@@ -50,3 +50,21 @@
 .pastOrderPage .orderDetail .fromDiv h3{
     color: #ea3936;
 }
+
+@media screen and (max-width: 600px) {
+    .pastOrderPage .orderDetail {
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       text-align: center;
+    }
+    
+    .pastOrderPage .orderDetail h5 {
+        text-align: center;
+
+    }
+    .pastOrderPage .orderDetail h3 {
+        text-align: center;
+
+    }
+}
