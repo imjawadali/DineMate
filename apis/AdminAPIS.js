@@ -26,7 +26,8 @@ module.exports = app => {
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         getConnection(
             res,
-            `SELECT U.id, U.name, U.email, U.role, U.restaurantId, R.restaurantName
+            `SELECT U.id, U.name, U.email, U.role, U.restaurantId,
+            R.restaurantName, R.taxPercentage, R.lateTime
             FROM users U
             LEFT JOIN restaurants R on U.restaurantId = R.restaurantId
             WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`,
@@ -536,9 +537,10 @@ module.exports = app => {
             `SELECT GROUP_CONCAT(sq.id) as ids, sq.tableNumber, sq.orderNumber, GROUP_CONCAT(sq.text) as text,
             TIMESTAMPDIFF(SECOND, MIN(sq.createdAt), CURRENT_TIMESTAMP) as time
             FROM servicesQue sq
-            LEFT JOIN orders o ON o.orderNumber = sq.orderNumber AND sq.status = 1 
-            WHERE sq.restaurantId = '${restaurantId}' AND o.status = 1
-            GROUP BY sq.orderNumber
+            JOIN orders o ON sq.orderNumber = o.orderNumber AND sq.restaurantId = o.restaurantId
+            WHERE sq.restaurantId = '${restaurantId}'
+            AND sq.status = 1 AND o.status = 1
+            GROUP BY o.orderNumber
             ORDER BY sq.createdAt ASC`,
             null,
             (data) => {
@@ -578,7 +580,7 @@ module.exports = app => {
                                         return res.status(422).send({ 'msg': "Failed to assign tables to staff!" })
                                     })
                                 } else {
-                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus,
+                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus, c.firstName, c.lastName,
                                         CONCAT('[',
                                             GROUP_CONCAT(
                                                 CONCAT(
@@ -592,6 +594,7 @@ module.exports = app => {
                                         ']') as items
                                         FROM orders o
                                         LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
+                                        LEFT JOIN customers c ON o.customerId = c.id
                                         WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
                                         GROUP BY o.orderNumber
                                         ORDER BY o.createdAt DESC`, null, function (error, result) {
@@ -615,21 +618,23 @@ module.exports = app => {
                     else return res.status(401).send({ 'msg': 'Invalid Session!' })
                 })
             }
-        )
+            )
     })
 
     app.post('/admin/getOrderItemDetails', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
         const { id } = req.body
         if (!id) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        getConnection(
+        getSecureConnection(
             res,
+            adminId,
             `SELECT oi.name, oi.quantity, oi.status, oi.price, oi.totalPrice, oi.specialInstructions,
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
                         '{"id":',oia.id,
-                        ',"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,
+                        ',"addOnName":"',oia.addOnName,
+                        '","addOnOption":"',oia.addOnOption,
                         '","price":',oia.price,'}'
                     ) ORDER BY oi.createdAt DESC
                 ),
@@ -646,6 +651,335 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/getOrders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, type, status } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        const active = status || status === 0 ? status : 1
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT o.id, o.tableId,
+            CONVERT(o.orderNumber, CHAR) as orderNumber,
+            IF ((o.status = 0),
+                TIMESTAMPDIFF(SECOND, o.createdAt, o.closedAt),
+                TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
+            ) as time,
+            o.amount, o.status,
+            GROUP_CONCAT(u.name) as staff
+            FROM orders o 
+            LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
+            LEFT JOIN users u ON u.id = sat.staffId
+            WHERE o.restaurantId = '${restaurantId}'
+            ${type ? 'AND type = ' + `'${type}'` : ''}
+            AND status = ${active}
+            GROUP BY o.orderNumber
+            ORDER BY ${active ? 'o.createdAt' : 'o.closedAt'} DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No Orders Found!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/getOrderDetails', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { restaurantId, orderNumber } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'OrderNumber is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT oi.id, oi.itemId, oi.quantity, oi.name, oi.totalPrice, oi.specialInstructions,
+            CONCAT('[',
+                GROUP_CONCAT(
+                    CONCAT(
+                        '{"id":',oia.id,
+                        ',"addOnId":',oia.addOnId,
+                        ',"addOnName":"',oia.addOnName,
+                        '","addOnOptionId":',oia.addOnOptionId,
+                        ',"addOnOption":"',oia.addOnOption,
+                        '","price":',oia.price,'}'
+                    ) ORDER BY oi.createdAt DESC
+                ),
+            ']') as addOns
+            FROM orderItems oi
+            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+            WHERE oi.restaurantId = '${restaurantId}'
+            AND oi.orderNumber = '${orderNumber}'
+            GROUP BY oi.id`,
+            null,
+            (items) => {
+                getConnection(
+                    res,
+                    `SELECT o.createdAt, o.closedAt, o.type,
+                    IF ((o.status = 0),
+                        TIMESTAMPDIFF(SECOND, o.createdAt, closedAt),
+                        TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
+                    ) as duration,
+                    o.status, o.amount, o.discount, o.discountType, o.tip, r.taxPercentage
+                    FROM orders o
+                    JOIN restaurants r on o.restaurantId = r.restaurantId
+                    WHERE o.restaurantId = '${restaurantId}'
+                    AND o.orderNumber = '${orderNumber}'`,
+                    null,
+                    (result) => {
+                        if (result.length) {
+                            const data = result[0]
+                            let discountAmount = data.discount.toFixed(2)
+                            if (data.discountType === '%')
+                                discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
+                            const subtotal = data.amount - discountAmount
+                            const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
+                            return res.send({
+                                createdAt: data.createdAt,
+                                closedAt: data.closedAt,
+                                duration: data.duration,
+                                status: data.status,
+                                type: data.type,
+                                foodTotal: data.amount.toFixed(2),
+                                discount: data.discount + `${data.discountType}`,
+                                discountAmount,
+                                subtotal: subtotal.toFixed(2),
+                                taxPercentage: data.taxPercentage + '%',
+                                taxAmount,
+                                tip: data.tip.toFixed(2),
+                                billAmount: (subtotal + Number(taxAmount) + data.tip).toFixed(2),
+                                items
+                            })
+                        } else {
+                            return res.status(422).send({ 'msg': `No Order details available!` })
+                        }
+                    }
+                )
+            }
+        )
+    })
+
+    app.post('/admin/addItemsToOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { restaurantId, orderNumber, items } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
+        if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
+        let amount = 0
+        for (var i = 0; i < items.length; i++) {
+            const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
+            amount += totalPrice
+            if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
+            if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
+            if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+            if (!price && price !== 0) return res.status(422).send({ 'msg': 'Item price is required!' })
+            if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Total price is required!' })
+            if (addOns && addOns.length) {
+                for (var j = 0; j < addOns.length; j++) {
+                    const { addOnId, addOnName, addOnOptionId, addOnOption, price } = addOns[j]
+                    if (!addOnId) return res.status(422).send({ 'msg': 'AddOns ID is required!' })
+                    if (!addOnName) return res.status(422).send({ 'msg': 'AddOns name is required!' })
+                    if (addOnOptionId && !addOnOption) return res.status(422).send({ 'msg': 'AddOns option name is required!' })
+                    if (!addOnOptionId && addOnOption) return res.status(422).send({ 'msg': 'AddOns option ID is required!' })
+                    if (!price && price !== 0) return res.status(422).send({ 'msg': 'AddOns price is required!' })
+                }
+            }
+        }
+        getTransactionalConnection()
+            .getConnection(function (error, tempDb) {
+                if (!!error) {
+                    console.log('DbConnectionError', error.sqlMessage)
+                    return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                }
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin' || role = 'Staff') AND active = 1`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            tempDb.query(`UPDATE orders SET ready = 0, amount = amount + ${amount} WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, null, function (error, result) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function () {
+                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                    })
+                                } else if (result.changedRows) {
+                                    for (var i = 0; i < items.length; i++) {
+                                        const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                        const orderItem = {}
+                                        orderItem.restaurantId = restaurantId
+                                        orderItem.orderNumber = orderNumber
+                                        orderItem.itemId = itemId
+                                        orderItem.quantity = quantity
+                                        orderItem.name = name
+                                        orderItem.price = price
+                                        orderItem.totalPrice = totalPrice
+                                        if (specialInstructions)
+                                            orderItem.specialInstructions = specialInstructions
+                                        tempDb.query('INSERT INTO orderItems SET ?', orderItem, function (error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function () {
+                                                    return res.status(422).send({ 'msg': "Failed to add Items" })
+                                                })
+                                            }
+                                            if (addOns && addOns.length) {
+                                                let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                                for (var j = 0; j < addOns.length; j++) {
+                                                    query = query + ` ( '${result.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
+                                                    if (j !== (addOns.length - 1))
+                                                        query = query + ','
+                                                }
+                                                tempDb.query(query, function (error) {
+                                                    if (!!error) {
+                                                        console.log('TableError', error.sqlMessage)
+                                                        tempDb.rollback(function () {
+                                                            return res.status(422).send({ 'msg': "Failed to add Items" })
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
+                                    tempDb.commit(function (error) {
+                                        if (error) {
+                                            tempDb.rollback(function () {
+                                                return res.status(422).send({ 'msg': "Failed to add Items" })
+                                            })
+                                        }
+                                        tempDb.release()
+                                        return res.send({ 'msg': 'Order item(s) added successfully!' })
+                                    })
+                                } else tempDb.rollback(function () {
+                                    return res.status(422).send({ 'msg': "Failed to update order status" })
+                                })
+                            })
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
+            })
+    })
+
+    app.post('/admin/submitNewOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { restaurantId, type, tableId, items } = req.body
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
+        if (type === 'Dine-In' && !tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
+        if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
+        let amount = 0
+        for (var i = 0; i < items.length; i++) {
+            const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
+            amount += totalPrice
+            if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
+            if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
+            if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+            if (!price && price !== 0) return res.status(422).send({ 'msg': 'Item price is required!' })
+            if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Total price is required!' })
+            if (addOns && addOns.length) {
+                for (var j = 0; j < addOns.length; j++) {
+                    const { addOnId, addOnName, addOnOptionId, addOnOption, price } = addOns[j]
+                    if (!addOnId) return res.status(422).send({ 'msg': 'AddOns ID is required!' })
+                    if (!addOnName) return res.status(422).send({ 'msg': 'AddOns name is required!' })
+                    if (addOnOptionId && !addOnOption) return res.status(422).send({ 'msg': 'AddOns option name is required!' })
+                    if (!addOnOptionId && addOnOption) return res.status(422).send({ 'msg': 'AddOns option ID is required!' })
+                    if (!price && price !== 0) return res.status(422).send({ 'msg': 'AddOns price is required!' })
+                }
+            }
+        }
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
+            null,
+            (result) => {
+                const orderNumber = padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3)
+                getTransactionalConnection()
+                    .getConnection(function (error, tempDb) {
+                        if (!!error) {
+                            console.log('DbConnectionError', error.sqlMessage)
+                            return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                        }
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            tempDb.query(`INSERT INTO orders ( restaurantId, orderNumber, type, tableId, amount ) 
+                                        VALUES ( '${restaurantId}', ${orderNumber}, '${type}', ${tableId ? `${tableId}` : null}, ${amount})`,
+                                function (error, result2) {
+                                    if (!!error) {
+                                        console.log('TableError', error.sqlMessage)
+                                        tempDb.rollback(function () {
+                                            return res.status(422).send({ 'msg': error.sqlMessage })
+                                        })
+                                    }
+                                    else if (result2.affectedRows) {
+                                        for (var i = 0; i < items.length; i++) {
+                                            const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
+                                            const orderItem = {}
+                                            orderItem.restaurantId = restaurantId
+                                            orderItem.orderNumber = orderNumber
+                                            orderItem.itemId = itemId
+                                            orderItem.quantity = quantity
+                                            orderItem.name = name
+                                            orderItem.price = price
+                                            orderItem.totalPrice = totalPrice
+                                            if (specialInstructions)
+                                                orderItem.specialInstructions = specialInstructions
+                                            tempDb.query('INSERT INTO orderItems SET ?', orderItem, function (error, result3) {
+                                                if (!!error) {
+                                                    console.log('TableError', error.sqlMessage)
+                                                    tempDb.rollback(function () {
+                                                        return res.status(422).send({ 'msg': 'Failed to submit new order' })
+                                                    })
+                                                } else {
+                                                    if (addOns && addOns.length) {
+                                                        let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                                        for (var j = 0; j < addOns.length; j++) {
+                                                            query = query + ` ( '${result3.insertId}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
+                                                            if (j !== (addOns.length - 1))
+                                                                query = query + ','
+                                                        }
+                                                        tempDb.query(query, function (error) {
+                                                            if (!!error) {
+                                                                console.log('TableError', error.sqlMessage)
+                                                                tempDb.rollback(function () {
+                                                                    return res.status(422).send({ 'msg': 'Failed to submit new order' })
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }
+                                            })
+                                        }
+                                        tempDb.commit(function (error) {
+                                            if (error) {
+                                                tempDb.rollback(function () {
+                                                    return res.status(422).send({ 'msg': 'Failed to submit new order' })
+                                                })
+                                            }
+                                            tempDb.release()
+                                            return res.send({ 'msg': 'New order submitted successfully!' })
+                                        })
+                                    }
+                                    else return res.status(422).send({ 'msg': 'Failed to submit new order!' })
+                                }
+                            )
+                        })
+                    })
+            }
+        )
+    })
+
     app.post('/admin/closeOrder', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, orderNumber } = req.body
@@ -655,39 +989,11 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            `UPDATE orders SET status = false, closedAt = CURRENT_TIMESTAMP WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
             { status: false },
             (result) => {
                 if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
                 else return res.status(422).send({ 'msg': 'Order closed already!' })
-            }
-        )
-    })
-
-    app.post('/admin/getOrders', async (req, res) => {
-        const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, type, status } = req.body
-        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
-        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
-        if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
-        if (!status && status !== 0) return res.status(422).send({ 'msg': 'Order Status is required!' })
-        getSecureConnection(
-            res,
-            adminId,
-            `SELECT *, 
-            CONVERT(orderNumber, CHAR) as orderNumber
-            FROM orders WHERE
-            restaurantId = '${restaurantId}'
-            AND status = ${status}
-            AND type = '${type}'
-            ORDER BY createdAt DESC `,
-            null,
-            (data) => {
-                if (data.length) {
-                    return res.send(data)
-                } else {
-                    return res.status(422).send({ 'msg': `No ${status ? 'Open' : 'Closed'}, ${type} Orders!` })
-                }
             }
         )
     })
@@ -701,7 +1007,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT sat.staffId as id, u.name,
-            GROUP_CONCAT(sat.tableNumber) as assignedTables
+            GROUP_CONCAT(sat.tableNumber ORDER BY cast(sat.tableNumber as unsigned) ASC) as assignedTables
             FROM staffAssignedTables sat
             JOIN users u on u.id = sat.staffId
             WHERE sat.restaurantId = '${restaurantId}'
@@ -840,8 +1146,8 @@ module.exports = app => {
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
-                        '{"name":"',oia.addOnName,
-                        '","option":"',oia.addOnOption,'"}'
+                        '{"addOnName":"',oia.addOnName,
+                        '","addOnOption":"',oia.addOnOption,'"}'
                     ) ORDER BY oi.createdAt DESC
                 ),
             ']') as addOns
@@ -891,13 +1197,13 @@ module.exports = app => {
             `SET SQL_SAFE_UPDATES=0`,
             null,
             (result) => {
-                getSecureConnection(
+                getConnection(
                     res,
                     adminId,
                     `UPDATE orderItems SET status = 'R' WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 'P'`,
                     null,
                     () => {
-                        getSecureConnection(
+                        getConnection(
                             res,
                             adminId,
                             `UPDATE orders SET ready = 1 WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`,
@@ -1561,4 +1867,10 @@ function setPasswordMessage(name, restaurantName, link) {
 
 function forgotPasswordMessage(link) {
     return `Welcome Back!\n\nVisit the following link to reset your login password:\n${link}`
+}
+
+function padding(num, size) {
+    num = num.toString();
+    while (num.length < size) num = "0" + num;
+    return num;
 }

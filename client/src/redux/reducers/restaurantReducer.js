@@ -19,20 +19,24 @@ export default (state = { fetchingQrs: false, generatingQrs: false, qrs: null, s
       return { ...state, fetchingQrs: false, qrs: payload }
     case GET_EXISTING_QRS_FAILURE:
       return { ...state, fetchingQrs: false }
+    
     case GENERATE_QRS:
       return { ...state, generatingQrs: true }
     case GENERATE_QRS_SUCCESS:
       return { ...state, generatingQrs: false, fetchingQrs: true }
     case GENERATE_QRS_FAILURE:
       return { ...state, generatingQrs: false }
+    
     case RESTAURANT_CHANGED:
       return { ...state, qrs: null }
-    case RESET_RESTAURANT:
-      return { ...state, qrs: null }
+    
     case SET_TABLE_NAME:
       return { ...state, settingTableName: true }
     case SET_TABLE_NAME_FAILURE:
       return { ...state, settingTableName: false }
+    
+    case RESET_RESTAURANT:
+      return { ...state, qrs: null }
     default:
       return state
   }

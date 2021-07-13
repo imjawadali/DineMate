@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom'
 import { customisedAction } from '../../../../redux/actions'
 
 import { Button, ButtonRed, DropDown, Input, Modal, SectionHeading, SmallTitle } from '../../../../components'
-import './styles.css'
 import { ADD_ADDON, UPDATE_ADDON } from '../../../../constants'
 
 function Add_EditAddOn(props) {

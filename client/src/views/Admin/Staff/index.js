@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { GET_EXISTING_QRS, PER_PAGE_COUNTS } from '../../../constants'
+import { GET_STAFF_ASSIGNED_TABLES, PER_PAGE_COUNTS } from '../../../constants'
 
 import { Pagination, Input } from '../../../components'
 
@@ -12,15 +12,17 @@ function Staff(props) {
 
   const [filterKey, setfilterKey] = useState('')
   const [currentIndex, setcurrentIndex] = useState(1)
-
-  const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
-  const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
+  
   const fetchingStaffAssignedTables = useSelector(({ staffReducer }) => staffReducer.fetchingStaffAssignedTables)
   const staffAssignedTables = useSelector(({ staffReducer }) => staffReducer.staffAssignedTables)
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
+
+  useEffect(() => {
+    if (!fetchingStaffAssignedTables && !staffAssignedTables) dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId }))
+  }, [])
 
   const getFilteredList = () => {
     let filteredQrs = staffAssignedTables
@@ -60,7 +62,7 @@ function Staff(props) {
             <i
               style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
               className={`fa fa-${filterKey ? 'times-circle' : fetchingStaffAssignedTables ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId }))}/>
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId }))}/>
           </div>
         </div>
         <StaffList history={props.history} fetchingStaffAssignedTables={fetchingStaffAssignedTables} restaurantId={restaurantId} staffAssignedTables={paginate(getFilteredList())} />

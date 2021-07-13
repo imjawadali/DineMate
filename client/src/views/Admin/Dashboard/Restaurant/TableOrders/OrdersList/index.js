@@ -32,7 +32,7 @@ function OrdersList(props) {
         <tbody>
           {tableOrders && tableOrders.length ?
             tableOrders.map((tableOrder) => {
-              const { orderNumber, items } = tableOrder
+              const { orderNumber, firstName, lastName, items } = tableOrder
               let orderItems
               try {
                 orderItems = items && JSON.parse(items)
@@ -69,7 +69,7 @@ function OrdersList(props) {
                           </div>
                         </td>
                         <td style={{ textAlign: 'center' }}>{!index ? orderNumber : ''}</td>
-                        <td>{!index ? '-' : ''}</td>
+                        <td>{!index ? firstName ? firstName + ' ' + lastName : '-' : ''}</td>
                         <td>{orderItem.name}</td>
                         <td style={{ textAlign: 'center' }}>{orderItem.quantity}</td>
                         <td style={{ textAlign: 'center' }}>$ {orderItem.totalPrice}</td>
@@ -89,7 +89,7 @@ function OrdersList(props) {
                     </td>
                     <td />
                     <td style={{ textAlign: 'center' }}>{orderNumber}</td>
-                    <td>-</td>
+                    <td>{firstName ? firstName + ' ' + lastName : '-'}</td>
                     <td colSpan="3">-</td>
                   </tr>}
                   <tr><td colSpan="10" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
@@ -99,7 +99,7 @@ function OrdersList(props) {
             <tr>
               <td colSpan="8" style={{ textAlign: 'center' }}>
                 {fetchingTableOrders ?
-                  <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Table Order . . .</p>
+                  <p><i className={`fa fa-refresh ${fetchingTableOrders ? 'fa-pulse' : ''}`} style={{ padding: '0px 5px' }} />Fetching Table Check(s) . . .</p>
                   : 'No Data Found!'}
               </td>
             </tr>

@@ -1,0 +1,31 @@
+.NewOrderMenuContainer {
+    height: 100%;
+    padding: 10px;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0px 2px 10px -5px;
+}
+
+.NewOrderMenuGrids {
+    display: grid;
+    grid-template-columns: 25% 25% 25% 24%;
+    padding: 1px;
+    grid-gap: 2px;
+    box-sizing: border-box;
+}
+
+.NewOrderMenuItem {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px -3px;
+}
+
+@media only screen and (max-width: 978px) {
+}
+
+@media only screen and (max-width: 480px) {
+    .NewOrderMenuGrids {
+        grid-template-columns: 33% 33% 33%;
+    }
+}

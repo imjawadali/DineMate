@@ -50,17 +50,6 @@
     box-sizing: border-box;
 }
 
-.DashboardTableDetailsContainer {
-    flex: auto;
-    display: flex;
-    align-items: center;
-    border-radius: 5px;
-    padding: 5px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border: 1px solid silver;
-    box-sizing: border-box;
-}
-
 .DashboardGridItemContainer {
     display: flex;
     justify-content: center;

@@ -1,0 +1,70 @@
+.OrderDetailsContainer {
+    display: flex;
+}
+
+.OrderDetailsSectionMiddle {
+    flex: 1;
+}
+
+.OrderDetailsSection {
+    display: flex;
+}
+
+.OrderDetailsLabel {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.OrderDetailsData {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+}
+
+.OrderDetailsText {
+    margin: 2px 0px;
+}
+
+.OrderDetailsActionButtons {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.OrderDetailsBottomButtonsContainer {
+    align-self: center;
+    padding: 10px;
+    padding-bottom: 0px;
+    width: 70%;
+}
+
+.OrderDetailsBottomButtons {
+    margin: 0px 10px;
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    background-color: rgb(51, 63, 79);
+    box-shadow: 0px 2px 20px -5px;
+}
+
+@media only screen and (max-width: 978px) {
+    .OrderDetailsText {
+        font-size: 14px;
+        margin: 1px 0px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .OrderDetailsContainer {
+        flex-direction: column;
+    }
+
+    .OrderDetailsText {
+        font-size: 12px;
+    }
+
+    .OrderDetailsBottomButtonsContainer {
+        width: 90%;
+    }
+}

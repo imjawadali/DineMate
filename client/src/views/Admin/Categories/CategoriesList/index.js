@@ -22,8 +22,9 @@ function CategoriesList(props) {
               return (
                 <tr key={id}>
                   <td>
-                    <div style={{ display: 'flex', flexDirection: 'row'}}>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <TableActionicons
+                        style={{ paddingLeft: '20px', paddingRight: '50px' }}
                         icon="fa-trash"
                         onClick={() => onDelete(id)}
                       />
@@ -34,7 +35,7 @@ function CategoriesList(props) {
                       />
                     </div>
                   </td>
-                  <td>{name}</td>
+                  <td style={{ width: '65vw'}}>{name}</td>
                 </tr>
               )
             }) : 

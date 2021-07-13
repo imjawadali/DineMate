@@ -22,7 +22,7 @@ function ItemDetails(props) {
   const { location: { state }, history } = props
   const statuses = {
     P: 'Pending',
-    A: 'In-que',
+    R: 'Ready',
     S: 'Served'
   }
 

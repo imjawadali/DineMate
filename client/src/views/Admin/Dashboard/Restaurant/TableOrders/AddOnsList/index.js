@@ -26,13 +26,13 @@ function AddOnsList(props) {
           </tr>
           {addOns && addOns.length ?
             addOns.map((category) => {
-              const { id, name, option, price } = category
+              const { id, addOnName, addOnOption, price } = category
               return (
                 <tr key={id}>
                   <td />
                   <td />
-                  <td>{name}</td>
-                  <td>{option && option !== 'null' ? option : '-'}</td>
+                  <td>{addOnName}</td>
+                  <td>{addOnOption && addOnOption !== 'null' ? addOnOption : '-'}</td>
                   <td />
                   <td style={{ textAlign: 'center' }}>$ {price}</td>
                 </tr>

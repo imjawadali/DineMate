@@ -1,5 +1,4 @@
-import { switchMap } from 'rxjs/operators'
-import { ofType } from 'redux-observable'
+import { switchMap, filter } from 'rxjs/operators'
 
 import { customisedAction } from '../../actions'
 import { generalizedEpic } from '../generalizedEpic'
@@ -7,13 +6,23 @@ import {
   GET_ORDERS,
   GET_ORDERS_SUCCESS,
   GET_ORDERS_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  CLOSE_ORDER_SUCCESS
 } from '../../../constants'
 
 export class getOrdersEpic {
   static getOrders = action$ =>
     action$.pipe(
-      ofType(GET_ORDERS),
+      filter(({ type }) => {
+        switch (type) {
+          case GET_ORDERS:
+            return true;
+          case CLOSE_ORDER_SUCCESS:
+            return true;
+          default:
+            return false;
+        }
+      }),
       switchMap(
         async ({ payload: { restaurantId, type, status, noToast } }) => {
           return generalizedEpic(

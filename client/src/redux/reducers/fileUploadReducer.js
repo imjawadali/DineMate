@@ -14,8 +14,10 @@ export default (state = { imageUrl: null, uploading: false }, { type, payload })
       return { ...state, uploading: false, imageUrl: payload.imageUrl }
     case UPLOAD_TO_S3_FAILURE:
       return { ...state, uploading: false }
+    
     case DELETE_FROM_S3_SUCCESS:
       return { ...state, imageUrl: null }
+    
     case ADD_MENU_SUCCESS:
       return { ...state, imageUrl: null }
     default:

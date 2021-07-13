@@ -25,6 +25,10 @@ export const API_ENDPOINTS = {
         markOrderReady: 'admin/markOrderReady',
         getTableOrders: 'admin/getTableOrders',
         getOrderItemDetails: 'admin/getOrderItemDetails',
+        getOrders:'admin/getOrders',
+        getOrderDetails:'admin/getOrderDetails',
+        addItemsToOrder:'admin/addItemsToOrder',
+        submitNewOrder:'admin/submitNewOrder',
         closeOrder: 'admin/closeOrder',
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',
@@ -45,7 +49,6 @@ export const API_ENDPOINTS = {
         addUser: 'admin/addUser',
         updateUser: 'admin/updateUser',
         deleteUser: 'admin/deleteUser',
-        getOrders:'admin/getOrders',
         uploadToS3:'admin/uploadToS3',
         deleteFromS3:'admin/deleteFromS3'
     }

@@ -28,3 +28,13 @@ export function getTimeObject (timeStamp) {
     time.secs = secs
     return time
 }
+
+export function getFormatedDateTime (dateTime) {
+    const date = new Date(dateTime)
+    return `${date.getDate()}/
+        ${date.getMonth() + 1}/
+        ${date.getFullYear()} - 
+        ${date.getHours() ? date.getHours()%12 : '12'}:
+        ${date.getMinutes()}
+        ${date.getHours() < 12 ? 'AM' : 'PM'}`
+}
