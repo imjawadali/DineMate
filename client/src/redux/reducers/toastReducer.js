@@ -89,7 +89,14 @@ import {
   SUBMIT_NEW_ORDER_FAILURE,
   ADD_ITEMS_TO_ORDER,
   ADD_ITEMS_TO_ORDER_SUCCESS,
-  ADD_ITEMS_TO_ORDER_FAILURE
+  ADD_ITEMS_TO_ORDER_FAILURE,
+  DELETE_ITEM,
+  DELETE_ITEM_FAILURE,
+  DELETE_ITEM_SUCCESS,
+  DELETE_ORDER,
+  DELETE_ORDER_FAILURE,
+  DELETE_ORDER_SUCCESS,
+  DELETE_ITEM_SUCCESS_NO_MORE_DETAILS
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -179,6 +186,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_ITEMS_TO_ORDER_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload }
     case ADD_ITEMS_TO_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_ITEM:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Deleting item', type: 'success' } }
+    case DELETE_ITEM_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case DELETE_ITEM_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_ITEM_SUCCESS_NO_MORE_DETAILS:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_ORDER:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Deleting order', type: 'success' } }
+    case DELETE_ORDER_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_ORDER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case CLOSE_ORDER:
       return { ...state, toastSetDismiss: true, toast: { message: 'Closing Check', type: 'success' } }

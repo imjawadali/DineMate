@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { TitleWithAction, Button, OrderTimer } from '../../../../components'
-import { CLOSE_ORDER, GET_ORDER_DETAILS } from '../../../../constants'
+import { CLOSE_ORDER, DELETE_ORDER, GET_ORDER_DETAILS } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 import { getFormatedDateTime } from '../../../../helpers'
 
@@ -17,7 +17,8 @@ function OrderDetails(props) {
   const fetchingOrderDetails = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrderDetails)
   const orderDetails = useSelector(({ ordersReducer }) => ordersReducer.orderDetails)
   const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
-
+  const deletingItemId = useSelector(({ ordersReducer }) => ordersReducer.deletingItemId)
+  const deletingOrder = useSelector(({ ordersReducer }) => ordersReducer.deletingOrder)
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
@@ -81,49 +82,98 @@ function OrderDetails(props) {
             </div>
           </div>
         </div>
-        <ItemsList orderDetails={orderDetails} items={orderDetails.items} />
+        <ItemsList orderDetails={orderDetails} items={orderDetails.items} restaurantId={restaurantId} orderNumber={orderNumber} history={history} />
         <div className="OrderDetailsBottomButtonsContainer">
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}
-              onClick={() => {
-                if (orderDetails.status && closingId !== orderNumber) {
+              style={{
+                opacity: !orderDetails.status
+                  || closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}
+              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
                   history.push({
                     pathname: '/client/admin/ordersManagement/newOrder', state: {
                       orderDetails: { ...orderDetails, orderNumber }
                     }
                   })
-                }
-              }}>
+                  : null
+              }>
               <td style={{ color: 'white', padding: '0px' }}>Add Item</td>
             </div>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              style={{
+                opacity: !orderDetails.status
+                  || closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}>
               <td style={{ color: 'white', padding: '0px' }}>Discount</td>
             </div>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              style={{
+                opacity: !orderDetails.status
+                  || closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}>
               <td style={{ color: 'white', padding: '0px' }}>Split</td>
             </div>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
+              style={{
+                opacity: !orderDetails.status
+                  || closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}
+              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
+                dispatch(customisedAction(DELETE_ORDER, { restaurantId, orderNumber }, { history }))
+                : null
+              }>
               <td style={{ color: 'white', padding: '0px' }}>Void</td>
             </div>
           </div>
           <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}>
-              <td style={{ color: 'white', padding: '0px' }}>Cash</td>
+              style={{
+                opacity: closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder
+                  || deletingOrder ?
+                  0.5 : ''
+              }}
+              onClick={() => closingId !== orderNumber && !deletingItemId && !deletingOrder ?
+                history.goBack()
+                : null
+              }>
+              <td style={{ color: 'white', padding: '0px' }}>Back</td>
             </div>
             <div className="OrderDetailsBottomButtons"
-              style={{ opacity: !orderDetails.status || closingId === orderNumber ? 0.5 : '' }}
-              onClick={() => orderDetails.status && closingId !== orderNumber ?
+              style={{
+                opacity: !orderDetails.status
+                  || closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}
+              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
                 dispatch(customisedAction(CLOSE_ORDER, { restaurantId, orderNumber }))
                 : null
               }>
-              <td style={{ color: 'white', padding: '0px' }}>Close</td>
+              <td style={{ color: 'white', padding: '0px' }}>Cash</td>
             </div>
-            <div className="OrderDetailsBottomButtons">
+            <div className="OrderDetailsBottomButtons"
+              style={{
+                opacity: closingId === orderNumber
+                  || deletingItemId
+                  || deletingOrder ?
+                  0.5 : ''
+              }}>
               <td style={{ color: 'white', padding: '0px' }}>Print</td>
             </div>
           </div>

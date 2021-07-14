@@ -7,6 +7,7 @@ import {
   GET_ORDER_DETAILS_SUCCESS,
   GET_ORDER_DETAILS_FAILURE,
   API_ENDPOINTS,
+  DELETE_ITEM_SUCCESS,
   CLOSE_ORDER_SUCCESS
 } from '../../../constants'
 
@@ -16,6 +17,8 @@ export class getOrderDetailsEpic {
       filter(({ type }) => {
         switch (type) {
           case GET_ORDER_DETAILS:
+            return true;
+          case DELETE_ITEM_SUCCESS:
             return true;
           case CLOSE_ORDER_SUCCESS:
             return true;

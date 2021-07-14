@@ -18,6 +18,8 @@ import { getTableOrdersEpic } from './admin/getTableOrdersEpic'
 import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
 import { submitNewOrderEpic } from './admin/submitNewOrderEpic'
 import { addItemsToOrderEpic } from './admin/addItemsToOrderEpic'
+import { deleteItemEpic } from './admin/deleteItemEpic'
+import { deleteOrderEpic } from './admin/deleteOrderEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
 import { getOrdersEpic } from './admin/getOrdersEpic'
 import { getOrderDetailsEpic } from './admin/getOrderDetailsEpic'
@@ -61,6 +63,8 @@ export const epics = combineEpics(
     getOrderItemDetailsEpic.getOrderItemDetails,
     submitNewOrderEpic.submitNewOrder,
     addItemsToOrderEpic.addItemsToOrder,
+    deleteItemEpic.deleteItem,
+    deleteOrderEpic.deleteOrder,
     getOrdersEpic.getOrders,
     getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,

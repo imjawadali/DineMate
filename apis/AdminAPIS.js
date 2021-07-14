@@ -980,6 +980,87 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/deleteItem', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Item Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
+            null,
+            () => {
+                getConnection(
+                    res,
+                    `DELETE FROM orderItems WHERE id = ${id}`,
+                    null,
+                    (result) => {
+                        if (result.affectedRows) return res.send({ 'msg': 'Item deleted successfully!' })
+                        else return res.status(422).send({ 'msg': 'Unable to delete item' })
+                    }
+                )
+            }
+        )
+    })
+
+    app.post('/admin/deleteOrder', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, restaurantId, orderNumber } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM orderItemAddOns WHERE orderItemId IN (
+                SELECT id FROM orderItems WHERE restaurantId = '${restaurantId}'
+                    AND orderNumber = '${orderNumber}'
+            )`,
+            null,
+            () => {
+                getConnection(
+                    res,
+                    `DELETE FROM orderItems WHERE restaurantId = '${restaurantId}'
+                        AND orderNumber = '${orderNumber}'`,
+                    null,
+                    () => {
+                        getConnection(
+                            res,
+                            `DELETE FROM orders WHERE restaurantId = '${restaurantId}'
+                                AND orderNumber = '${orderNumber}'`,
+                            null,
+                            (result) => {
+                                if (result.affectedRows) return res.send({ 'msg': 'Order deleted successfully!' })
+                                else return res.status(422).send({ 'msg': 'Unable to delete order' })
+                            }
+                        )
+                    }
+                )
+            }
+        )
+    })
+
+    app.post('/admin/applyDiscount', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber, discount, discountType } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
+        if (!discount) return res.status(422).send({ 'msg': 'Discount amount is required!' })
+        if (!discountType) return res.status(422).send({ 'msg': 'Discount type is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            { discount, discountType },
+            (result) => {
+                if (result.changedRows) return res.send({ 'msg': 'Discount applied successfully!' })
+                else return res.status(422).send({ 'msg': 'Unable to apply discount!' })
+            }
+        )
+    })
+
     app.post('/admin/closeOrder', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, orderNumber } = req.body
