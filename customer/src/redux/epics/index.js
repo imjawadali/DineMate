@@ -16,6 +16,7 @@ import { getOrderStatusEpic } from './admin/orderstatus'
 import { getAllOrdersEpic } from './admin/getAllOrders'
 import { searchResturantEpic } from './admin/searchResturant'
 import { getTakeAwayOrderItemEpic } from './admin/getTakeOrderItem'
+import { OrderDetailEpic } from './admin/getOrderDetailOrderEpic'
 
 export const epics = combineEpics(
     loginEpic.login,
@@ -41,7 +42,8 @@ export const epics = combineEpics(
     getOrderStatusEpic.getOrderStatus,
     getAllOrdersEpic.getAllOrders,
     searchResturantEpic.searchResturant,
-    getTakeAwayOrderItemEpic.getTakeAwayOrder
+    getTakeAwayOrderItemEpic.getTakeAwayOrder,
+    OrderDetailEpic.OrderDetail
 
 
 )

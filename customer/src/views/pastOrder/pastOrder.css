@@ -58,13 +58,21 @@
        justify-content: center;
        text-align: center;
     }
+    .pastOrderPage .pastOrders{
+        padding: 0px;
+    }
+    .pastOrderPage .pastOrders .pastTabs .tab{
+        font-size: 20px;
+    }
     
     .pastOrderPage .orderDetail h5 {
         text-align: center;
 
     }
     .pastOrderPage .orderDetail h3 {
-        text-align: center;
+        text-align: center !important;
+        font-size: 20px;
+        font-size: 19px;
 
     }
 }

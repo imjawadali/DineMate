@@ -131,15 +131,41 @@ p {
 .pickUpTime label {
     display: inline-block;
 }
+.Ammount .ammountDiv {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    flex-direction: column;
+}
+.Ammount .ammountDiv label {
+    display: flex;
+    align-items: center;
+    
+}
+.Ammount .ammountDiv input {
+    font-size: 14px;
+    padding: 10px 0px;
+    font-weight: bold;
+    color: #ef6e6c;
+}
+.Ammount .ammountDiv label p{
+    font-size: 14px;
+    padding: 10px 0px;
+    font-weight: bold;
+    color: #2ec3b3;
+    margin-right: 3px;
+    }
 @media screen and (max-width: 600px) {
     .pickUpPayment {
         width: 100%;
     }
-    .CheckOut .Ammount{
+    .CheckOut .Ammount {
         flex-direction: column;
-    text-align: center;
+        text-align: center;
     }
-    .CheckOut .checkoutForm .menuCart, .pickUpTime label, .pickUpLocation textarea{
+    .CheckOut .checkoutForm .menuCart,
+    .pickUpTime label,
+    .pickUpLocation textarea {
         width: calc(100% - 20px);
     }
 }
