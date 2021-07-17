@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams, withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-
+import { useRouteMatch } from 'react-router-dom';
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
@@ -11,13 +11,15 @@ import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_DETAIL, G
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
+import HeaderImg from '../../assets/header.png';
 
 const Header = props => {
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const submitOrderDetail = useSelector(({ orderReducer }) => orderReducer.submitDetail)
-
+    const match = useRouteMatch('/:restaurantId/:tableId');
+    console.log(match)
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
     const [updateState, setUpdateState] = useState(true)
@@ -700,7 +702,7 @@ const Header = props => {
                             </div>
                         </div>
                     </div>
-                    : <div className="HeaderContainer">
+                    : <div className="HeaderContainer" style={match && match.isExact ? { backgroundImage: `url(${HeaderImg})` } : {}}>
                         <MenuIcon onClick={() => props.openSidebar()} />
                         <div className="HeaderLogoContainer">
                             <Logo
