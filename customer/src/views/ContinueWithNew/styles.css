@@ -1,0 +1,79 @@
+.ContinueWith {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row-reverse;
+  height: 100vh;
+  background-position: center;
+  background-size: 103% 104%;
+  overflow: hidden;
+  position: relative;
+}
+.BottomGlass {
+  position: absolute;
+  height: 602px;
+  width: 450px;
+  bottom: -225px;
+  right: -115px;
+}
+.BottomChips {
+  position: absolute;
+  left: -190px;
+  bottom: -110px;
+  height: 410px;
+}
+.Chilli {
+  position: absolute;
+  left: 0;
+  /* bottom: -110px; */
+  height: 201px;
+}
+.centerBeef {
+  position: absolute;
+  left: -100px;
+  top: 263px;
+  height: 170px;
+  z-index: 1;
+}
+.centerImg {
+  position: absolute;
+  left: 30%;
+  top: 3px;
+  height: 160px;
+  z-index: 1;
+}
+.flex-1 {
+  flex: 1;
+}
+
+.ios-android {
+  width: 560px;
+  height: 600px;
+}
+
+.play-store {
+  margin: 0 5px;
+  width: 250px;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.computer-img {
+  width: 50px;
+  height: 50px;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
+.alignItem-center {
+  align-items: center;
+}
+.TheWebAppBtnTextDIv{
+    display: flex;
+    flex-direction: column;
+    margin-left: 5px;
+}

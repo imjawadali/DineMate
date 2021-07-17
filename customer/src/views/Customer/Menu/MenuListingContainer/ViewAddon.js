@@ -47,8 +47,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
         }
         arr.map((a, i) => price += Number(a.price))
         total += price * itemCount
-        
-        setTotalPrice(Number(total.toFixed(2).split('.')[1]) > 0 ? total.toFixed(2) : total)
+
+        setTotalPrice(Number(total.toFixed(2).split('.')[1]) > 0 ? (total.toFixed(2)) : (total + '.00'))
         // setTotalPrice(total)
         setupdatePrice(false)
     }, [itemToAdd, itemCount, obj, price, updatePrice]);
@@ -82,7 +82,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 orderNumber: "000000032",
                 addOnObj: obj,
                 specialInstructions,
-                RestaurantName: RestaurantDetails.restaurantName
+                RestaurantName: RestaurantDetails.restaurantName,
+                itemId: selectedItem.id
             }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
 
@@ -95,7 +96,8 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     orderNumber: getItem('orderDetails').orderNumber,
                     addOnObj: obj,
                     specialInstructions,
-                    RestaurantName: RestaurantDetails.restaurantName
+                    RestaurantName: RestaurantDetails.restaurantName,
+                    itemId: selectedItem.id
                 }
                 // let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
                 // if (cartMenu) {
@@ -117,6 +119,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     totalPrice: totalPrice,
                     restaurantId: restaurantId,
                     addOnObj: obj,
+                    itemId: selectedItem.id,
                     specialInstructions,
                     RestaurantName: RestaurantDetails.restaurantName
                 }
@@ -149,7 +152,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 orderNumber: "000000032",
                 addOnObj: obj,
                 specialInstructions,
-
+                itemId :selectedItem.id
 
                 // RestaurantName:RestaurantDetails.restaurantName
             }

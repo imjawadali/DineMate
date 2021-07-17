@@ -9,8 +9,8 @@ import './styles.css'
 function Home(props) {
 
   const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
-const [search,setSearch] = useState('')
-  
+  const [search, setSearch] = useState('')
+
 
   return (
     <div className="HomeContainer">
@@ -25,13 +25,16 @@ const [search,setSearch] = useState('')
           <div className="HeaderLogoContainer">
             <Logo src={require('../../assets/logo2.png').default} />
           </div>
+
+          <button className="takeAwayBtn" onClick={() => props.history.push('/customer/restaurants')}>Take-Away</button>
+          <button className="enrollBtn" onClick={() => props.history.push('/registration')}>Enroll Your Restaurant</button>
           {!customer ?
             <HeaderButton
               src={require('../../assets/signin_icon.png').default}
               text="Sign In"
               onClick={() => props.history.push('/customer/signin')}
             />
-          : null}
+            : null}
         </div>
 
         <div className="HomeTopContentContainer">
@@ -67,10 +70,10 @@ const [search,setSearch] = useState('')
                 <input
                   className="HomeInput"
                   placeholder="Enter Delivery Address"
-                  onChange={(ev)=>setSearch(ev.target.value)}
+                  onChange={(ev) => setSearch(ev.target.value)}
                 />
               </div>
-              <div className="HomeMiddleButton" onClick={()=>props.history.push(`customer/restaurants/?value=${search}`)}>
+              <div className="HomeMiddleButton" onClick={() => props.history.push(`customer/restaurants/?value=${search}`)}>
                 <p className="HomeMiddleButtonText">Find Food</p>
               </div>
             </div>

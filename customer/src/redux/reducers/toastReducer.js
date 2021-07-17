@@ -25,7 +25,8 @@ import {
   UPDATE_RPOFILE_SUCCESS,
   CANT_SIGN_OUT,
   CANT_PAY,
-  SIGN_UP_FAILURE
+  SIGN_UP_FAILURE,
+  TAKIE_AWAY_ORDER_FAILED
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -71,25 +72,28 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DONOTDISTURB_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER_SUCCESS:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-      case CLOSE_ORDER_FAILURE:
-        return { ...state, toastSetDismiss: true, toast: payload }
-        case UPDATE_RPOFILE_SUCCESS:
-        return { ...state, toastSetDismiss: true, toast: payload.toast }
-        
-        case CANT_SIGN_OUT:
-          return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
-        
-          case CANT_PAY:
-            return { ...state, toastSetDismiss: true, toast: { message: "Submit Order From Cart Before Pay", type: 'warning' } }
+    case CLOSE_ORDER:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RPOFILE_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case TAKIE_AWAY_ORDER_FAILED:
+      console.log(payload)
+      return { ...state, toastSetDismiss: true, toast: payload }
 
-            
-            case SIGN_UP_FAILURE:
-            return { ...state, toastSetDismiss: true, toast: { message: "Sign Up Failed, Please Try Again", type: 'warning' } }
-          
+    case CANT_SIGN_OUT:
+      return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
+
+    case CANT_PAY:
+      return { ...state, toastSetDismiss: true, toast: { message: "Submit Order From Cart Before Pay", type: 'warning' } }
+
+
+    case SIGN_UP_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: { message: "Sign Up Failed, Please Try Again", type: 'warning' } }
+
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     default:

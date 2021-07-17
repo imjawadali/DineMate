@@ -7,6 +7,8 @@
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
+    background-position: center;
+    background-size: 109%;
 }
 
 .HeaderInnerContainer {
@@ -266,7 +268,7 @@ input.HeaderInput {
 .orderSubBtn button:disabled {
     opacity: 0.7;
 }
-.HeaderRight .takeAwayBtn {
+.takeAwayBtn {
     padding: 12px 14px;
     font-size: 16px;
     color: white;
@@ -276,8 +278,9 @@ input.HeaderInput {
     border-radius: 29px;
     margin-right: 10px;
     outline: none;
+    cursor: pointer;
 }
-.HeaderRight .enrollBtn {
+.enrollBtn {
     padding: 12px 14px;
     font-size: 16px;
     color: white;
@@ -287,6 +290,7 @@ input.HeaderInput {
     border-radius: 29px;
     margin-right: 10px;
     outline: none;
+    cursor: pointer;
 }
 @media only screen and (max-width: 978px) {
     .HeaderContainer {

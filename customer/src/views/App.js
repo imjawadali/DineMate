@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, useRouteMatch } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
 import { customisedAction } from '../redux/actions'
@@ -14,7 +14,7 @@ import SideNav from './Sidenav'
 import Header from './Header'
 import Customer from './Customer'
 import Home from './Home'
-import ContinueWith from './ContinueWith'
+import ContinueWith from './ContinueWithNew'
 import Others from './Others'
 import Registration from './Registration'
 import NoRoute from './NoRoute'
@@ -28,7 +28,6 @@ import './styles.css'
 export default function App() {
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
-
     const checkingSignIn = useSelector(({ sessionReducer }) => sessionReducer.checkingSignIn)
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)

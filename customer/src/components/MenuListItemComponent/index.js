@@ -36,7 +36,7 @@ const MenuListItemComponent = props => {
                         <h3>{subHeading}</h3>
                     </div>
                     <div className="MLIComponent-Left-bottom">
-                        <h2>${price}</h2>
+                        <h2>${Number(price.toFixed(2).split('.')[1]) > 0 ? (price.toFixed(2)) : (price + '.00')}</h2>
 
                     </div>
                 </div>

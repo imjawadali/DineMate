@@ -75,13 +75,14 @@ const MenuListingContainer = props => {
 
             }
         } else if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'take-away') {
-            console.log('that')
+
+
 
             let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
             if (cartMenu) {
                 dispatch(customisedAction(ALREADY_IN_CART, { message: `You Have Already Submitted The Order Please Wait For Manager Response`, type: 'warning' }))
 
-            } 
+            }
         }
         else if (JSON.parse(localStorage.getItem('cartMenu'))) {
             console.log('that')
@@ -92,9 +93,12 @@ const MenuListingContainer = props => {
                     setViewAddons(true)
                 } else if (cartMenu[0].restaurantId != restaurantId) {
                     dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
-                }
 
-            } 
+                }
+            } else if(cartMenu.length === 0) {
+                    setViewAddons(true)
+                    // console.log(cartMenu.length)
+            }
         }
         else {
             setViewAddons(true)

@@ -8,9 +8,11 @@ import {
   GET_STATUS_SUCCESS,
   GET_STATUS_FAILURE,
   API_ENDPOINTS,
-  SET_ORDER
+  SET_ORDER,
+  GET_ORDER_DETAIL
 } from '../../../constants'
 import { getItem, removeItem } from '../../../helpers'
+import { useDispatch } from 'react-redux'
 
 export class getOrderStatusEpic {
   static getOrderStatus = action$ =>
@@ -29,6 +31,8 @@ export class getOrderStatusEpic {
                   return customisedAction(SET_ORDER, { orderDetails: storedOrderDetails })
                 } else if (resObj.body && !resObj.body.active) {
                   removeItem('orderDetails')
+                  // useDispatch(customisedAction(GET_ORDER_DETAIL))
+
                   return customisedAction(SET_ORDER, { orderDetails: storedOrderDetails })
                 }
               } else if (storedOrderDetails && storedOrderDetails.type.toLowerCase() === 'take-away') {
@@ -37,6 +41,7 @@ export class getOrderStatusEpic {
                     return customisedAction(SET_ORDER, { orderDetails: storedOrderDetails })
                   } else if (resObj.body) {
                     removeItem('orderDetails')
+                    // useDispatch(customisedAction(GET_ORDER_DETAIL))
                     return customisedAction(SET_ORDER, { orderDetails: storedOrderDetails })
                   }
                 }

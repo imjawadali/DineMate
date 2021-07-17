@@ -30,6 +30,9 @@ function CheckOut(props) {
     const [testArr, setTestArr] = useState([])
     const [orderDetail, setOrderDetail] = useState("")
     const [TakeAwayOrder, setTakeAwayOrder] = useState("")
+    const [tip, setTip] = useState("")
+    const [data, setData] = useState("")
+
     // const resDet = useSelector(({ menuReducer }) => menuReducer.restaurant)
 
 
@@ -91,11 +94,14 @@ function CheckOut(props) {
             let data = dataOrder ? dataOrder.orderItems : []
             if (data.length) {
                 setProducts([...data])
+                setData(data)
             }
         } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
             let data = TakeAwayOrder ? TakeAwayOrder : []
             if (data.length) {
                 setProducts(data)
+                setData(data)
+
             }
         }
         // }, [500])
@@ -175,16 +181,17 @@ function CheckOut(props) {
 
 
     const payNow = () => {
-        if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))){
+        if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))) {
 
             let obj = {
                 "restaurantId": orderDetail.restaurantId,
                 "orderNumber": orderDetail.orderNumber,
-                "type": orderDetail.type
+                "type": orderDetail.type,
+                'tip': tip
             }
             dispatch(customisedAction(CLOSE_ORDER, obj))
             props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
-        }else{
+        } else {
             dispatch(customisedAction(CANT_PAY))
         }
     }
@@ -192,6 +199,8 @@ function CheckOut(props) {
     useEffect(() => {
         if (takeOrderItems) {
             setProducts(takeOrderItems.orderItems)
+            setData(takeOrderItems)
+
         }
     }, [takeOrderItems])
 
@@ -222,10 +231,28 @@ function CheckOut(props) {
                             </div>
                         )
                     }) : null}
+
+
+                    {data && data.discountAmount ?
+                        <div className="itemCart">
+                            <p>Discount Amount</p>
+                            <p>$ {data.discountAmount}</p>
+                        </div> : null}
+                    {data && data.tip ?
+                        <div className="itemCart">
+                            <p>Tip Amount</p>
+                            <p>$ {data.tip}</p>
+                        </div> : null}
+                    {data && data.taxAmount ?
+                        <div className="itemCart">
+                            <p>GST TAX Amount</p>
+                            <p>$ {data.taxAmount}</p>
+                        </div> : null
+                    }
                     <div className="totalCart">
-                        <p>Total</p>
+                        <p onClick={()=>console.log(data)}>Total</p>
                         {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
-                        <p>$ {totalAmount()}</p>
+                        <p>$ {data && data.billAmount}</p>
                     </div>
                 </div>
                 {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
@@ -280,8 +307,12 @@ function CheckOut(props) {
 
                 </div>
                 <div className="Ammount">
-                    <div>
-                        <h2><span>Payment Amount</span> ${totalAmount()}</h2>
+                    <div className="ammountDiv">
+                        <h2><span>Payment Amount</span> ${data && data.billAmount}</h2>
+                        <label>
+                            <p>Enter Tip Here $</p>
+                            <input type="number" onChange={(ev) => setTip(ev.target.value)} placeholder="" />
+                        </label>
                         <button className="payBtn" onClick={payNow}>Pay Now</button>
                     </div>
                     {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
