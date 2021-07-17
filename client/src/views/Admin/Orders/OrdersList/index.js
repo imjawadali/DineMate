@@ -49,7 +49,9 @@ function OrdersList(props) {
                                             />
                                         </div>
                                     </td>
-                                    <td>{tableId ? 'Table # ' : null}{tableId && tableId.length === 1 ? '0' : null}{tableId || 'Pick-Up'}</td>
+                                    <td style={{ color: tableId ? '' : 'blue' }}>
+                                        {tableId ? 'Table # ' : null}{tableId && tableId.length === 1 ? '0' : null}{tableId || 'Pick-Up'}
+                                    </td>
                                     <td>{orderNumber}</td>
                                     <OrderTimer status={status} timeStamp={time} />
                                     <td style={{ textAlign: 'center' }}>$ {amount}</td>

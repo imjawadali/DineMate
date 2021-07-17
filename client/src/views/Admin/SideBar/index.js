@@ -107,10 +107,10 @@ function SideBar(props) {
                             <i className="fa fa-cogs" />
                             <Link to={`${url}/settings/restaurant`}>Restaurant Settings</Link>
                         </div>
-                        <div className="sidebar__link sidebar_disabled_link">
+                        {/* <div className="sidebar__link sidebar_disabled_link">
                             <i className="fa fa-list" />
                             <Link to={`${pathname}`}>Schedule Management</Link>
-                        </div>
+                        </div> */}
                     </> : role === 'Staff' ?
                         <>
                             <h2>Staff</h2>

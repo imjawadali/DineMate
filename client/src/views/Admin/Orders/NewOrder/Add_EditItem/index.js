@@ -103,7 +103,7 @@ function Add_EditItem(props) {
     }
 
     return (
-        <Modal width={'60%'} display={addingEdittingItem}>
+        <Modal width={window.innerWidth < 480 ? '80%' : '40%'} display={addingEdittingItem}>
             {item && <div className="NewOrderItemModalContainer">
                 <div style={{ width: '100%', textAlign: 'end' }}>
                     <i className="fa fa-times fa-lg"
