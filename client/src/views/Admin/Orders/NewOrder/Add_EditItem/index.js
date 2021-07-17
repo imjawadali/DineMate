@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
 
 import { Modal, Input, Button } from '../../../../../components'
 import { SET_TOAST } from '../../../../../constants'
@@ -221,4 +220,4 @@ function Add_EditItem(props) {
     )
 }
 
-export default withRouter(Add_EditItem)
+export default Add_EditItem

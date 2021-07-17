@@ -41,6 +41,24 @@ module.exports = app => {
         )
     })
 
+    app.get('/admin/checkPasswordExpiry', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT DATEDIFF(CURRENT_TIMESTAMP, passwordLastUpdated) as days
+            FROM users WHERE id = ${adminId}`,
+            null,
+            (data) => {
+                if (data.length)
+                    return res.send(data[0])
+                else
+                    return res.status(422).send({ 'msg': `Invalid user` })
+            }
+        )
+    })
+
     app.post('/admin/forgotPassword', async (req, res) => {
         const { email } = req.body
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
@@ -85,7 +103,7 @@ module.exports = app => {
         getConnection(
             res,
             sql,
-            { password, passwordForgotten: 0 },
+            { password, passwordForgotten: 0, passwordLastUpdated: new Date() },
             (result) => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'Password Updated Successfully!' })
@@ -456,6 +474,97 @@ module.exports = app => {
         )
     })
 
+    app.get('/admin/getGenericData', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT * FROM genericData`,
+            null,
+            (data) => {
+                if (data.length) {
+                    let genericData = {}
+                    let faqs = []
+                    const nonFaqsList = data.filter(x => x.isFaq === 0)
+                    const faqsList = data.filter(x => x.isFaq === 1)
+                    for (let i = 0; i < nonFaqsList.length; i++) {
+                        genericData[nonFaqsList[i].key] = nonFaqsList[i].value
+                    }
+                    for (let i = 0; i < faqsList.length; i++) {
+                        faqs.push({
+                            id: faqsList[i].id,
+                            question: faqsList[i].key,
+                            answer: faqsList[i].value
+                        })
+                    }
+                    genericData.faqs = faqs
+                    return res.send(genericData)
+                } else {
+                    return res.status(422).send({ 'msg': 'No data available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/updateGenericData', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { updatedData } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!updatedData) return res.status(422).send({ 'msg': 'No data to update!' })
+        const array = Object.keys(updatedData)
+            .map((key) => {
+                return {
+                    key,
+                    value: updatedData[key]
+                }
+            })
+        if (!array || !array.length) return res.status(422).send({ 'msg': 'No data to update!' })
+
+
+        getTransactionalConnection()
+            .getConnection(function (error, tempDb) {
+                if (!!error) {
+                    console.log('DbConnectionError', error.sqlMessage)
+                    return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                }
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'SuperAdmin')`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            } else {
+                                for (let i = 0; i < array.length; i++) {
+                                    let errorOccured
+                                    tempDb.query(`UPDATE genericdata SET ? WHERE key = '${array[i].key}'`, { value: array[i].value }, function (error) {
+                                        if (!!error) {
+                                            console.log('TableError', error.sqlMessage)
+                                            tempDb.rollback(function () {
+                                            })
+                                            errorOccured = true
+                                        }
+                                    })
+                                    if (errorOccured) break
+                                }
+                                tempDb.commit(function (error) {
+                                    if (error) {
+                                        tempDb.rollback(function () {
+                                            return res.status(422).send({ 'msg': "Failed to update data" })
+                                        })
+                                    }
+                                    tempDb.release()
+                                    return res.send({ 'msg': 'Data updated successfully!' })
+                                })
+                            }
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
+            })
+    })
+
     app.post('/admin/getRestaurantDashboard', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId } = req.body
@@ -479,9 +588,8 @@ module.exports = app => {
             (data) => {
                 if (data.length) {
                     return res.send(data)
-                } else {
+                } else
                     return res.status(422).send({ 'msg': `No Table Data!` })
-                }
             }
         )
     })
@@ -1824,11 +1932,14 @@ module.exports = app => {
         if (userUpdatedData.hashString) return res.status(422).send({ 'msg': 'Can\'t update user\'s hashString!' })
         if (userUpdatedData.passwordForgotten) return res.status(422).send({ 'msg': 'Key passwordForgotten can\'t be update!' })
         if (userUpdatedData.restaurantId) return res.status(422).send({ 'msg': 'Can\'t update user\'s restaurantId!' })
+        let query = `UPDATE users SET ? WHERE id = ${id}`
+        if (userUpdatedData.password)
+            query = `UPDATE users SET password = '${userUpdatedData.password}', passwordLastUpdated = CURRENT_TIMESTAMP WHERE id = ${id}`
         getSecureConnection(
             res,
             adminId,
-            `UPDATE users SET ? WHERE id = ${id}`,
-            userUpdatedData,
+            query,
+            userUpdatedData.password ? null : userUpdatedData,
             (result) => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'User Updated Successfully!' })
@@ -1866,6 +1977,55 @@ module.exports = app => {
                         }
                     )
                 }
+            }
+        )
+    })
+
+    app.post('/admin/getRestaurantSettings', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant\'s ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT imageUrl, lateTime, cuisine, taxId, taxPercentage, customMessage
+            FROM restaurants WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (data) => {
+                if (data && data.length)
+                    return res.send(data[0])
+                else return res.status(422).send({ 'msg': 'Unable to fetch restaurant\'s data' })
+            }
+        )
+    })
+
+    app.post('/admin/updateRestaurantSettings', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, updatedData } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant\'s ID is required!' })
+        if (!updatedData) return res.status(422).send({ 'msg': 'No data to update!' })
+        if (updatedData.restaurantId) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s ID!' })
+        if (updatedData.restaurantName) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Name!' })
+        if (updatedData.address) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Business Address!' })
+        if (updatedData.city) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s City!' })
+        if (updatedData.country) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Country!' })
+        if (updatedData.latitude) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Latitude!' })
+        if (updatedData.longitude) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Longitude!' })
+        if (updatedData.rating) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Rating!' })
+        if (updatedData.primaryContactId) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Primary Contact!' })
+        if (updatedData.secondaryContactId) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Secondary Contact!' })
+        if (updatedData.createdAt) return res.status(422).send({ 'msg': 'Can\'t Update Restaurant\'s Create Time!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE restaurants SET ? WHERE restaurantId = '${restaurantId}'`,
+            updatedData,
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Restuarant Data Updated Successfully!' })
+                else return res.status(422).send({ 'msg': 'Failed to update user' })
             }
         )
     })

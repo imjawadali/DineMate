@@ -367,6 +367,44 @@ module.exports = app => {
         }
     })
 
+    app.get('/customer/getGenericData', async (req, res) => {
+        console.log("\n\n>>> /customer/getGenericData")
+        getConnection(
+            res,
+            `SELECT * FROM genericData`,
+            null,
+            (data) => {
+                if (data.length) {
+                    let genericData = {}
+                    let faqs = []
+                    const nonFaqsList = data.filter(x => x.isFaq === 0)
+                    const faqsList = data.filter(x => x.isFaq === 1)
+                    for (let i = 0; i < nonFaqsList.length; i++) {
+                        genericData[nonFaqsList[i].key] = nonFaqsList[i].value
+                    }
+                    for (let i = 0; i < faqsList.length; i++) {
+                        faqs.push({
+                            question: faqsList[i].key,
+                            answer: faqsList[i].value
+                        })
+                    }
+                    genericData.faqs = faqs
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body: genericData
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No data available!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
     app.get('/customer/getAllRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         getConnection(

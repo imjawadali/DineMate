@@ -8,6 +8,7 @@ export const BASE_URL = '/dev/'
 export const API_ENDPOINTS = {
     admin: {
         login: 'admin/login',
+        checkPasswordExpiry: 'admin/checkPasswordExpiry',
         forgotPassword: 'admin/forgotPassword',
         createPassword: 'admin/createPassword',
         addRestuarant: 'admin/addRestuarant',
@@ -17,6 +18,8 @@ export const API_ENDPOINTS = {
         getAllRestaurants: 'admin/getAllRestaurants',
         getExistingQrs: 'admin/getExistingQrs',
         setTableName: 'admin/setTableName',
+        getGenericData: 'admin/getGenericData',
+        updateGenericData: 'admin/updateGenericData',
         getSuperAdminDashboard: 'admin/getSuperAdminDashboard',
         getRestaurantDashboard: 'admin/getRestaurantDashboard',
         getKitchenDashboard: 'admin/getKitchenDashboard',
@@ -52,6 +55,8 @@ export const API_ENDPOINTS = {
         addUser: 'admin/addUser',
         updateUser: 'admin/updateUser',
         deleteUser: 'admin/deleteUser',
+        getRestaurantSettings: 'admin/getRestaurantSettings',
+        updateRestaurantSettings: 'admin/updateRestaurantSettings',
         uploadToS3:'admin/uploadToS3',
         deleteFromS3:'admin/deleteFromS3'
     }

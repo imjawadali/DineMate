@@ -10,7 +10,7 @@ function ItemsList(props) {
     const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
     const dispatch = useDispatch()
 
-    const { items, orderDetails, restaurantId, orderNumber, history } = props
+    const { items, orderDetails, restaurantId, orderNumber, showAddOnModal } = props
 
     return (
         <div className="TableDataContainer">
@@ -26,8 +26,8 @@ function ItemsList(props) {
                 </thead>
                 <tbody>
                     {items && items.length ?
-                        items.map((order) => {
-                            const { id, quantity, name, totalPrice, specialInstructions, addOns } = order
+                        items.map((item) => {
+                            const { id, quantity, name, totalPrice, specialInstructions, addOns } = item
                             const addOnsArray = addOns ? JSON.parse(addOns) : null
                             return (<>
                                 <tr key={id}
@@ -58,21 +58,21 @@ function ItemsList(props) {
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <div className="OrderDetailsActionButtons" style={{ backgroundColor: 'rgb(180, 198, 231)' }}
                                                 onClick={() => orderDetails.status && deletingItemId !== id && !deletingOrder && !closingId ?
-                                                    null : null
+                                                    showAddOnModal({ ...item, addOns: addOnsArray })
+                                                    : null
                                                 }>
                                                 Edit
                                             </div>
                                             <div className="OrderDetailsActionButtons" style={{ backgroundColor: 'rgb(199, 223, 180)' }}
-                                                onClick={() => orderDetails.status && deletingItemId !== id && !deletingOrder && !closingId  ?
+                                                onClick={() => orderDetails.status && deletingItemId !== id && !deletingOrder && !closingId ?
                                                     null : null
                                                 }>
                                                 Split
                                             </div>
                                             <div className="OrderDetailsActionButtons" style={{ backgroundColor: 'rgb(248, 203, 173)' }}
-                                                onClick={() => orderDetails.status && deletingItemId !== id && !deletingOrder && !closingId  ?
+                                                onClick={() => orderDetails.status && deletingItemId !== id && !deletingOrder && !closingId ?
                                                     dispatch(customisedAction(DELETE_ITEM,
-                                                        { id, restaurantId, orderNumber },
-                                                        { history: items.length === 1 ? history : null }
+                                                        { id, restaurantId, orderNumber }
                                                     ))
                                                     : null
                                                 }>

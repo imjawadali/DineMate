@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { TitleWithAction, Button, OrderTimer } from '../../../../components'
-import { CLOSE_ORDER, DELETE_ORDER, GET_ORDER_DETAILS } from '../../../../constants'
+import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, GET_MENU, GET_ORDER_DETAILS } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 import { getFormatedDateTime } from '../../../../helpers'
 
+import EditOrderItem from './EditOrderItem'
+import Discount from './Discount'
 import ItemsList from './ItemsList'
 import './styles.css'
 
@@ -13,12 +15,19 @@ function OrderDetails(props) {
 
   const [restaurantId, setrestaurantId] = useState(null)
   const [orderNumber, setorderNumber] = useState(null)
+  const [edittingItem, setedittingItem] = useState(false)
+  const [selectedItem, setselectedItem] = useState(null)
+  const [itemToEdit, setitemToEdit] = useState(null)
+  const [showDiscountModal, setshowDiscountModal] = useState(false)
 
+  const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
+  const menu = useSelector(({ menuReducer }) => menuReducer.menu)
   const fetchingOrderDetails = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrderDetails)
   const orderDetails = useSelector(({ ordersReducer }) => ordersReducer.orderDetails)
   const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
   const deletingItemId = useSelector(({ ordersReducer }) => ordersReducer.deletingItemId)
   const deletingOrder = useSelector(({ ordersReducer }) => ordersReducer.deletingOrder)
+  const applyingDiscount = useSelector(({ ordersReducer }) => ordersReducer.applyingDiscount)
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
@@ -30,11 +39,56 @@ function OrderDetails(props) {
       dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId: state.restaurantId, orderNumber: state.orderNumber }))
       setrestaurantId(state.restaurantId)
       setorderNumber(state.orderNumber)
+
+      if (!fetchingMenu && !menu) dispatch(customisedAction(GET_MENU, { restaurantId }))
     }
   }, [])
 
+  const showAddOnModal = (item) => {
+    setitemToEdit(item)
+    setselectedItem(menu ? menu.filter(x => x.id === item.itemId)[0] : undefined)
+    setedittingItem(true)
+  }
+
+  const cancelModal = () => {
+    setitemToEdit(null)
+    setselectedItem(null)
+    setedittingItem(false)
+  }
+
+  const submitItem = (item) => {
+    cancelModal()
+    console.log(item)
+  }
+
+  const cancelDiscountModal = () => {
+    setshowDiscountModal(false)
+  }
+
+  const applyDiscount = (discount, discountType) => {
+    dispatch(customisedAction(APPLY_DISCOUNT, {
+      restaurantId,
+      orderNumber,
+      discount,
+      discountType
+    }))
+    cancelDiscountModal()
+  }
+
   return (
     <div className="Container">
+      <EditOrderItem
+        edittingItem={edittingItem}
+        item={selectedItem}
+        itemToEdit={itemToEdit}
+        submitItem={submitItem}
+        cancelModal={cancelModal}
+      />
+      <Discount
+        showDiscountModal={showDiscountModal}
+        applyDiscount={applyDiscount}
+        cancelDiscountModal={cancelDiscountModal}
+      />
       <TitleWithAction
         text={`Check # ${orderNumber}`}
         textAlign="center"
@@ -82,56 +136,74 @@ function OrderDetails(props) {
             </div>
           </div>
         </div>
-        <ItemsList orderDetails={orderDetails} items={orderDetails.items} restaurantId={restaurantId} orderNumber={orderNumber} history={history} />
+        <ItemsList
+          orderDetails={orderDetails}
+          items={orderDetails.items}
+          restaurantId={restaurantId}
+          orderNumber={orderNumber}
+          showAddOnModal={(item) => showAddOnModal(item)}
+        />
         <div className="OrderDetailsBottomButtonsContainer">
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: !orderDetails.status
+                opacity: fetchingOrderDetails
+                  || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
-                  history.push({
-                    pathname: '/client/admin/ordersManagement/newOrder', state: {
-                      orderDetails: { ...orderDetails, orderNumber }
-                    }
-                  })
-                  : null
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+                history.push({
+                  pathname: '/client/admin/ordersManagement/newOrder', state: {
+                    orderDetails: { ...orderDetails, orderNumber }
+                  }
+                })
+                : null
               }>
               <td style={{ color: 'white', padding: '0px' }}>Add Item</td>
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: !orderDetails.status
+                opacity: fetchingOrderDetails
+                  || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount ?
                   0.5 : ''
-              }}>
+              }}
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+                setshowDiscountModal(true)
+                : null
+              }>
               <td style={{ color: 'white', padding: '0px' }}>Discount</td>
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: !orderDetails.status
+                opacity: fetchingOrderDetails
+                  || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount ?
                   0.5 : ''
               }}>
               <td style={{ color: 'white', padding: '0px' }}>Split</td>
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: !orderDetails.status
+                opacity: fetchingOrderDetails
+                  || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount?
                   0.5 : ''
               }}
-              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
                 dispatch(customisedAction(DELETE_ORDER, { restaurantId, orderNumber }, { history }))
                 : null
               }>
@@ -141,13 +213,14 @@ function OrderDetails(props) {
           <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center' }}>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: closingId === orderNumber
+                opacity: fetchingOrderDetails
+                  || closingId === orderNumber
                   || deletingItemId
                   || deletingOrder
-                  || deletingOrder ?
+                  || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => closingId !== orderNumber && !deletingItemId && !deletingOrder ?
+              onClick={() => !fetchingOrderDetails && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
                 history.goBack()
                 : null
               }>
@@ -155,13 +228,15 @@ function OrderDetails(props) {
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: !orderDetails.status
+                opacity: fetchingOrderDetails
+                  || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
                 dispatch(customisedAction(CLOSE_ORDER, { restaurantId, orderNumber }))
                 : null
               }>
@@ -169,9 +244,11 @@ function OrderDetails(props) {
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: closingId === orderNumber
+                opacity: fetchingOrderDetails
+                  || closingId === orderNumber
                   || deletingItemId
-                  || deletingOrder ?
+                  || deletingOrder
+                  || applyingDiscount ?
                   0.5 : ''
               }}>
               <td style={{ color: 'white', padding: '0px' }}>Print</td>

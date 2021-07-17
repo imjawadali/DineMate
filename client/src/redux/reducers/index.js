@@ -8,6 +8,7 @@ import menuReducer from './menuReducer'
 import usersReducer from './usersReducer'
 import ordersReducer from './ordersReducer'
 import staffReducer from './staffReducer'
+import genericDataReducer from './genericDataReducer'
 import fileUploadReducer from './fileUploadReducer'
 import toastReducer from './toastReducer'
 
@@ -21,6 +22,7 @@ export default combineReducers({
     usersReducer,
     ordersReducer,
     staffReducer,
+    genericDataReducer,
     fileUploadReducer,
     toastReducer
 })

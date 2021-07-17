@@ -12,12 +12,13 @@ import {
   DELETE_ORDER,
   DELETE_ORDER_SUCCESS,
   DELETE_ORDER_FAILURE,
-  DELETE_ITEM_SUCCESS_NO_MORE_DETAILS
+  APPLY_DISCOUNT,
+  APPLY_DISCOUNT_FAILURE
 } from '../../constants'
   
 export default (state = { 
   fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false,
-  addingUpdatingOrder: false, deletingItemId: null, deletingOrder: false,
+  addingUpdatingOrder: false, deletingItemId: null, deletingOrder: false, applyingDiscount: false,
   tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null
 }, { type, payload }) => {
   switch (type) {
@@ -49,9 +50,9 @@ export default (state = {
       return { ...state, fetchingOrders: false }
     
     case GET_ORDER_DETAILS:
-      return { ...state, fetchingOrderDetails: true }
+      return { ...state, fetchingOrderDetails: true, deletingItemId: null, applyingDiscount: false }
     case GET_ORDER_DETAILS_SUCCESS:
-      return { ...state, fetchingOrderDetails: false, orderDetails: payload, deletingItemId: null }
+      return { ...state, fetchingOrderDetails: false, orderDetails: payload }
     case GET_ORDER_DETAILS_FAILURE:
       return { ...state, fetchingOrderDetails: false }
     
@@ -74,8 +75,6 @@ export default (state = {
     
     case DELETE_ITEM:
       return { ...state, deletingItemId: payload.id }
-    case DELETE_ITEM_SUCCESS_NO_MORE_DETAILS:
-      return { ...state, deletingItemId: null }
     case DELETE_ITEM_FAILURE:
       return { ...state, deletingItemId: null }
     
@@ -85,6 +84,11 @@ export default (state = {
       return { ...state, deletingOrder: false }
     case DELETE_ORDER_FAILURE:
       return { ...state, deletingOrder: false }
+    
+    case APPLY_DISCOUNT:
+      return { ...state, applyingDiscount: true }
+    case APPLY_DISCOUNT_FAILURE:
+      return { ...state, applyingDiscount: false }
     
     case CLOSE_ORDER:
       return { ...state, closingId: payload.orderNumber }

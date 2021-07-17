@@ -1,5 +1,6 @@
 import { combineEpics } from 'redux-observable'
 import { loginEpic } from './admin/loginEpic'
+import { checkPasswordExpiryEpic } from './admin/checkPasswordExpiryEpic'
 import { forgotPasswordEpic } from './admin/forgotPasswordEpic'
 import { createPasswordEpic } from './admin/createPasswordEpic'
 import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
@@ -9,6 +10,8 @@ import { updateRestaurantEpic } from './admin/updateRestaurantEpic'
 import { generateQrsEpic } from './admin/generateQrsEpic'
 import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
+import { getGenericDataEpic } from './admin/getGenericDataEpic'
+import { updateGenericDataEpic } from './admin/updateGenericDataEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
 import { getKitchenDashboardEpic } from './admin/getKitchenDashboardEpic'
@@ -20,6 +23,7 @@ import { submitNewOrderEpic } from './admin/submitNewOrderEpic'
 import { addItemsToOrderEpic } from './admin/addItemsToOrderEpic'
 import { deleteItemEpic } from './admin/deleteItemEpic'
 import { deleteOrderEpic } from './admin/deleteOrderEpic'
+import { applyDiscountEpic } from './admin/applyDiscountEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
 import { getOrdersEpic } from './admin/getOrdersEpic'
 import { getOrderDetailsEpic } from './admin/getOrderDetailsEpic'
@@ -41,10 +45,13 @@ import { addMenuItemEpic } from './admin/addMenuItemEpic'
 import { updateMenuItemEpic } from './admin/updateMenuItemEpic'
 import { updateAddOnEpic } from './admin/updateAddOnEpic'
 import { addAddOnEpic } from './admin/addAddOnEpic'
+import { getRestaurantSettingsEpic } from './admin/getRestaurantSettingsEpic'
+import { updateRestaurantSettingsEpic } from './admin/updateRestaurantSettingsEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
 export const epics = combineEpics(
     loginEpic.login,
+    checkPasswordExpiryEpic.checkPasswordExpiry,
     forgotPasswordEpic.forgotPassword,
     createPasswordEpic.createPassword,
     getAllRestaurantsEpic.getAllRestaurants,
@@ -54,6 +61,8 @@ export const epics = combineEpics(
     generateQrsEpic.generateQrs,
     getExistingQrsEpic.getExistingQrs,
     setTableNameEpic.setTableName,
+    getGenericDataEpic.getGenericData,
+    updateGenericDataEpic.updateGenericData,
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
     getKitchenDashboardEpic.getKitchenDashboard,
@@ -65,6 +74,7 @@ export const epics = combineEpics(
     addItemsToOrderEpic.addItemsToOrder,
     deleteItemEpic.deleteItem,
     deleteOrderEpic.deleteOrder,
+    applyDiscountEpic.applyDiscount,
     getOrdersEpic.getOrders,
     getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,
@@ -86,6 +96,8 @@ export const epics = combineEpics(
     updateMenuItemEpic.updateMenuItem,
     updateAddOnEpic.updateAddOn,
     addAddOnEpic.addAddOn,
+    getRestaurantSettingsEpic.getRestaurantSettings,
+    updateRestaurantSettingsEpic.updateRestaurantSettings,
     uploadToS3Epic.uploadToS3,
     deleteFromS3Epic.deleteFromS3
 )

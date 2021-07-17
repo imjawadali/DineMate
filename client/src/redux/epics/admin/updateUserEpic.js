@@ -20,8 +20,8 @@ export class updateUserEpic {
             'post', 
             API_ENDPOINTS.admin.updateUser,
             { id, userUpdatedData },
-            () => {
-              return customisedAction(GET_USERS, { restaurantId })
+            (resObj) => {
+              return customisedAction(GET_USERS, { restaurantId, toast: { message: resObj.msg, type: 'success' } })
             },
             UPDATE_USER_FAILURE
           )

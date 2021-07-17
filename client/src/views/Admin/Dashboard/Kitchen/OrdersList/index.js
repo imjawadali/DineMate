@@ -1,18 +1,17 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { getTimeObject } from '../../../../../helpers'
 import { customisedAction } from '../../../../../redux/actions'
 import { MARK_ITEM_READY, MARK_ORDER_READY } from '../../../../../constants'
 import { ReadyIcon, KitchenTimer } from '../../../../../components'
 
 function OrdersList(props) {
-
+  
   const markingId = useSelector(({ dashboardReducer }) => dashboardReducer.markingId)
   const markingOrderNumber = useSelector(({ dashboardReducer }) => dashboardReducer.markingOrderNumber)
   const dispatch = useDispatch()
 
-  const { restaurantId, kitchenDashboard, fetchingDashboard } = props
+  const { restaurantId, lateTime, kitchenDashboard, fetchingDashboard } = props
 
   return (
     <div className="TableDataContainer">
@@ -65,7 +64,7 @@ function OrdersList(props) {
                               }
                             />
                           </td>
-                          <KitchenTimer index={index} timeStamp={data[data.length - 1].time} />
+                          <KitchenTimer lateTime={lateTime} index={index} timeStamp={data[data.length - 1].time} />
                           <td><p style={{ whiteSpace: 'nowrap' }}>{index === 0 ? type : ''}</p></td>
                           <td style={{ textAlign: 'center' }}>{index === 0 ? orderNumber : ''}</td>
                           <td style={{ textAlign: 'center' }}>{index === 0 ? tableId : ''}</td>

@@ -9,7 +9,8 @@ import {
   API_ENDPOINTS,
   BASE_URL,
   ADMIN_LOGOUT,
-  SESSION_CHECK_DONE
+  SESSION_CHECK_DONE,
+  UPDATE_RESTAURANT_SETTINGS
 } from '../../../constants'
 
 import store from '../../store'
@@ -20,7 +21,7 @@ export class uploadToS3Epic {
     action$.pipe(
       ofType(UPLOAD_TO_S3),
       switchMap(
-        async ({ payload: { file }}) => {
+        async ({ payload: { file, restaurantId, updateRestaurantSettings }}) => {
           try {
             const response = await fetch(BASE_URL+API_ENDPOINTS.admin.uploadToS3, {
               method: 'POST',
@@ -30,6 +31,8 @@ export class uploadToS3Epic {
             const data = await response.json()
             const { status } = response
             if (status && status === 200) {
+              if (updateRestaurantSettings)
+                return customisedAction(UPDATE_RESTAURANT_SETTINGS, { restaurantId, updatedData: { imageUrl: data.imageUrl }})
               return customisedAction(UPLOAD_TO_S3_SUCCESS, { imageUrl: data.imageUrl, toast: { message: data.msg, type: 'success' } })
             }
             if (status && (status === 401 || status === 422 || status === 503)) {

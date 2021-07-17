@@ -137,7 +137,7 @@ function CartItemsList(props) {
                     <tr style={{ border: getTipAmount() ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tax</td>
-                        <td style={{ textAlign: 'center' }}>$ {getTaxAmount(getSubTotal(sum)).toFixed(2)} (${taxPercentage}%)</td>
+                        <td style={{ textAlign: 'center' }}>$ {getTaxAmount(getSubTotal(sum)).toFixed(2)} ({taxPercentage}%)</td>
                         <td />
                     </tr>
                     {getTipAmount() ? <tr>

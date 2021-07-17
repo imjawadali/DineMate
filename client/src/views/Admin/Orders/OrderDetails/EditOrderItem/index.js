@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from 'react'
-import { withRouter } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import { Modal, Input, Button } from '../../../../../components'
-import './styles.css'
+import { SET_TOAST } from '../../../../../constants'
+import { customisedAction } from '../../../../../redux/actions'
 
 function EditOrderItem(props) {
 
     const [radioAddOns, setradioAddOns] = useState([])
     const [checkoxAddOns, setcheckoxAddOns] = useState([])
     const [itemToSubmit, setitemToSubmit] = useState({})
+    const dispatch = useDispatch()
 
-    const { addingEdittingItem, item, itemToEdit, submitItem, updateItem, cancelModal } = props
+    const { edittingItem, item, itemToEdit, submitItem, cancelModal } = props
 
     useEffect(() => {
-        if (item && item.addOns && item.addOns.length) {
-            setradioAddOns(item.addOns.filter(addOn => addOn.addOnOptions && addOn.addOnOptions.length))
-            setcheckoxAddOns(item.addOns.filter(addOn => !addOn.addOnOptions || !addOn.addOnOptions.length))
+        if (item) {
+            if (item.addOns && item.addOns.length) {
+                setradioAddOns(item.addOns.filter(addOn => addOn.addOnOptions && addOn.addOnOptions.length))
+                setcheckoxAddOns(item.addOns.filter(addOn => !addOn.addOnOptions || !addOn.addOnOptions.length))
+            } else {
+                setradioAddOns([])
+                setcheckoxAddOns([])
+            }
         } else {
-            setradioAddOns([])
-            setcheckoxAddOns([])
-        }
-
-        if (item && !itemToEdit) {
-            setitemToSubmit({
-                itemId: item.id,
-                quantity: 1,
-                name: item.name,
-                price: item.price,
-                totalPrice: item.price
-            })
+            cancelModal()
+            if (item === undefined)
+                dispatch(customisedAction(SET_TOAST, { message: 'Item not found in menu', type: 'error' }))
         }
     }, [item])
 
     useEffect(() => {
-        if (itemToEdit) setitemToSubmit(JSON.parse(JSON.stringify(itemToEdit)))
+        if (itemToEdit) setitemToSubmit(JSON.parse(JSON.stringify({ ...itemToEdit, price: item ? item.price : 0 })))
     }, [itemToEdit])
 
     const updateSpecialInstructions = (text) => {
@@ -94,7 +92,7 @@ function EditOrderItem(props) {
     }
 
     return (
-        <Modal width={'60%'} display={addingEdittingItem}>
+        <Modal width={'60%'} display={edittingItem}>
             {item && <div className="NewOrderItemModalContainer">
                 <div style={{ width: '100%', textAlign: 'end' }}>
                     <i className="fa fa-times fa-lg"
@@ -201,8 +199,7 @@ function EditOrderItem(props) {
                         iconLeft={<i className="fa fa-send" />}
                         onClick={() => {
                             itemToSubmit.totalPrice = getTotalPrice()
-                            if (itemToEdit) updateItem(itemToSubmit)
-                            else submitItem(itemToSubmit)
+                            submitItem(itemToSubmit)
                         }}
                     />
                 </div>
@@ -211,4 +208,4 @@ function EditOrderItem(props) {
     )
 }
 
-export default withRouter(EditOrderItem)
+export default EditOrderItem

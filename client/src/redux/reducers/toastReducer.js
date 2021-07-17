@@ -82,7 +82,6 @@ import {
   ASSIGN_TABLES_TO_STAFF_FAILURE,
   GET_ORDER_DETAILS,
   GET_ORDER_DETAILS_FAILURE,
-  GET_ORDER_DETAILS_SUCCESS,
   RESET_RESTAURANT,
   SUBMIT_NEW_ORDER,
   SUBMIT_NEW_ORDER_SUCCESS,
@@ -92,11 +91,23 @@ import {
   ADD_ITEMS_TO_ORDER_FAILURE,
   DELETE_ITEM,
   DELETE_ITEM_FAILURE,
-  DELETE_ITEM_SUCCESS,
   DELETE_ORDER,
   DELETE_ORDER_FAILURE,
   DELETE_ORDER_SUCCESS,
-  DELETE_ITEM_SUCCESS_NO_MORE_DETAILS
+  APPLY_DISCOUNT,
+  APPLY_DISCOUNT_FAILURE,
+  UPDATE_RESTAURANT_SETTINGS,
+  GET_RESTAURANT_SETTINGS_FAILURE,
+  UPDATE_RESTAURANT_SETTINGS_FAILURE,
+  GET_RESTAURANT_SETTINGS,
+  ADMIN_SIGN_IN,
+  SET_SESSION,
+  CHECK_PASSWORD_EXPIRY_SUCCESS,
+  CHECK_PASSWORD_EXPIRY_FAILURE,
+  GET_GENERIC_DATA_FAILURE,
+  UPDATE_GENERIC_DATA_FAILURE,
+  UPDATE_GENERIC_DATA,
+  GET_GENERIC_DATA
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -107,8 +118,16 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: null }
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
+    case ADMIN_SIGN_IN:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Signing-In Admin', type: 'success' } }
+    case SET_SESSION:
+      return { ...state, toastSetDismiss: true }
     case ADMIN_SIGN_IN_FAILURE:
-      return { ...state, toast: payload }
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case CHECK_PASSWORD_EXPIRY_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case CHECK_PASSWORD_EXPIRY_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case FORGOT_PASSWORD_SUCCESS:
       return { ...state, toast: payload }
     case FORGOT_PASSWORD_FAILURE:
@@ -149,6 +168,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case SET_TABLE_NAME_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_GENERIC_DATA:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case GET_GENERIC_DATA_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_GENERIC_DATA:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Updating Data', type: 'success' } }
+    case UPDATE_GENERIC_DATA_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
       return { ...state, toast: payload }
     case GET_RESTAURANT_DASHBOARD:
@@ -173,6 +200,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case GET_ORDERS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_ORDER_DETAILS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case GET_ORDER_DETAILS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case SUBMIT_NEW_ORDER:
@@ -189,17 +218,17 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_ITEM:
       return { ...state, toastSetDismiss: true, toast: { message: 'Deleting item', type: 'success' } }
-    case DELETE_ITEM_SUCCESS:
-      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case DELETE_ITEM_FAILURE:
-      return { ...state, toastSetDismiss: true, toast: payload }
-    case DELETE_ITEM_SUCCESS_NO_MORE_DETAILS:
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_ORDER:
       return { ...state, toastSetDismiss: true, toast: { message: 'Deleting order', type: 'success' } }
     case DELETE_ORDER_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case APPLY_DISCOUNT:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Applying discount to order', type: 'success' } }
+    case APPLY_DISCOUNT_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case CLOSE_ORDER:
       return { ...state, toastSetDismiss: true, toast: { message: 'Closing Check', type: 'success' } }
@@ -238,15 +267,15 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DELETE_CATEGORY_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_USERS:
-      return { ...state, toastSetDismiss: true }
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case GET_USERS_FAILURE:
       return { ...state, toast: payload }
     case ADD_USER:
-      return { ...state, toast: { message: 'Adding Restaurant User', type: 'success' } }
+      return { ...state, toast: { message: 'Adding User', type: 'success' } }
     case UPDATE_USER:
-      return { ...state, toast: { message: 'Updating Restaurant User', type: 'warning' } }
+      return { ...state, toast: { message: 'Updating User', type: 'warning' }}
     case DELETE_USER:
-      return { ...state, toast: { message: 'Deleting Restaurant User', type: 'error' } }
+      return { ...state, toast: { message: 'Deleting User', type: 'error' } }
     case ADD_USER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case UPDATE_USER_FAILURE:
@@ -280,6 +309,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case UPDATE_ADDON_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case UPDATE_ADDON_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_RESTAURANT_SETTINGS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case GET_RESTAURANT_SETTINGS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RESTAURANT_SETTINGS:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Updating Restaurant Settings', type: 'success' } }
+    case UPDATE_RESTAURANT_SETTINGS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case UPLOAD_TO_S3:
       return { ...state, toastSetDismiss: true }

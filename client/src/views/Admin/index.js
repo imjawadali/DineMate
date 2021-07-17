@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { GET_CATEGORIES, GET_EXISTING_QRS, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
+import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -28,6 +28,9 @@ import Menu from './Menu'
 import ItemDetails from './Menu/ItemDetails'
 import AddMenuItem from './AddMenuItem'
 import RestaurantUsers from './Users/RestaurantUsers'
+import SuperAdminSettings from './Settings/SuperAdmin'
+import RestaurantSettings from './Settings/Restaurant'
+import UpdatePassword from './UpdatePassword'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -48,7 +51,6 @@ function Admin(props) {
         dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
       } else if (role === 'Staff') {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-        dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
         dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
       } else {
@@ -58,17 +60,26 @@ function Admin(props) {
         dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId, noToast: true }))
       }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
     }
   }, [restaurantId])
 
+  useEffect(() => {
+    if (role === "Admin" || role === "SuperAdmin")
+      dispatch(customisedAction(CHECK_PASSWORD_EXPIRY, { noToast: true }))
+
+    if (role === 'SuperAdmin')
+      dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
+  }, [])
+
   const openSidebar = () => {
-      setSidebarOpen(true)
+    setSidebarOpen(true)
   }
 
   const closeSidebar = () => {
-      setSidebarOpen(false)
+    setSidebarOpen(false)
   }
 
   let { path } = useRouteMatch()
@@ -76,31 +87,31 @@ function Admin(props) {
   props.history.listen(() => closeSidebar())
 
   const SuperAdminRoutes = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          role === "SuperAdmin" ? 
-          <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
-      )} />
+    <Route {...rest} render={(props) => (
+      role === "SuperAdmin" ?
+        <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
+    )} />
   )
 
   const RestaurantAdminRoutes = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          restaurantId && (role === "Admin" || role === "SuperAdmin") ? 
-          <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
-      )} />
+    <Route {...rest} render={(props) => (
+      restaurantId && (role === "Admin" || role === "SuperAdmin") ?
+        <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
+    )} />
   )
 
   const OthersRoutes = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          restaurantId && (role !== "Kitchen") ? 
-          <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
-      )} />
+    <Route {...rest} render={(props) => (
+      restaurantId && (role !== "Kitchen") ?
+        <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
+    )} />
   )
 
   const KitchenAdminRoutes = ({ component: Component, ...rest }) => (
-      <Route {...rest} render={(props) => (
-          restaurantId && (role === "Kitchen") ? 
-          <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
-      )} />
+    <Route {...rest} render={(props) => (
+      restaurantId && (role === "Kitchen") ?
+        <Component {...props} /> : <Redirect to={{ pathname: path, state: { from: props.location.pathname } }} />
+    )} />
   )
 
   return (
@@ -109,7 +120,7 @@ function Admin(props) {
         <SideBar admin={admin} sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       </div>
       <div className="mainContainer" style={{ width: role === "Kitchen" && props.location.pathname.includes('/dashboard') ? '100%' : '' }}>
-        <NavBar role={role} openSidebar={openSidebar} { ...props } />
+        <NavBar role={role} openSidebar={openSidebar} {...props} />
         <div className="Main">
           <Switch>
             <Route exact path={path}>
@@ -118,7 +129,7 @@ function Admin(props) {
             <Route path={`${path}/dashboard`}>
               <Switch>
                 <Route exact path={`${path}/dashboard`}>
-                  <Redirect to={restaurantId ? 
+                  <Redirect to={restaurantId ?
                     role !== "Kitchen" ? `${path}/dashboard/restaurant`
                       : `${path}/dashboard/kitchen`
                     : `${path}/dashboard/superAdmin`} />
@@ -144,7 +155,7 @@ function Admin(props) {
             <Route path={`${path}/usersManagement`}>
               <Switch>
                 <Route exact path={`${path}/usersManagement`}>
-                  <Redirect to={restaurantId ? 
+                  <Redirect to={restaurantId ?
                     role !== "Kitchen" && role !== "Staff" ? `${path}/usersManagement/restaurantUsers`
                       : `${path}`
                     : `${path}/usersManagement/allUsers`} />
@@ -155,7 +166,7 @@ function Admin(props) {
             </Route>
             <Route path={`${path}/ordersManagement`}>
               <Switch>
-                <RestaurantAdminRoutes exact path={`${path}/ordersManagement`} component={Orders}/>
+                <RestaurantAdminRoutes exact path={`${path}/ordersManagement`} component={Orders} />
                 <RestaurantAdminRoutes path={`${path}/ordersManagement/orderDetails`} component={OrderDetails} />
                 <RestaurantAdminRoutes path={`${path}/ordersManagement/newOrder`} component={NewOrder} />
               </Switch>
@@ -176,6 +187,19 @@ function Admin(props) {
               </Switch>
             </Route>
             <RestaurantAdminRoutes path={`${path}/addFoodItem`} component={AddMenuItem} />
+            <Route path={`${path}/settings`}>
+              <Switch>
+                <Route exact path={`${path}/settings`}>
+                  <Redirect to={restaurantId ?
+                    `${path}/settings/restaurant`
+                    : `${path}/settings/superAdmin`} />
+                </Route>
+                <SuperAdminRoutes path={`${path}/settings/superAdmin`} component={SuperAdminSettings} />
+                <RestaurantAdminRoutes path={`${path}/settings/restaurant`} component={RestaurantSettings} />
+              </Switch>
+            </Route>
+            <SuperAdminRoutes path={`${path}/updatePassword`} component={UpdatePassword} />
+            <RestaurantAdminRoutes path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

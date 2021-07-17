@@ -59,9 +59,13 @@ function SideBar(props) {
                         <i className="fa fa-user" />
                         <Link to={`${url}/usersManagement`}>Users Management</Link>
                     </div>
-                    <div className="sidebar__link sidebar_disabled_link">
-                        <i className="fa fa-files-o" />
-                        <Link to={pathname}>Registration Requests</Link>
+                    <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-cog" />
+                        <Link to={`${url}/updatePassword`}>Update Password</Link>
+                    </div>
+                    <div className={`sidebar__link ${pathname.includes('/settings') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-cogs" />
+                        <Link to={`${url}/settings/superAdmin`}>Settings</Link>
                     </div>
                 </> :
                 <>
@@ -95,17 +99,17 @@ function SideBar(props) {
                             <i className="fa fa-users" />
                             <Link to={`${url}/usersManagement`}>Users Management</Link>
                         </div>
+                        <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-cog" />
+                            <Link to={`${url}/restaurant/updatePassword`}>Update Password</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/settings') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-cogs" />
+                            <Link to={`${url}/settings/restaurant`}>Restaurant Settings</Link>
+                        </div>
                         <div className="sidebar__link sidebar_disabled_link">
                             <i className="fa fa-list" />
                             <Link to={`${pathname}`}>Schedule Management</Link>
-                        </div>
-                        <div className={`sidebar__link sidebar_disabled_link`}>
-                            <i className="fa fa-wrench" />
-                            <Link to={pathname}>Restaurant Settings</Link>
-                        </div>
-                        <div className={`sidebar__link sidebar_disabled_link`}>
-                            <i className="fa fa-files-o" />
-                            <Link to={pathname}>Profile</Link>
                         </div>
                     </> : role === 'Staff' ?
                         <>
@@ -114,17 +118,9 @@ function SideBar(props) {
                                 <i className="fa fa-user" />
                                 <Link to={`${url}/staffManagement`}>Staff Management</Link>
                             </div>
-                            <div className={`sidebar__link sidebar_disabled_link`}>
-                                <i className="fa fa-files-o" />
-                                <Link to={pathname}>Profile</Link>
-                            </div>
                         </>
                         : <>
                             <h2>Kitchen Admin</h2>
-                            <div className={`sidebar__link sidebar_disabled_link`}>
-                                <i className="fa fa-files-o" />
-                                <Link to={pathname}>Profile</Link>
-                            </div>
                         </>
                     }
                     {admin.role === "SuperAdmin" ?

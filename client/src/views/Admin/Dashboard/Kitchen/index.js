@@ -23,7 +23,7 @@ function Kitchen() {
   const kitchenDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.kitchenDashboard)
   const dispatch = useDispatch()
 
-  const { restaurantId } = admin
+  const { restaurantId, lateTime } = admin
 
   useEffect(() => {
     if (kitchenDashboard && kitchenDashboard.length) {
@@ -126,7 +126,7 @@ function Kitchen() {
               onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))} />
           </div>
         </div>
-        <OrdersList restaurantId={restaurantId} fetchingDashboard={fetchingDashboard} kitchenDashboard={paginate(getFilteredList())} />
+        <OrdersList restaurantId={restaurantId} lateTime={lateTime} fetchingDashboard={fetchingDashboard} kitchenDashboard={paginate(getFilteredList())} />
         {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ?
           <Pagination
             currentIndex={currentIndex}

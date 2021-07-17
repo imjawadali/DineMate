@@ -3,7 +3,8 @@ import {
   UPLOAD_TO_S3_SUCCESS,
   UPLOAD_TO_S3_FAILURE,
   DELETE_FROM_S3_SUCCESS,
-  ADD_MENU_SUCCESS
+  ADD_MENU_SUCCESS,
+  UPDATE_RESTAURANT_SETTINGS
 } from '../../constants'
   
 export default (state = { imageUrl: null, uploading: false }, { type, payload }) => {
@@ -13,6 +14,9 @@ export default (state = { imageUrl: null, uploading: false }, { type, payload })
     case UPLOAD_TO_S3_SUCCESS:
       return { ...state, uploading: false, imageUrl: payload.imageUrl }
     case UPLOAD_TO_S3_FAILURE:
+      return { ...state, uploading: false }
+      
+    case UPDATE_RESTAURANT_SETTINGS:
       return { ...state, uploading: false }
     
     case DELETE_FROM_S3_SUCCESS:
