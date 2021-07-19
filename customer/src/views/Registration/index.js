@@ -2,6 +2,9 @@ import React from 'react'
 import './styles.css';
 import logo from '../../assets/pizza_with_green_circle.png';
 import { useState } from 'react';
+import { customisedAction } from '../../redux/actions';
+import { useDispatch } from 'react-redux';
+import { REGISTER_RESTURENT } from '../../constants';
 
 function Registration(props) {
 
@@ -23,21 +26,45 @@ function Registration(props) {
     }
   ];
 
-  const [restuarantName,setRestuarantName] = useState("")
-  const [restuarantAddress,setRestuarantAddress] = useState("")
-  const [firstame,setFirstame] = useState("")
-  const [lastName,setLastName] = useState("")
-  const [email,setEmail] = useState("")
-  const [ContactNumber,setContactNumber] = useState("")
-  const [businessType,setBusinessType] = useState("")
+  const [restuarantName, setRestuarantName] = useState("")
+  const [restuarantAddress, setRestuarantAddress] = useState("")
+  const [firstame, setFirstame] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [email, setEmail] = useState("")
+  const [ContactNumber, setContactNumber] = useState("")
+  const [businessType, setBusinessType] = useState("")
+  const [city, setCity] = useState("")
+  const [country, setCountry] = useState("")
+  let dispatch = useDispatch()
 
 
-  const submit = () =>{
-    // let obj ={
-    //      "restaurantId": "xyz_restaurant",
-    //      "restaurantName": restuarantName,
-    //       "address\": {\n        \"address\": \"XYZ\",\n        \"city\": \"Karachi\",\n        \"country\": \"Pakistan\"\n    },\n    \"primaryContact\": {\n        \"adminName\": \"Jawad\",\n        \"email\": \"asdf62426@gmail.com\"\n    },\n    \"secondaryContact\": null
-    // }
+  const submit = () => {
+    let obj = {
+      "restaurantName": restuarantName,
+      "address": restuarantAddress,
+      "city": city,
+      "country": country,
+      "firstName": firstame,
+      "lastName": lastName,
+      "email": email,
+      "phoneNumber": ContactNumber,
+      "businessType": businessType
+    }
+    console.log(obj)
+    dispatch(customisedAction(REGISTER_RESTURENT, {
+      data: obj, reset: () => {
+        setRestuarantName("")
+        setRestuarantAddress("")
+        setCity("")
+        setCountry("")
+        setFirstame("")
+        setLastName("")
+        setEmail("")
+        setContactNumber("")
+        setBusinessType("")
+      }
+    }))
+
   }
 
   return (
@@ -60,18 +87,22 @@ function Registration(props) {
             <div className="form-title">Get Started</div>
 
             <div className="restaurant-info-fields">
-              <input onChange={(ev)=>setRestuarantName(ev.target.value)} className="form-input" placeholder="Tim hortins" type="text" />
-              <input onChange={(ev)=>setRestuarantAddress(ev.target.value)} className="form-input" placeholder="Store Address" type="text" />
-              <input className="form-input" placeholder="Floor / Suite (Optional)" type="text" />
+              <input value={restuarantName} onChange={(ev) => setRestuarantName(ev.target.value)} className="form-input" placeholder="Tim hortins" type="text" />
+              <input value={restuarantAddress} onChange={(ev) => setRestuarantAddress(ev.target.value)} className="form-input" placeholder="Store Address" type="text" />
+              {/* <input className="form-input" placeholder="Floor / Suite (Optional)" type="text" /> */}
+              <div className="names-div">
+                <input value={city} onChange={(ev) => setCity(ev.target.value)} className="form-input" placeholder="City" type="text" />
+                <input value={country} onChange={(ev) => setCountry(ev.target.value)} className="form-input" placeholder="Country" type="text" />
+              </div>
             </div>
 
             <div className="persoanl-info-fields">
               <div className="names-div">
-                <input onChange={(ev)=>setFirstame(ev.target.value)} className="form-input" placeholder="First Name" type="text" />
-                <input onChange={(ev)=>setLastName(ev.target.value)} className="form-input" placeholder="Last Name" type="text" />
+                <input value={firstame} onChange={(ev) => setFirstame(ev.target.value)} className="form-input" placeholder="First Name" type="text" />
+                <input value={lastName} onChange={(ev) => setLastName(ev.target.value)} className="form-input" placeholder="Last Name" type="text" />
               </div>
-              <input onChange={(ev)=>setEmail(ev.target.value)} className="form-input" placeholder="Email Address" type="text" />
-              <input onChange={(ev)=>setContactNumber(`+1${ev.target.value}`)} className="form-input mobile-number" placeholder="Mobile Phone Number" type="number" />
+              <input value={email} onChange={(ev) => setEmail(ev.target.value)} className="form-input" placeholder="Email Address" type="text" />
+              <input value={ContactNumber} onChange={(ev) => setContactNumber(ev.target.value)} className="form-input mobile-number" placeholder="Mobile Phone Number" type="tel" />
 
               <select className="country-select">
                 <option>PK</option>
@@ -83,7 +114,7 @@ function Registration(props) {
             </div>
 
             <div className="persoanl-info-fields" style={{ marginTop: -14 }}>
-              <select onChange={(ev)=>setBusinessType(ev)} className="form-input" placeholder="Business type">
+              <select value={businessType} onChange={(ev) => setBusinessType(ev.target.value)} className="form-input" placeholder="Business type">
                 <option>Business Type</option>
                 <option>No Business</option>
               </select>

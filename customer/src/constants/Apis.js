@@ -6,6 +6,7 @@ export const BASE_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com
 export const API_ENDPOINTS = {
     customer: {
         login: 'customer/login',
+        registerRestuarant: 'customer/registerRestuarant',
         getAllRestaurants: 'customer/getAllRestaurants',
         getRestaurantDetails: 'customer/getRestaurantDetails',
         initializeOrder: 'customer/initializeOrder',

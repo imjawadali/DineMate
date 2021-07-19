@@ -25,6 +25,7 @@ export const epics = combineEpics(
     initializeOrderEpic.initializeOrder,
     getMenuEpic.getMenu,
     signUpEpic.signUp,
+    signUpEpic.registerRestuarant,
     forgotPsswordEpic.forgetPassword,
     forgotPsswordEpic.setNewPassword,
     addOrderEpic.addOrder,

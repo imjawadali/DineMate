@@ -26,7 +26,8 @@ import {
   CANT_SIGN_OUT,
   CANT_PAY,
   SIGN_UP_FAILURE,
-  TAKIE_AWAY_ORDER_FAILED
+  TAKIE_AWAY_ORDER_FAILED,
+  REGISTER_RESTURENT
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -41,6 +42,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' } }
     case SIGN_UP:
       return { ...state, toastSetDismiss: true, toast: { message: 'Sign Up Succes', type: 'success' } }
+    case REGISTER_RESTURENT:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Resgistered Your Resturent Successfully', type: 'success' } }
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
     case SIGN_IN_FAILURE:
