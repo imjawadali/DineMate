@@ -463,7 +463,7 @@ module.exports = app => {
         if (emailStatus && emailStatus.accepted.length)
             return res.send({
                 status: true,
-                message: 'Password Reset Link Sent!'
+                message: 'Registration request submitted!'
             })
         else return res.send({
             status: false,
