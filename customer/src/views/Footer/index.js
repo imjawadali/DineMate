@@ -1,10 +1,13 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { useRouteMatch, withRouter } from 'react-router-dom'
 import { Logo } from '../../components'
 
 import './styles.css'
 
 const Footer = props => {
+    const genericData = useSelector(({ serviceReducer }) => serviceReducer.genericData)
+
     const match = useRouteMatch('/:restaurantId/:tableId');
     return props && props.location ?
         (props.location.pathname.includes('/customer') && match || !match || props.location.pathname === '/') ? (
@@ -63,12 +66,12 @@ const Footer = props => {
                             <p> © 2021 Dine Mate. All Rights Are Reserved.</p>
                         </div>
                         <div className="footer-bottom-right">
-                            <div className="footer-bottom-right-logo">
+                            <a href={genericData && genericData.facebookLink} className="footer-bottom-right-logo">
                                 <img src={require("../../assets/fblogo.png").default} />
-                            </div>
-                            <div className="footer-bottom-right-logo">
+                            </a>
+                            <a href={genericData && genericData.instagramLink} className="footer-bottom-right-logo">
                                 <img src={require("../../assets/instagramlogo.png").default} />
-                            </div>
+                            </a>
                         </div>
                     </div>
 

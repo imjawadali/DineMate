@@ -3,7 +3,7 @@ import './styles.css';
 import logo from '../../assets/pizza_with_green_circle.png';
 import { useState } from 'react';
 import { customisedAction } from '../../redux/actions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { REGISTER_RESTURENT } from '../../constants';
 
 function Registration(props) {
@@ -35,6 +35,7 @@ function Registration(props) {
   const [businessType, setBusinessType] = useState("")
   const [city, setCity] = useState("")
   const [country, setCountry] = useState("")
+  const genericData = useSelector(({ serviceReducer }) => serviceReducer.genericData)
   let dispatch = useDispatch()
 
 
@@ -66,7 +67,6 @@ function Registration(props) {
     }))
 
   }
-
   return (
     <div>
       <div className="main-form-div">
@@ -163,11 +163,11 @@ function Registration(props) {
       </div>
 
       <div className="video-div">
-        <iframe src='https://www.youtube.com/embed/E7wJTI-1dvQ'
+        <iframe src={genericData && genericData.youtubeLink}
           className="video"
-          frameborder='0'
+          frameBorder='0'
           allow='autoplay; encrypted-media'
-          allowfullscreen
+          allowFullScreen
           title='video'
         />
       </div>
@@ -176,7 +176,7 @@ function Registration(props) {
         <div className="questions-title">Questions? We’ve got answers.</div>
 
         {
-          questions.map((question, i) => {
+          genericData && genericData.faqs.map((question, i) => {
             return (
               <div className="question-section" key={i}>
                 <div className="question-toggle-div">

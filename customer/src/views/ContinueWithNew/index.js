@@ -18,6 +18,7 @@ import { INITIALIZE_ORDER } from '../../constants';
 import { getItem } from '../../helpers';
 
 function ContinueWith(props) {
+    const genericData = useSelector(({ serviceReducer }) => serviceReducer.genericData)
 
     const initializingOrder = useSelector(({ orderReducer }) => orderReducer.initializingOrder)
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
@@ -89,12 +90,12 @@ function ContinueWith(props) {
                     <p style={{ color: "black" }}> © 2021 Dine Mate. All Rights Are Reserved.</p>
                 </div>
                 <div className="footer-bottom-right">
-                    <div className="footer-bottom-right-logo">
+                    <a href={genericData && genericData.facebookLink} className="footer-bottom-right-logo">
                         <img src={require("../../assets/fblogo.png").default} />
-                    </div>
-                    <div className="footer-bottom-right-logo">
+                    </a>
+                    <a href={genericData && genericData.instagramLink} className="footer-bottom-right-logo">
                         <img src={require("../../assets/instagramlogo.png").default} />
-                    </div>
+                    </a>
                 </div>
             </div>
         </>
