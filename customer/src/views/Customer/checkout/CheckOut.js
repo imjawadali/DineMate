@@ -80,11 +80,12 @@ function CheckOut(props) {
             }
             dispatch(customisedAction(GET_RESTAURANT_DETAILS, obj))
         }
-    }, [orderDetail])
+    }, [])
 
 
     let dataOrder = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
+
     useEffect(() => {
 
 
@@ -190,7 +191,11 @@ function CheckOut(props) {
                 'tip': tip
             }
             dispatch(customisedAction(CLOSE_ORDER, obj))
-            props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
+            if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
+                setTimeout(()=>{
+                    props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
+                },2000)
+            }
         } else {
             dispatch(customisedAction(CANT_PAY))
         }
@@ -245,12 +250,12 @@ function CheckOut(props) {
                         </div> : null}
                     {data && data.taxAmount ?
                         <div className="itemCart">
-                            <p>GST TAX Amount</p>
+                            <p>HST Amount</p>
                             <p>$ {data.taxAmount}</p>
                         </div> : null
                     }
                     <div className="totalCart">
-                        <p onClick={()=>console.log(data)}>Total</p>
+                        <p onClick={() => console.log(data)}>Total</p>
                         {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
                         <p>$ {data && data.billAmount}</p>
                     </div>
