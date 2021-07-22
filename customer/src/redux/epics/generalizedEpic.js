@@ -31,6 +31,7 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
         if (problem && problem === 'TIMEOUT_ERROR') {
           return customisedAction(failureAction, noToast ? null : { message: `Timeout Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
         }
+        console.log({response})
         return customisedAction(failureAction, noToast ? null : { message: `Unknown Error at ${failureAction.replace('_FAILURE', '')}!`, type: 'error' })
     } catch (error) {
         // console.log(`${failureAction.replace('_FAILURE', '')} Unknown Error`, error)

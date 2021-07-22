@@ -8,7 +8,9 @@ import {
   API_ENDPOINTS,
   SIGN_UP,
   SIGN_UP_FAILURE,
-  SIGN_UP_SUCESS
+  SIGN_UP_SUCESS,
+  REGISTER_RESTURENT,
+  REGISTER_RESTURENT_SUCESS
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { setItem } from '../../../helpers'
@@ -33,5 +35,24 @@ export class signUpEpic {
         }
       )
     )
-
+  static registerRestuarant = action$ =>
+    action$.pipe(
+      ofType(REGISTER_RESTURENT),
+      switchMap(
+        async ({ payload: obj }) => {
+          let { data, reset } = obj
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.registerRestuarant,
+            data,
+            (resObj) => {
+              reset()
+              // RestClient.setHeader('Authorization', resObj.body.id)
+              return customisedAction(REGISTER_RESTURENT_SUCESS, { signUp: resObj })
+            },
+            SIGN_UP_FAILURE
+          )
+        }
+      )
+    )
 }

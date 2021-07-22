@@ -8,9 +8,10 @@ import {
     DONOTDISTURB,
     DONOTDISTURB_SUCCESS,
     DONOTDISTURB_FAILURE,
+    GET_GENERIC_DATA_SUCCESS,
 } from '../../constants'
 
-export default (state = { fetchingService: false, service: null, fetchingDisturb: false, disturb: null }, { type, payload }) => {
+export default (state = { genericData: null, fetchingService: false, service: null, fetchingDisturb: false, disturb: null }, { type, payload }) => {
     switch (type) {
         case CALL_FOR_SERVICE:
             return { ...state, fetchingService: true }
@@ -24,6 +25,8 @@ export default (state = { fetchingService: false, service: null, fetchingDisturb
             return { ...state, fetchingDisturb: false, disturb: payload }
         case DONOTDISTURB_FAILURE:
             return { ...state, fetchingDisturb: false }
+        case GET_GENERIC_DATA_SUCCESS:
+            return { ...state, genericData: payload }
         default:
             return state
     }

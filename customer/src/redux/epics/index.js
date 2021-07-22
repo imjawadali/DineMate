@@ -17,14 +17,17 @@ import { getAllOrdersEpic } from './admin/getAllOrders'
 import { searchResturantEpic } from './admin/searchResturant'
 import { getTakeAwayOrderItemEpic } from './admin/getTakeOrderItem'
 import { OrderDetailEpic } from './admin/getOrderDetailOrderEpic'
+import { getGenericDataEpic } from './admin/getGenericData'
 
 export const epics = combineEpics(
     loginEpic.login,
     getAllRestaurantsEpic.getAllRestaurants,
+    getGenericDataEpic.getGenericData,
     getRestaurantDetailsEpic.getRestaurantDetails,
     initializeOrderEpic.initializeOrder,
     getMenuEpic.getMenu,
     signUpEpic.signUp,
+    signUpEpic.registerRestuarant,
     forgotPsswordEpic.forgetPassword,
     forgotPsswordEpic.setNewPassword,
     addOrderEpic.addOrder,

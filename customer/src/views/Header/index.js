@@ -7,7 +7,7 @@ import { useRouteMatch } from 'react-router-dom';
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -437,6 +437,10 @@ const Header = props => {
         setOrderNumberTake(getItem('orderDetails') ? getItem('orderDetails').orderNumber : '')
     }, [items, orderDetail, orderDetails, takeOrderItems, orderStatusDetails])
 
+    //for generic data
+    useEffect(() => {
+        dispatch(customisedAction(GET_GENERIC_DATA))
+    }, [])
     return (
         <>
             {props && props.location && props.location.pathname !== '/' ?
