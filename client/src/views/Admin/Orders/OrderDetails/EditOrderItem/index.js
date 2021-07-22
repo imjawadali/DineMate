@@ -194,8 +194,6 @@ function EditOrderItem(props) {
                     />
                     <Button
                         text={"Submit"}
-                        light={checkRequired()}
-                        lightAction={() => null}
                         iconLeft={<i className="fa fa-send" />}
                         onClick={() => {
                             itemToSubmit.totalPrice = getTotalPrice()

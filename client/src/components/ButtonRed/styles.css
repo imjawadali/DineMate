@@ -1,5 +1,5 @@
 .ButtonRed {
-    padding: 7px 30px;
+    padding: 5px 10px;
     border-style: solid;
     border-width: 2px;
     border-color: rgba(255, 0, 0, 0.1);
@@ -17,7 +17,7 @@
 .ButtonRedText {
     font-weight: 500;
     color: white;
-    font-size: 18px;
+    font-size: 13px;
 }
 
 .ButtonRed:hover {
@@ -36,20 +36,16 @@
 
 @media only screen and (max-width: 978px) {
     .ButtonRed {
-        padding: 6px 25px;
-    }
-
-    .ButtonRedText {
-        font-size: 16px;
+        padding: 5px 7px;
     }
 }
 
 @media only screen and (max-width: 480px) {
     .ButtonRed {
-        padding: 5px 20px;
+        padding: 5px;
     }
 
     .ButtonRedText {
-        font-size: 14px;
+        font-size: 12px;
     }
 }
