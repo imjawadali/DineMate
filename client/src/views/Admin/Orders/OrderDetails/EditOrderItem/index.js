@@ -92,7 +92,7 @@ function EditOrderItem(props) {
     }
 
     return (
-        <Modal width={'60%'} display={edittingItem}>
+        <Modal width={window.innerWidth < 480 ? '80%' : '40%'} display={edittingItem}>
             {item && <div className="NewOrderItemModalContainer">
                 <div style={{ width: '100%', textAlign: 'end' }}>
                     <i className="fa fa-times fa-lg"

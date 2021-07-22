@@ -47,7 +47,7 @@ export default (state = {
     case GET_ORDERS_SUCCESS:
       return { ...state, fetchingOrders: false, orders: payload }
     case GET_ORDERS_FAILURE:
-      return { ...state, fetchingOrders: false }
+      return { ...state, fetchingOrders: false, orders: null }
     
     case GET_ORDER_DETAILS:
       return { ...state, fetchingOrderDetails: true, deletingItemId: null, applyingDiscount: false }

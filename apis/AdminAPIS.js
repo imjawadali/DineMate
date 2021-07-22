@@ -489,12 +489,12 @@ module.exports = app => {
                     const nonFaqsList = data.filter(x => x.isFaq === 0)
                     const faqsList = data.filter(x => x.isFaq === 1)
                     for (let i = 0; i < nonFaqsList.length; i++) {
-                        genericData[nonFaqsList[i].key] = nonFaqsList[i].value
+                        genericData[nonFaqsList[i].name] = nonFaqsList[i].value
                     }
                     for (let i = 0; i < faqsList.length; i++) {
                         faqs.push({
                             id: faqsList[i].id,
-                            question: faqsList[i].key,
+                            question: faqsList[i].name,
                             answer: faqsList[i].value
                         })
                     }
@@ -537,16 +537,14 @@ module.exports = app => {
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             } else {
                                 for (let i = 0; i < array.length; i++) {
-                                    let errorOccured
-                                    tempDb.query(`UPDATE genericdata SET ? WHERE key = '${array[i].key}'`, { value: array[i].value }, function (error) {
+                                    tempDb.query(`UPDATE genericData SET value = '${array[i].value}' WHERE name = '${array[i].key}'`, function (error) {
                                         if (!!error) {
                                             console.log('TableError', error.sqlMessage)
                                             tempDb.rollback(function () {
+                                                return res.status(422).send({ 'msg': "Failed to update data" })
                                             })
-                                            errorOccured = true
                                         }
                                     })
-                                    if (errorOccured) break
                                 }
                                 tempDb.commit(function (error) {
                                     if (error) {

@@ -380,11 +380,11 @@ module.exports = app => {
                     const nonFaqsList = data.filter(x => x.isFaq === 0)
                     const faqsList = data.filter(x => x.isFaq === 1)
                     for (let i = 0; i < nonFaqsList.length; i++) {
-                        genericData[nonFaqsList[i].key] = nonFaqsList[i].value
+                        genericData[nonFaqsList[i].name] = nonFaqsList[i].value
                     }
                     for (let i = 0; i < faqsList.length; i++) {
                         faqs.push({
-                            question: faqsList[i].key,
+                            question: faqsList[i].name,
                             answer: faqsList[i].value
                         })
                     }
@@ -403,6 +403,73 @@ module.exports = app => {
                 }
             }
         )
+    })
+
+    app.post('/customer/registerRestuarant', async (req, res) => {
+        console.log("\n\n>>> /customer/registerRestuarant")
+        console.log(req.body)
+        const { restaurantName, address, city, country, firstName, lastName, email, phoneNumber, businessType } = req.body
+        if (!restaurantName) return res.send({
+            status: false,
+            message: 'Restaurant Name is required!',
+            errorCode: 422
+        })
+        if (!address) return res.send({
+            status: false,
+            message: 'Business Address is required!',
+            errorCode: 422
+        })
+        if (!city) return res.send({
+            status: false,
+            message: 'City  is required!',
+            errorCode: 422
+        })
+        if (!country) return res.send({
+            status: false,
+            message: 'Country  is required!',
+            errorCode: 422
+        })
+        if (!firstName) return res.send({
+            status: false,
+            message: 'First Name is required!',
+            errorCode: 422
+        })
+        let name = firstName
+        if (lastName)
+            name = firstName + ' ' + lastName
+        if (!email) return res.send({
+            status: false,
+            message: 'Email is required!',
+            errorCode: 422
+        })
+        if (!phoneNumber) return res.send({
+            status: false,
+            message: 'Phone Number is required!',
+            errorCode: 422
+        })
+        if (!businessType) return res.send({
+            status: false,
+            message: 'Business Type is required!',
+            errorCode: 422
+        })
+
+        const emailStatus = await sendEmail(
+            'console.dinemate@gmail.com',
+            'Register Restaurant',
+            registerRestaurantMessage({
+                restaurantName, address, city, country, name, email, phoneNumber, businessType
+            })
+        )
+        if (emailStatus && emailStatus.accepted.length)
+            return res.send({
+                status: true,
+                message: 'Registration request submitted!'
+            })
+        else return res.send({
+            status: false,
+            message: `Invalid Email: "${email}"!`,
+            errorCode: 422
+        })
     })
 
     app.get('/customer/getAllRestaurants', async (req, res) => {
@@ -1448,6 +1515,13 @@ function padding(num, size) {
     return num;
 }
 
-function forgotPasswordMessage(link) {
-    return `Welcome Back!\n\nVisit the following link to reset your login password:\n${link}`
+function registerRestaurantMessage(data) {
+    let string = `A new restaurant want to register!\n\n
+        Details:`
+    const array = Object.keys(data)
+        .map((key) => {
+            return `\n${key}: ${data[key]}`
+        })
+    string += array.join()
+    return string
 }

@@ -143,7 +143,7 @@ function NewOrder(props) {
               />
             </div>
             {type === 'Dine-In' ?
-              <div>
+              <div style={{ marginLeft: '10px' }}>
                 <DropDown
                   style={{ marginTop: '0px', marginBottom: '0px' }}
                   placeholder="Select Table"
@@ -160,7 +160,6 @@ function NewOrder(props) {
               text="View"
               light={(!cart || !cart.length || showCart) && (!existingOrder || showCart)}
               lightAction={() => null}
-              iconLeft={<i className={`fa fa-eye`} />}
               onClick={() => setshowCart(true)} />
           </div>
         }
