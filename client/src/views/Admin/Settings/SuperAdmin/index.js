@@ -15,7 +15,7 @@ function SuperAdmin() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!fetchingGenericData && !genericData)
+    if (!fetchingGenericData && !genericData.youtubeLink)
       dispatch(customisedAction(GET_GENERIC_DATA))
   }, [])
 

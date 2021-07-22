@@ -115,9 +115,9 @@ function Restaurant() {
               />
             </div>
             <div className="InputsInnerContainer">
-              <SmallTitle text="Late time" />
+              <SmallTitle text="Delay time" />
               <Input
-                placeholder="Late time in minutes"
+                placeholder="Delay time in minutes"
                 type="number"
                 value={updatedData.lateTime}
                 onChange={({ target: { value } }) => updateValue('lateTime', value)}

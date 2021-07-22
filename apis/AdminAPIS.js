@@ -521,7 +521,6 @@ module.exports = app => {
             })
         if (!array || !array.length) return res.status(422).send({ 'msg': 'No data to update!' })
 
-
         getTransactionalConnection()
             .getConnection(function (error, tempDb) {
                 if (!!error) {
@@ -561,6 +560,44 @@ module.exports = app => {
                     else return res.status(401).send({ 'msg': 'Invalid Session!' })
                 })
             })
+    })
+
+    app.post('/admin/addFaq', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { name, value } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!name) return res.status(422).send({ 'msg': 'Question is required!' })
+        if (!value) return res.status(422).send({ 'msg': 'Answer is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `INSERT INTO genericData SET ?`,
+            { name, value, isFaq: 1 },
+            (result) => {
+                if (result.affectedRows)
+                    return res.send({ 'msg': 'FAQ Added Successfully!' })
+                else
+                    return res.status(422).send({ 'msg': 'Failed to add FAQ!' })
+            }
+        )
+    })
+
+    app.post('/admin/deleteFaq', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Category Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM genericData WHERE id = ${id}`,
+            null,
+            (result) => {
+                if (result.affectedRows)
+                    return res.send({ 'msg': 'FAQ Deleted Successfully!' })
+                else return res.status(422).send({ 'msg': 'Invalid FAQ ID' })
+            }
+        )
     })
 
     app.post('/admin/getRestaurantDashboard', async (req, res) => {
@@ -1110,9 +1147,64 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/editItem', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, quantity, totalPrice, specialInstructions, addOns } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Item Id is required!' })
+        if (!quantity) return res.status(422).send({ 'msg': 'Item quantity is required!' })
+        if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Item total price is required!' })
+        if (addOns && addOns.length) {
+            for (var j = 0; j < addOns.length; j++) {
+                const { addOnId, addOnName, addOnOptionId, addOnOption, price } = addOns[j]
+                if (!addOnId) return res.status(422).send({ 'msg': 'AddOns ID is required!' })
+                if (!addOnName) return res.status(422).send({ 'msg': 'AddOns name is required!' })
+                if (addOnOptionId && !addOnOption) return res.status(422).send({ 'msg': 'AddOns option name is required!' })
+                if (!addOnOptionId && addOnOption) return res.status(422).send({ 'msg': 'AddOns option ID is required!' })
+                if (!price && price !== 0) return res.status(422).send({ 'msg': 'AddOns price is required!' })
+            }
+        }
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
+            null,
+            () => {
+                getConnection(
+                    res,
+                    `UPDATE orderItems SET ? WHERE id = ${id}`,
+                    { quantity, totalPrice, specialInstructions },
+                    (result) => {
+                        if (result.changedRows) {
+                            if (addOns && addOns.length) {
+                                let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                for (var j = 0; j < addOns.length; j++) {
+                                    query = query + ` ( '${id}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
+                                    if (j !== (addOns.length - 1))
+                                        query = query + ','
+                                }
+                                getConnection(
+                                    res,
+                                    query,
+                                    null,
+                                    (result) => {
+                                        if (result.affectedRows) return res.send({ 'msg': 'Item updated successfully!' })
+                                        else return res.status(422).send({ 'msg': 'Unable to update item' })
+                                    }
+                                )
+                            } else
+                                return res.send({ 'msg': 'Item updated successfully!' })
+                        }
+                        else return res.status(422).send({ 'msg': 'Unable to update item' })
+                    }
+                )
+            }
+        )
+    })
+
     app.post('/admin/deleteOrder', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { id, restaurantId, orderNumber } = req.body
+        const { restaurantId, orderNumber } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
@@ -2024,6 +2116,71 @@ module.exports = app => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'Restuarant Data Updated Successfully!' })
                 else return res.status(422).send({ 'msg': 'Failed to update user' })
+            }
+        )
+    })
+
+    app.post('/admin/getRestaurantSchedule', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant\'s ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT * FROM scheduleManagement WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (data) => {
+                if (data && data.length) {
+                    const result = data.map(x => {
+                        return {
+                            day: x.day,
+                            from: x.fromTime,
+                            to: x.toTime
+                        }
+                    })
+                    return res.send(result)
+                }
+                else return res.status(422).send({ 'msg': 'Restaurant schedule not submitted yet!' })
+            }
+        )
+    })
+
+    app.post('/admin/updateRestaurantSchedule', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, schedule } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant ID is required!' })
+        if (!schedule || !schedule.length) return res.status(422).send({ 'msg': 'Restaurant schedule is required!' })
+        for (let index = 0; index < schedule.length; index++) {
+            const { day, from, to } = schedule[index];
+            if (!day) return res.status(422).send({ 'msg': 'Day is required!' })
+            if (!from) return res.status(422).send({ 'msg': `Opening time for ${day} is required!` })
+            if (!to) return res.status(422).send({ 'msg': `Closing time for ${day} is required!` })
+        }
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM scheduleManagement WHERE restaurantId = '${restaurantId}'`,
+            null,
+            () => {
+                let query = 'INSERT INTO scheduleManagement ( restaurantId, day, fromTime, toTime ) VALUES'
+                for (var j = 0; j < schedule.length; j++) {
+                    query = query + ` ( '${restaurantId}', '${schedule[j].day}', '${schedule[j].from}', '${schedule[j].to}' )`
+                    if (j !== (schedule.length - 1))
+                        query = query + ','
+                }
+                getConnection(
+                    res,
+                    query,
+                    null,
+                    (result) => {
+                        if (result.affectedRows)
+                            return res.send({ 'msg': 'Restaurant\'s schedule updated' })
+                        else
+                            return res.status(422).send({ 'msg': 'Unable to update restaurant\'s schedule' })
+                    }
+                )
             }
         )
     })

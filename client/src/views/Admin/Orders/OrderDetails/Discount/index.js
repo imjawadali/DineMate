@@ -20,26 +20,30 @@ function Discount(props) {
     }
 
     return (
-        <Modal width={'60%'} display={showDiscountModal}>
+        <Modal width={window.innerWidth < 480 ? '80%' : window.innerWidth < 978 ? '60%' : '40%'} display={showDiscountModal}>
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{ width: '100%', textAlign: 'end', marginBottom: '10px' }}>
                     <i className="fa fa-times fa-lg"
                         style={{ textAlign: 'end', cursor: 'pointer' }}
                         onClick={cancelDiscountModal} />
                 </div>
-                <Input
-                    placeholder="Enter discount amount or percentage"
-                    value={discount}
-                    onChange={({ target: { value } }) => setdiscount(value)}
-                />
-                <DropDown
-                    placeholder="Select type"
-                    options={['$', '%']}
-                    value={discountType}
-                    onChange={({ target: { value } }) => setdiscountType(value)}
-                />
+                <div style={{ width: '100%', display: 'flex' }}>
+                    <DropDown
+                        style={{ marginRight: '10px' }}
+                        placeholder="Select type"
+                        options={['$', '%']}
+                        value={discountType}
+                        onChange={({ target: { value } }) => setdiscountType(value)}
+                    />
+                    <Input
+                        placeholder="Enter discount"
+                        type="number"
+                        value={discount}
+                        onChange={({ target: { value } }) => setdiscount(value)}
+                    />
+                </div>
                 <Button
-                    text="Submit"
+                    text="Apply"
                     light={checkRequired()}
                     lightAction={() => {
                         dispatch(customisedAction(SET_TOAST_DISMISSING))

@@ -46,7 +46,7 @@ function SuperAdmin(props) {
             />
             <DashboardBatches
               text={`${adminDashboard.admins} Admins`}
-              iconName="fa fa-user"
+              iconName="fa fa-users"
               onClick={() => props.history.push('/client/admin/usersManagement/allUsers')}
             />
             <DashboardBatches

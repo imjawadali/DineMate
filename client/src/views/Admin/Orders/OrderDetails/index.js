@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { TitleWithAction, Button, OrderTimer } from '../../../../components'
-import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, GET_MENU, GET_ORDER_DETAILS } from '../../../../constants'
+import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, EDIT_ITEM, GET_MENU, GET_ORDER_DETAILS } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 import { getFormatedDateTime } from '../../../../helpers'
 
@@ -26,6 +26,7 @@ function OrderDetails(props) {
   const orderDetails = useSelector(({ ordersReducer }) => ordersReducer.orderDetails)
   const closingId = useSelector(({ ordersReducer }) => ordersReducer.closingId)
   const deletingItemId = useSelector(({ ordersReducer }) => ordersReducer.deletingItemId)
+  const edittingItemId = useSelector(({ ordersReducer }) => ordersReducer.edittingItemId)
   const deletingOrder = useSelector(({ ordersReducer }) => ordersReducer.deletingOrder)
   const applyingDiscount = useSelector(({ ordersReducer }) => ordersReducer.applyingDiscount)
   const dispatch = useDispatch()
@@ -58,7 +59,7 @@ function OrderDetails(props) {
 
   const submitItem = (item) => {
     cancelModal()
-    console.log(item)
+    dispatch(customisedAction(EDIT_ITEM, { ...item, restaurantId, orderNumber }))
   }
 
   const cancelDiscountModal = () => {
@@ -127,12 +128,12 @@ function OrderDetails(props) {
           <div className="OrderDetailsSectionMiddle"></div>
           <div className="OrderDetailsSection">
             <div className="OrderDetailsLabel">
-              <p className="OrderDetailsText">Check Closed:</p>
               <p className="OrderDetailsText">Status:</p>
+              <p className="OrderDetailsText">{!orderDetails.status ? 'Check Closed:' : ''}</p>
             </div>
             <div className="OrderDetailsData">
-              <p className="OrderDetailsText">{!orderDetails.status ? getFormatedDateTime(orderDetails.closedAt) : '-'}</p>
               <p className="OrderDetailsText" style={{ color: orderDetails.status ? 'green' : 'red' }}>{orderDetails.status ? "Open" : "Closed"}</p>
+              <p className="OrderDetailsText">{!orderDetails.status ? getFormatedDateTime(orderDetails.closedAt) : ''}</p>
             </div>
           </div>
         </div>
@@ -151,11 +152,12 @@ function OrderDetails(props) {
                   || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount ?
                 history.push({
                   pathname: '/client/admin/ordersManagement/newOrder', state: {
                     orderDetails: { ...orderDetails, orderNumber }
@@ -171,11 +173,12 @@ function OrderDetails(props) {
                   || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount ?
                 setshowDiscountModal(true)
                 : null
               }>
@@ -187,6 +190,7 @@ function OrderDetails(props) {
                   || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
@@ -203,7 +207,7 @@ function OrderDetails(props) {
                   || applyingDiscount?
                   0.5 : ''
               }}
-              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount ?
                 dispatch(customisedAction(DELETE_ORDER, { restaurantId, orderNumber }, { history }))
                 : null
               }>
@@ -216,11 +220,12 @@ function OrderDetails(props) {
                 opacity: fetchingOrderDetails
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => !fetchingOrderDetails && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+              onClick={() => !fetchingOrderDetails && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount ?
                 history.goBack()
                 : null
               }>
@@ -232,11 +237,12 @@ function OrderDetails(props) {
                   || !orderDetails.status
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
               }}
-              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !deletingOrder && !applyingDiscount ?
+              onClick={() => !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount ?
                 dispatch(customisedAction(CLOSE_ORDER, { restaurantId, orderNumber }))
                 : null
               }>
@@ -247,6 +253,7 @@ function OrderDetails(props) {
                 opacity: fetchingOrderDetails
                   || closingId === orderNumber
                   || deletingItemId
+                  || edittingItemId
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''

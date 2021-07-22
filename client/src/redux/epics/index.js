@@ -12,6 +12,8 @@ import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getGenericDataEpic } from './admin/getGenericDataEpic'
 import { updateGenericDataEpic } from './admin/updateGenericDataEpic'
+import { addFaqEpic } from './admin/addFaqEpic'
+import { deleteFaqEpic } from './admin/deleteFaqEpic'
 import { getSuperAdminDashboardEpic } from './admin/getSuperAdminDashboardEpic'
 import { getRestaurantDashboardEpic } from './admin/getRestaurantDashboardEpic'
 import { getKitchenDashboardEpic } from './admin/getKitchenDashboardEpic'
@@ -22,6 +24,7 @@ import { getOrderItemDetailsEpic } from './admin/getOrderItemDetailsEpic'
 import { submitNewOrderEpic } from './admin/submitNewOrderEpic'
 import { addItemsToOrderEpic } from './admin/addItemsToOrderEpic'
 import { deleteItemEpic } from './admin/deleteItemEpic'
+import { editItemEpic } from './admin/editItemEpic'
 import { deleteOrderEpic } from './admin/deleteOrderEpic'
 import { applyDiscountEpic } from './admin/applyDiscountEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
@@ -47,6 +50,8 @@ import { updateAddOnEpic } from './admin/updateAddOnEpic'
 import { addAddOnEpic } from './admin/addAddOnEpic'
 import { getRestaurantSettingsEpic } from './admin/getRestaurantSettingsEpic'
 import { updateRestaurantSettingsEpic } from './admin/updateRestaurantSettingsEpic'
+import { getRestaurantScheduleEpic } from './admin/getRestaurantScheduleEpic'
+import { updateRestaurantScheduleEpic } from './admin/updateRestaurantScheduleEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
 export const epics = combineEpics(
@@ -63,6 +68,8 @@ export const epics = combineEpics(
     setTableNameEpic.setTableName,
     getGenericDataEpic.getGenericData,
     updateGenericDataEpic.updateGenericData,
+    addFaqEpic.addFaq,
+    deleteFaqEpic.deleteFaq,
     getSuperAdminDashboardEpic.getSuperAdminDashboard,
     getRestaurantDashboardEpic.getRestaurantDashboard,
     getKitchenDashboardEpic.getKitchenDashboard,
@@ -73,6 +80,7 @@ export const epics = combineEpics(
     submitNewOrderEpic.submitNewOrder,
     addItemsToOrderEpic.addItemsToOrder,
     deleteItemEpic.deleteItem,
+    editItemEpic.editItem,
     deleteOrderEpic.deleteOrder,
     applyDiscountEpic.applyDiscount,
     getOrdersEpic.getOrders,
@@ -98,6 +106,8 @@ export const epics = combineEpics(
     addAddOnEpic.addAddOn,
     getRestaurantSettingsEpic.getRestaurantSettings,
     updateRestaurantSettingsEpic.updateRestaurantSettings,
+    getRestaurantScheduleEpic.getRestaurantSchedule,
+    updateRestaurantScheduleEpic.updateRestaurantSchedule,
     uploadToS3Epic.uploadToS3,
     deleteFromS3Epic.deleteFromS3
 )

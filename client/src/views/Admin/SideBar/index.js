@@ -56,16 +56,20 @@ function SideBar(props) {
                         </div>
                         : null}
                     <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-user" />
+                        <i className="fa fa-users" />
                         <Link to={`${url}/usersManagement`}>Users Management</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-cog" />
+                        <i className="fa fa-cogs" />
                         <Link to={`${url}/updatePassword`}>Update Password</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/settings') ? 'active_menu_link' : null}`}>
-                        <i className="fa fa-cogs" />
+                        <i className="fa fa-wrench" />
                         <Link to={`${url}/settings/superAdmin`}>Settings</Link>
+                    </div>
+                    <div className={`sidebar__link ${pathname.includes('/faqsManagement') ? 'active_menu_link' : null}`}>
+                        <i className="fa fa-question" />
+                        <Link to={`${url}/faqsManagement`}>Faqs Management</Link>
                     </div>
                 </> :
                 <>
@@ -100,17 +104,17 @@ function SideBar(props) {
                             <Link to={`${url}/usersManagement`}>Users Management</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
-                            <i className="fa fa-cog" />
+                            <i className="fa fa-cogs" />
                             <Link to={`${url}/restaurant/updatePassword`}>Update Password</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/settings') ? 'active_menu_link' : null}`}>
-                            <i className="fa fa-cogs" />
+                            <i className="fa fa-wrench" />
                             <Link to={`${url}/settings/restaurant`}>Restaurant Settings</Link>
                         </div>
-                        {/* <div className="sidebar__link sidebar_disabled_link">
-                            <i className="fa fa-list" />
-                            <Link to={`${pathname}`}>Schedule Management</Link>
-                        </div> */}
+                        <div className={`sidebar__link ${pathname.includes('/scheduleManagement') ? 'active_menu_link' : null}`}>
+                            <i className="fa fa-clock-o" />
+                            <Link to={`${url}/scheduleManagement`}>Schedule Management</Link>
+                        </div>
                     </> : role === 'Staff' ?
                         <>
                             <h2>Staff</h2>

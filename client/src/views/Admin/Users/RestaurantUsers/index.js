@@ -124,7 +124,7 @@ function RestaurantUsers() {
               <div className="InputsInnerContainer">
                 <SmallTitle text="Contact Number (Optional)" />
                 <Input
-                  placeholder={`+923158731014`}
+                  placeholder={`+1 315-8731014`}
                   type="number"
                   value={contactNumber}
                   onChange={({ target: { value } }) => setcontactNumber(value)}

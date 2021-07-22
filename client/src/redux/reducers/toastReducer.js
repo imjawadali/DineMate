@@ -107,7 +107,17 @@ import {
   GET_GENERIC_DATA_FAILURE,
   UPDATE_GENERIC_DATA_FAILURE,
   UPDATE_GENERIC_DATA,
-  GET_GENERIC_DATA
+  GET_GENERIC_DATA,
+  ADD_FAQ,
+  ADD_FAQ_FAILURE,
+  DELETE_FAQ,
+  DELETE_FAQ_FAILURE,
+  EDIT_ITEM_FAILURE,
+  EDIT_ITEM,
+  GET_RESTAURANT_SCHEDULE_FAILURE,
+  GET_RESTAURANT_SCHEDULE,
+  UPDATE_RESTAURANT_SCHEDULE,
+  UPDATE_RESTAURANT_SCHEDULE_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -176,6 +186,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: 'Updating Data', type: 'success' } }
     case UPDATE_GENERIC_DATA_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case ADD_FAQ:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Adding FAQ', type: 'success' } }
+    case ADD_FAQ_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_FAQ:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Deleting FAQ', type: 'success' } }
+    case DELETE_FAQ_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case GET_SUPER_ADMIN_DASHBOARD_FAILURE:
       return { ...state, toast: payload }
     case GET_RESTAURANT_DASHBOARD:
@@ -219,6 +237,10 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DELETE_ITEM:
       return { ...state, toastSetDismiss: true, toast: { message: 'Deleting item', type: 'success' } }
     case DELETE_ITEM_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case EDIT_ITEM:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Editting item', type: 'success' } }
+    case EDIT_ITEM_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_ORDER:
       return { ...state, toastSetDismiss: true, toast: { message: 'Deleting order', type: 'success' } }
@@ -329,6 +351,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DELETE_FROM_S3_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload }
     case DELETE_FROM_S3_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_RESTAURANT_SCHEDULE:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case GET_RESTAURANT_SCHEDULE_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RESTAURANT_SCHEDULE:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Updating Restaurant Schedule', type: 'success' } }
+    case UPDATE_RESTAURANT_SCHEDULE_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     
     case RESET_RESTAURANT:

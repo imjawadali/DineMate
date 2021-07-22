@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
+import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -28,9 +28,11 @@ import Menu from './Menu'
 import ItemDetails from './Menu/ItemDetails'
 import AddMenuItem from './AddMenuItem'
 import RestaurantUsers from './Users/RestaurantUsers'
+import Faqs from './Faqs'
 import SuperAdminSettings from './Settings/SuperAdmin'
 import RestaurantSettings from './Settings/Restaurant'
 import UpdatePassword from './UpdatePassword'
+import Schedule from './Schedule'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -61,6 +63,7 @@ function Admin(props) {
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_RESTAURANT_SCHEDULE, { restaurantId, noToast: true }))
       }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
     }
@@ -187,6 +190,7 @@ function Admin(props) {
               </Switch>
             </Route>
             <RestaurantAdminRoutes path={`${path}/addFoodItem`} component={AddMenuItem} />
+            <SuperAdminRoutes exact path={`${path}/faqsManagement`} component={Faqs} />
             <Route path={`${path}/settings`}>
               <Switch>
                 <Route exact path={`${path}/settings`}>
@@ -200,6 +204,7 @@ function Admin(props) {
             </Route>
             <SuperAdminRoutes path={`${path}/updatePassword`} component={UpdatePassword} />
             <RestaurantAdminRoutes path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
+            <RestaurantAdminRoutes path={`${path}/scheduleManagement`} component={Schedule} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />
