@@ -59,8 +59,8 @@ function ContinueWith(props) {
                     <img className="ios-android" src={image} />
                 </div>
 
-                <div className="flex-1" style={{ display: 'flex', zIndex: 5, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ margin: "116px 16px 50px", fontSize: 54, textAlign: "center", fontWeight: 'bolder', color: "white" }}>Experience the <span style={{ color: "#E93936" }}>finest <br /> quality</span> of food</div>
+                <div className="flex-1" style={{ display: 'flex', zIndex: 98, justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                    <div className="landingPageContentDiv">Experience the <span style={{ color: "#E93936" }}>finest <br /> quality</span> of food</div>
 
                     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
 

@@ -1,7 +1,7 @@
 .HeaderContainer {
     width: 100%;
-    height: 14vh;
-    padding: 0 5vh;
+    height: 10vw;
+    padding: 0 5vw;
     display: flex;
     flex-direction: row;
     justify-content: center;

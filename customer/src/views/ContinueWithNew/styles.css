@@ -2,12 +2,43 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
-  height: 86vh;
+  min-height: calc(100vh - 219px);
   background-position: center;
   background-size: 103% 104%;
   overflow: hidden;
   position: relative;
 }
+
+.ContinueWith .landingPageContentDiv {
+  margin: 116px 16px 50px;
+  font-size: 54px;
+  text-align: center;
+  font-weight: bolder;
+  color: white;
+  z-index: 98;
+}
+
+@media only screen and (max-width: 768px) {
+  .ContinueWith {
+    flex-direction: column;
+  }
+  .ContinueWith .ios-android {
+    width: 100%;
+    height: auto;
+    margin-right: -25px;
+    transform: translateZ(0px);
+    margin-top: 0;
+  }
+  .ContinueWith .landingPageContentDiv {
+    margin: 0;
+    margin-bottom: 30px;
+    margin-top: 20px;
+    font-size: 26px;
+    text-align: left;
+    width: 80%;
+  }
+}
+
 .BottomGlass {
   position: absolute;
   height: 602px;
@@ -75,8 +106,8 @@
 .alignItem-center {
   align-items: center;
 }
-.TheWebAppBtnTextDIv{
-    display: flex;
-    flex-direction: column;
-    margin-left: 5px;
+.TheWebAppBtnTextDIv {
+  display: flex;
+  flex-direction: column;
+  margin-left: 5px;
 }
