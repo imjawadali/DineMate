@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { ALREADY_IN_CART, GET_ORDER_ITEMS, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
+import { ALREADY_IN_CART, GET_ORDER_ITEMS, GET_ORDER_STATUS, GET_STATUS, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 import ViewAddon from './ViewAddon'
@@ -60,7 +60,40 @@ const MenuListingContainer = props => {
 
     }, [restaurantId])
 
+    const getOrderStatusReducer = useSelector(({ getOrderStatusReducer }) => getOrderStatusReducer.status)
+    console.log(getOrderStatusReducer, 'getOrderStatusReducer')
+
+    useEffect(() => {
+        let orderDetaillls = getItem('orderDetails')
+        if (orderDetaillls) {
+
+            dispatch(customisedAction(GET_ORDER_STATUS, {
+                "restaurantId": orderDetaillls.restaurantId,
+                "orderNumber": orderDetaillls.orderNumber
+            }))
+        }
+    }, [])
+
+
+    const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
+    console.log(orderStatusDetails, 'orderStatus')
+
+    // useEffect(() => {
+    //     let orderDetaillls = getItem('orderDetails')
+    //     if (orderDetaillls) {
+
+    //         dispatch(customisedAction(GET_STATUS, {
+    //             "restaurantId": orderDetaillls.restaurantId,
+    //             "orderNumber": orderDetaillls.orderNumber
+    //         }))
+    //     }
+    // }, [])
+
+
     const opennAddOn = () => {
+        if(getOrderStatusReducer && getOrderStatusReducer.closeRequested){
+            dispatch(customisedAction(ALREADY_IN_CART, { message: `You Have Already Submitted The Order Please Wait For Manager Response`, type: 'warning' }))
+        }else 
         if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
             console.log('this')
             let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
@@ -95,9 +128,9 @@ const MenuListingContainer = props => {
                     dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
 
                 }
-            } else if(cartMenu.length === 0) {
-                    setViewAddons(true)
-                    // console.log(cartMenu.length)
+            } else if (cartMenu.length === 0) {
+                setViewAddons(true)
+                // console.log(cartMenu.length)
             }
         }
         else {

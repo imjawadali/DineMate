@@ -14,6 +14,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const dispatch = useDispatch()
 
+
     const [itemCount, setItemCount] = useState(1);
     const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
     const [totalPrice, setTotalPrice] = useState(0);

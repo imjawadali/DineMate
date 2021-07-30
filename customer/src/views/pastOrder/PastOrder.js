@@ -54,7 +54,7 @@ function PastOrder(props) {
                                     <h3>{a.restaurantName}</h3>
                                 </div>
                                 <div className="detailDiv">
-                                    <h3 onClick={()=>console.log(a)}>$ {a.billAmount}</h3>
+                                    <h3 onClick={()=>console.log(a)}>${a.billAmount}</h3>
                                     <button onClick={()=>props.history.push(`/customer/pastOrder/orderDetails?restaurantId=${a.restaurantId}&restaurantName=${a.restaurantName}&orderNumber=${a.orderNumber}`)}>View Detail</button>
                                 </div>
                             </div>
