@@ -1,7 +1,7 @@
 .HeaderContainer {
     width: 100%;
-    height: 14vh;
-    padding: 0 5vh;
+    height: 10vw;
+    padding: 0 5vw;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -135,8 +135,8 @@ input.HeaderInput {
 }
 
 .selected-quantity {
-    margin: 10px;
-    font-size: 16px;
+    margin: 0px 10px;
+    font-size: 18px;
     font-weight: 900;
 }
 
@@ -144,6 +144,7 @@ input.HeaderInput {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin: 10px 0px;
     /* margin-top: 32px; */
 }
 
@@ -165,12 +166,12 @@ input.HeaderInput {
 }
 
 .item-description {
-    margin-bottom: -44px;
+    /* margin-bottom: -44px;
     margin-left: 14px;
     height: 66px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; */
     width: 100%;
 }
 

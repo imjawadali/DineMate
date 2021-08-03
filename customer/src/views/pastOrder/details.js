@@ -56,7 +56,7 @@ function Detail(props) {
 
     useEffect(()=>{
         if(orderDetail){
-            setProducts(orderDetail.orderItems)
+            setProducts(orderDetail)
         }
     },[orderDetail])
 
@@ -82,21 +82,36 @@ function Detail(props) {
                     <p className="from">From: <span>{restaurantName}</span></p>
                 </div>
                 <div className="menuCart">
-                    {products && products.length ? products.map((a, i) => {
+                {products && products.orderItems&&products.orderItems.length ? products.orderItems.map((a, i) => {
                         return (
                             <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
-                                <p>$ {a.totalPrice}</p>
+                                <p>${a.totalPrice}</p>
                             </div>
                         )
                     }) : null}
-                    <div className="totalCart">
-                        <p>Total</p>
-                        {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
-                        <p>
 
-                            $ {totalAmount()}
-                        </p>
+
+                    {products && products.discountAmount ?
+                        <div className="itemCart">
+                            <p>Discount Amount</p>
+                            <p>${products.discountAmount}</p>
+                        </div> : null}
+                    {products && products.tip ?
+                        <div className="itemCart">
+                            <p>Tip Amount</p>
+                            <p>${products.tip}</p>
+                        </div> : null}
+                    {products && products.taxAmount ?
+                        <div className="itemCart">
+                            <p>HST Amount</p>
+                            <p>${products.taxAmount}</p>
+                        </div> : null
+                    }
+                    <div className="totalCart">
+                        <p onClick={() => console.log(products)}>Total</p>
+                        {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
+                        <p>${products && products.billAmount}</p>
                     </div>
                 </div>
 

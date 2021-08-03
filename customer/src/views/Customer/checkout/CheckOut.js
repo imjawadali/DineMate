@@ -232,7 +232,7 @@ function CheckOut(props) {
                         return (
                             <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
-                                <p>$ {a.totalPrice}</p>
+                                <p>${a.totalPrice}</p>
                             </div>
                         )
                     }) : null}
@@ -241,23 +241,23 @@ function CheckOut(props) {
                     {data && data.discountAmount ?
                         <div className="itemCart">
                             <p>Discount Amount</p>
-                            <p>$ {data.discountAmount}</p>
+                            <p>${data.discountAmount}</p>
                         </div> : null}
                     {data && data.tip ?
                         <div className="itemCart">
                             <p>Tip Amount</p>
-                            <p>$ {data.tip}</p>
+                            <p>${data.tip}</p>
                         </div> : null}
                     {data && data.taxAmount ?
                         <div className="itemCart">
                             <p>HST Amount</p>
-                            <p>$ {data.taxAmount}</p>
+                            <p>${data.taxAmount}</p>
                         </div> : null
                     }
                     <div className="totalCart">
                         <p onClick={() => console.log(data)}>Total</p>
                         {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
-                        <p>$ {data && data.billAmount}</p>
+                        <p>${data && data.billAmount}</p>
                     </div>
                 </div>
                 {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
