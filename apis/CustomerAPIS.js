@@ -1402,12 +1402,6 @@ module.exports = app => {
                 message: 'Stripe token is required!',
                 errorCode: 422
             })
-            let data
-            if (type.toLowerCase() === 'take-away')
-                data = { status: 1, customerStatus: 1 }
-            else data = { status: 0, customerStatus: 1 }
-
-            if (tip) data.tip = tip
 
             getSecureConnection(
                 res,
@@ -1435,7 +1429,16 @@ module.exports = app => {
                                             errorCode: 422
                                         })
                                     } else {
-                                        tempDb.query(`UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}' AND customerStatus = 0`, data, async function (error, result2) {
+                                        const orderClosingQuery = `UPDATE orders SET
+                                        status = ${type.toLowerCase() === 'take-away' ? 1 : 0}
+                                        customerStatus = 1
+                                        ${tip ? `tip = ${tip}` : ''}
+                                        ${type.toLowerCase() === 'dine-in' ? 'closedAt = CURRENT_TIMESTAMP' : ''}
+                                        WHERE restaurantId = '${restaurantId}'
+                                        AND orderNumber = '${orderNumber}'
+                                        AND customerStatus = 0`
+                                        
+                                        tempDb.query(orderClosingQuery, null, async function (error, result2) {
                                             if (!!error) {
                                                 console.log('TableError', error.sqlMessage)
                                                 tempDb.rollback(function () {
@@ -1660,7 +1663,7 @@ function lowerCased(string) {
     return string.toLowerCase()
 }
 
-function capitalizeFirstLetter (string) {
+function capitalizeFirstLetter(string) {
     if (string)
         return string.charAt(0).toUpperCase() + string.slice(1);
     else return string

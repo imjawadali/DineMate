@@ -279,53 +279,55 @@ function CheckOut(props) {
                     </div> : null
                 }
 
-                <div className="pickUpPayment">
-                    <h2>Payment</h2>
-                    <div>
-                        <p>Select Payment Method</p>
-                        <select defaultValue={payment} onChange={(ev) => { setPayment(ev.target.value); }} >
-                            <option value="cash">Cash</option>
-                            <option value="Credit Card">Credit Card</option>
-                        </select>
-                    </div>
-                    {payment !== 'cash' && stripeLoaded.successful ?
-                        <StripeProvider apiKey={"pk_test_51JRhRhAYACBOiDJuv9pN6Hx9uhGJStNAHmEg6dEcbvMW4aMydVT7K7nFSMDO1vlLOSqUmZ7oCRH0yl1WcU6MuK8J00UvJgVvIi"}>
-                            <Elements>
-                                <StripeForm
-                                    orderDetails={orderDetail || {}}
-                                    tip={tip}
-                                    billAmount={data ? data.billAmount || 0 : 0}
-                                    email={customer ? customer.email : ''}
-                                />
-                            </Elements>
-                        </StripeProvider>
-                        : <div className="Ammount">
-                            <div className="ammountDiv">
-                                <h2><span>Payment Amount</span> ${(Number(data ? data.billAmount : 0) + Number(tip)).toFixed(2)}</h2>
-                                <label>
-                                    <p>Enter Tip Here</p>
-                                    <input
-                                        style={{
-                                            border: '1px solid #ef6e6c',
-                                            paddingLeft: '10px',
-                                            paddingRight: '10px'
-                                        }}
-                                        placeholder="1.00 ($)"
-                                        type="number"
-                                        value={tip}
-                                        onChange={({ target: { value } }) => setTip(value)} />
-                                </label>
-                                <button className="payBtn" onClick={payNow}>Pay Now</button>
+                <div className="PaymentContainer">
+                    <div className="pickUpPayment">
+                        <h2>Payment</h2>
+                        <div>
+                            <p>Select Payment Method</p>
+                            <select defaultValue={payment} onChange={(ev) => { setPayment(ev.target.value); }} >
+                                <option value="cash">Cash</option>
+                                <option value="Credit Card">Credit Card</option>
+                            </select>
+                        </div>
+                        {payment !== 'cash' && stripeLoaded.successful ?
+                            <StripeProvider apiKey={"pk_test_51JRhRhAYACBOiDJuv9pN6Hx9uhGJStNAHmEg6dEcbvMW4aMydVT7K7nFSMDO1vlLOSqUmZ7oCRH0yl1WcU6MuK8J00UvJgVvIi"}>
+                                <Elements>
+                                    <StripeForm
+                                        orderDetails={orderDetail || {}}
+                                        tip={tip}
+                                        billAmount={data ? data.billAmount || 0 : 0}
+                                        email={customer ? customer.email : ''}
+                                    />
+                                </Elements>
+                            </StripeProvider>
+                            : <div className="Ammount">
+                                <div className="ammountDiv">
+                                    <h2><span>Payment Amount</span> ${(Number(data ? data.billAmount : 0) + Number(tip)).toFixed(2)}</h2>
+                                    <label>
+                                        <p>Enter Tip Here</p>
+                                        <input
+                                            style={{
+                                                border: '1px solid #ef6e6c',
+                                                paddingLeft: '10px',
+                                                paddingRight: '10px'
+                                            }}
+                                            placeholder="1.00 ($)"
+                                            type="number"
+                                            value={tip}
+                                            onChange={({ target: { value } }) => setTip(value)} />
+                                    </label>
+                                    <button className="payBtn" onClick={payNow}>Pay Now</button>
+                                </div>
                             </div>
-                            {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
+                        }
+
+                    </div>
+                                {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
 
                                 <div>
                                     <img src={serviceIcon} onClick={() => setOpenCall(true)} />
                                 </div>
                                 : null}
-                        </div>
-                    }
-
                 </div>
             </div>
             {

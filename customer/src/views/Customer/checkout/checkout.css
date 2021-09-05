@@ -50,6 +50,13 @@ p {
     padding: 4px;
     margin: 10px 0px 0px;
 }
+
+.PaymentContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
 .pickUpTime,
 .pickUpLocation,
 .pickUpPayment {
@@ -157,6 +164,11 @@ p {
     margin-right: 3px;
     }
 @media screen and (max-width: 600px) {
+    .PaymentContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
     .pickUpPayment {
         width: 100%;
     }
