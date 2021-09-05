@@ -22,9 +22,9 @@ function OrdersList(props) {
             <th style={{ textAlign: 'center', width: '7%' }}>Ready</th>
             <th>Time</th>
             <th>Type</th>
-            <th>Check #</th>
-            <th>Table</th>
-            <th>Quantity</th>
+            <th style={{ textAlign: 'center' }}>Check #</th>
+            <th style={{ textAlign: 'center' }}>Table</th>
+            <th style={{ textAlign: 'center' }}>Quantity</th>
             <th>Item</th>
             <th>Item details</th>
             <th style={{ color: 'red' }}>Special Notes</th>
@@ -68,16 +68,16 @@ function OrdersList(props) {
                           <td><p style={{ whiteSpace: 'nowrap' }}>{index === 0 ? type : ''}</p></td>
                           <td style={{ textAlign: 'center' }}>{index === 0 ? orderNumber : ''}</td>
                           <td style={{ textAlign: 'center' }}>{index === 0 ? tableId : ''}</td>
-                          <td style={{ textAlign: 'center' }}>{quantity}</td>
-                          <td><p style={{ textDecorationLine: status === 'R' ? 'line-through' : '' }}>{name}</p></td>
-                          <td>{
+                          <td style={{ textAlign: 'center', textDecorationLine: status === 'R' ? 'line-through' : '' }}>{quantity}</td>
+                          <td style={{ textDecorationLine: status === 'R' ? 'line-through' : '' }}>{name}</td>
+                          <td style={{ textDecorationLine: status === 'R' ? 'line-through' : '' }}>{
                             addOnsArray && addOnsArray.length ?
                               addOnsArray.map((addOn, index) => <p key={index} style={{ display: 'inline' }}>{
                                 addOn.addOnOption && addOn.addOnOption !== 'null' ? addOn.addOnOption : addOn.addOnName
                               }{index !== addOnsArray.length - 1 ? ', ' : ''}</p>)
                               : '-'
                           }</td>
-                          <td style={{ color: 'red' }}>{specialInstructions}</td>
+                          <td style={{ color: 'red', textDecorationLine: status === 'R' ? 'line-through' : '' }}>{specialInstructions}</td>
                         </tr>
                       )
                     })

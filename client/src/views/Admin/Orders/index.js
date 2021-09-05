@@ -9,6 +9,7 @@ import OrdersList from './OrdersList'
 
 function Orders(props) {
 
+  const [lateTime, setlateTime] = useState(0)
   const [searchKey, setsearchKey] = useState("")
   const [filterKey, setfilterKey] = useState("All")
   const [currentIndex, setcurrentIndex] = useState(1)
@@ -16,6 +17,7 @@ function Orders(props) {
   const fetchingOrders = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrders)
   const orders = useSelector(({ ordersReducer }) => ordersReducer.orders)
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const restaurantSettings = useSelector(({ restaurantReducer }) => restaurantReducer.restaurantSettings)
   const dispatch = useDispatch()
 
   const { restaurantId } = admin
@@ -23,6 +25,11 @@ function Orders(props) {
   useEffect(() => {
     dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
   }, [])
+
+  useEffect(() => {
+    if (restaurantSettings && restaurantSettings.lateTime)
+      setlateTime(restaurantSettings.lateTime)
+  }, [restaurantSettings])
 
   const getFilteredList = () => {
     let filteredQrs = orders
@@ -126,11 +133,11 @@ function Orders(props) {
             <div className="TableButtons TableButtonOrange"
               style={{ marginRight: '5px' }}
               onClick={() => props.history.push('/client/admin/ordersManagement/newOrder')}>
-              <p>New Check</p>
+              <p>New Order</p>
             </div>
           </div>
         </div>
-        <OrdersList orders={paginate(getFilteredList())} fetchingOrders={fetchingOrders} restaurantId={restaurantId} history={props.history} />
+        <OrdersList orders={paginate(getFilteredList())} fetchingOrders={fetchingOrders} lateTime={lateTime} restaurantId={restaurantId} history={props.history} />
         {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ?
           <Pagination
             currentIndex={currentIndex}

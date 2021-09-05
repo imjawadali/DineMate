@@ -27,7 +27,8 @@ import {
   CANT_PAY,
   SIGN_UP_FAILURE,
   TAKIE_AWAY_ORDER_FAILED,
-  REGISTER_RESTURENT
+  REGISTER_RESTURENT,
+  CLOSE_ORDER_VIA_STRIPE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -76,7 +77,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DONOTDISTURB_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CLOSE_ORDER:
-      return { ...state, toastSetDismiss: true, toast: payload.toast }
+      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order", type: 'success' } }
+    case CLOSE_ORDER_VIA_STRIPE:
+      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order", type: 'success' } }
     case CLOSE_ORDER_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CLOSE_ORDER_FAILURE:

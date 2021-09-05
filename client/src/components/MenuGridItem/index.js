@@ -11,7 +11,7 @@ function MenuGridItem({ name, shortDescription, price, onClick }) {
       <div style={{ flex: 1 }}>
         <p className="MenuGridItemText">{shortDescription}</p>
       </div>
-      <p className="MenuGridItemText">$ {price}</p>
+      <p className="MenuGridItemText">$ {price.toFixed(2)}</p>
     </div>
   )
 }

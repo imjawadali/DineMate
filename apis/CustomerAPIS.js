@@ -1,5 +1,6 @@
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlCustomer')
 const { sendEmail } = require('../services/mailer')
+const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
@@ -161,6 +162,7 @@ module.exports = app => {
                 `SELECT o.restaurantId, r.restaurantName,
                 CONVERT(o.orderNumber, CHAR) as orderNumber,
                 SUM(oi.totalPrice) as billAmount,
+                o.discount, o.discountType, o.tip, r.taxPercentage,
                 o.status as active, o.type
                 FROM orders o
                 JOIN restaurants r ON r.restaurantId = o.restaurantId
@@ -170,12 +172,22 @@ module.exports = app => {
                 ORDER BY o.createdAt DESC`,
                 null,
                 (body) => {
-                    if (body.length)
+                    if (body.length) {
+                        for (let index = 0; index < body.length; index++) {
+                            const { discount, discountType, tip, taxPercentage, billAmount } = body[index]
+                            let discountAmount = discount
+                            if (discountType === '%')
+                                discountAmount = (billAmount * discount) / 100
+                            const subtotal = discountAmount < billAmount ? billAmount - discountAmount : 0
+                            const taxAmount = (subtotal * taxPercentage) / 100
+                            body[index].billAmount = Number((subtotal + taxAmount + tip).toFixed(2))
+                        }
                         return res.send({
                             status: true,
                             message: 'Orders list fetched successfully!',
                             body
                         })
+                    }
                     else
                         return res.send({
                             status: false,
@@ -802,10 +814,8 @@ module.exports = app => {
                 message: 'No items to submit!',
                 errorCode: 422
             })
-            let amount = 0
             for (var i = 0; i < items.length; i++) {
                 const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
-                amount += totalPrice
                 if (!itemId) return res.send({
                     status: false,
                     message: 'Item Id is required!',
@@ -887,7 +897,7 @@ module.exports = app => {
                                         })
                                     }
                                     if (items && items.length) {
-                                        tempDb.query(`UPDATE orders SET ready = 0, amount = amount + ${amount} WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function (error, result) {
+                                        tempDb.query(`UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, { ready: 0 }, function (error, result) {
                                             if (!!error) {
                                                 console.log('TableError', error.sqlMessage)
                                                 tempDb.rollback(function () {
@@ -897,7 +907,7 @@ module.exports = app => {
                                                         errorCode: 422
                                                     })
                                                 })
-                                            } else if (result.changedRows) {
+                                            } else {
                                                 for (var i = 0; i < items.length; i++) {
                                                     const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                                     const orderItem = {}
@@ -960,13 +970,7 @@ module.exports = app => {
                                                         message: 'Order item(s) added successfully!'
                                                     })
                                                 })
-                                            } else tempDb.rollback(function () {
-                                                return res.send({
-                                                    status: false,
-                                                    message: 'Failed to update order status',
-                                                    errorCode: 422
-                                                })
-                                            })
+                                            }
                                         })
                                     }
                                 })
@@ -1009,10 +1013,8 @@ module.exports = app => {
                 message: 'No items to submit!',
                 errorCode: 422
             })
-            let amount = 0
             for (var i = 0; i < items.length; i++) {
                 const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
-                amount += totalPrice
                 if (!itemId) return res.send({
                     status: false,
                     message: 'Item Id is required!',
@@ -1100,8 +1102,8 @@ module.exports = app => {
                                                 errorCode: 422
                                             })
                                         }
-                                        tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status, amount ) 
-                                        VALUES ( '${restaurantId}', ${customerId}, 'Take-Away', ${orderNumber}, 0, ${amount})`,
+                                        tempDb.query(`INSERT INTO orders ( restaurantId, customerId, type, orderNumber, status ) 
+                                        VALUES ( '${restaurantId}', ${customerId}, 'Take-Away', ${orderNumber}, 0)`,
                                             function (error, result2) {
                                                 if (!!error) {
                                                     console.log('TableError', error.sqlMessage)
@@ -1230,7 +1232,7 @@ module.exports = app => {
             (orderItems) => {
                 getConnection(
                     res,
-                    `SELECT o.amount, o.discount, o.discountType, o.tip, r.taxPercentage
+                    `SELECT o.discount, o.discountType, o.tip, r.taxPercentage
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
                     WHERE o.restaurantId = '${restaurantId}'
@@ -1238,17 +1240,23 @@ module.exports = app => {
                     null,
                     (result) => {
                         if (result.length) {
+                            let foodTotal = 0
+                            if (orderItems && orderItems.length) {
+                                for (let index = 0; index < orderItems.length; index++) {
+                                    foodTotal += orderItems[index].totalPrice;
+                                }
+                            }
                             const data = result[0]
                             let discountAmount = data.discount.toFixed(2)
                             if (data.discountType === '%')
-                                discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
-                            const subtotal = data.amount - discountAmount
+                                discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
+                            const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
                             return res.send({
                                 status: true,
                                 message: '',
                                 body: {
-                                    foodTotal: Number(data.amount.toFixed(2)),
+                                    foodTotal: Number(foodTotal.toFixed(2)),
                                     discount: data.discount + `${data.discountType}`,
                                     discountAmount: Number(discountAmount),
                                     subtotal: Number(subtotal.toFixed(2)),
@@ -1314,7 +1322,7 @@ module.exports = app => {
             getSecureConnection(
                 res,
                 customerId,
-                `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+                `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}' AND customerStatus = 0`,
                 data,
                 (result) => {
                     if (result.changedRows) {
@@ -1343,6 +1351,166 @@ module.exports = app => {
         }
     })
 
+    app.post('/customer/closeOrderViaStripe', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/closeOrderViaStripe")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, orderNumber, type, tip, billAmount, token, email } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!restaurantId) return res.send({
+                status: false,
+                message: 'Restuatant Id is required!',
+                errorCode: 422
+            })
+            if (!orderNumber) return res.send({
+                status: false,
+                message: 'Order number is required!',
+                errorCode: 422
+            })
+            if (!type) return res.send({
+                status: false,
+                message: 'Type is required!',
+                errorCode: 422
+            })
+            if (tip && tip < 0) return res.send({
+                status: false,
+                message: 'Tip can\'t be negative!',
+                errorCode: 422
+            })
+            if (billAmount < 0) return res.send({
+                status: false,
+                message: 'Bill amount can\'t be negative!',
+                errorCode: 422
+            })
+            if (!billAmount && billAmount != 0) return res.send({
+                status: false,
+                message: 'Bill amount is required!',
+                errorCode: 422
+            })
+            if (billAmount <= 0) return res.send({
+                status: false,
+                message: 'Bill amount must be greater than or equal to 0.01$',
+                errorCode: 422
+            })
+            if (!token) return res.send({
+                status: false,
+                message: 'Stripe token is required!',
+                errorCode: 422
+            })
+            let data
+            if (type.toLowerCase() === 'take-away')
+                data = { status: 1, customerStatus: 1 }
+            else data = { status: 0, customerStatus: 1 }
+
+            if (tip) data.tip = tip
+
+            getSecureConnection(
+                res,
+                customerId,
+                `SELECT stripeConnectedAccountId FROM restaurants WHERE restaurantId = '${restaurantId}'`,
+                null,
+                (result) => {
+                    if (result.length && result[0].stripeConnectedAccountId) {
+                        getTransactionalConnection()
+                            .getConnection(function (error, tempDb) {
+                                if (!!error) {
+                                    console.log('DbConnectionError', error.sqlMessage)
+                                    return res.send({
+                                        status: false,
+                                        message: 'Unable to reach database!',
+                                        errorCode: 503
+                                    })
+                                }
+                                tempDb.beginTransaction(function (error) {
+                                    if (!!error) {
+                                        console.log('TransactionError', error.sqlMessage)
+                                        return res.send({
+                                            status: false,
+                                            message: error.sqlMessage,
+                                            errorCode: 422
+                                        })
+                                    } else {
+                                        tempDb.query(`UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}' AND customerStatus = 0`, data, async function (error, result2) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function () {
+                                                    return res.send({
+                                                        status: false,
+                                                        message: error.sqlMessage,
+                                                        errorCode: 422
+                                                    })
+                                                })
+                                            } else if (result2 && result2.changedRows) {
+                                                console.log("payment init")
+                                                const paymentSuccess = await postCharge(
+                                                    (Number(billAmount) + Number(tip)) * 100,
+                                                    token,
+                                                    email,
+                                                    result[0].stripeConnectedAccountId
+                                                )
+                                                console.log("paymentSuccess", paymentSuccess)
+                                                if (paymentSuccess)
+                                                    tempDb.commit(function (error) {
+                                                        if (error) {
+                                                            tempDb.rollback(function () {
+                                                                return res.send({
+                                                                    status: false,
+                                                                    message: error.sqlMessage,
+                                                                    errorCode: 422
+                                                                })
+                                                            })
+                                                        }
+                                                        tempDb.release()
+                                                        return res.send({
+                                                            status: true,
+                                                            message: type.toLowerCase() === 'take-away' ?
+                                                                'Order Initialized Successfully'
+                                                                : 'Order close request submitted'
+                                                        })
+                                                    })
+                                                else {
+                                                    tempDb.rollback(function () { })
+                                                    tempDb.release()
+                                                    return res.send({
+                                                        status: false,
+                                                        message: 'Stripe payment failed!',
+                                                        errorCode: 422
+                                                    })
+                                                }
+                                            } else {
+                                                tempDb.release()
+                                                return res.send({
+                                                    status: false,
+                                                    message: 'Request already in que!',
+                                                    errorCode: 422
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            })
+                    } else return res.send({
+                        status: false,
+                        message: `Online payment not allowed for ${capitalizeFirstLetter(restaurantId)}!`,
+                        errorCode: 422
+                    })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
     app.post('/customer/getOrderStatus', async (req, res) => {
         console.log("\n\n>>> /customer/getOrderStatus")
         console.log(req.body)
@@ -1359,7 +1527,7 @@ module.exports = app => {
         })
         getConnection(
             res,
-            `SELECT status, customerStatus FROM orders WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            `SELECT status, customerStatus FROM orders WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             null,
             (result) => {
                 if (result.length) {
@@ -1414,7 +1582,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             customerId,
-            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
+            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             { doNotDisturb: enabled },
             () => {
                 return res.send({
@@ -1490,6 +1658,12 @@ function decrypt(token) {
 
 function lowerCased(string) {
     return string.toLowerCase()
+}
+
+function capitalizeFirstLetter (string) {
+    if (string)
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    else return string
 }
 
 function includes(list, id) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Button, DropDown, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
+import { Button, DropDown, Input, SmallTitle, TitleWithAction } from '../../../components'
 import { GET_USERS, UPDATE_USER } from '../../../constants'
 import { customisedAction } from '../../../redux/actions'
 
@@ -16,12 +16,17 @@ function UpdatePassword() {
   const users = useSelector(({ usersReducer }) => usersReducer.users)
   const dispatch = useDispatch()
 
-  const { restaurantId } = admin
+  const { restaurantId, role } = admin
 
   useEffect(() => {
     setownPassword(true)
     setid(admin.id)
   }, [admin.id])
+
+  useEffect(() => {
+    if (!fetchingUsers && !users && role !== 'Staff' && role!= 'Kitchen')
+      dispatch(customisedAction(GET_USERS, { restaurantId }))
+  }, [])
 
   const setUserAndId = (userId) => {
     setid(userId)
@@ -31,7 +36,7 @@ function UpdatePassword() {
     <div className="Container">
       <TitleWithAction
         text="Update Password"
-        button={
+        button={role !== 'Staff' && role!= 'Kitchen' && 
           <Button
             text={fetchingUsers || updatingUser ? "Syncing" : "Refresh"}
             light={fetchingUsers || updatingUser}
@@ -50,14 +55,14 @@ function UpdatePassword() {
           }}>
           <p>Own Password</p>
         </div>
-        <div className="TableButtons TableButtonGreen"
+        {role !== 'Staff' && role!= 'Kitchen' && <div className="TableButtons TableButtonGreen"
           style={{ opacity: !ownPassword ? 0.5 : '' }}
           onClick={() => {
             setid(null)
             setownPassword(false)
           }}>
           <p>Others Password</p>
-        </div>
+        </div>}
       </div>
       <div className="FormContainer" style={{ paddingTop: '0px', justifyContent: 'center' }}>
         <div className="FormInnerContainer">
@@ -79,7 +84,7 @@ function UpdatePassword() {
             <div className="InputsInnerContainer">
               <SmallTitle text="Password" />
               <Input
-                placeholder="Enter password"
+                placeholder="Enter new password"
                 type="password"
                 value={null}
                 onChange={({ target: { value } }) => setpassword(value)}

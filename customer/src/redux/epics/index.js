@@ -42,6 +42,7 @@ export const epics = combineEpics(
     callForServiceEpic.doNotDisturb,
     getOrderItemEpic.getOrder,
     closeOrderViaCashEpic.closeOrderViaCash,
+    closeOrderViaCashEpic.closeOrderViaStripe,
     takeAwayOrderEpic.takeAwayOrder,
     getOrderStatusEpic.getOrderStatus,
     getAllOrdersEpic.getAllOrders,

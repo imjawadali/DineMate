@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import './checkout.css'
+import {
+    StripeProvider,
+    Elements,
+} from 'react-stripe-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import serviceIcon from './../../../assets/Group 6409.png'
-import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
 import { CALL_FOR_SERVICE, CANT_PAY, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS } from '../../../constants'
-import { getItem, setItem } from '../../../helpers'
+import { getItem, setItem, loadScript } from '../../../helpers'
+
+import StripeForm from './StripeForm'
+import './checkout.css'
 
 
 function CheckOut(props) {
 
+    const [stripeLoaded, setStripeLoaded] = useState({})
     const [products, setProducts] = useState([])
 
     const [pickUpTime, setPickUpTime] = useState("")
@@ -33,8 +39,13 @@ function CheckOut(props) {
     const [tip, setTip] = useState("")
     const [data, setData] = useState("")
 
+    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
+
     // const resDet = useSelector(({ menuReducer }) => menuReducer.restaurant)
 
+    useEffect(() => {
+        loadScript('https://js.stripe.com/v3/').then(result => setStripeLoaded(result))
+    }, [])
 
     const dispatch = useDispatch()
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
@@ -92,9 +103,9 @@ function CheckOut(props) {
         // setTimeout(() => {
         if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
 
-            let data = dataOrder ? dataOrder.orderItems : []
-            if (data.length) {
-                setProducts([...data])
+            let data = dataOrder ? dataOrder : []
+            if (data.orderItems) {
+                setProducts(data.orderItems)
                 setData(data)
             }
         } else if (getItem(orderDetail) && getItem(orderDetail).type.toLowerCase() === 'take-away') {
@@ -192,9 +203,9 @@ function CheckOut(props) {
             }
             dispatch(customisedAction(CLOSE_ORDER, obj))
             if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
-                setTimeout(()=>{
+                setTimeout(() => {
                     props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
-                },2000)
+                }, 2000)
             }
         } else {
             dispatch(customisedAction(CANT_PAY))
@@ -237,51 +248,36 @@ function CheckOut(props) {
                         )
                     }) : null}
 
-
                     {data && data.discountAmount ?
                         <div className="itemCart">
-                            <p>Discount Amount</p>
+                            <p>Discount Amount ({data.discount})</p>
                             <p>${data.discountAmount}</p>
                         </div> : null}
+
+                    {data ? <div className="itemCart">
+                        <p>HST Amount ({data.taxPercentage})</p>
+                        <p>${data.taxAmount}</p>
+                    </div> : null}
+
                     {data && data.tip ?
                         <div className="itemCart">
                             <p>Tip Amount</p>
                             <p>${data.tip}</p>
                         </div> : null}
-                    {data && data.taxAmount ?
-                        <div className="itemCart">
-                            <p>HST Amount</p>
-                            <p>${data.taxAmount}</p>
-                        </div> : null
-                    }
+
                     <div className="totalCart">
                         <p onClick={() => console.log(data)}>Total</p>
-                        {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
                         <p>${data && data.billAmount}</p>
                     </div>
                 </div>
-                {orderDetails && orderDetails.type.toLowerCase() !== 'dine-in'
-                    ?
-                    <>
-
-                        <div className="pickUpLocation">
-                            <h2>Pick Up Location</h2>
-                            <div>
-                                <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3"></textarea>
-                            </div>
+                {orderDetail && orderDetail.type.toLowerCase() === 'take-away' ?
+                    <div className="pickUpLocation">
+                        <h2>Pick Up Location</h2>
+                        <div>
+                            <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3" disabled></textarea>
                         </div>
-                    </>
-                    : orderDetail && orderDetail.type.toLowerCase() === 'take-away'
-                        ?
-                        <>
-
-                            <div className="pickUpLocation">
-                                <h2>Pick Up Location</h2>
-                                <div>
-                                    <textarea value={pickUpLocation} onChange={(ev) => setPickUpLocation(ev.target.value)} rows="3" disabled></textarea>
-                                </div>
-                            </div>
-                        </> : null}
+                    </div> : null
+                }
 
                 <div className="pickUpPayment">
                     <h2>Payment</h2>
@@ -292,40 +288,44 @@ function CheckOut(props) {
                             <option value="Credit Card">Credit Card</option>
                         </select>
                     </div>
-                    {payment !== 'cash' ?
-                        <>
-                            <div>
-                                <input placeholder='Name on your card' onChange={(ev) => setCardName(ev.target.value)} />
+                    {payment !== 'cash' && stripeLoaded.successful ?
+                        <StripeProvider apiKey={"pk_test_51JRhRhAYACBOiDJuv9pN6Hx9uhGJStNAHmEg6dEcbvMW4aMydVT7K7nFSMDO1vlLOSqUmZ7oCRH0yl1WcU6MuK8J00UvJgVvIi"}>
+                            <Elements>
+                                <StripeForm
+                                    orderDetails={orderDetail || {}}
+                                    tip={tip}
+                                    billAmount={data ? data.billAmount || 0 : 0}
+                                    email={customer ? customer.email : ''}
+                                />
+                            </Elements>
+                        </StripeProvider>
+                        : <div className="Ammount">
+                            <div className="ammountDiv">
+                                <h2><span>Payment Amount</span> ${(Number(data ? data.billAmount : 0) + Number(tip)).toFixed(2)}</h2>
+                                <label>
+                                    <p>Enter Tip Here</p>
+                                    <input
+                                        style={{
+                                            border: '1px solid #ef6e6c',
+                                            paddingLeft: '10px',
+                                            paddingRight: '10px'
+                                        }}
+                                        placeholder="1.00 ($)"
+                                        type="number"
+                                        value={tip}
+                                        onChange={({ target: { value } }) => setTip(value)} />
+                                </label>
+                                <button className="payBtn" onClick={payNow}>Pay Now</button>
                             </div>
-                            <div>
-                                <input placeholder="Card Number" onChange={(ev) => setCardNumber(ev.target.value)} />
-                            </div>
-                            <div className="dateCode">
-                                <input placeholder="Expiry Date" onChange={(ev) => setExpiryDate(ev.target.value)} />
-                                <input placeholder="Security Code" onChange={(ev) => setSecurityCode(ev.target.value)} />
-                            </div>
-                            <div>
-                                <input placeholder="Zip or Postal Code" onChange={(ev) => setZipCode(ev.target.value)} />
-                            </div>
-                        </>
-                        : payment === 'cash' ? null : null}
+                            {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
 
-                </div>
-                <div className="Ammount">
-                    <div className="ammountDiv">
-                        <h2><span>Payment Amount</span> ${data && data.billAmount}</h2>
-                        <label>
-                            <p>Enter Tip Here $</p>
-                            <input type="number" onChange={(ev) => setTip(ev.target.value)} placeholder="" />
-                        </label>
-                        <button className="payBtn" onClick={payNow}>Pay Now</button>
-                    </div>
-                    {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
-
-                        <div>
-                            <img src={serviceIcon} onClick={() => setOpenCall(true)} />
+                                <div>
+                                    <img src={serviceIcon} onClick={() => setOpenCall(true)} />
+                                </div>
+                                : null}
                         </div>
-                        : null}
+                    }
+
                 </div>
             </div>
             {

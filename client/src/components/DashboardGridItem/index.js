@@ -40,7 +40,7 @@ function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupi
         <p className="DashboardGridItemText" style={{ fontWeight: 'bold' }}>{text}</p>
       </div>
       {!!occupiedBy && currentIndex === lastIndex ? <div className="ResponsiveDirection" style={{ width: '100%', display: 'flex' }}>
-        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>$ {amount}</p>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>$ {(amount || 0).toFixed(2)}</p>
         <p className="DashboardGridItemText">
           {time.hrs ? time.hrs < 10 ? '0' + time.hrs + ':' : time.hrs + ':' : '00:'}
           {time.mints ? time.mints < 10 ? '0' + time.mints + ':' : time.mints + ':' : '00:'}

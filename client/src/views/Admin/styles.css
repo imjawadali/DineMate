@@ -107,6 +107,7 @@
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
+    position: relative;
     width: 100%;
 }
 
@@ -115,6 +116,9 @@ td, th {
 }
 
 th {
+    top: 0;
+    position: sticky;
+    background: white;
     border-bottom: 1.5px solid rgba(0, 0, 0, 0.1);
     padding: 10px 5px;
 }

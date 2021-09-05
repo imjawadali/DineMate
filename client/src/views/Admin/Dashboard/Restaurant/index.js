@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { Button, DashboardGridItem, DropDown, ServiceQueItem, TitleWithAction } from '../../../../components'
-import { ASSIGN_TABLES_TO_STAFF, CLEAR_TABLE_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
+import { ASSIGN_TABLES_TO_STAFF, CLEAR_TABLE_ORDERS, GET_ORDERS, GET_RESTAURANT_DASHBOARD, MERGE_TABLES, SET_TOAST, SET_TOAST_DISMISSING, UN_MERGE_TABLES } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 function Restaurant(props) {
 
+  const [tableOrders, settableOrders] = useState([])
   const [merging, setmerging] = useState(false)
   const [selectedTables, setselectedTables] = useState([])
   const [managingStaff, setmanagingStaff] = useState(false)
@@ -15,6 +16,8 @@ function Restaurant(props) {
   const [serviceTables, setserviceTables] = useState([])
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const fetchingOrders = useSelector(({ ordersReducer }) => ordersReducer.fetchingOrders)
+  const orders = useSelector(({ ordersReducer }) => ordersReducer.orders)
   const fetchingDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingDashboard)
   const restaurantDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.restaurantDashboard)
   const mergingTables = useSelector(({ dashboardReducer }) => dashboardReducer.mergingTables)
@@ -28,6 +31,23 @@ function Restaurant(props) {
   const dispatch = useDispatch()
 
   const { restaurantId, role } = admin
+
+  useEffect(() => {
+    if (orders && orders.length && orders[0].status) {
+      const tempOrders = [ ...orders ]
+      settableOrders(tempOrders)
+    }
+
+    if (!fetchingOrders && (!orders || !orders.length || !orders[0].tableId || !orders[0].status))
+      dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+  }, [])
+
+  useEffect(() => {
+    let tempOrders = []
+    if (orders && orders.length)
+      tempOrders = [ ...orders ]
+    settableOrders(tempOrders)
+  }, [orders])
 
   useEffect(() => {
     if (!mergingTables) cancelMerge()
@@ -244,7 +264,10 @@ function Restaurant(props) {
               onClick={() => {
                 if (merging) mergeTables()
                 else if (managingStaff) assignTables()
-                else dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+                else {
+                  dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+                  dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1 }))
+                }
               }} />
           </div>
         }
@@ -263,7 +286,7 @@ function Restaurant(props) {
               <div className="DashBoardGrids">
                 {
                   getUnmergedTables().map((table, index) => {
-                    const { id, value, doNotDisturb, occupiedBy, amount, time } = table
+                    const { id, value, doNotDisturb, occupiedBy, time } = table
                     if (index >= getUnmergedColumnCounts() && index % getUnmergedColumnCounts() === 0) {
                       row = row + 1
                     }
@@ -280,7 +303,13 @@ function Restaurant(props) {
                         merging={merging || managingStaff}
                         includesMerging={selectedTables.includes(id) || assignedTables.includes(value)}
                         serviceIncludes={serviceTables.includes(value)}
-                        amount={amount}
+                        amount={
+                          tableOrders.filter(order => order.tableId === value).length ?
+                            tableOrders.filter(order => order.tableId === value)
+                              .map(order => order.billAmount)
+                              .reduce((a, b) => a + b, 0)
+                            : 0
+                        }
                         timeStamp={time}
                         onClick={() => {
                           if (merging && !occupiedBy) selectTable(id)
@@ -349,7 +378,13 @@ function Restaurant(props) {
                           includesMerging={assignedTables.includes(mergeId)}
                           serviceIncludes={serviceTables.includes(mergeId)}
                           timeStamp={mergedTables[0].time}
-                          amount={mergedTables[0].amount}
+                          amount={
+                            tableOrders.filter(order => order.tableId === mergeId).length ?
+                              tableOrders.filter(order => order.tableId === mergeId)
+                                .map(order => order.billAmount)
+                                .reduce((a, b) => a + b, 0)
+                              : 0
+                          }
                           merging={merging || managingStaff}
                           merged={!managingStaff}
                         />

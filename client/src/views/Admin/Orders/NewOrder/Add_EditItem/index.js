@@ -81,7 +81,7 @@ function Add_EditItem(props) {
                     totalPrice += addOns[i].price
                 }
             }
-            return Number((totalPrice * itemToSubmit.quantity).toFixed(2))
+            return Number((totalPrice * itemToSubmit.quantity))
         }
     }
 
@@ -112,7 +112,7 @@ function Add_EditItem(props) {
                 </div>
                 <div style={{ borderBottom: '1px solid grey', marginTop: '10px', width: '100%', display: 'flex', flexDirection: 'row' }}>
                     <p className="NewOrderItemHeading" style={{ flex: 1, fontWeight: 'bold' }}>{item.name}</p>
-                    <p className="NewOrderItemHeading" style={{ marginLeft: '5px' }}>{item.price}$</p>
+                    <p className="NewOrderItemHeading" style={{ marginLeft: '5px' }}>{item.price.toFixed(2)}$</p>
                 </div>
                 {radioAddOns && radioAddOns.length ?
                     radioAddOns.map(addOn => (
@@ -150,7 +150,7 @@ function Add_EditItem(props) {
                                         })}
                                     />
                                     <p className="NewOrderAddOnText" style={{ width: '100%', display: 'inline', marginLeft: '10px' }}>{option.name}</p>
-                                    <p className="NewOrderAddOnText" style={{ display: 'inline', marginLeft: '10px' }}>{option.price}$</p>
+                                    <p className="NewOrderAddOnText" style={{ display: 'inline', marginLeft: '10px' }}>{option.price.toFixed(2)}$</p>
                                 </label>
                             ))}
                         </div>
@@ -180,7 +180,7 @@ function Add_EditItem(props) {
                                     })}
                                 />
                                 <p className="NewOrderAddOnText" style={{ width: '100%', display: 'inline', marginLeft: '10px' }}>{addOn.name}</p>
-                                <p className="NewOrderAddOnText" style={{ display: 'inline', marginLeft: '10px' }}>{addOn.price}$</p>
+                                <p className="NewOrderAddOnText" style={{ display: 'inline', marginLeft: '10px' }}>{addOn.price.toFixed(2)}$</p>
                             </label>
                         ))}
                     </>
@@ -194,7 +194,7 @@ function Add_EditItem(props) {
                         <i className="fa fa-minus-circle NewOrderAddOnText"
                             onClick={() => setQuantity(itemToSubmit.quantity + 1)} />
                     </div>
-                    <p className="NewOrderItemHeading" style={{ marginLeft: '5px' }}>{getTotalPrice()}$</p>
+                    <p className="NewOrderItemHeading" style={{ marginLeft: '5px' }}>{(getTotalPrice() || 0).toFixed(2)}$</p>
                 </div>
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
                     <Input

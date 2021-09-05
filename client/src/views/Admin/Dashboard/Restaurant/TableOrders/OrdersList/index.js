@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../../../../redux/actions'
-import { CLEAR_ORDER_ITEM_DETAILS, CLOSE_ORDER } from '../../../../../../constants'
+import { CLEAR_ORDER_ITEM_DETAILS, CLOSE_ORDER, SET_TOAST } from '../../../../../../constants'
 
 import { TableActionicons } from '../../../../../../components'
 
@@ -32,7 +32,7 @@ function OrdersList(props) {
         <tbody>
           {tableOrders && tableOrders.length ?
             tableOrders.map((tableOrder) => {
-              const { orderNumber, firstName, lastName, items } = tableOrder
+              const { orderNumber, tableId, firstName, lastName, items } = tableOrder
               let orderItems
               try {
                 orderItems = items && JSON.parse(items)
@@ -42,9 +42,10 @@ function OrdersList(props) {
               return (
                 <>{orderItems && orderItems.length ?
                   orderItems.map((orderItem, index) => {
-                    sum += orderItem.totalPrice
+                    const { id, name, quantity, status, splitted, vanished, totalPrice } = orderItem
+                    sum += totalPrice
                     return (
-                      <tr key={orderItem.id} className={index === orderItems.length - 1 ? '' : 'NoBorder'}>
+                      <tr key={id} className={index === orderItems.length - 1 ? '' : 'NoBorder'}>
                         <td>
                           {!index && <TableActionicons
                             icon={`fa fa-ban`}
@@ -62,17 +63,47 @@ function OrdersList(props) {
                                 dispatch(customisedAction(CLEAR_ORDER_ITEM_DETAILS))
                                 history.push({
                                   pathname: '/client/admin/dashboard/restaurant/tableOrders/itemDetails',
-                                  state: { restaurantId, id: orderItem.id, orderNumber }
+                                  state: { restaurantId, id, orderNumber }
                                 })
+                              }}
+                            />
+                            <TableActionicons
+                              icon={`fa fa-columns`}
+                              style={{ marginLeft: '20px', opacity: vanished ? 0.5 : '' }}
+                              onClick={() => {
+                                if (closingId !== orderNumber && !vanished) {
+                                  if (totalPrice !== 0) {
+                                    if (!splitted) {
+                                      history.push({
+                                        pathname: '/client/admin/dashboard/restaurant/itemSplit', state: {
+                                          orderNumber,
+                                          tableId: tableId,
+                                          itemToSplit: { id, name, quantity, totalPrice }
+                                        }
+                                      })
+                                    } else dispatch(customisedAction(SET_TOAST, { message: 'Can\'t split shared item', type: 'error' }))
+                                  } else dispatch(customisedAction(SET_TOAST, { message: 'Can\'t split item with price "0"', type: 'error' }))
+                                }
                               }}
                             />
                           </div>
                         </td>
                         <td style={{ textAlign: 'center' }}>{!index ? orderNumber : ''}</td>
                         <td>{!index ? firstName ? firstName + ' ' + lastName : '-' : ''}</td>
-                        <td>{orderItem.name}</td>
-                        <td style={{ textAlign: 'center' }}>{orderItem.quantity}</td>
-                        <td style={{ textAlign: 'center' }}>$ {orderItem.totalPrice}</td>
+                        <td style={{
+                          textDecorationLine: vanished ? 'line-through' : '',
+                          opacity: vanished ? 0.5 : ''
+                        }}>{name}</td>
+                        <td style={{
+                          textAlign: 'center',
+                          textDecorationLine: vanished ? 'line-through' : '',
+                          opacity: vanished ? 0.5 : ''
+                        }}>{quantity}</td>
+                        <td style={{
+                          textAlign: 'end',
+                          textDecorationLine: vanished ? 'line-through' : '',
+                          opacity: vanished ? 0.5 : ''
+                        }}>{totalPrice.toFixed(2)} $</td>
                       </tr>
                     )
                   })
@@ -93,7 +124,7 @@ function OrdersList(props) {
                     <td colSpan="3">-</td>
                   </tr>}
                   <tr><td colSpan="10" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
-                  </>
+                </>
               )
             }) :
             <tr>
@@ -108,7 +139,7 @@ function OrdersList(props) {
             <tr key="-">
               <td style={{ fontWeight: 'bold' }}>Total</td>
               <td colSpan="5" />
-              <td style={{ fontWeight: 'bold', textAlign: 'center' }}>$ {sum}</td>
+              <td style={{ fontWeight: 'bold', textAlign: 'end' }}>{sum.toFixed(2)} $</td>
             </tr>
             : null
           }

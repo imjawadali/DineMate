@@ -117,7 +117,8 @@ import {
   GET_RESTAURANT_SCHEDULE_FAILURE,
   GET_RESTAURANT_SCHEDULE,
   UPDATE_RESTAURANT_SCHEDULE,
-  UPDATE_RESTAURANT_SCHEDULE_FAILURE
+  UPDATE_RESTAURANT_SCHEDULE_FAILURE,
+  SPLIT_ITEM
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -256,6 +257,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: 'Closing Check', type: 'success' } }
     case CLOSE_ORDER_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case CLOSE_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case SPLIT_ITEM:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted item', type: 'success' } }
+    case CLOSE_ORDER_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case CLOSE_ORDER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case MERGE_TABLES:

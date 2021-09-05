@@ -27,7 +27,7 @@ module.exports = app => {
         getConnection(
             res,
             `SELECT U.id, U.name, U.email, U.role, U.restaurantId,
-            R.restaurantName, R.taxPercentage, R.lateTime
+            R.restaurantName
             FROM users U
             LEFT JOIN restaurants R on U.restaurantId = R.restaurantId
             WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`,
@@ -147,6 +147,7 @@ module.exports = app => {
         if (!primaryContact) return res.status(422).send({ 'msg': 'Primary Contact fields are required!' })
         if (!primaryContact.name) return res.status(422).send({ 'msg': 'Primary Contact\'s Name is required!' })
         if (!primaryContact.email) return res.status(422).send({ 'msg': 'Primary Contact\'s Email is required!' })
+        if (!primaryContact.email.length) return res.status(422).send({ 'msg': 'Primary Contact\'s Email is required!' })
         if (secondaryContact) {
             if (!secondaryContact.name) return res.status(422).send({ 'msg': 'Secondary Contact\'s Name is required!' })
             if (!secondaryContact.email) return res.status(422).send({ 'msg': 'Secondary Contact\'s Email is required!' })
@@ -609,7 +610,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
-            SUM(o.doNotDisturb) as doNotDisturb, o.amount,
+            SUM(o.doNotDisturb) as doNotDisturb,
             SUM(o.customerStatus) as closeRequests,
             COUNT(o.orderNumber) as occupiedBy,
             TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
@@ -723,7 +724,9 @@ module.exports = app => {
                                         return res.status(422).send({ 'msg': "Failed to assign tables to staff!" })
                                     })
                                 } else {
-                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus, c.firstName, c.lastName,
+                                    tempDb.query(`SELECT o.orderNumber, o.customerStatus, o.tableId,
+                                        o.discountType, o.discount, o.tip, r.taxPercentage,
+                                        o.customerId, c.firstName, c.lastName,
                                         CONCAT('[',
                                             GROUP_CONCAT(
                                                 CONCAT(
@@ -731,13 +734,16 @@ module.exports = app => {
                                                     ',"name":"',oi.name,
                                                     '","quantity":',oi.quantity,
                                                     ',"totalPrice":',oi.totalPrice,
+                                                    ',"splitted":',oi.splitted,
+                                                    ',"vanished":',oi.vanished,
                                                     ',"status":"',oi.status,'"}'
-                                                ) ORDER BY oi.createdAt DESC
+                                                ) ORDER BY oi.createdAt ASC
                                             ),
                                         ']') as items
                                         FROM orders o
                                         LEFT JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}'
                                         LEFT JOIN customers c ON o.customerId = c.id
+                                        JOIN restaurants r on o.restaurantId = r.restaurantId
                                         WHERE o.restaurantId = '${restaurantId}' AND o.tableId = '${tableId}' AND o.status = 1 AND o.type = 'Dine-In'
                                         GROUP BY o.orderNumber
                                         ORDER BY o.createdAt DESC`, null, function (error, result) {
@@ -803,25 +809,37 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT o.id, o.tableId,
+            `SELECT o.id, o.tableId, o.status,
             CONVERT(o.orderNumber, CHAR) as orderNumber,
             IF ((o.status = 0),
                 TIMESTAMPDIFF(SECOND, o.createdAt, o.closedAt),
                 TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
             ) as time,
-            o.amount, o.status,
-            GROUP_CONCAT(u.name) as staff
+            SUM(oi.totalPrice) as billAmount,
+            o.discount, o.discountType, o.tip, r.taxPercentage,
+            GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff
             FROM orders o 
+            JOIN restaurants r ON r.restaurantId = o.restaurantId
+            LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
             LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
             LEFT JOIN users u ON u.id = sat.staffId
             WHERE o.restaurantId = '${restaurantId}'
             ${type ? 'AND type = ' + `'${type}'` : ''}
-            AND status = ${active}
+            AND o.status = ${active}
             GROUP BY o.orderNumber
             ORDER BY ${active ? 'o.createdAt' : 'o.closedAt'} DESC `,
             null,
             (data) => {
                 if (data.length) {
+                    for (let index = 0; index < data.length; index++) {
+                        const { discount, discountType, tip, taxPercentage, billAmount } = data[index]
+                        let discountAmount = discount
+                        if (discountType === '%')
+                            discountAmount = (billAmount * discount) / 100
+                        const subtotal = discountAmount < billAmount ? billAmount - discountAmount : 0
+                        const taxAmount = (subtotal * taxPercentage) / 100
+                        data[index].billAmount = Number((subtotal + taxAmount + tip).toFixed(2))
+                    }
                     return res.send(data)
                 } else {
                     return res.status(422).send({ 'msg': `No Orders Found!` })
@@ -839,7 +857,8 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT oi.id, oi.itemId, oi.quantity, oi.name, oi.totalPrice, oi.specialInstructions,
+            `SELECT oi.id, oi.itemId, oi.quantity, oi.name, oi.totalPrice,
+            oi.specialInstructions, oi.status, oi.splitted, oi.vanished,
             CONCAT('[',
                 GROUP_CONCAT(
                     CONCAT(
@@ -861,12 +880,12 @@ module.exports = app => {
             (items) => {
                 getConnection(
                     res,
-                    `SELECT o.createdAt, o.closedAt, o.type,
+                    `SELECT o.createdAt, o.closedAt, o.type, o.tableId,
                     IF ((o.status = 0),
                         TIMESTAMPDIFF(SECOND, o.createdAt, closedAt),
                         TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
                     ) as duration,
-                    o.status, o.amount, o.discount, o.discountType, o.tip, r.taxPercentage
+                    o.status, o.discount, o.discountType, o.tip, r.taxPercentage
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
                     WHERE o.restaurantId = '${restaurantId}'
@@ -874,11 +893,17 @@ module.exports = app => {
                     null,
                     (result) => {
                         if (result.length) {
+                            let foodTotal = 0
+                            if (items && items.length) {
+                                for (let index = 0; index < items.length; index++) {
+                                    foodTotal += items[index].totalPrice;
+                                }
+                            }
                             const data = result[0]
                             let discountAmount = data.discount.toFixed(2)
                             if (data.discountType === '%')
-                                discountAmount = ((data.amount * data.discount) / 100).toFixed(2)
-                            const subtotal = data.amount - discountAmount
+                                discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
+                            const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
                             return res.send({
                                 createdAt: data.createdAt,
@@ -886,7 +911,8 @@ module.exports = app => {
                                 duration: data.duration,
                                 status: data.status,
                                 type: data.type,
-                                foodTotal: data.amount.toFixed(2),
+                                tableId: data.tableId,
+                                foodTotal: foodTotal.toFixed(2),
                                 discount: data.discount + `${data.discountType}`,
                                 discountAmount,
                                 subtotal: subtotal.toFixed(2),
@@ -912,10 +938,8 @@ module.exports = app => {
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
         if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
         if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
-        let amount = 0
         for (var i = 0; i < items.length; i++) {
             const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
-            amount += totalPrice
             if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
             if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
             if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
@@ -946,13 +970,13 @@ module.exports = app => {
                                 console.log('TransactionError', error.sqlMessage)
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             }
-                            tempDb.query(`UPDATE orders SET ready = 0, amount = amount + ${amount} WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, null, function (error, result) {
+                            tempDb.query(`UPDATE orders SET ready = 0 WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`, null, function (error, result) {
                                 if (!!error) {
                                     console.log('TableError', error.sqlMessage)
                                     tempDb.rollback(function () {
                                         return res.status(422).send({ 'msg': error.sqlMessage })
                                     })
-                                } else if (result.changedRows) {
+                                } else {
                                     for (var i = 0; i < items.length; i++) {
                                         const { itemId, quantity, name, price, totalPrice, specialInstructions, addOns } = items[i]
                                         const orderItem = {}
@@ -999,9 +1023,7 @@ module.exports = app => {
                                         tempDb.release()
                                         return res.send({ 'msg': 'Order item(s) added successfully!' })
                                     })
-                                } else tempDb.rollback(function () {
-                                    return res.status(422).send({ 'msg': "Failed to update order status" })
-                                })
+                                }
                             })
                         })
                     }
@@ -1018,10 +1040,8 @@ module.exports = app => {
         if (!type) return res.status(422).send({ 'msg': 'Order type is required!' })
         if (type === 'Dine-In' && !tableId) return res.status(422).send({ 'msg': 'Table Id is required!' })
         if (!items || !items.length) return res.status(422).send({ 'msg': 'No items to submit!' })
-        let amount = 0
         for (var i = 0; i < items.length; i++) {
             const { itemId, quantity, name, price, totalPrice, addOns } = items[i]
-            amount += totalPrice
             if (!itemId) return res.status(422).send({ 'msg': 'Item Id is required!' })
             if (!quantity) return res.status(422).send({ 'msg': 'Quantity is required!' })
             if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
@@ -1056,8 +1076,8 @@ module.exports = app => {
                                 console.log('TransactionError', error.sqlMessage)
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             }
-                            tempDb.query(`INSERT INTO orders ( restaurantId, orderNumber, type, tableId, amount ) 
-                                        VALUES ( '${restaurantId}', ${orderNumber}, '${type}', ${tableId ? `${tableId}` : null}, ${amount})`,
+                            tempDb.query(`INSERT INTO orders ( restaurantId, orderNumber, type, tableId ) 
+                                        VALUES ( '${restaurantId}', ${orderNumber}, '${type}', ${tableId ? `${tableId}` : null})`,
                                 function (error, result2) {
                                     if (!!error) {
                                         console.log('TableError', error.sqlMessage)
@@ -1173,7 +1193,7 @@ module.exports = app => {
                 getConnection(
                     res,
                     `UPDATE orderItems SET ? WHERE id = ${id}`,
-                    { quantity, totalPrice, specialInstructions },
+                    { quantity, totalPrice, specialInstructions, status: 'P' },
                     (result) => {
                         if (result.changedRows) {
                             if (addOns && addOns.length) {
@@ -1245,7 +1265,7 @@ module.exports = app => {
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
         if (!orderNumber) return res.status(422).send({ 'msg': 'Check number is required!' })
-        if (!discount) return res.status(422).send({ 'msg': 'Discount amount is required!' })
+        if (!discount) return res.status(422).send({ 'msg': 'Discount amount or percentage is required!' })
         if (!discountType) return res.status(422).send({ 'msg': 'Discount type is required!' })
         getSecureConnection(
             res,
@@ -1275,6 +1295,73 @@ module.exports = app => {
                 else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
+    })
+
+    app.post('/admin/itemSplit', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { id, splittedItem } = req.body
+        if (!id) return res.status(422).send({ 'msg': 'Id is required!' })
+        if (!splittedItem || !splittedItem.length) return res.status(422).send({ 'msg': 'No splitted item!' })
+        for (var i = 0; i < splittedItem.length; i++) {
+            const { restaurantId, orderNumber, name, status, totalPrice, quantity, splitted } = splittedItem[i]
+            if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+            if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
+            if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+            if (status !== 'R') return res.status(422).send({ 'msg': 'Invalid item status!' })
+            if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Total price is required!' })
+            if (!quantity && quantity !== 0) return res.status(422).send({ 'msg': 'Quantity is required!' })
+            if (!splitted) return res.status(422).send({ 'msg': 'Invalid split status!' })
+        }
+        getTransactionalConnection()
+            .getConnection(function (error, tempDb) {
+                if (!!error) {
+                    console.log('DbConnectionError', error.sqlMessage)
+                    return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                }
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin' || role = 'Staff') AND active = 1`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            tempDb.query(`UPDATE orderItems SET totalPrice = 0, vanished = 1 WHERE id = ${id}`, null, function (error, result) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function () {
+                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                    })
+                                } else if (result.changedRows) {
+                                    for (var i = 0; i < splittedItem.length; i++) {
+                                        tempDb.query('INSERT INTO orderItems SET ?', splittedItem[i], function (error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function () {
+                                                    return res.status(422).send({ 'msg': "Failed to split Items" })
+                                                })
+                                            }
+                                        })
+                                    }
+                                    tempDb.commit(function (error) {
+                                        if (error) {
+                                            tempDb.rollback(function () {
+                                                return res.status(422).send({ 'msg': "Failed to split Items" })
+                                            })
+                                        }
+                                        tempDb.release()
+                                        return res.send({ 'msg': 'Item splitted successfully!' })
+                                    })
+                                } else tempDb.rollback(function () {
+                                    return res.status(422).send({ 'msg': "Failed to update splitted item totalPrice" })
+                                })
+                            })
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
+            })
     })
 
     app.post('/admin/getStaffAssignedTables', async (req, res) => {
@@ -1389,7 +1476,7 @@ module.exports = app => {
             res,
             adminId,
             `SELECT rq.id, rq.tableName, rq.value, rq.mergeId,
-            SUM(o.doNotDisturb) as doNotDisturb, o.amount,
+            SUM(o.doNotDisturb) as doNotDisturb,
             SUM(o.customerStatus) as closeRequests,
             COUNT(o.orderNumber) as occupiedBy,
             TIMESTAMPDIFF(SECOND, MIN(o.createdAt), CURRENT_TIMESTAMP) as time
@@ -1431,7 +1518,7 @@ module.exports = app => {
                 ),
             ']') as addOns
             FROM orders o
-            JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}'
+            JOIN orderItems oi ON o.orderNumber = oi.orderNumber AND oi.restaurantId = '${restaurantId}' AND splitted = 0
             LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
             WHERE o.restaurantId = '${restaurantId}' AND o.status = 1 AND o.ready = 0
             GROUP BY oi.id
@@ -1478,15 +1565,13 @@ module.exports = app => {
             (result) => {
                 getConnection(
                     res,
-                    adminId,
-                    `UPDATE orderItems SET status = 'R' WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 'P'`,
-                    null,
+                    `UPDATE orderItems SET ? WHERE orderNumber = ${orderNumber} AND restaurantId = '${restaurantId}' AND status = 'P'`,
+                    { status: 'R' },
                     () => {
                         getConnection(
                             res,
-                            adminId,
-                            `UPDATE orders SET ready = 1 WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`,
-                            null,
+                            `UPDATE orders SET ? WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}' AND status = 1`,
+                            { ready: 1 },
                             (result) => {
                                 if (result.changedRows) return res.send({ 'msg': 'Order marked ready successfully!' })
                                 else return res.status(422).send({ 'msg': 'Failed to mark item as ready!' })

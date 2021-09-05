@@ -5,7 +5,7 @@ import { TitleWithAction, Button } from '../../../../../../components'
 import { GET_ORDER_ITEM_DETAILS } from '../../../../../../constants'
 import { customisedAction } from '../../../../../../redux/actions'
 
-import AddOnsList from '../AddOnsList'
+import AddOnsList from './AddOnsList'
 import './styles.css'
 
 function ItemDetails(props) {
@@ -79,11 +79,11 @@ function ItemDetails(props) {
             </div>
             <div className="ItemDetailsSections">
               <h4>Item Price:</h4>
-              <p>$ {orderItemDetails.price}</p>
+              <p>$ {(orderItemDetails.price).toFixed(2)}</p>
             </div>
             <div className="ItemDetailsSections">
               <h4>Total Price (including add-ons):</h4>
-              <p>$ {orderItemDetails.totalPrice}</p>
+              <p>$ {(orderItemDetails.totalPrice).toFixed(2)}</p>
             </div>
           </div>
           <div className="InstructionsContainer">

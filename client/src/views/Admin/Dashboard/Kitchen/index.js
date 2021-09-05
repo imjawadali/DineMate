@@ -10,6 +10,7 @@ import OrdersList from './OrdersList'
 
 function Kitchen() {
 
+  const [lateTime, setlateTime] = useState(0)
   const [filterKey, setfilterKey] = useState('')
   const [category, setcategory] = useState(null)
   const [late, setlate] = useState(false)
@@ -19,11 +20,17 @@ function Kitchen() {
   const [currentIndex, setcurrentIndex] = useState(1)
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const restaurantSettings = useSelector(({ restaurantReducer }) => restaurantReducer.restaurantSettings)
   const fetchingDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.fetchingDashboard)
   const kitchenDashboard = useSelector(({ dashboardReducer }) => dashboardReducer.kitchenDashboard)
   const dispatch = useDispatch()
 
-  const { restaurantId, lateTime } = admin
+  const { restaurantId } = admin
+
+  useEffect(() => {
+    if (restaurantSettings && restaurantSettings.lateTime)
+      setlateTime(restaurantSettings.lateTime)
+  }, [restaurantSettings])
 
   useEffect(() => {
     if (kitchenDashboard && kitchenDashboard.length) {

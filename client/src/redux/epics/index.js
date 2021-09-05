@@ -30,6 +30,7 @@ import { applyDiscountEpic } from './admin/applyDiscountEpic'
 import { closeOrderEpic } from './admin/closeOrderEpic'
 import { getOrdersEpic } from './admin/getOrdersEpic'
 import { getOrderDetailsEpic } from './admin/getOrderDetailsEpic'
+import { splitItemEpic } from './admin/splitItemEpic'
 import { mergeTablesEpic } from './admin/mergeTablesEpic'
 import { unMergeTablesEpic } from './admin/unMergeTablesEpic'
 import { getServicesQueEpic } from './admin/getServicesQueEpic'
@@ -86,6 +87,7 @@ export const epics = combineEpics(
     getOrdersEpic.getOrders,
     getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,
+    splitItemEpic.splitItem,
     mergeTablesEpic.mergeTables,
     unMergeTablesEpic.unMergeTables,
     getServicesQueEpic.getServicesQue,

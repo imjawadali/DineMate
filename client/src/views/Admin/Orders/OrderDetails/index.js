@@ -143,6 +143,7 @@ function OrderDetails(props) {
           restaurantId={restaurantId}
           orderNumber={orderNumber}
           showAddOnModal={(item) => showAddOnModal(item)}
+          history={history}
         />
         <div className="OrderDetailsBottomButtonsContainer">
           <div style={{ display: 'flex', justifyContent: 'center' }}>

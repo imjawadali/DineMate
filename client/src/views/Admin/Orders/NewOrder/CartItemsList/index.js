@@ -18,11 +18,11 @@ function CartItemsList(props) {
     }
 
     const getSubTotal = (foodTotal) => {
-        return foodTotal - getDiscountAmount(foodTotal)
+        return getDiscountAmount(foodTotal) < foodTotal ? foodTotal - getDiscountAmount(foodTotal) : 0
     }
 
-    const getTaxAmount = (amount) => {
-        return ((amount * taxPercentage) / 100)
+    const getTaxAmount = (subtotal) => {
+        return ((subtotal * taxPercentage) / 100)
     }
 
     const getTipAmount = () => {
@@ -39,7 +39,7 @@ function CartItemsList(props) {
                         <th style={{ textAlign: 'center' }}>Quantity</th>
                         <th />
                         <th>Item</th>
-                        <th style={{ textAlign: 'center' }}>Amount</th>
+                        <th style={{ textAlign: 'end' }}>Amount</th>
                         <th style={{ textAlign: 'center' }}>Action</th>
                     </tr>
                 </thead>
@@ -59,14 +59,14 @@ function CartItemsList(props) {
                                                 return (`
                                                     ${addon.addOnOption && addon.addOnOption !== 'null' ?
                                                         addon.addOnOption : addon.addOnName}
-                                                    ${addon.price ? '($ ' + addon.price + ')' : ''}
+                                                    ${addon.price ? '(' + addon.price.toFixed(2) + ' $)' : ''}
                                                     ${index !== addOns.length - 1 ? ',' : ''}
                                                 `)
                                             })
                                             : null}</p>
                                         <p style={{ color: 'red' }}>{specialInstructions}</p>
                                     </td>
-                                    <td style={{ textAlign: 'center' }}>$ {totalPrice}</td>
+                                    <td style={{ textAlign: 'end' }}>{totalPrice.toFixed(2)} $</td>
                                     <td>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <div className="OrderDetailsActionButtons" style={{ backgroundColor: 'rgb(180, 198, 231)' }}
@@ -104,14 +104,14 @@ function CartItemsList(props) {
                                                     return (`
                                                     ${addon.addOnOption && addon.addOnOption !== 'null' ?
                                                             addon.addOnOption : addon.addOnName}
-                                                    ${addon.price ? '($ ' + addon.price + ')' : ''}
+                                                    ${addon.price ? '(' + addon.price.toFixed(2) + ' $)' : ''}
                                                     ${index !== addOnsArray.length - 1 ? ',' : ''}
                                                 `)
                                                 })
                                                 : null}</p>
                                             <p style={{ color: 'red' }}>{specialInstructions}</p>
                                         </td>
-                                        <td style={{ textAlign: 'center' }}>$ {totalPrice}</td>
+                                        <td style={{ textAlign: 'end' }}>{totalPrice.toFixed(2)} $</td>
                                         <td />
                                     </tr>
                                     <tr><td style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
@@ -125,31 +125,31 @@ function CartItemsList(props) {
                     <tr style={{ border: 'none' }}>
                         <td colSpan={2} />
                         <td>Sub Total</td>
-                        <td style={{ textAlign: 'center' }}>$ {sum.toFixed(2)}</td>
+                        <td style={{ textAlign: 'end' }}>{sum.toFixed(2)} $</td>
                         <td />
                     </tr>
                     {getDiscountAmount(sum) ? <tr style={{ border: 'none' }}>
                         <td colSpan={2} />
-                        <td>Discount</td>
-                        <td style={{ textAlign: 'center' }}>$ {getDiscountAmount(sum).toFixed(2)} ({existingOrder.discount})</td>
+                        <td>Discount <span style={{ opacity: 0.5 }}>({existingOrder.discount})</span></td>
+                        <td style={{ textAlign: 'end', color: 'red' }}>- {getDiscountAmount(sum).toFixed(2)} $</td>
                         <td />
                     </tr> : null}
                     <tr style={{ border: getTipAmount() ? 'none' : '' }}>
                         <td colSpan={2} />
-                        <td>Tax</td>
-                        <td style={{ textAlign: 'center' }}>$ {getTaxAmount(getSubTotal(sum)).toFixed(2)} ({taxPercentage}%)</td>
+                        <td>Tax <span style={{ opacity: 0.5 }}>({taxPercentage}%)</span></td>
+                        <td style={{ textAlign: 'end' }}>{getTaxAmount(getSubTotal(sum)).toFixed(2)} $</td>
                         <td />
                     </tr>
                     {getTipAmount() ? <tr>
                         <td colSpan={2} />
                         <td>Tip</td>
-                        <td style={{ textAlign: 'center' }}>$ {getTipAmount()}</td>
+                        <td style={{ textAlign: 'end' }}>{getTipAmount()} $</td>
                         <td />
                     </tr> : null}
                     <tr>
                         <td colSpan={2} />
                         <td style={{ fontWeight: 'bold' }}>Total</td>
-                        <td style={{ fontWeight: 'bold', textAlign: 'center' }}>$ {(getSubTotal(sum) + getTaxAmount(getSubTotal(sum)) + Number(getTipAmount())).toFixed(2)}</td>
+                        <td style={{ fontWeight: 'bold', textAlign: 'end' }}>{(getSubTotal(sum) + getTaxAmount(getSubTotal(sum)) + Number(getTipAmount())).toFixed(2)} $</td>
                         <td />
                     </tr>
                     <tr><td style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>

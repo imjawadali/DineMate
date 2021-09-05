@@ -31,7 +31,7 @@ function Discount(props) {
                     <DropDown
                         style={{ marginRight: '10px' }}
                         placeholder="Select type"
-                        options={['$', '%']}
+                        options={['%', '$']}
                         value={discountType}
                         onChange={({ target: { value } }) => setdiscountType(value)}
                     />

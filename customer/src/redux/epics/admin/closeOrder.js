@@ -7,7 +7,8 @@ import {
   CLOSE_ORDER,
   CLOSE_ORDER_SUCCESS,
   CLOSE_ORDER_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  CLOSE_ORDER_VIA_STRIPE
 } from '../../../constants'
 import { removeItem } from '../../../helpers'
 
@@ -31,4 +32,23 @@ export class closeOrderViaCashEpic {
         }
       )
     )
+
+
+  static closeOrderViaStripe = action$ =>
+  action$.pipe(
+    ofType(CLOSE_ORDER_VIA_STRIPE),
+    switchMap(
+      async ({ payload }) => {
+        return generalizedEpic(
+          'post',
+          API_ENDPOINTS.customer.closeOrderViaStripe,
+          payload,
+          (resObj) => {
+            return customisedAction(CLOSE_ORDER_SUCCESS,{ closeOrder: resObj.body, toast: { message: 'Please Wait Manager Will Respond You Soon', type: 'success' }})
+          },
+          CLOSE_ORDER_FAILURE
+        )
+      }
+    )
+  )
 }

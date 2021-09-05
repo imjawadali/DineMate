@@ -181,7 +181,7 @@ function ItemDetails(props) {
                   value={price}
                   onChange={({ target: { value }}) =>  setprice(value < 0 ? value * -1 : value)}
                 /> :
-                <p>$ {selectedItem.price}</p>
+                <p>$ {selectedItem.price.toFixed(2)}</p>
               }
             </div>
             <div className="ItemDetailsSections">

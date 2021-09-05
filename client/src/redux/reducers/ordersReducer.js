@@ -15,13 +15,16 @@ import {
   APPLY_DISCOUNT,
   APPLY_DISCOUNT_FAILURE,
   EDIT_ITEM,
-  EDIT_ITEM_FAILURE
+  EDIT_ITEM_FAILURE,
+  SPLIT_ITEM,
+  SPLIT_ITEM_SUCCESS,
+  SPLIT_ITEM_FAILURE
 } from '../../constants'
   
 export default (state = { 
   fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false,
   addingUpdatingOrder: false, deletingItemId: null, edittingItemId: null, deletingOrder: false, applyingDiscount: false,
-  tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null
+  tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null, splitId: null
 }, { type, payload }) => {
   switch (type) {
     case GET_TABLE_ORDERS:
@@ -101,6 +104,13 @@ export default (state = {
       return { ...state, closingId: payload.orderNumber }
     case CLOSE_ORDER_FAILURE:
       return { ...state, closingId: null }
+    
+    case SPLIT_ITEM:
+      return { ...state, splitId: payload.id }
+    case SPLIT_ITEM_SUCCESS:
+      return { ...state, splitId: null }
+    case SPLIT_ITEM_FAILURE:
+      return { ...state, splitId: null }
     
     case RESET_RESTAURANT:
       return { ...state, tableOrders: null, orderItemDetails: null, orders: null, orderDetails: null }

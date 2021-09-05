@@ -12,6 +12,7 @@ import Restaurant from './Dashboard/Restaurant'
 import Kitchen from './Dashboard/Kitchen'
 import TableOrders from './Dashboard/Restaurant/TableOrders'
 import OrderItemDetails from './Dashboard/Restaurant/TableOrders/ItemDetails'
+import ItemSplit from './Dashboard/Restaurant/ItemSplit'
 import Orders from './Orders'
 import OrderDetails from './Orders/OrderDetails'
 import NewOrder from './Orders/NewOrder'
@@ -53,7 +54,9 @@ function Admin(props) {
         dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
       } else if (role === 'Staff') {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+        dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
         dispatch(customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
       } else {
         dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
@@ -62,16 +65,15 @@ function Admin(props) {
         dispatch(customisedAction(GET_EXISTING_QRS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
-        dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_RESTAURANT_SCHEDULE, { restaurantId, noToast: true }))
       }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
+      dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId, noToast: true }))
     }
   }, [restaurantId])
 
   useEffect(() => {
-    if (role === "Admin" || role === "SuperAdmin")
-      dispatch(customisedAction(CHECK_PASSWORD_EXPIRY, { noToast: true }))
+    dispatch(customisedAction(CHECK_PASSWORD_EXPIRY, { noToast: true }))
 
     if (role === 'SuperAdmin')
       dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
@@ -123,7 +125,7 @@ function Admin(props) {
         <SideBar admin={admin} sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
       </div>
       <div className="mainContainer" style={{ width: role === "Kitchen" && props.location.pathname.includes('/dashboard') ? '100%' : '' }}>
-        <NavBar role={role} openSidebar={openSidebar} {...props} />
+        <NavBar openSidebar={openSidebar} {...props} />
         <div className="Main">
           <Switch>
             <Route exact path={path}>
@@ -141,6 +143,7 @@ function Admin(props) {
                 <Route path={`${path}/dashboard/restaurant`}>
                   <Switch>
                     <OthersRoutes exact path={`${path}/dashboard/restaurant`} component={Restaurant} />
+                    <OthersRoutes path={`${path}/dashboard/restaurant/itemSplit`} component={ItemSplit} />
                     <Route path={`${path}/dashboard/restaurant/tableOrders`}>
                       <Switch>
                         <OthersRoutes exact path={`${path}/dashboard/restaurant/tableOrders`} component={TableOrders} />
@@ -169,9 +172,9 @@ function Admin(props) {
             </Route>
             <Route path={`${path}/ordersManagement`}>
               <Switch>
-                <RestaurantAdminRoutes exact path={`${path}/ordersManagement`} component={Orders} />
-                <RestaurantAdminRoutes path={`${path}/ordersManagement/orderDetails`} component={OrderDetails} />
-                <RestaurantAdminRoutes path={`${path}/ordersManagement/newOrder`} component={NewOrder} />
+                <OthersRoutes exact path={`${path}/ordersManagement`} component={Orders} />
+                <OthersRoutes path={`${path}/ordersManagement/orderDetails`} component={OrderDetails} />
+                <OthersRoutes path={`${path}/ordersManagement/newOrder`} component={NewOrder} />
               </Switch>
             </Route>
             <OthersRoutes path={`${path}/staffManagement`} component={Staff} />
@@ -203,7 +206,7 @@ function Admin(props) {
               </Switch>
             </Route>
             <SuperAdminRoutes path={`${path}/updatePassword`} component={UpdatePassword} />
-            <RestaurantAdminRoutes path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
+            <Route path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
             <RestaurantAdminRoutes path={`${path}/scheduleManagement`} component={Schedule} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?

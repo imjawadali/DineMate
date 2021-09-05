@@ -9,7 +9,7 @@ function OrdersList(props) {
 
     const dispatch = useDispatch()
 
-    const { fetchingOrders, orders, restaurantId, history } = props
+    const { fetchingOrders, orders, lateTime, restaurantId, history } = props
 
     return (
         <div className="TableDataContainer">
@@ -28,7 +28,7 @@ function OrdersList(props) {
                 <tbody>
                     {orders && orders.length ?
                         orders.map((order) => {
-                            const { id, tableId, orderNumber, status, time, amount, staff } = order
+                            const { id, tableId, orderNumber, status, time, billAmount, staff } = order
                             return (<>
                                 <tr key={id}>
                                     <td>
@@ -53,8 +53,8 @@ function OrdersList(props) {
                                         {tableId ? 'Table # ' : null}{tableId && tableId.length === 1 ? '0' : null}{tableId || 'Pick-Up'}
                                     </td>
                                     <td>{orderNumber}</td>
-                                    <OrderTimer status={status} timeStamp={time} />
-                                    <td style={{ textAlign: 'center' }}>$ {amount}</td>
+                                    <OrderTimer status={status} timeStamp={time} lateTime={lateTime} />
+                                    <td style={{ textAlign: 'center' }}>$ {(billAmount || 0).toFixed(2)}</td>
                                     <td style={{ color: status ? 'green' : 'red', textAlign: 'center' }}>{status ? "Open" : "Closed"}</td>
                                     <td style={{ textAlign: 'center' }}>{status && staff || '-'}</td>
                                 </tr>

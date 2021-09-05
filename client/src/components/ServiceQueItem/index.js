@@ -17,9 +17,9 @@ function ServiceQueItem({ tableNumber, orderNumber, textArray, timeStamp, onClic
   return (
     <div className="DashboardGridItem" key={orderNumber}
       style={{
-        backgroundColor: colors[time.mints < 10 ? time.mints < 5 ? 2 : 1 : 0],
+        backgroundColor: colors[!time.mints || time.mints < 10 ? !time.mints || time.mints < 5 ? 2 : 1 : 0],
         border: '1px solid',
-        borderColor: bdColors[time.mints < 10 ? time.mints < 5 ? 2 : 1 : 0],
+        borderColor: bdColors[!time.mints || time.mints < 10 ? !time.mints || time.mints < 5 ? 2 : 1 : 0],
         margin: '20px 0px',
         aspectRatio: 0,
         width: '100%'

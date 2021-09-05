@@ -109,9 +109,10 @@ p {
     margin-bottom: 10px;
 }
 .CheckOut .Ammount h2 span {
+    margin-right: 5px;
     color: #ef6e6c;
 }
-.CheckOut .Ammount .payBtn {
+.payBtn {
     background-color: #2ec3b3;
     color: white;
     font-size: 18px;

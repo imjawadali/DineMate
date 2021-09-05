@@ -1,7 +1,7 @@
 export const LOCAL_URL = 'http://localhost:8000/'
 export const PUBLIC_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/dev/'
 export const CUSTOMER_APP_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/'
-export const BASE_URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/dev/'
+export const BASE_URL = LOCAL_URL
 
 export const API_ENDPOINTS = {
     customer: {
@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
         doNotDisturb: '/customer/doNotDisturb',
         getOrderItem: '/customer/getOrderItems',
         closeOrderViaCash: '/customer/closeOrderViaCash',
+        closeOrderViaStripe: '/customer/closeOrderViaStripe',
         takeAwayOrder: '/customer/takeAwayOrder',
         updateProfile: '/customer/updateProfile',
         setNewPassword: '/customer/setNewPassword',

@@ -18,7 +18,7 @@ function MenuList(props) {
           <tr>
             <th>Manage</th>
             <th>Item Name</th>
-            <th>Short  Description</th>
+            <th style={{ width: '50%' }}>Short  Description</th>
             <th>Price</th>
             <th>Category</th>
             <th>Add-ons</th>
@@ -41,7 +41,7 @@ function MenuList(props) {
                   </td>
                   <td>{name}</td>
                   <td>{shortDescription || '-'}</td>
-                  <td>$ {price}</td>
+                  <td>{price.toFixed(2)} $</td>
                   <td>{!fetchingCategories && categories ?
                     getNameById(categories, categoryId)
                     : 'No Category'

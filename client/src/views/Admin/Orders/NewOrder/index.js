@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { DropDown, TitleWithAction, Button, MenuGridItem } from '../../../../components'
-import { GET_MENU, SUBMIT_NEW_ORDER, ADD_ITEMS_TO_ORDER, SET_TOAST } from '../../../../constants'
+import { GET_MENU, SUBMIT_NEW_ORDER, ADD_ITEMS_TO_ORDER, SET_TOAST, GET_RESTAURANT_SETTINGS } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 
 import Add_EditItem from './Add_EditItem'
@@ -11,6 +11,7 @@ import './styles.css'
 
 function NewOrder(props) {
 
+  const [taxPercentage, settaxPercentage] = useState(0)
   const [type, settype] = useState('')
   const [table, settable] = useState('')
   const [selectedItem, setselectedItem] = useState(null)
@@ -26,9 +27,11 @@ function NewOrder(props) {
   const fetchingMenu = useSelector(({ menuReducer }) => menuReducer.fetchingMenu)
   const menu = useSelector(({ menuReducer }) => menuReducer.menu)
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const fetchingRestaurantSettings = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingRestaurantSettings)
+  const restaurantSettings = useSelector(({ restaurantReducer }) => restaurantReducer.restaurantSettings)
   const dispatch = useDispatch()
 
-  const { restaurantId, taxPercentage } = admin
+  const { restaurantId } = admin
   const { location: { state }, history } = props
 
   useEffect(() => {
@@ -37,7 +40,15 @@ function NewOrder(props) {
     }
 
     if (!fetchingMenu && !menu) dispatch(customisedAction(GET_MENU, { restaurantId }))
+
+    if (!fetchingRestaurantSettings && !restaurantSettings)
+      dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId }))
   }, [])
+
+  useEffect(() => {
+    if (restaurantSettings && restaurantSettings.taxPercentage)
+      settaxPercentage(restaurantSettings.taxPercentage)
+  }, [restaurantSettings])
 
   const editItem = (item, index) => {
     setitemToEdit(item)
@@ -172,7 +183,7 @@ function NewOrder(props) {
               <div className="OrderDetailsBottomButtons"
                 style={{ opacity: addingUpdatingOrder ? 0.5 : '' }}
                 onClick={() => addingUpdatingOrder ? null : setshowCart(false)}>
-                <td style={{ color: 'white', padding: '0px' }}>Add More</td>
+                <td style={{ color: 'white', padding: '0px' }}>Add more</td>
               </div>
               <div className="OrderDetailsBottomButtons"
                 style={{ opacity: !!disabled() || addingUpdatingOrder ? 0.5 : '' }}
