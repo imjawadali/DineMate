@@ -1430,9 +1430,9 @@ module.exports = app => {
                                         })
                                     } else {
                                         const orderClosingQuery = `UPDATE orders SET
-                                        status = ${type.toLowerCase() === 'take-away' ? 1 : 0}
-                                        customerStatus = 1
-                                        ${tip ? `tip = ${tip}` : ''}
+                                        status = ${type.toLowerCase() === 'take-away' ? 1 : 0},
+                                        customerStatus = 1,
+                                        ${tip ? `tip = ${tip},` : ''}
                                         ${type.toLowerCase() === 'dine-in' ? 'closedAt = CURRENT_TIMESTAMP' : ''}
                                         WHERE restaurantId = '${restaurantId}'
                                         AND orderNumber = '${orderNumber}'
