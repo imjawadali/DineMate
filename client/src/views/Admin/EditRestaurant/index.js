@@ -20,6 +20,7 @@ function EditRestaurant(props) {
   const [taxId, settaxId] = useState('')
   const [taxPercentage, settaxPercentage] = useState('')
   const [customMessage, setcustomMessage] = useState('')
+  const [stripeConnectedAccountId, setstripeConnectedAccountId] = useState('')
 
   const restaurantToEdit = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurantToEdit)
   const addingUpdatingRestaurant = useSelector(({ restaurantsReducer }) => restaurantsReducer.addingUpdatingRestaurant)
@@ -41,6 +42,7 @@ function EditRestaurant(props) {
       settaxId(restaurantToEdit.taxId)
       settaxPercentage(restaurantToEdit.taxPercentage)
       setcustomMessage(restaurantToEdit.customMessage)
+      setstripeConnectedAccountId(restaurantToEdit.stripeConnectedAccountId)
     }
   }, [])
 
@@ -68,7 +70,8 @@ function EditRestaurant(props) {
       && longitude == restaurantToEdit.longitude
       && taxId == restaurantToEdit.taxId
       && taxPercentage == restaurantToEdit.taxPercentage
-      && customMessage == restaurantToEdit.customMessage)
+      && customMessage == restaurantToEdit.customMessage
+      && stripeConnectedAccountId == restaurantToEdit.stripeConnectedAccountId)
       return 'No field changed to update'
     return false
   }
@@ -84,7 +87,8 @@ function EditRestaurant(props) {
       longitude,
       taxId,
       taxPercentage,
-      customMessage
+      customMessage,
+      stripeConnectedAccountId
     }
     dispatch(customisedAction(UPDATE_RESTAURANT, { updatedData, restaurantId, history }))
   }
@@ -139,13 +143,23 @@ function EditRestaurant(props) {
                 />
               </div>
             </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Custom Message" />
-              <Input 
-                placeholder="Please come again. Thank you!"
-                value={customMessage}
-                onChange={({ target: { value } }) => setcustomMessage(value)}
-              />
+            <div className="InputsInnerContainer" style={{ flexDirection: 'row', alignItems: 'flex-end', paddingTop: '0px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
+                <SmallTitle text="Custom Message (Optional)" />
+                <Input
+                  placeholder="Please come again. Thank you!"
+                  value={customMessage}
+                  onChange={({ target: { value } }) => setcustomMessage(value)}
+                />
+              </div>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
+                <SmallTitle text="Stripe ID (Optional)" />
+                <Input
+                  placeholder="acct_xxxxxxxxxxxxxx"
+                  value={stripeConnectedAccountId}
+                  onChange={({ target: { value } }) => setstripeConnectedAccountId(value)}
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -21,6 +21,7 @@ function AddRestaurant(props) {
   const [taxId, settaxId] = useState('')
   const [taxPercentage, settaxPercentage] = useState('')
   const [customMessage, setcustomMessage] = useState('')
+  const [stripeConnectedAccountId, setstripeConnectedAccountId] = useState('')
   const [pName, setpName] = useState('')
   const [pEmail, setpEmail] = useState('')
   const [pPhoneNumber, setpPhoneNumber] = useState('')
@@ -90,6 +91,7 @@ function AddRestaurant(props) {
       taxId,
       taxPercentage,
       customMessage,
+      stripeConnectedAccountId,
       primaryContact: {
         name: pName,
         email: pEmail,
@@ -120,7 +122,7 @@ function AddRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
-              <Input 
+              <Input
                 placeholder="ABC Restaurant"
                 value={restaurantName}
                 onChange={({ target: { value } }) => setRestaurantNameAndId(value)}
@@ -128,7 +130,7 @@ function AddRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Cuisine(s)" />
-              <Input 
+              <Input
                 placeholder="Traditional, Continental, ..."
                 value={cuisine}
                 onChange={({ target: { value } }) => setcuisine(value)}
@@ -140,9 +142,9 @@ function AddRestaurant(props) {
           <SectionHeading text="Other Details" />
           <div className="InputsContainer">
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Tax ID #" />
-                <Input 
+                <Input
                   placeholder="NTN-111000"
                   value={taxId}
                   onChange={({ target: { value } }) => settaxId(value)}
@@ -150,7 +152,7 @@ function AddRestaurant(props) {
               </div>
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="Tax Percentage %" />
-                <Input 
+                <Input
                   placeholder="7.5"
                   type='number'
                   value={taxPercentage}
@@ -158,13 +160,23 @@ function AddRestaurant(props) {
                 />
               </div>
             </div>
-            <div className="InputsInnerContainer">
-              <SmallTitle text="Custom Message" />
-              <Input 
-                placeholder="Please come again. Thank you!"
-                value={customMessage}
-                onChange={({ target: { value } }) => setcustomMessage(value)}
-              />
+            <div className="InputsInnerContainer" style={{ flexDirection: 'row', alignItems: 'flex-end', paddingTop: '0px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
+                <SmallTitle text="Custom Message (Optional)" />
+                <Input
+                  placeholder="Please come again. Thank you!"
+                  value={customMessage}
+                  onChange={({ target: { value } }) => setcustomMessage(value)}
+                />
+              </div>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
+                <SmallTitle text="Stripe ID (Optional)" />
+                <Input
+                  placeholder="acct_xxxxxxxxxxxxxx"
+                  value={stripeConnectedAccountId}
+                  onChange={({ target: { value } }) => setstripeConnectedAccountId(value)}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -175,16 +187,16 @@ function AddRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Detailed Address" />
-              <Input 
+              <Input
                 placeholder="Block - A, Street, State"
                 value={address}
                 onChange={({ target: { value } }) => setaddress(value)}
               />
             </div>
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Country" />
-                <Input 
+                <Input
                   placeholder="Canada"
                   value={country}
                   onChange={({ target: { value } }) => setcountry(value)}
@@ -192,7 +204,7 @@ function AddRestaurant(props) {
               </div>
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="City" />
-                <Input 
+                <Input
                   placeholder="Toronto"
                   value={city}
                   onChange={({ target: { value } }) => setcity(value)}
@@ -206,7 +218,7 @@ function AddRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Map" />
-              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }}/>
+              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }} />
             </div>
           </div>
         </div>
@@ -217,7 +229,7 @@ function AddRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
-              <Input 
+              <Input
                 placeholder="John Doe"
                 value={pName}
                 onChange={({ target: { value } }) => setpName(value)}
@@ -225,7 +237,7 @@ function AddRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Email" />
-              <Input 
+              <Input
                 placeholder="john.doe@abcrestaurant.com"
                 value={pEmail}
                 onChange={({ target: { value } }) => setpEmail(value)}
@@ -233,7 +245,7 @@ function AddRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
-              <Input 
+              <Input
                 placeholder="+1 315-8731014"
                 value={pPhoneNumber}
                 onChange={({ target: { value } }) => setpPhoneNumber(value)}
@@ -246,7 +258,7 @@ function AddRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
-              <Input 
+              <Input
                 placeholder="John Doe"
                 value={sName}
                 onChange={({ target: { value } }) => setsName(value)}
@@ -254,7 +266,7 @@ function AddRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Email" />
-              <Input 
+              <Input
                 placeholder="john.doe@abcrestaurant.com"
                 value={sEmail}
                 onChange={({ target: { value } }) => setsEmail(value)}
@@ -262,7 +274,7 @@ function AddRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Phone Number" />
-              <Input 
+              <Input
                 placeholder="+1 315-8731014"
                 value={sPhoneNumber}
                 onChange={({ target: { value } }) => setsPhoneNumber(value)}
@@ -278,9 +290,10 @@ function AddRestaurant(props) {
           lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
             dispatch(customisedAction(SET_TOAST, {
-            message: validate() || 'Adding restaurant in progress',
-            type: validate() ? 'error' : 'success'
-          }))}}
+              message: validate() || 'Adding restaurant in progress',
+              type: validate() ? 'error' : 'success'
+            }))
+          }}
           iconLeft={<i className="fa fa-paper-plane" />}
           onClick={() => addRestuarant()}
         />

@@ -135,7 +135,7 @@ module.exports = app => {
 
     app.post('/admin/addRestuarant', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
-        const { restaurantId, imageUrl, restaurantName, cuisine, address, city, country, latitude, longitude, taxId, taxPercentage, customMessage, primaryContact, secondaryContact } = req.body
+        const { restaurantId, imageUrl, restaurantName, cuisine, address, city, country, latitude, longitude, taxId, taxPercentage, customMessage, stripeConnectedAccountId, primaryContact, secondaryContact } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         if (!restaurantId) return res.status(422).send({ 'msg': 'Slug is required!' })
         if (!restaurantName) return res.status(422).send({ 'msg': 'Restaurant Name is required!' })
@@ -168,7 +168,6 @@ module.exports = app => {
                                 console.log('TransactionError', error.sqlMessage)
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             }
-                            let hashString = Math.random().toString(36).substring(2);
                             const restaurant = {}
                             restaurant.restaurantId = restaurantId
                             restaurant.imageUrl = imageUrl
@@ -186,10 +185,13 @@ module.exports = app => {
                             restaurant.taxPercentage = taxPercentage
                             if (customMessage)
                                 restaurant.customMessage = customMessage
+                            if (stripeConnectedAccountId)
+                                restaurant.stripeConnectedAccountId = stripeConnectedAccountId
 
                             let data = primaryContact
                             data.email = lowerCased(primaryContact.email)
                             data.restaurantId = restaurantId
+                            let hashString = Math.random().toString(36).substring(2);
                             data.hashString = hashString
                             tempDb.query('INSERT INTO users SET ?', data, async function (error, result) {
                                 if (!!error) {
@@ -303,7 +305,7 @@ module.exports = app => {
             adminId,
             `SELECT restaurantId, restaurantName, cuisine,
             address, city, country, latitude, longitude,
-            taxId, taxPercentage, customMessage,
+            taxId, taxPercentage, customMessage, stripeConnectedAccountId,
             primaryContactId, secondaryContactId
             FROM restaurants WHERE restaurantId = '${restaurantId}'`,
             null,
