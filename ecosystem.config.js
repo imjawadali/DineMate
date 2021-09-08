@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'dinemate-server',
+      name: 'dinemate-preProd-server',
       script: './index.js',
       error_file: './logs/err.log',
       out_file: './logs/out.log',
