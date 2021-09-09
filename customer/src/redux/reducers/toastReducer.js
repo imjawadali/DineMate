@@ -28,7 +28,11 @@ import {
   SIGN_UP_FAILURE,
   TAKIE_AWAY_ORDER_FAILED,
   REGISTER_RESTURENT,
-  CLOSE_ORDER_VIA_STRIPE
+  CLOSE_ORDER_VIA_STRIPE,
+  FORGOT_PASSWORD_SUCCESS,
+  FORGOT_PASSWORD_FAILURE,
+  SET_NEW_PASSWORD_SUCCESS,
+  SET_NEW_PASSWORD_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -101,6 +105,18 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: "Sign Up Failed, Please Try Again", type: 'warning' } }
 
     case INITIALIZE_ORDER_FAILURE:
+      return { ...state, toast: payload }
+
+    case FORGOT_PASSWORD_SUCCESS:
+      return { ...state, toast: payload }
+
+    case FORGOT_PASSWORD_FAILURE:
+      return { ...state, toast: payload }
+
+    case SET_NEW_PASSWORD_SUCCESS:
+      return { ...state, toast: payload }
+
+    case SET_NEW_PASSWORD_FAILURE:
       return { ...state, toast: payload }
     default:
       return state

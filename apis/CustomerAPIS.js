@@ -1702,3 +1702,7 @@ function registerRestaurantMessage(data) {
     string += array.join()
     return string
 }
+
+function forgotPasswordMessage(link) {
+    return `Welcome Back!\n\nVisit the following link to reset your login password:\n${link}`
+}
