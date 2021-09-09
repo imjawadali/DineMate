@@ -13,6 +13,8 @@ function SetPassword(props) {
     const [hashString, setHashString] = useState('');
     let dispatch = useDispatch()
 
+    const { history } = props
+
     useEffect(() => {
         let params = props.match.params
         if (params) {
@@ -28,7 +30,7 @@ function SetPassword(props) {
             "hashString": hashString
         }
 
-        dispatch(customisedAction(SET_NEW_PASSWORD, obj))
+        dispatch(customisedAction(SET_NEW_PASSWORD, obj, { history }))
     }
 
     return (
