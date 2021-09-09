@@ -3,7 +3,7 @@ const { sendEmail } = require('../services/mailer')
 const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 
-const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
+const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com:8080'
 
 module.exports = app => {
     app.post('/customer/signUp', async (req, res) => {
