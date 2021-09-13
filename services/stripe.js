@@ -7,7 +7,7 @@ exports.postCharge = async function (amount, source, receipt_email, stripeAccoun
 
     const charge = await stripe.charges.create({
       amount,
-      currency: "usd",
+      currency: "cad",
       source,
       receipt_email
     }, {
