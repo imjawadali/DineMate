@@ -1,3 +1,4 @@
+const uuid = require('uuid').v4
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlCustomer')
 const { sendEmail } = require('../services/mailer')
 const { postCharge } = require('../services/stripe')
@@ -1437,7 +1438,7 @@ module.exports = app => {
                                         WHERE restaurantId = '${restaurantId}'
                                         AND orderNumber = '${orderNumber}'
                                         AND customerStatus = 0`
-                                        
+
                                         tempDb.query(orderClosingQuery, null, async function (error, result2) {
                                             if (!!error) {
                                                 console.log('TableError', error.sqlMessage)
@@ -1652,7 +1653,78 @@ module.exports = app => {
             })
         }
     })
+    app.post('/customer/updateProfileImage', uploader, async (req, res) => {
+        const customerId = decrypt(req.header('authorization'))
+        const { file } = req
+        if (!customerId) return res.send({
+            status: false,
+            message: 'Not Authorized!',
+            errorCode: 401
+        })
+        if (!file) return res.send({
+            status: false,
+            message: 'File is required!',
+            errorCode: 422
+        })
+
+        const name = file.originalname.split('.')
+        const fileType = name[name.length - 1]
+        const fileName = `${uuid()}.${fileType}`
+
+        let params = {
+            Bucket: process.env.AWS_BUCKET_NAME,
+            Key: fileName,
+            Body: file.buffer
+        }
+
+        s3.upload(params, (error, data) => {
+            if (error)
+                return res.send({
+                    status: false,
+                    message: error.message,
+                    errorCode: 422
+                })
+            else {
+                getSecureConnection(
+                    res,
+                    customerId,
+                    `UPDATE customers SET ? WHERE id = ${customerId}`,
+                    { imageUrl: data.Location },
+                    (result) => {
+                        if (result.changedRows)
+                            return res.send({
+                                status: true,
+                                message: 'Profile Picture Updated Successfully',
+                                body: {
+                                    imageUrl: data.Location
+                                }
+                            })
+                        else {
+                            params = {
+                                Bucket: process.env.AWS_BUCKET_NAME,
+                                Key: fileName,
+                            }
+
+                            s3.deleteObject(params, (error) => {
+                                if (error)
+                                    console.log(error.message)
+                                return res.send({
+                                    status: false,
+                                    message: 'Failed to update profile picture!',
+                                    errorCode: 422
+                                })
+                            })
+                        }
+
+                    }
+                )
+            }
+        })
+    })
+
 }
+
+
 
 function decrypt(token) {
     const decryptedToken = token
