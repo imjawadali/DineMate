@@ -24,11 +24,11 @@ import {
 export default (state = { 
   fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false,
   addingUpdatingOrder: false, deletingItemId: null, edittingItemId: null, deletingOrder: false, applyingDiscount: false,
-  tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null, splitId: null
+  tableId: null, tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null, splitId: null
 }, { type, payload }) => {
   switch (type) {
     case GET_TABLE_ORDERS:
-      return { ...state, fetchingTableOrders: true}
+      return { ...state, fetchingTableOrders: true, tableId: payload.tableId }
     case GET_TABLE_ORDERS_SUCCESS:
       return { ...state, fetchingTableOrders: false, tableOrders: payload }
     case GET_TABLE_ORDERS_FAILURE:

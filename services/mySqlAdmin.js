@@ -46,6 +46,6 @@ exports.getTransactionalConnection = function () {
 function response (error, result, res, callBack) {
     if (!!error) {
         console.log('TableError', error.sqlMessage)
-        return res.status(422).send({ 'msg': error.sqlMessage.includes('Duplicate') ? 'Duplicate Entry' : error.sqlMessage })
+        return res.status(422).send({ 'msg': error && error.sqlMessage ? error.sqlMessage.includes('Duplicate') ? 'Duplicate Entry' : error.sqlMessage : 'Unknown error at database' })
     } else return callBack(result)
 }

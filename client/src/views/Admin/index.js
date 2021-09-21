@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_USERS } from '../../constants'
+import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_ORDER_DETAILS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_TABLE_ORDERS, GET_USERS, SET_FCM_TOKEN, SET_TOAST } from '../../constants'
+
+import firebase from '../../services/firebase'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -44,7 +46,10 @@ function Admin(props) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
+  const tableId = useSelector(({ ordersReducer }) => ordersReducer.tableId)
   const dispatch = useDispatch()
+
+  const messaging = firebase.messaging()
 
   const { restaurantId, role } = admin
 
@@ -77,6 +82,46 @@ function Admin(props) {
 
     if (role === 'SuperAdmin')
       dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
+
+    if (role !== 'SuperAdmin') {
+      messaging.getToken()
+        .then(fcmToken => dispatch(customisedAction(SET_FCM_TOKEN, { fcmToken })))
+        .catch(error => console.log(error))
+  
+      messaging.onMessage(({ notification, data }) => {
+        console.log(data)
+        if (notification)
+          dispatch(customisedAction(SET_TOAST, { message: notification.body, type: 'success' }))
+        else if (data) {
+          try {
+            let res = JSON.parse(data.body)
+            if (res.roles && res.roles.length && location.pathname.includes('/admin')) {
+              const { roles, type, orderDetails } = res
+              if (roles.includes(role)) {
+                if (type === 'DASHBOARD') {
+                  if (role === 'Kitchen')
+                    dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
+                  else {
+                    dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+                    console.log(tableId)
+                    if (orderDetails && orderDetails.restaurantId === restaurantId && orderDetails.orderNumber && location.pathname.includes('/orderDetails'))
+                      dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId, orderNumber: orderDetails.orderNumber }))
+                    else if ((location.pathname.includes('/tableOrders') || location.pathname.includes('/itemSplit')) && tableId)
+                      dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))
+                    dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
+                  }
+                } else dispatch(customisedAction(type, { restaurantId, noToast: true }))
+              }
+            }
+          } catch (error) {
+            console.log("error", error)
+            console.log("data", data)
+          }
+        }
+      })
+    }
+
+    return () => messaging.onMessage(() => null)
   }, [])
 
   const openSidebar = () => {

@@ -3,6 +3,7 @@ const { getSecureConnection, getConnection, getTransactionalConnection } = requi
 const { sendEmail } = require('../services/mailer')
 const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
+const { sendNotification } = require('../services/firebase')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com:8080'
 
@@ -532,14 +533,26 @@ module.exports = app => {
     app.post('/customer/searchRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/searchRestaurants")
         const { searchBy } = req.body
-        if (!searchBy) return res.send({
-            status: false,
-            message: 'No !',
-            errorCode: 422
-        })
-        getConnection(
-            res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+        let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+        CONCAT('[',
+            GROUP_CONCAT(
+                DISTINCT CONCAT(
+                    '{"id":',c.id,
+                    ',"name":"',c.name,'"}'
+                ) ORDER BY c.createdAt DESC
+            ),
+        ']') as categories
+        FROM restaurants R 
+        JOIN categories c on c.restaurantId = R.restaurantId
+        JOIN menu m on m.restaurantId = R.restaurantId
+        WHERE R.restaurantName LIKE '%${searchBy}%'
+        OR R.cuisine LIKE '%${searchBy}%'
+        OR c.name LIKE '%${searchBy}%'
+        OR m.name LIKE '%${searchBy}%'
+        GROUP BY R.restaurantId
+        ORDER BY R.createdAt DESC`
+        if (!searchBy)
+            query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -551,12 +564,11 @@ module.exports = app => {
             FROM restaurants R 
             JOIN categories c on c.restaurantId = R.restaurantId
             JOIN menu m on m.restaurantId = R.restaurantId
-            WHERE R.restaurantName LIKE '%${searchBy}%'
-            OR R.cuisine LIKE '%${searchBy}%'
-            OR c.name LIKE '%${searchBy}%'
-            OR m.name LIKE '%${searchBy}%'
             GROUP BY R.restaurantId
-            ORDER BY R.createdAt DESC`,
+            ORDER BY R.createdAt DESC`
+        getConnection(
+            res,
+            query,
             null,
             (body) => {
                 if (body.length) {
@@ -754,7 +766,27 @@ module.exports = app => {
                                         'Dine-In', ${Number(result.length ? result[0].orderNumber : 0) + 1})`,
                                         null,
                                         (result3) => {
-                                            if (result3.affectedRows)
+                                            if (result3.affectedRows) {
+                                                getConnection(
+                                                    res,
+                                                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                    null,
+                                                    (result) => {
+                                                        if (result.length) {
+                                                            var registration_ids = result.map(each => each['fcmToken'])
+                                                            sendNotification({
+                                                                registration_ids,
+                                                                data: {
+                                                                    title: 'DineMate',
+                                                                    body: JSON.stringify({
+                                                                        roles: ['Admin', 'Staff'],
+                                                                        type: 'DASHBOARD'
+                                                                    })
+                                                                }
+                                                            })
+                                                        }
+                                                    }
+                                                )
                                                 return res.send({
                                                     status: true,
                                                     message: 'Order Initialized Successfully!',
@@ -766,7 +798,7 @@ module.exports = app => {
                                                         type: 'Dine-In'
                                                     }
                                                 })
-                                            else return res.send({
+                                            } else return res.send({
                                                 status: false,
                                                 message: 'Failed to initialize order!',
                                                 errorCode: 422
@@ -966,6 +998,30 @@ module.exports = app => {
                                                         })
                                                     }
                                                     tempDb.release()
+                                                    getConnection(
+                                                        res,
+                                                        `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                        null,
+                                                        (result) => {
+                                                            if (result.length) {
+                                                                var registration_ids = result.map(each => each['fcmToken'])
+                                                                sendNotification({
+                                                                    registration_ids,
+                                                                    data: {
+                                                                        title: 'DineMate',
+                                                                        body: JSON.stringify({
+                                                                            roles: ['Admin','Staff','Kitchen'],
+                                                                            type: 'DASHBOARD',
+                                                                            orderDetails: {
+                                                                                restaurantId,
+                                                                                orderNumber
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+                                                    )
                                                     return res.send({
                                                         status: true,
                                                         message: 'Order item(s) added successfully!'
@@ -1327,6 +1383,30 @@ module.exports = app => {
                 data,
                 (result) => {
                     if (result.changedRows) {
+                        getConnection(
+                            res,
+                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                            null,
+                            (result) => {
+                                if (result.length) {
+                                    var registration_ids = result.map(each => each['fcmToken'])
+                                    sendNotification({
+                                        registration_ids,
+                                        data: {
+                                            title: 'DineMate',
+                                            body: JSON.stringify({
+                                                roles: ['Admin','Staff'],
+                                                type: 'DASHBOARD',
+                                                orderDetails: {
+                                                    restaurantId,
+                                                    orderNumber
+                                                }
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+                        )
                         return res.send({
                             status: true,
                             message: type.toLowerCase() === 'take-away' ?
@@ -1452,7 +1532,7 @@ module.exports = app => {
                                             } else if (result2 && result2.changedRows) {
                                                 console.log("payment init")
                                                 const paymentSuccess = await postCharge(
-                                                    (Number(billAmount) + Number(tip)) * 100,
+                                                    (Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)),
                                                     token,
                                                     email,
                                                     result[0].stripeConnectedAccountId
@@ -1470,6 +1550,30 @@ module.exports = app => {
                                                             })
                                                         }
                                                         tempDb.release()
+                                                        getConnection(
+                                                            res,
+                                                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                            null,
+                                                            (result) => {
+                                                                if (result.length) {
+                                                                    var registration_ids = result.map(each => each['fcmToken'])
+                                                                    sendNotification({
+                                                                        registration_ids,
+                                                                        data: {
+                                                                            title: 'DineMate',
+                                                                            body: JSON.stringify({
+                                                                                roles: ['Admin','Staff','Kitchen'],
+                                                                                type: 'DASHBOARD',
+                                                                                orderDetails: {
+                                                                                    restaurantId,
+                                                                                    orderNumber
+                                                                                }
+                                                                            })
+                                                                        }
+                                                                    })
+                                                                }
+                                                            }
+                                                        )
                                                         return res.send({
                                                             status: true,
                                                             message: type.toLowerCase() === 'take-away' ?
@@ -1589,6 +1693,26 @@ module.exports = app => {
             `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
             { doNotDisturb: enabled },
             () => {
+                getConnection(
+                    res,
+                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                    null,
+                    (result) => {
+                        if (result.length) {
+                            var registration_ids = result.map(each => each['fcmToken'])
+                            sendNotification({
+                                registration_ids,
+                                data: {
+                                    title: 'DineMate',
+                                    body: JSON.stringify({
+                                        roles: ['Admin','Staff'],
+                                        type: 'GET_RESTAURANT_DASHBOARD'
+                                    })
+                                }
+                            })
+                        }
+                    }
+                )
                 return res.send({
                     status: true,
                     message: 'Do not disturb status changed!'
@@ -1631,6 +1755,26 @@ module.exports = app => {
                 data,
                 (result) => {
                     if (result.affectedRows) {
+                        getConnection(
+                            res,
+                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                            null,
+                            (result) => {
+                                if (result.length) {
+                                    var registration_ids = result.map(each => each['fcmToken'])
+                                    sendNotification({
+                                        registration_ids,
+                                        data: {
+                                            title: 'DineMate',
+                                            body: JSON.stringify({
+                                                roles: ['Admin','Staff'],
+                                                type: 'GET_SERVICES_QUE'
+                                            })
+                                        }
+                                    })
+                                }
+                            }
+                        )
                         return res.send({
                             status: true,
                             message: 'Service request added!'
@@ -1653,6 +1797,7 @@ module.exports = app => {
             })
         }
     })
+
     app.post('/customer/updateProfileImage', uploader, async (req, res) => {
         const customerId = decrypt(req.header('authorization'))
         const { file } = req
@@ -1723,8 +1868,6 @@ module.exports = app => {
     })
 
 }
-
-
 
 function decrypt(token) {
     const decryptedToken = token
