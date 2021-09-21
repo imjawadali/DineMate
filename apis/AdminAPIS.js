@@ -2,6 +2,7 @@ const uuid = require('uuid').v4
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
 const { uploader, s3 } = require('../services/uploader')
+const { sendNotification } = require('../services/firebase')
 
 const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
 
@@ -37,6 +38,22 @@ module.exports = app => {
                     return res.send(data[0])
                 else
                     return res.status(422).send({ 'msg': `Invalid credentials provided or, User is in-active` })
+            }
+        )
+    })
+
+    app.post('/admin/setFcmToken', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { fcmToken } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!fcmToken) return res.status(422).send({ 'msg': 'Invalid FCM Token!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE users SET ? WHERE id = ${adminId}`,
+            { fcmToken },
+            (result) => {
+                return res.send({ 'msg': result.changedRows ? `FCM token set` : `FCM token already set` })
             }
         )
     })
@@ -1704,9 +1721,9 @@ module.exports = app => {
                                     console.log('TableError', error.sqlMessage)
                                     tempDb.rollback(function () {
                                         return res.status(422).send({
-                                            'msg': error.sqlMessage.includes('Duplicate') ?
+                                            'msg': error && error.sqlMessage ? error.sqlMessage.includes('Duplicate') ?
                                                 "Duplicate entry" : error.sqlMessage.includes('foreign key') ?
-                                                    "Invalid Category" : "Failed to add Menu Item"
+                                                    "Invalid Category" : "Failed to add Menu Item" : "Unknown error at database"
                                         })
                                     })
                                 } else {

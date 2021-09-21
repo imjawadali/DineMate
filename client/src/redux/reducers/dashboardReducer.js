@@ -59,7 +59,7 @@ export default (state = {
     case GET_SERVICES_QUE_SUCCESS:
       return { ...state, fetchingServicesQue: false, servicesQue: payload }
     case GET_SERVICES_QUE_FAILURE:
-      return { ...state, fetchingServicesQue: false }
+      return { ...state, fetchingServicesQue: false, servicesQue: null }
     
     case RESET_RESTAURANT:
       return { ...state, restaurantDashboard: null, servicesQue: null }

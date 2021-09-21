@@ -60,7 +60,7 @@ function response (error, result, res, callBack) {
         console.log('TableError', error.sqlMessage)
         return res.send({
             status: false,
-            message: error.sqlMessage.includes('Duplicate') ? 'Duplicate Entry' : error.sqlMessage,
+            message: error && error.sqlMessage ? error.sqlMessage.includes('Duplicate') ? 'Duplicate Entry' : error.sqlMessage : 'Unknown error at database',
             errorCode: 422
         })
     } else return callBack(result)

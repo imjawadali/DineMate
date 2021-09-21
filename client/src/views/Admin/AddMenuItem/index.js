@@ -29,6 +29,7 @@ function AddMenuItem(props) {
   }, [])
 
   const uploadImage = async (image, stringArray) => {
+    console.log(image)
     if (stringArray.length) {
       try {
         const parts = stringArray[0].split(';')

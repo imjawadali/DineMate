@@ -8,6 +8,7 @@ export const BASE_URL = '/dev/'
 export const API_ENDPOINTS = {
     admin: {
         login: 'admin/login',
+        setFcmToken: 'admin/setFcmToken',
         checkPasswordExpiry: 'admin/checkPasswordExpiry',
         forgotPassword: 'admin/forgotPassword',
         createPassword: 'admin/createPassword',

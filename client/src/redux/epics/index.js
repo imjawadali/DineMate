@@ -1,5 +1,6 @@
 import { combineEpics } from 'redux-observable'
 import { loginEpic } from './admin/loginEpic'
+import { setFcmTokenEpic } from './admin/setFcmTokenEpic'
 import { checkPasswordExpiryEpic } from './admin/checkPasswordExpiryEpic'
 import { forgotPasswordEpic } from './admin/forgotPasswordEpic'
 import { createPasswordEpic } from './admin/createPasswordEpic'
@@ -57,6 +58,7 @@ import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
 export const epics = combineEpics(
     loginEpic.login,
+    setFcmTokenEpic.setFcmToken,
     checkPasswordExpiryEpic.checkPasswordExpiry,
     forgotPasswordEpic.forgotPassword,
     createPasswordEpic.createPassword,
