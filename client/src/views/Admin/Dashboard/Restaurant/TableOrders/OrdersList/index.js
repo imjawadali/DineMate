@@ -22,6 +22,7 @@ function OrdersList(props) {
           <tr>
             <th style={{ textAlign: 'center' }}>Manage</th>
             <th />
+            <th style={{ textAlign: 'center' }}>Status</th>
             <th style={{ textAlign: 'center' }}>Check Number</th>
             <th>Guest Name</th>
             <th>Item Name</th>
@@ -32,7 +33,7 @@ function OrdersList(props) {
         <tbody>
           {tableOrders && tableOrders.length ?
             tableOrders.map((tableOrder) => {
-              const { orderNumber, tableId, firstName, lastName, items } = tableOrder
+              const { orderNumber, tableId, firstName, lastName, items, customerStatus } = tableOrder
               let orderItems
               try {
                 orderItems = items && JSON.parse(items)
@@ -88,6 +89,7 @@ function OrdersList(props) {
                             />
                           </div>
                         </td>
+                        <td style={{ color: customerStatus ? 'blue' : 'green', textAlign: 'center' }}>{!index ? customerStatus ? "Ready to close" : "Open" : ''}</td>
                         <td style={{ textAlign: 'center' }}>{!index ? orderNumber : ''}</td>
                         <td>{!index ? firstName ? firstName + ' ' + lastName : '-' : ''}</td>
                         <td style={{
@@ -103,7 +105,7 @@ function OrdersList(props) {
                           textAlign: 'end',
                           textDecorationLine: vanished ? 'line-through' : '',
                           opacity: vanished ? 0.5 : ''
-                        }}>{totalPrice.toFixed(2)} $</td>
+                        }}>${totalPrice.toFixed(2)}</td>
                       </tr>
                     )
                   })
@@ -119,6 +121,7 @@ function OrdersList(props) {
                       />
                     </td>
                     <td />
+                    <td style={{ color: customerStatus ? 'blue' : 'green', textAlign: 'center' }}>{customerStatus ? "Ready to close" : "Open"}</td>
                     <td style={{ textAlign: 'center' }}>{orderNumber}</td>
                     <td>{firstName ? firstName + ' ' + lastName : '-'}</td>
                     <td colSpan="3">-</td>
@@ -138,8 +141,8 @@ function OrdersList(props) {
           {tableOrders && tableOrders.length ?
             <tr key="-">
               <td style={{ fontWeight: 'bold' }}>Total</td>
-              <td colSpan="5" />
-              <td style={{ fontWeight: 'bold', textAlign: 'end' }}>{sum.toFixed(2)} $</td>
+              <td colSpan="6" />
+              <td style={{ fontWeight: 'bold', textAlign: 'end' }}>${sum.toFixed(2)}</td>
             </tr>
             : null
           }

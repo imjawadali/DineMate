@@ -8,7 +8,7 @@ import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
 import { addRestaurantEpic } from './admin/addRestaurantEpic'
 import { getRestaurantToEditEpic } from './admin/getRestaurantToEditEpic'
 import { updateRestaurantEpic } from './admin/updateRestaurantEpic'
-import { generateQrsEpic } from './admin/generateQrsEpic'
+import { QrsEpic } from './admin/QrsEpic'
 import { getExistingQrsEpic } from './admin/getExistingQrsEpic'
 import { setTableNameEpic } from './admin/setTableNameEpic'
 import { getGenericDataEpic } from './admin/getGenericDataEpic'
@@ -66,7 +66,8 @@ export const epics = combineEpics(
     addRestaurantEpic.addRestaurant,
     getRestaurantToEditEpic.getRestaurantToEdit,
     updateRestaurantEpic.updateRestaurant,
-    generateQrsEpic.generateQrs,
+    QrsEpic.generateQrs,
+    QrsEpic.deleteQrs,
     getExistingQrsEpic.getExistingQrs,
     setTableNameEpic.setTableName,
     getGenericDataEpic.getGenericData,

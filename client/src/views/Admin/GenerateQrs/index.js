@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { customisedAction } from '../../../redux/actions'
-import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS, GET_RESTAURANT_TO_EDIT, PER_PAGE_COUNTS } from '../../../constants'
+import { SET_TOAST, SET_TOAST_DISMISSING, GENERATE_QRS, GET_RESTAURANT_TO_EDIT, PER_PAGE_COUNTS, DELETE_QRS } from '../../../constants'
 
 import { Button, Input, Pagination, TitleWithAction } from '../../../components'
 
@@ -11,10 +11,12 @@ import QrsList from './QrsList'
 function GenerateQrs(props) {
 
   const [generateQrInput, setgenerateQrInput] = useState('')
+  const [limit, setLimit] = useState('')
   const [qrCounts, setqrCounts] = useState(0)
   const [currentIndex, setcurrentIndex] = useState(1)
 
   const generatingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.generatingQrs)
+  const deletingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.deletingQrs)
   const fetchingQrs = useSelector(({ restaurantReducer }) => restaurantReducer.fetchingQrs)
   const qrs = useSelector(({ restaurantReducer }) => restaurantReducer.qrs)
   const dispatch = useDispatch()
@@ -24,7 +26,7 @@ function GenerateQrs(props) {
   useEffect(() => {
     if (!state || history.action === 'POP') {
       history.goBack()
-    } else if (qrs && qrs.length) {
+    } else if (qrs) {
       setqrCounts(qrs.length)
     } else {
       setqrCounts(state.qrCounts)
@@ -37,7 +39,7 @@ function GenerateQrs(props) {
       dispatch(customisedAction(SET_TOAST, { message: 'Input must be a number greater than zero!', type: 'error' }))
     } else {
       const generatedQrData = {
-        "restaurantId": state.restaurantId,
+        restaurantId: state.restaurantId,
         values: []
       }
       for (let index = qrCounts; index < Number(qrCounts) + Number(generateQrInput); index++) {
@@ -45,6 +47,26 @@ function GenerateQrs(props) {
       }
       setgenerateQrInput('')
       dispatch(customisedAction(GENERATE_QRS, generatedQrData))
+    }
+  }
+
+  const deleteQrs = () => {
+    if (!limit || limit < 1 || isNaN(limit)) {
+      dispatch(customisedAction(SET_TOAST_DISMISSING, true))
+      dispatch(customisedAction(SET_TOAST, { message: 'Input must be a number greater than zero!', type: 'error' }))
+    } else if (limit > qrCounts) {
+      dispatch(customisedAction(SET_TOAST_DISMISSING, true))
+      dispatch(customisedAction(SET_TOAST, { message: 'Input is greater than  number of QRs!', type: 'error' }))
+    } else {
+      const removeQrData = {
+        restaurantId: state.restaurantId,
+        values: []
+      }
+      for (let index = qrCounts - 1; index >= (qrCounts - limit); index--) {
+        removeQrData.values.push(qrs[index].id)
+      }
+      setLimit('')
+      dispatch(customisedAction(DELETE_QRS, removeQrData))
     }
   }
 
@@ -74,8 +96,7 @@ function GenerateQrs(props) {
       />
       <div className="TabularContentContainer" >
         <div className="TableTopContainer">
-          <div className="TopLeftContainer" />
-          <div className="TopRightContainer">
+          <div className="TopLeftContainer">
             <Input
               style={{ border: 'none', borderBottom: '1px solid black', background: generateQrInput ? 'white' : 'transparent' }}
               placeholder="Number of Qrs you want to generate ?"
@@ -87,8 +108,25 @@ function GenerateQrs(props) {
             />
             <i
               style={{ margin: '0px 10px' }}
-              className={`fa fa-${generatingQrs || fetchingQrs ? 'refresh fa-pulse' : 'plus-circle'} fa-lg`}
-              onClick={() => generateQrs()} />
+              className={`fa fa-${generatingQrs || deletingQrs || fetchingQrs ? 'refresh fa-pulse' : 'plus-circle'} fa-lg`}
+              onClick={() => generatingQrs || deletingQrs || fetchingQrs ? null : generateQrs()}
+            />
+          </div>
+          <div className="TopRightContainer">
+            <Input
+              style={{ border: 'none', borderBottom: '1px solid black', background: generateQrInput ? 'white' : 'transparent' }}
+              placeholder="Number of Qrs you want to delete ?"
+              type="number"
+              value={limit}
+              onChange={({ target: { value } }) => {
+                if (value !== '0') setLimit(value < 0 ? value * -1 : value)
+              }}
+            />
+            <i
+              style={{ margin: '0px 10px' }}
+              className={`fa fa-${generatingQrs || deletingQrs || fetchingQrs ? 'refresh fa-pulse' : 'trash'} fa-lg`}
+              onClick={() => generatingQrs || deletingQrs || fetchingQrs ? null : deleteQrs()}
+            />
           </div>
         </div>
         <QrsList qrs={paginate(qrs)} restaurantId={state && state.restaurantId} fetchingQrs={fetchingQrs} />

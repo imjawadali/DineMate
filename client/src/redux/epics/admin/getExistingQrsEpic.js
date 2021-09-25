@@ -7,7 +7,8 @@ import {
   GENERATE_QRS_SUCCESS,
   GET_EXISTING_QRS_SUCCESS,
   GET_EXISTING_QRS_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  DELETE_QRS_SUCCESS
 } from '../../../constants'
 
 export class getExistingQrsEpic {
@@ -18,6 +19,8 @@ export class getExistingQrsEpic {
           case GET_EXISTING_QRS:
             return true;
           case GENERATE_QRS_SUCCESS:
+            return true;
+          case DELETE_QRS_SUCCESS:
             return true;
           default:
             return false;

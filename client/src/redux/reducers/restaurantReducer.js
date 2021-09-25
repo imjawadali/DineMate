@@ -13,12 +13,16 @@ import {
   GET_RESTAURANT_SETTINGS_SUCCESS,
   GET_RESTAURANT_SETTINGS_FAILURE,
   UPDATE_RESTAURANT_SETTINGS,
-  UPDATE_RESTAURANT_SETTINGS_FAILURE
+  UPDATE_RESTAURANT_SETTINGS_FAILURE,
+  DELETE_QRS,
+  DELETE_QRS_SUCCESS,
+  DELETE_QRS_FAILURE
 } from '../../constants'
 
 export default (state = {
     fetchingQrs: false,
-    generatingQrs: false, qrs: null,
+    generatingQrs: false, 
+    deletingQrs: false, qrs: null,
     settingTableName: false,
     fetchingRestaurantSettings: false, restaurantSettings: {},
     updatingRestaurantSettings: false
@@ -29,7 +33,7 @@ export default (state = {
     case GET_EXISTING_QRS_SUCCESS:
       return { ...state, fetchingQrs: false, qrs: payload }
     case GET_EXISTING_QRS_FAILURE:
-      return { ...state, fetchingQrs: false }
+      return { ...state, fetchingQrs: false, qrs: payload.msg === "No QRs available!" ? [] : null }
     
     case GENERATE_QRS:
       return { ...state, generatingQrs: true }
@@ -37,6 +41,13 @@ export default (state = {
       return { ...state, generatingQrs: false, fetchingQrs: true }
     case GENERATE_QRS_FAILURE:
       return { ...state, generatingQrs: false }
+    
+    case DELETE_QRS:
+      return { ...state, deletingQrs: true }
+    case DELETE_QRS_SUCCESS:
+      return { ...state, deletingQrs: false, fetchingQrs: true }
+    case DELETE_QRS_FAILURE:
+      return { ...state, deletingQrs: false }
     
     case SET_TABLE_NAME:
       return { ...state, settingTableName: true }

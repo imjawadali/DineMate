@@ -28,7 +28,7 @@ export default (state = {
 }, { type, payload }) => {
   switch (type) {
     case GET_TABLE_ORDERS:
-      return { ...state, fetchingTableOrders: true, tableId: payload.tableId }
+      return { ...state, fetchingTableOrders: true, tableId: payload.tableId, closingId: null }
     case GET_TABLE_ORDERS_SUCCESS:
       return { ...state, fetchingTableOrders: false, tableOrders: payload }
     case GET_TABLE_ORDERS_FAILURE:
@@ -55,9 +55,9 @@ export default (state = {
       return { ...state, fetchingOrders: false, orders: null }
     
     case GET_ORDER_DETAILS:
-      return { ...state, fetchingOrderDetails: true, deletingItemId: null, edittingItemId: null, applyingDiscount: false }
+      return { ...state, fetchingOrderDetails: true, closingId: null, deletingItemId: null, edittingItemId: null, applyingDiscount: false }
     case GET_ORDER_DETAILS_SUCCESS:
-      return { ...state, fetchingOrderDetails: false, orderDetails: payload }
+      return { ...state, fetchingOrderDetails: false, orderDetails: payload, closingId: null, deletingItemId: null, edittingItemId: null, applyingDiscount: false }
     case GET_ORDER_DETAILS_FAILURE:
       return { ...state, fetchingOrderDetails: false }
     

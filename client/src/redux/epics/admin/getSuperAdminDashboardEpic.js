@@ -8,7 +8,8 @@ import {
   ADD_RESTAURANT_SUCCESS,
   GET_SUPER_ADMIN_DASHBOARD_SUCCESS,
   GET_SUPER_ADMIN_DASHBOARD_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  DELETE_QRS_SUCCESS
 } from '../../../constants'
 
 export class getSuperAdminDashboardEpic {
@@ -19,6 +20,8 @@ export class getSuperAdminDashboardEpic {
           case GET_SUPER_ADMIN_DASHBOARD:
             return true;
           case GENERATE_QRS_SUCCESS:
+            return true;
+          case DELETE_QRS_SUCCESS:
             return true;
           case ADD_RESTAURANT_SUCCESS:
             return true;

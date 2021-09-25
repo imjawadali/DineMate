@@ -170,7 +170,7 @@ module.exports = app => {
                 JOIN restaurants r ON r.restaurantId = o.restaurantId
                 LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
                 WHERE customerId = ${customerId}
-                GROUP BY o.orderNumber
+                GROUP BY o.restaurantId, o.orderNumber
                 ORDER BY o.createdAt DESC`,
                 null,
                 (body) => {
@@ -1856,7 +1856,6 @@ module.exports = app => {
             }
         })
     })
-
 }
 
 function decrypt(token) {

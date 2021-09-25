@@ -286,7 +286,7 @@ function Restaurant(props) {
               <div className="DashBoardGrids">
                 {
                   getUnmergedTables().map((table, index) => {
-                    const { id, value, doNotDisturb, occupiedBy, time } = table
+                    const { id, value, closeRequests, doNotDisturb, occupiedBy, time } = table
                     if (index >= getUnmergedColumnCounts() && index % getUnmergedColumnCounts() === 0) {
                       row = row + 1
                     }
@@ -298,6 +298,7 @@ function Restaurant(props) {
                       }}>
                       <DashboardGridItem
                         text={"Table " + value}
+                        closeRequests={closeRequests}
                         doNotDisturb={doNotDisturb}
                         occupiedBy={!managingStaff && occupiedBy}
                         merging={merging || managingStaff}
@@ -373,6 +374,7 @@ function Restaurant(props) {
                           text={"Table " + value}
                           currentIndex={index}
                           lastIndex={mergedTables.length - 1}
+                          closeRequests={mergedTables.filter(table => table.doNotDisturb).closeRequests}
                           doNotDisturb={mergedTables.filter(table => table.doNotDisturb).length}
                           occupiedBy={!managingStaff && mergedTables[0].occupiedBy}
                           includesMerging={assignedTables.includes(mergeId)}

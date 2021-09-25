@@ -36,7 +36,7 @@ function ItemsList(props) {
                                         opacity: !orderDetails.status
                                             || deletingItemId === id
                                             || deletingOrder
-                                            || closingId
+                                            || closingId === orderNumber
                                             || vanished ? 0.5 : ''
                                     }}>
                                     <td style={{ textAlign: 'center' }}>{quantity}</td>
@@ -48,14 +48,14 @@ function ItemsList(props) {
                                                 return (`
                                                     ${addon.addOnOption && addon.addOnOption !== 'null' ?
                                                         addon.addOnOption : addon.addOnName}
-                                                    ${addon.price ? '(' + addon.price.toFixed(2) + ' $)' : ''}
+                                                    ${addon.price ? '($' + addon.price.toFixed(2) + ')' : ''}
                                                     ${index !== addOnsArray.length - 1 ? ',' : ''}
                                                 `)
                                             })
                                             : null}</p>
                                         <p style={{ color: 'red' }}>{specialInstructions}</p>
                                     </td>
-                                    <td style={{ textAlign: 'end' }}>{totalPrice.toFixed(2)} $</td>
+                                    <td style={{ textAlign: 'end' }}>${totalPrice.toFixed(2)}</td>
                                     <td>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <div className="OrderDetailsActionButtons" style={{ backgroundColor: 'rgb(180, 198, 231)' }}
@@ -123,31 +123,31 @@ function ItemsList(props) {
                     <tr style={{ border: 'none' }}>
                         <td colSpan={2} />
                         <td>Sub Total</td>
-                        <td style={{ textAlign: 'end' }}>{orderDetails.foodTotal} $</td>
+                        <td style={{ textAlign: 'end' }}>${orderDetails.foodTotal}</td>
                         <td />
                     </tr>
                     {orderDetails.discountAmount !== '0.00' && <tr style={{ border: 'none' }}>
                         <td colSpan={2} />
                         <td>Discount <span style={{ opacity: 0.5 }}>({orderDetails.discount})</span></td>
-                        <td style={{ textAlign: 'end', color: 'red' }}>- {orderDetails.discountAmount} $</td>
+                        <td style={{ textAlign: 'end', color: 'red' }}>- ${orderDetails.discountAmount}</td>
                         <td />
                     </tr>}
                     <tr style={{ border: orderDetails.tip !== '0.00' ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tax <span style={{ opacity: 0.5 }}>({orderDetails.taxPercentage})</span></td>
-                        <td style={{ textAlign: 'end' }}>{orderDetails.taxAmount} $</td>
+                        <td style={{ textAlign: 'end' }}>${orderDetails.taxAmount}</td>
                         <td />
                     </tr>
                     {orderDetails.tip !== '0.00' && <tr>
                         <td colSpan={2} />
                         <td>Tip</td>
-                        <td style={{ textAlign: 'end' }}>{orderDetails.tip} $</td>
+                        <td style={{ textAlign: 'end' }}>${orderDetails.tip}</td>
                         <td />
                     </tr>}
                     <tr>
                         <td colSpan={2} />
                         <td style={{ fontWeight: 'bold' }}>Total</td>
-                        <td style={{ fontWeight: 'bold', textAlign: 'end' }}>{orderDetails.billAmount} $</td>
+                        <td style={{ fontWeight: 'bold', textAlign: 'end' }}>${orderDetails.billAmount}</td>
                         <td />
                     </tr>
                     <tr><td style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
