@@ -4,7 +4,7 @@ const { sendEmail } = require('../services/mailer')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
 
-const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com:8080'
+const URL = 'https://www.dinemate.com:8080'
 
 module.exports = app => {
     app.get('/secureTest', async (req, res) => {
