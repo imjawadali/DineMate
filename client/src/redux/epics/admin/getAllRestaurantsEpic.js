@@ -9,7 +9,8 @@ import {
   UPDATE_RESTAURANT_SUCCESS,
   GET_ALL_RESTAURANTS_SUCCESS,
   GET_ALL_RESTAURANTS_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  DELETE_QRS_SUCCESS
 } from '../../../constants'
 
 export class getAllRestaurantsEpic {
@@ -20,6 +21,8 @@ export class getAllRestaurantsEpic {
           case GET_ALL_RESTAURANTS:
             return true;
           case GENERATE_QRS_SUCCESS:
+            return true;
+          case DELETE_QRS_SUCCESS:
             return true;
           case ADD_RESTAURANT_SUCCESS:
             return true;

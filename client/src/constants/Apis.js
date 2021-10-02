@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
         getRestaurantToEdit: 'admin/getRestaurantToEdit',
         updateRestaurant: 'admin/updateRestaurant',
         generateQrs: 'admin/generateQrs',
+        deleteQrs: 'admin/deleteQrs',
         getAllRestaurants: 'admin/getAllRestaurants',
         getExistingQrs: 'admin/getExistingQrs',
         setTableName: 'admin/setTableName',

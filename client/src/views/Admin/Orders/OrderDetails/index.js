@@ -132,7 +132,7 @@ function OrderDetails(props) {
               <p className="OrderDetailsText">{!orderDetails.status ? 'Check Closed:' : ''}</p>
             </div>
             <div className="OrderDetailsData">
-              <p className="OrderDetailsText" style={{ color: orderDetails.status ? 'green' : 'red' }}>{orderDetails.status ? "Open" : "Closed"}</p>
+              <p className="OrderDetailsText" style={{ color: orderDetails.status ? (orderDetails.type === "Dine-In" && orderDetails.customerStatus) || (orderDetails.type !== "Dine-In" && orderDetails.ready) ? 'blue' : 'green' : 'red' }}>{orderDetails.status ? (orderDetails.type === "Dine-In" && orderDetails.customerStatus) || (orderDetails.type !== "Dine-In" && orderDetails.ready) ? "Ready to close" : "Open" : "Closed"}</p>
               <p className="OrderDetailsText">{!orderDetails.status ? getFormatedDateTime(orderDetails.closedAt) : ''}</p>
             </div>
           </div>

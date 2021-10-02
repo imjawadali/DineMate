@@ -33,11 +33,11 @@ function AddOnsList(props) {
                     </div>
                   </td>}
                   <td>{name}</td>
-                  <td>{!addOnOptions.length ? `${price.toFixed(2)} $` : '-'}</td>
+                  <td>{!addOnOptions.length ? `$${price.toFixed(2)}` : '-'}</td>
                   <td>{mandatory ? 'Mandatory' : 'Optional'}</td>
                   <td>{addOnOptions && addOnOptions.length ?
                     addOnOptions.map((option, index) => <div key={option.id}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>{option.name}</p><p>{option.price.toFixed(2)} $</p></div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between' }}><p>{option.name}</p><p>${option.price.toFixed(2)}</p></div>
                       {index !== (addOnOptions.length - 1) ? <Separator /> : null}
                     </div>)
                     : 'No Options'

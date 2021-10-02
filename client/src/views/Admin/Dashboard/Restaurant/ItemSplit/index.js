@@ -129,7 +129,7 @@ function ItemSplit(props) {
                   <tr>
                     <th />
                     <th>Split - Chk # {itemOrderNumber} - {itemToSplit.name}</th>
-                    <th style={{ textAlign: 'center' }}>{(itemToSplit.totalPrice || 0).toFixed(2)} $</th>
+                    <th style={{ textAlign: 'center' }}>${(itemToSplit.totalPrice || 0).toFixed(2)}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,6 +147,7 @@ function ItemSplit(props) {
                           </td>
                           <td>Check {orderNumber} - {firstName}</td>
                           <td style={{ display: 'flex', alignItems: 'center' }}>
+                            $
                             <Input
                               type="number"
                               style={{ marginLeft: '5px' }}
@@ -155,7 +156,7 @@ function ItemSplit(props) {
                                 splittedItem.filter(item => item.orderNumber === orderNumber)[0].totalPrice
                               : ''}
                               onChange={({ target: { value } }) => onChange(orderNumber, value)}
-                            />$
+                            />
                           </td>
                         </tr>
                       )
@@ -171,7 +172,7 @@ function ItemSplit(props) {
                 <tr>
                   <th />
                   <th style={{ textAlign: 'end' }}>Split Item Total:</th>
-                  <th style={{ color: 'red', textDecoration: 'underline' }}>{splittedItemTotal.toFixed(2)} $</th>
+                  <th style={{ color: 'red', textDecoration: 'underline' }}>${splittedItemTotal.toFixed(2)}</th>
                 </tr>
               </thead>
             </table>

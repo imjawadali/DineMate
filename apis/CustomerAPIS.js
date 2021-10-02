@@ -170,7 +170,7 @@ module.exports = app => {
                 JOIN restaurants r ON r.restaurantId = o.restaurantId
                 LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
                 WHERE customerId = ${customerId}
-                GROUP BY o.orderNumber
+                GROUP BY o.restaurantId, o.orderNumber
                 ORDER BY o.createdAt DESC`,
                 null,
                 (body) => {
@@ -238,32 +238,25 @@ module.exports = app => {
                     `UPDATE customers SET ? WHERE id = ${customerId}`,
                     updatedData,
                     (result) => {
-                        if (result.changedRows)
-                            getConnection(
-                                res,
-                                `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
-                                null,
-                                (data) => {
-                                    if (data.length)
-                                        return res.send({
-                                            status: true,
-                                            message: 'Profile updated successfully!',
-                                            body: data[0]
-                                        })
-                                    else
-                                        return res.send({
-                                            status: false,
-                                            message: 'Profile updated, failed to get updated profile!',
-                                            errorCode: 422
-                                        })
-                                }
-                            )
-                        else
-                            return res.send({
-                                status: false,
-                                message: 'Failed to update profile!',
-                                errorCode: 422
-                            })
+                        getConnection(
+                            res,
+                            `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                            null,
+                            (data) => {
+                                if (data.length)
+                                    return res.send({
+                                        status: true,
+                                        message: 'Profile updated successfully!',
+                                        body: data[0]
+                                    })
+                                else
+                                    return res.send({
+                                        status: false,
+                                        message: 'Profile updated, failed to get updated profile!',
+                                        errorCode: 422
+                                    })
+                            }
+                        )
                     }
                 )
             } else return res.send({
@@ -769,7 +762,7 @@ module.exports = app => {
                                             if (result3.affectedRows) {
                                                 getConnection(
                                                     res,
-                                                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
                                                     null,
                                                     (result) => {
                                                         if (result.length) {
@@ -780,7 +773,8 @@ module.exports = app => {
                                                                     title: 'DineMate',
                                                                     body: JSON.stringify({
                                                                         roles: ['Admin', 'Staff'],
-                                                                        type: 'DASHBOARD'
+                                                                        type: 'DASHBOARD',
+                                                                        restaurantId
                                                                     })
                                                                 }
                                                             })
@@ -1000,7 +994,7 @@ module.exports = app => {
                                                     tempDb.release()
                                                     getConnection(
                                                         res,
-                                                        `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                        `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
                                                         null,
                                                         (result) => {
                                                             if (result.length) {
@@ -1010,12 +1004,10 @@ module.exports = app => {
                                                                     data: {
                                                                         title: 'DineMate',
                                                                         body: JSON.stringify({
-                                                                            roles: ['Admin','Staff','Kitchen'],
+                                                                            roles: ['Admin', 'Staff', 'Kitchen'],
                                                                             type: 'DASHBOARD',
-                                                                            orderDetails: {
-                                                                                restaurantId,
-                                                                                orderNumber
-                                                                            }
+                                                                            restaurantId,
+                                                                            orderNumber
                                                                         })
                                                                     }
                                                                 })
@@ -1385,7 +1377,7 @@ module.exports = app => {
                     if (result.changedRows) {
                         getConnection(
                             res,
-                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
                             null,
                             (result) => {
                                 if (result.length) {
@@ -1395,12 +1387,10 @@ module.exports = app => {
                                         data: {
                                             title: 'DineMate',
                                             body: JSON.stringify({
-                                                roles: ['Admin','Staff'],
+                                                roles: ['Admin', 'Staff', 'Kitchen'],
                                                 type: 'DASHBOARD',
-                                                orderDetails: {
-                                                    restaurantId,
-                                                    orderNumber
-                                                }
+                                                restaurantId,
+                                                orderNumber
                                             })
                                         }
                                     })
@@ -1552,7 +1542,7 @@ module.exports = app => {
                                                         tempDb.release()
                                                         getConnection(
                                                             res,
-                                                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                                                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
                                                             null,
                                                             (result) => {
                                                                 if (result.length) {
@@ -1562,12 +1552,10 @@ module.exports = app => {
                                                                         data: {
                                                                             title: 'DineMate',
                                                                             body: JSON.stringify({
-                                                                                roles: ['Admin','Staff','Kitchen'],
+                                                                                roles: ['Admin', 'Staff', 'Kitchen'],
                                                                                 type: 'DASHBOARD',
-                                                                                orderDetails: {
-                                                                                    restaurantId,
-                                                                                    orderNumber
-                                                                                }
+                                                                                restaurantId,
+                                                                                orderNumber
                                                                             })
                                                                         }
                                                                     })
@@ -1695,7 +1683,7 @@ module.exports = app => {
             () => {
                 getConnection(
                     res,
-                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
                     null,
                     (result) => {
                         if (result.length) {
@@ -1705,8 +1693,9 @@ module.exports = app => {
                                 data: {
                                     title: 'DineMate',
                                     body: JSON.stringify({
-                                        roles: ['Admin','Staff'],
-                                        type: 'GET_RESTAURANT_DASHBOARD'
+                                        roles: ['Admin', 'Staff'],
+                                        type: 'GET_RESTAURANT_DASHBOARD',
+                                        restaurantId
                                     })
                                 }
                             })
@@ -1757,7 +1746,7 @@ module.exports = app => {
                     if (result.affectedRows) {
                         getConnection(
                             res,
-                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}'`,
+                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
                             null,
                             (result) => {
                                 if (result.length) {
@@ -1767,8 +1756,9 @@ module.exports = app => {
                                         data: {
                                             title: 'DineMate',
                                             body: JSON.stringify({
-                                                roles: ['Admin','Staff'],
-                                                type: 'GET_SERVICES_QUE'
+                                                roles: ['Admin', 'Staff'],
+                                                type: 'GET_SERVICES_QUE',
+                                                restaurantId
                                             })
                                         }
                                     })
@@ -1866,7 +1856,6 @@ module.exports = app => {
             }
         })
     })
-
 }
 
 function decrypt(token) {

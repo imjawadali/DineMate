@@ -118,7 +118,10 @@ import {
   GET_RESTAURANT_SCHEDULE,
   UPDATE_RESTAURANT_SCHEDULE,
   UPDATE_RESTAURANT_SCHEDULE_FAILURE,
-  SPLIT_ITEM
+  SPLIT_ITEM,
+  DELETE_QRS,
+  DELETE_QRS_SUCCESS,
+  DELETE_QRS_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -150,10 +153,16 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_EXISTING_QRS_FAILURE:
       return { ...state, toast: payload }
     case GENERATE_QRS:
-      return { ...state, toast: { message: 'Generating QR', type: 'success' } }
+      return { ...state, toast: { message: 'Generating QR(s)', type: 'success' } }
     case GENERATE_QRS_SUCCESS:
       return { ...state, toastSetDismiss: true }
     case GENERATE_QRS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case DELETE_QRS:
+      return { ...state, toast: { message: 'Deleting QR(s)', type: 'warning' } }
+    case DELETE_QRS_SUCCESS:
+      return { ...state, toastSetDismiss: true }
+    case DELETE_QRS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case ADD_RESTAURANT:
       return { ...state, toast: { message: 'Adding Restaurant', type: 'success' } }

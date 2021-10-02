@@ -37,7 +37,7 @@ function SideBar(props) {
                     <h2>Super Admin</h2>
                     <div className={`sidebar__link ${pathname.includes('/addRestaurant') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-plus" />
-                        <Link to={`${url}/addRestaurant`}>Add Restaurants</Link>
+                        <Link to={`${url}/addRestaurant`}>Add Restaurant</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/restaurants') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-cutlery" />
@@ -57,7 +57,7 @@ function SideBar(props) {
                         : null}
                     <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-users" />
-                        <Link to={`${url}/usersManagement`}>Users Management</Link>
+                        <Link to={`${url}/usersManagement`}>User Management</Link>
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
                         <i className="fa fa-cogs" />
@@ -77,7 +77,7 @@ function SideBar(props) {
                         <h2>Restaurant Admin</h2>
                         <div className={`sidebar__link ${pathname.includes('/ordersManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-archive" />
-                            <Link to={`${url}/ordersManagement`}>Orders Management</Link>
+                            <Link to={`${url}/ordersManagement`}>Order Management</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/staffManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-user" />
@@ -85,11 +85,11 @@ function SideBar(props) {
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/tablesManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-building-o" />
-                            <Link to={`${url}/tablesManagement`}>Tables Management</Link>
+                            <Link to={`${url}/tablesManagement`}>Table Management</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/categoriesManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-list" />
-                            <Link to={`${url}/categoriesManagement`}>Categories Management</Link>
+                            <Link to={`${url}/categoriesManagement`}>Category Management</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/menuManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-cutlery" />
@@ -101,7 +101,7 @@ function SideBar(props) {
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-users" />
-                            <Link to={`${url}/usersManagement`}>Users Management</Link>
+                            <Link to={`${url}/usersManagement`}>User Management</Link>
                         </div>
                         <div className={`sidebar__link ${pathname.includes('/updatePassword') ? 'active_menu_link' : null}`}>
                             <i className="fa fa-cogs" />
@@ -120,7 +120,7 @@ function SideBar(props) {
                             <h2>Staff</h2>
                             <div className={`sidebar__link ${pathname.includes('/ordersManagement') ? 'active_menu_link' : null}`}>
                                 <i className="fa fa-archive" />
-                                <Link to={`${url}/ordersManagement`}>Orders Management</Link>
+                                <Link to={`${url}/ordersManagement`}>Order Management</Link>
                             </div>
                             <div className={`sidebar__link ${pathname.includes('/staffManagement') ? 'active_menu_link' : null}`}>
                                 <i className="fa fa-user" />

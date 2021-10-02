@@ -28,7 +28,7 @@ function OrdersList(props) {
                 <tbody>
                     {orders && orders.length ?
                         orders.map((order) => {
-                            const { id, tableId, orderNumber, status, time, billAmount, staff } = order
+                            const { id, tableId, orderNumber, status, customerStatus, ready, time, billAmount, staff } = order
                             return (<>
                                 <tr key={id}>
                                     <td>
@@ -54,8 +54,8 @@ function OrdersList(props) {
                                     </td>
                                     <td>{orderNumber}</td>
                                     <OrderTimer status={status} timeStamp={time} lateTime={lateTime} />
-                                    <td style={{ textAlign: 'center' }}>$ {(billAmount || 0).toFixed(2)}</td>
-                                    <td style={{ color: status ? 'green' : 'red', textAlign: 'center' }}>{status ? "Open" : "Closed"}</td>
+                                    <td style={{ textAlign: 'center' }}>${(billAmount || 0).toFixed(2)}</td>
+                                    <td style={{ color: status ? (tableId && customerStatus) || (!tableId && ready) ? 'blue' : 'green' : 'red', textAlign: 'center' }}>{status ? (tableId && customerStatus) || (!tableId && ready) ? "Ready to close" : "Open" : "Closed"}</td>
                                     <td style={{ textAlign: 'center' }}>{status && staff || '-'}</td>
                                 </tr>
                                 <tr><td style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>

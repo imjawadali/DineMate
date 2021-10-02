@@ -57,7 +57,7 @@ function OrdersList(props) {
                             <td>{!index ? firstName ? firstName + ' ' + lastName : '-' : ''}</td>
                             <td style={{ width: '20vw', color: orderItem.id !== splitItemId ? '' : 'lightBlue' }}>{orderItem.name}</td>
                             {<td style={{ textAlign: 'center', color: orderItem.id !== splitItemId ? '' : 'lightBlue' }}>{orderItem.id !== splitItemId ? orderItem.quantity : 0}</td>}
-                            {<td style={{ textAlign: 'end', color: orderItem.id !== splitItemId ? '' : 'lightBlue' }}>{(orderItem.id !== splitItemId ? orderItem.totalPrice : 0).toFixed(2)} $</td>}
+                            {<td style={{ textAlign: 'end', color: orderItem.id !== splitItemId ? '' : 'lightBlue' }}>${(orderItem.id !== splitItemId ? orderItem.totalPrice : 0).toFixed(2)}</td>}
                           </tr>
                         )
                       })
@@ -90,7 +90,7 @@ function OrdersList(props) {
                             <td colSpan="2" />
                             <td style={{ width: '20vw', color: 'blue' }}>{item.name}</td>
                             <td style={{ textAlign: 'center', color: 'blue' }}>{item.quantity}</td>
-                            <td style={{ textAlign: 'end', color: 'blue' }}>{Number(item.totalPrice).toFixed(2)} $</td>
+                            <td style={{ textAlign: 'end', color: 'blue' }}>${Number(item.totalPrice).toFixed(2)}</td>
                           </tr>
                         )
                       })
@@ -99,22 +99,22 @@ function OrdersList(props) {
                   {discountAmount ? <tr className="NoBorder">
                     <td colSpan="2" />
                     <td colSpan="2">Discount <span style={{ opacity: 0.5 }}>({discount}{discountType})</span></td>
-                    <td style={{ textAlign: 'end', color: 'red' }}>- {discountAmount.toFixed(2)} $</td>
+                    <td style={{ textAlign: 'end', color: 'red' }}>- ${discountAmount.toFixed(2)}</td>
                   </tr> : null}
                   <tr className="NoBorder">
                     <td colSpan="2" />
                     <td colSpan="2">Tax <span style={{ opacity: 0.5 }}>({taxPercentage}%)</span></td>
-                    <td style={{ textAlign: 'end' }}>{tax.toFixed(2)} $</td>
+                    <td style={{ textAlign: 'end' }}>${tax.toFixed(2)}</td>
                   </tr>
                   {tip ? <tr className="NoBorder">
                     <td colSpan="2" />
                     <td colSpan="2">Tip</td>
-                    <td style={{ textAlign: 'end' }}>{tip.toFixed(2)} $</td>
+                    <td style={{ textAlign: 'end' }}>${tip.toFixed(2)}</td>
                   </tr> : null}
                   <tr>
                     <td colSpan="2" />
                     <td colSpan="2">Check Total</td>
-                    <td style={{ textAlign: 'end' }}>{(subTotal + tax + tip).toFixed(2)} $</td>
+                    <td style={{ textAlign: 'end' }}>${(subTotal + tax + tip).toFixed(2)}</td>
                   </tr>
                   <tr><td colSpan="5" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
                 </>

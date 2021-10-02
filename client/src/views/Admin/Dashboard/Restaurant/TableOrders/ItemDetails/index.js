@@ -79,11 +79,11 @@ function ItemDetails(props) {
             </div>
             <div className="ItemDetailsSections">
               <h4>Item Price:</h4>
-              <p>$ {(orderItemDetails.price).toFixed(2)}</p>
+              <p>${(orderItemDetails.price).toFixed(2)}</p>
             </div>
             <div className="ItemDetailsSections">
-              <h4>Total Price (including add-ons):</h4>
-              <p>$ {(orderItemDetails.totalPrice).toFixed(2)}</p>
+              <h4>Total Price (including addOns):</h4>
+              <p>${(orderItemDetails.totalPrice).toFixed(2)}</p>
             </div>
           </div>
           <div className="InstructionsContainer">

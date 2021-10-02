@@ -96,16 +96,16 @@ function Admin(props) {
           try {
             let res = JSON.parse(data.body)
             if (res.roles && res.roles.length && location.pathname.includes('/admin')) {
-              const { roles, type, orderDetails } = res
-              if (roles.includes(role)) {
+              const { roles, type, restaurantId: restId, orderNumber } = res
+              if (restId && restId === restaurantId, roles.includes(role)) {
                 if (type === 'DASHBOARD') {
                   if (role === 'Kitchen')
                     dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
                   else {
                     dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
                     console.log(tableId)
-                    if (orderDetails && orderDetails.restaurantId === restaurantId && orderDetails.orderNumber && location.pathname.includes('/orderDetails'))
-                      dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId, orderNumber: orderDetails.orderNumber }))
+                    if (orderNumber && location.pathname.includes('/orderDetails'))
+                      dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId, orderNumber }))
                     else if ((location.pathname.includes('/tableOrders') || location.pathname.includes('/itemSplit')) && tableId)
                       dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))
                     dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))

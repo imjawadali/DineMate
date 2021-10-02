@@ -59,7 +59,7 @@ function RestaurantsList(props) {
                   <td>{cuisine}</td>
                   <td>{city}</td>
                   <td>{qrCounts} QR Code{qrCounts !== 1  ? 's' : ''}</td>
-                  <td style={{ textAlign: 'center' }}>{Number(11.9).toFixed(2)} $</td>
+                  <td style={{ textAlign: 'center' }}>${Number(11.9).toFixed(2)}</td>
                 </tr>
               )
             }) : 

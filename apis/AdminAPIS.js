@@ -434,6 +434,27 @@ module.exports = app => {
             })
     })
 
+    app.post('/admin/deleteQrs', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, values } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!values || !values.length) return res.status(422).send({ 'msg': 'Limit is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `DELETE FROM restaurantsQrs WHERE id IN (${values})`,
+            null,
+            (result) => {
+                if (result.affectedRows) {
+                    return res.send({ 'msg': `${values.length} QRs deleted successfully!` })
+                } else {
+                    return res.status(422).send({ 'msg': 'No QRs available!' })
+                }
+            }
+        )
+    })
+
     app.post('/admin/getExistingQrs', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId } = req.body
@@ -828,7 +849,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT o.id, o.tableId, o.status,
+            `SELECT o.id, o.tableId, o.status, o.customerStatus, o.ready,
             CONVERT(o.orderNumber, CHAR) as orderNumber,
             IF ((o.status = 0),
                 TIMESTAMPDIFF(SECOND, o.createdAt, o.closedAt),
@@ -904,7 +925,8 @@ module.exports = app => {
                         TIMESTAMPDIFF(SECOND, o.createdAt, closedAt),
                         TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
                     ) as duration,
-                    o.status, o.discount, o.discountType, o.tip, r.taxPercentage
+                    o.customerStatus, o.status, o.ready,
+                    o.discount, o.discountType, o.tip, r.taxPercentage
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
                     WHERE o.restaurantId = '${restaurantId}'
@@ -929,6 +951,8 @@ module.exports = app => {
                                 closedAt: data.closedAt,
                                 duration: data.duration,
                                 status: data.status,
+                                ready: data.ready,
+                                customerStatus: data.customerStatus,
                                 type: data.type,
                                 tableId: data.tableId,
                                 foodTotal: foodTotal.toFixed(2),

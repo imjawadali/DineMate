@@ -3,7 +3,7 @@ import { getTimeObject } from '../../helpers'
 
 import './styles.css'
 
-function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupiedBy, merging, includesMerging, merged, serviceIncludes, amount, timeStamp, onClick }) {
+function DashboardGridItem({ text, currentIndex, lastIndex, closeRequests, doNotDisturb, occupiedBy, merging, includesMerging, merged, serviceIncludes, amount, timeStamp, onClick }) {
 
   const [timer, settimer] = useState(timeStamp)
   const [time, settime] = useState(timeStamp)
@@ -33,14 +33,15 @@ function DashboardGridItem({ text, currentIndex, lastIndex, doNotDisturb, occupi
     >
       {occupiedBy && !currentIndex ? <div style={{ width: '100%', display: 'flex' }}>
         <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>{occupiedBy} (Diners)</p>
-        {!!doNotDisturb && <i className="DashboardGridItemText fa fa-ban" style={{ margin: '0px 5px' }} />}
-        {!!serviceIncludes && <i className="DashboardGridItemText fa fa-bell" />}
+        {!!closeRequests && <i className="DashboardGridItemText fa fa-dollar" style={{ marginLeft: '5px' }} />}
+        {!!doNotDisturb && <i className="DashboardGridItemText fa fa-ban" style={{ marginLeft: '5px' }} />}
+        {!!serviceIncludes && <i className="DashboardGridItemText fa fa-bell" style={{ marginLeft: '5px' }} />}
       </div> : null}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
         <p className="DashboardGridItemText" style={{ fontWeight: 'bold' }}>{text}</p>
       </div>
       {!!occupiedBy && currentIndex === lastIndex ? <div className="ResponsiveDirection" style={{ width: '100%', display: 'flex' }}>
-        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>$ {(amount || 0).toFixed(2)}</p>
+        <p className="DashboardGridItemText" style={{ flex: 1, display: 'flex' }}>${(amount || 0).toFixed(2)}</p>
         <p className="DashboardGridItemText">
           {time.hrs ? time.hrs < 10 ? '0' + time.hrs + ':' : time.hrs + ':' : '00:'}
           {time.mints ? time.mints < 10 ? '0' + time.mints + ':' : time.mints + ':' : '00:'}

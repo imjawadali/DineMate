@@ -22,7 +22,7 @@ function AddOnsList(props) {
             <td />
             <td colSpan="3">{itemName}</td>
             <td style={{ textAlign: 'center' }}>{quantity}</td>
-            <td style={{ textAlign: 'center' }}>{itemPrice.toFixed(2)} $</td>
+            <td style={{ textAlign: 'center' }}>${itemPrice.toFixed(2)}</td>
           </tr>
           {addOns && addOns.length ?
             addOns.map((category) => {
@@ -34,7 +34,7 @@ function AddOnsList(props) {
                   <td>{addOnName}</td>
                   <td>{addOnOption && addOnOption !== 'null' ? addOnOption : '-'}</td>
                   <td />
-                  <td style={{ textAlign: 'center' }}>{price.toFixed(2)} $</td>
+                  <td style={{ textAlign: 'center' }}>${price.toFixed(2)}</td>
                 </tr>
               )
             }) : 
@@ -45,7 +45,7 @@ function AddOnsList(props) {
           <tr>
             <td style={{ fontWeight: 'bold' }}>Total</td>
             <td colSpan="4" />
-            <td style={{ fontWeight: 'bold', textAlign: 'center' }}>{(itemTotalPrice).toFixed(2)} $</td>
+            <td style={{ fontWeight: 'bold', textAlign: 'center' }}>${(itemTotalPrice).toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
