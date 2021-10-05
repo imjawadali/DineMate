@@ -34,15 +34,16 @@ function SignUp(props) {
 
 
     function singUp() {
-        let obj = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "email": email,
-            "password": password,
-            "phoneNumber":phoneNumber
-        }
-
-        dispatch(customisedAction(SIGN_UP, obj))
+        getToken(messaging, { vapidKey: "BPoOOkLxrmaJtxzYlo-ApajCHnlPXQ0HIIEjwzqcnrrdvyOB32Aq1YZhsoi1H45yResfQj-kiaLpNNZWXvNWJ1Y" })
+            .then(fcmToken => dispatch(customisedAction(SIGN_UP, {
+                firstName,
+                lastName,
+                email,
+                password,
+                phoneNumber,
+                fcmToken
+            })))
+            .catch(error => console.log(error))
     }
     return (
         <div className="sign-up">

@@ -5,7 +5,10 @@ import './styles.css';
 import fb from '../../../assets/fb.png';
 import enter from '../../../assets/enter.png';
 import { customisedAction } from '../../../redux/actions';
-import { INITIALIZE_ORDER, SIGN_IN } from '../../../constants';
+import { getToken } from "firebase/messaging"
+import messaging from '../../../services/firebase'
+
+import { SIGN_IN } from '../../../constants';
 
 function SignIn(props) {
 
@@ -54,14 +57,15 @@ function SignIn(props) {
         if (customer && redirect) {
             props.history.push(redirect)
         }
-        else if(!redirect && customer){
+        else if (!redirect && customer) {
             props.history.push('/')
         }
     }, [customer])
-    
-    const redirectFn = () =>{
-        dispatch(customisedAction(SIGN_IN, { email, password }))
-        
+
+    const redirectFn = () => {
+        getToken(messaging, { vapidKey: "BPoOOkLxrmaJtxzYlo-ApajCHnlPXQ0HIIEjwzqcnrrdvyOB32Aq1YZhsoi1H45yResfQj-kiaLpNNZWXvNWJ1Y" })
+            .then(fcmToken => dispatch(customisedAction(SIGN_IN, { email, password, fcmToken })))
+            .catch(error => console.log(error))
     }
 
     return (
@@ -107,7 +111,7 @@ function SignIn(props) {
                         </div>
 
                         <div className="no-account">
-                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => {redirect ? history.push(`/customer/signup/?redirect=${redirect}`): history.push(`/customer/signup`) }}>&nbsp;Sign Up</span>
+                            Don't have an account? <span style={{ cursor: 'pointer', fontWeight: 'bold' }} onClick={() => { redirect ? history.push(`/customer/signup/?redirect=${redirect}`) : history.push(`/customer/signup`) }}>&nbsp;Sign Up</span>
                         </div>
                     </div>
                 </div>
@@ -143,6 +147,6 @@ function SignIn(props) {
                 </div>}
         </>
     )
-    }
+}
 
-    export default SignIn
+export default SignIn

@@ -17,21 +17,17 @@ import {
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
-import { useDispatch } from 'react-redux'
 
-// let dispatch = useDispatch()
-
-let Authorization = '';
 export class loginEpic {
   static login = action$ =>
     action$.pipe(
       ofType(SIGN_IN),
       switchMap(
-        async ({ payload: { email, password } }) => {
+        async ({ payload: { email, password, fcmToken } }) => {
           return generalizedEpic(
             'post', 
             API_ENDPOINTS.customer.login,
-            { email, password },
+            { email, password, fcmToken },
             (resObj) => {
               setItem('customer', resObj.body)
               RestClient.setHeader('Authorization', resObj.body.id)

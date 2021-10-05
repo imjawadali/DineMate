@@ -12,7 +12,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/signUp")
             console.log(req.body)
-            const { firstName, lastName, email, password, phoneNumber } = req.body
+            const { firstName, lastName, email, password, phoneNumber, fcmToken } = req.body
             if (!firstName) return res.send({
                 status: false,
                 message: 'FirstName is required!',
@@ -33,17 +33,27 @@ module.exports = app => {
                 message: 'Password is required!',
                 errorCode: 422
             })
+            if (!fcmToken) return res.send({
+                status: false,
+                message: 'Invalid FCM Token!',
+                errorCode: 422
+            })
             getConnection(
                 res,
                 `INSERT INTO customers SET ?`,
-                { firstName, lastName, email, password, phoneNumber },
+                { firstName, lastName, email, password, phoneNumber, fcmToken },
                 (result) => {
                     if (result.affectedRows) return res.send({
                         status: true,
                         message: 'Signed-Up Successfully!',
                         body: {
                             id: result.insertId,
-                            email
+                            imageUrl: null,
+                            firstName,
+                            lastName,
+                            email,
+                            phoneNumber,
+                            address: null
                         }
                     })
                     else return res.send({
@@ -67,7 +77,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/login")
             console.log(req.body)
-            const { email, password } = req.body
+            const { email, password, fcmToken } = req.body
             if (!email) return res.send({
                 status: false,
                 message: 'Email is required!',
@@ -78,18 +88,31 @@ module.exports = app => {
                 message: 'Password is required!',
                 errorCode: 422
             })
+            if (!fcmToken) return res.send({
+                status: false,
+                message: 'Invalid FCM Token!',
+                errorCode: 422
+            })
             getConnection(
                 res,
                 `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers
                 WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}'`,
                 null,
                 (data) => {
-                    if (data.length)
-                        return res.send({
-                            status: true,
-                            message: 'Logged-In Successfully!',
-                            body: data[0]
-                        })
+                    if (data.length) {
+                        getConnection(
+                            res,
+                            `UPDATE customers SET ? WHERE id = ${data[0].id}`,
+                            { fcmToken },
+                            (result) => {
+                                return res.send({
+                                    status: true,
+                                    message: result.changedRows ? `FCM token set` : `FCM token already set`,
+                                    body: data[0]
+                                })
+                            }
+                        )
+                    }
                     else
                         return res.send({
                             status: false,
@@ -698,7 +721,6 @@ module.exports = app => {
                             })
                         }
                     }
-                    // menu = getGroupedList(menu, 'categoryName')
                     return res.send({
                         status: true,
                         message: 'Get Menu List Success!',
@@ -1876,18 +1898,6 @@ function capitalizeFirstLetter(string) {
 function includes(list, id) {
     var result = list.filter(item => item.id === id)
     return result.length
-}
-
-function getGroupedList(list, key) {
-    let groupedList = []
-    if (list && list.length) {
-        groupedList = list.reduce((r, a) => {
-            r[a[key]] = r[a[key]] || [];
-            r[a[key]].push(a);
-            return r;
-        }, Object.create(null));
-    }
-    return groupedList
 }
 
 function padding(num, size) {

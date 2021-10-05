@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route, useRouteMatch } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
+import { onMessage } from "firebase/messaging"
+import messaging from '../services/firebase'
+
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_ORDER, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS } from '../constants'
+import { SESSION_CHECK_DONE, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS, SET_TOAST } from '../constants'
 import { RestClient } from '../services/network'
-import { getItem, removeItem } from '../helpers'
+import { getItem } from '../helpers'
 
 import ScrollToTop from './ScrollToTop'
 import Toaster from './Toaster'
@@ -50,18 +53,40 @@ export default function App() {
             else
                 setTimeout(() => dispatch(customisedAction(SESSION_CHECK_DONE)), 300)
 
-            if (storedOrderDetails && !orderDetails)
+            if (storedOrderDetails && !orderDetails) {
+                const { restaurantId, orderNumber } = storedOrderDetails
                 setTimeout(() => {
-                    let obj = {
-                        "restaurantId": storedOrderDetails.restaurantId,
-                        "orderNumber": storedOrderDetails.orderNumber
-                    }
-                    dispatch(customisedAction(GET_STATUS, obj))
+                    dispatch(customisedAction(GET_STATUS, { restaurantId, orderNumber }))
                 }, 300)
-            else
+            } else
                 setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
     }, [closeOrder])
+
+    useEffect(() => {
+        if (customer) {
+            onMessage(messaging, ({ notification, data }) => {
+                console.log(data)
+                if (notification)
+                    dispatch(customisedAction(SET_TOAST, { message: notification.body, type: 'success' }))
+                else if (data) {
+                    try {
+                        let res = JSON.parse(data.body)
+                        const { customerId, type, restaurantId, orderNumber, tableId } = res
+                        if (customerId && customerId === customer.id) {
+                            dispatch(customisedAction(type, { restaurantId, orderNumber, tableId }))
+                        }
+                    } catch (error) {
+                        console.log("error", error)
+                        console.log("data", data)
+                    }
+                }
+            })
+        } else onMessage(() => null)
+    }, [customer])
+
+    useEffect(() => {
+    }, [])
 
     const openSidebar = () => {
         setSidebarOpen(true)
@@ -70,12 +95,6 @@ export default function App() {
     const closeSidebar = () => {
         setSidebarOpen(false)
     }
-
-    // useEffect(()=>{
-    //     console.log = function() {}
-    //     console.warn = function() {}
-    //     console.error = function() {}
-    // },[])
 
     return (!checkingSignIn && !checkingOrder ?
         <ToastProvider
