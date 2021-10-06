@@ -12,7 +12,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/signUp")
             console.log(req.body)
-            const { firstName, lastName, email, password, phoneNumber, fcmToken } = req.body
+            const { firstName, lastName, email, password, phoneNumber } = req.body
             if (!firstName) return res.send({
                 status: false,
                 message: 'FirstName is required!',
@@ -33,15 +33,10 @@ module.exports = app => {
                 message: 'Password is required!',
                 errorCode: 422
             })
-            if (!fcmToken) return res.send({
-                status: false,
-                message: 'Invalid FCM Token!',
-                errorCode: 422
-            })
             getConnection(
                 res,
                 `INSERT INTO customers SET ?`,
-                { firstName, lastName, email, password, phoneNumber, fcmToken },
+                { firstName, lastName, email, password, phoneNumber },
                 (result) => {
                     if (result.affectedRows) return res.send({
                         status: true,
@@ -99,26 +94,56 @@ module.exports = app => {
                 WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}'`,
                 null,
                 (data) => {
-                    if (data.length) {
-                        getConnection(
-                            res,
-                            `UPDATE customers SET ? WHERE id = ${data[0].id}`,
-                            { fcmToken },
-                            (result) => {
-                                return res.send({
-                                    status: true,
-                                    message: result.changedRows ? `FCM token set` : `FCM token already set`,
-                                    body: data[0]
-                                })
-                            }
-                        )
-                    }
+                    if (data.length)
+                    return res.send({
+                        status: true,
+                        message: 'Logged-In Successfuly!',
+                        body: data[0]
+                    })
                     else
                         return res.send({
                             status: false,
                             message: 'Invalid Credentials Provided!',
                             errorCode: 422
                         })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/setFcmToken', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/setFcmToken")
+            console.log(req.body)
+            const { fcmToken } = req.body
+            const customerId = decrypt(req.header('authorization'))
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!fcmToken) return res.send({
+                status: false,
+                message: 'Invalid FCM Token!',
+                errorCode: 422
+            })
+            getSecureConnection(
+                res,
+                customerId,
+                `UPDATE customers SET ? WHERE id = ${customerId}`,
+                { fcmToken },
+                (result) => {
+                    return res.send({
+                        status: true,
+                        message: result.changedRows ? `FCM token set` : `FCM token already set`
+                    })
                 }
             )
         } catch (error) {
@@ -1664,7 +1689,7 @@ module.exports = app => {
                 } else {
                     return res.send({
                         status: false,
-                        message: 'Failed to get order status',
+                        message: 'Order has been cancelled by restaurant',
                         errorCode: 422
                     })
                 }

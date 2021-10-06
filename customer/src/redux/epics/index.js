@@ -22,6 +22,7 @@ import { orderGetStatusEpic } from './customer/getOrderStatus'
 
 export const epics = combineEpics(
     loginEpic.login,
+    loginEpic.setFcmToken,
     getAllRestaurantsEpic.getAllRestaurants,
     getGenericDataEpic.getGenericData,
     getRestaurantDetailsEpic.getRestaurantDetails,
@@ -45,6 +46,7 @@ export const epics = combineEpics(
     closeOrderViaCashEpic.closeOrderViaStripe,
     takeAwayOrderEpic.takeAwayOrder,
     getOrderStatusEpic.getOrderStatus,
+    getOrderStatusEpic.removeOrder,
     getAllOrdersEpic.getAllOrders,
     searchResturantEpic.searchResturant,
     getTakeAwayOrderItemEpic.getTakeAwayOrder,

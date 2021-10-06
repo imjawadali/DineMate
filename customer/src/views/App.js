@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { BrowserRouter as Router, Switch, Route, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
-import { onMessage } from "firebase/messaging"
 import messaging from '../services/firebase'
+import { getToken, onMessage } from "firebase/messaging"
 
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS, SET_TOAST } from '../constants'
+import { SESSION_CHECK_DONE, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS, SET_TOAST, SET_FCM_TOKEN } from '../constants'
 import { RestClient } from '../services/network'
 import { getItem } from '../helpers'
 
@@ -35,11 +35,7 @@ export default function App() {
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
-    const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
-    const closeOrder = useSelector(({ closeOrderReducer }) => closeOrderReducer.closeOrder)
     const dispatch = useDispatch()
-
-
 
     useEffect(() => {
         if (!customer || !orderDetails) {
@@ -61,32 +57,33 @@ export default function App() {
             } else
                 setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
         }
-    }, [closeOrder])
+    }, [])
 
     useEffect(() => {
         if (customer) {
+            getToken(messaging, { vapidKey: "BPoOOkLxrmaJtxzYlo-ApajCHnlPXQ0HIIEjwzqcnrrdvyOB32Aq1YZhsoi1H45yResfQj-kiaLpNNZWXvNWJ1Y" })
+                .then(fcmToken => dispatch(customisedAction(SET_FCM_TOKEN, { fcmToken })))
+                .catch(error => console.log(error))
+
             onMessage(messaging, ({ notification, data }) => {
-                console.log(data)
+                console.log("notification", notification)
+                console.log("data", data)
                 if (notification)
                     dispatch(customisedAction(SET_TOAST, { message: notification.body, type: 'success' }))
-                else if (data) {
+                if (data) {
                     try {
                         let res = JSON.parse(data.body)
-                        const { customerId, type, restaurantId, orderNumber, tableId } = res
-                        if (customerId && customerId === customer.id) {
-                            dispatch(customisedAction(type, { restaurantId, orderNumber, tableId }))
+                        const { customerId, typeArray, restaurantId, orderNumber, tableId } = res
+                        if (customerId && customerId === customer.id && typeArray.length && restaurantId && orderNumber) {
+                            typeArray.forEach(type => {
+                                dispatch(customisedAction(type, { restaurantId, orderNumber, tableId }))
+                            });
                         }
-                    } catch (error) {
-                        console.log("error", error)
-                        console.log("data", data)
-                    }
+                    } catch (error) { console.log("error", error) }
                 }
             })
         } else onMessage(() => null)
     }, [customer])
-
-    useEffect(() => {
-    }, [])
 
     const openSidebar = () => {
         setSidebarOpen(true)

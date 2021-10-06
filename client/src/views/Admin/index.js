@@ -90,7 +90,7 @@ function Admin(props) {
         .catch(error => console.log(error))
 
       onMessage(messaging, ({ notification, data }) => {
-        console.log(data)
+        console.log("data", data)
         if (notification)
           dispatch(customisedAction(SET_TOAST, { message: notification.body, type: 'success' }))
         else if (data) {
@@ -112,10 +112,7 @@ function Admin(props) {
                 }
               } else dispatch(customisedAction(type, { restaurantId, noToast: true }))
             }
-          } catch (error) {
-            console.log("error", error)
-            console.log("data", data)
-          }
+          } catch (error) { console.log("error", error) }
         }
       })
     }

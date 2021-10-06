@@ -5,8 +5,6 @@ import './styles.css';
 import fb from '../../../assets/fb.png';
 import enter from '../../../assets/enter.png';
 import { customisedAction } from '../../../redux/actions';
-import { getToken } from "firebase/messaging"
-import messaging from '../../../services/firebase'
 
 import { SIGN_IN } from '../../../constants';
 
@@ -63,9 +61,7 @@ function SignIn(props) {
     }, [customer])
 
     const redirectFn = () => {
-        getToken(messaging, { vapidKey: "BPoOOkLxrmaJtxzYlo-ApajCHnlPXQ0HIIEjwzqcnrrdvyOB32Aq1YZhsoi1H45yResfQj-kiaLpNNZWXvNWJ1Y" })
-            .then(fcmToken => dispatch(customisedAction(SIGN_IN, { email, password, fcmToken })))
-            .catch(error => console.log(error))
+        dispatch(customisedAction(SIGN_IN, { email, password }))
     }
 
     return (

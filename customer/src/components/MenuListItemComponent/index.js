@@ -1,10 +1,5 @@
-import React, { useState } from 'react'
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { GET_ORDER_ITEMS } from '../../constants';
-import { getItem } from '../../helpers';
-import { customisedAction } from '../../redux/actions';
+import React from 'react'
+import { useDispatch } from 'react-redux';
 import "./styles.css"
 
 

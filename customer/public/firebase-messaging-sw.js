@@ -15,10 +15,12 @@ const messaging = firebase.messaging()
 
 messaging.onBackgroundMessage(function (payload) {
     console.log("Received background message ", payload);
-    const { title, body } = payload.notification;
-    const notificationTitle = title;
-    const notificationOptions = {
-        body,
-    };
-    self.registration.showNotification(notificationTitle, notificationOptions);
+    if (payload.notification) {
+        const { title, body } = payload.notification;
+        const notificationTitle = title;
+        const notificationOptions = {
+            body,
+        };
+        self.registration.showNotification(notificationTitle, notificationOptions);
+    }
 });

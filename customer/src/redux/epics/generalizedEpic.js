@@ -2,7 +2,7 @@ import { RestClient } from '../../services/network'
 import { customisedAction } from '../actions'
 
 import store from '../store'
-import { LOGOUT, SESSION_CHECK_DONE } from '../../constants'
+import { GET_STATUS_FAILURE, GET_STATUS_FAILURE_BCZ_CANCELLED, LOGOUT, ORDER_CANCELLED, SESSION_CHECK_DONE } from '../../constants'
 import { removeItem } from '../../helpers'
 
 export const generalizedEpic = async (method, url, data, successCallback, failureAction, noToast) => {
@@ -21,6 +21,11 @@ export const generalizedEpic = async (method, url, data, successCallback, failur
               removeItem('customer')
               store.dispatch(customisedAction(LOGOUT))
               store.dispatch(customisedAction(SESSION_CHECK_DONE))
+            }
+            if (errorCode === 422) {
+              if (failureAction === GET_STATUS_FAILURE) {
+                store.dispatch(customisedAction(GET_STATUS_FAILURE_BCZ_CANCELLED))
+              }
             }
             return customisedAction(failureAction, noToast ? null : { message, type: 'error' })
           }
