@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
+import { Switch, Route, useRouteMatch, Redirect, useLocation } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
 import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_ORDER_DETAILS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_TABLE_ORDERS, GET_USERS, SET_FCM_TOKEN, SET_TOAST } from '../../constants'
 
@@ -49,6 +49,7 @@ function Admin(props) {
   const admin = useSelector(({ sessionReducer }) => sessionReducer.admin)
   const tableId = useSelector(({ ordersReducer }) => ordersReducer.tableId)
   const dispatch = useDispatch()
+  const location = useLocation()
 
   const { restaurantId, role } = admin
 
