@@ -1,6 +1,6 @@
 export const LOCAL_URL = 'http://localhost:8000/'
-export const PUBLIC_URL = 'https://dinemate.com/dev/'
-export const CUSTOMER_APP_URL = 'https://dinemate.com/'
+export const PUBLIC_URL = 'https://dinemate.com:8080/dev/'
+export const CUSTOMER_APP_URL = 'https://dinemate.com:8080/'
 export const BASE_URL = '/dev/'
 
 export const API_ENDPOINTS = {
