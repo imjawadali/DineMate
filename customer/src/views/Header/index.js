@@ -206,8 +206,6 @@ const Header = props => {
         }
     }
 
-    props.history.listen(() => toggleCartModal())
-
     useEffect(() => {
         if (window.location.pathname !== "/customer/pastOrder/orderDetails") {
 

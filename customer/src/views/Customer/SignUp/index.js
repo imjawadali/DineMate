@@ -38,8 +38,7 @@ function SignUp(props) {
             lastName,
             email,
             password,
-            phoneNumber,
-            fcmToken
+            phoneNumber
         }))
     }
 

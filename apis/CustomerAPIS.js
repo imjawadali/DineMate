@@ -5,7 +5,7 @@ const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
 
-const URL = 'http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com'
+const URL = 'https://dinemate.com'
 
 module.exports = app => {
     app.post('/customer/signUp', async (req, res) => {
@@ -81,11 +81,6 @@ module.exports = app => {
             if (!password) return res.send({
                 status: false,
                 message: 'Password is required!',
-                errorCode: 422
-            })
-            if (!fcmToken) return res.send({
-                status: false,
-                message: 'Invalid FCM Token!',
                 errorCode: 422
             })
             getConnection(
