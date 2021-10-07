@@ -7,12 +7,8 @@ import {
   GET_ORDER_STATUS,
   GET_ORDER_STATUS_SUCCESS,
   GET_ORDER_STATUS_FAILURE,
-  API_ENDPOINTS,
-  SET_ORDER,
-  GET_ORDER_DETAIL
+  API_ENDPOINTS
 } from '../../../constants'
-import { getItem, removeItem } from '../../../helpers'
-import { useDispatch } from 'react-redux'
 
 export class orderGetStatusEpic {
   static getOrderStatus = action$ =>

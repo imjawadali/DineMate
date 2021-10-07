@@ -4,7 +4,8 @@ import { Switch, Route, useRouteMatch, Redirect } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
 import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_ORDER_DETAILS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_TABLE_ORDERS, GET_USERS, SET_FCM_TOKEN, SET_TOAST } from '../../constants'
 
-import firebase from '../../services/firebase'
+import { getToken, onMessage } from "firebase/messaging"
+import messaging from '../../services/firebase'
 
 import SideBar from './SideBar'
 import NavBar from './NavBar'
@@ -49,8 +50,6 @@ function Admin(props) {
   const tableId = useSelector(({ ordersReducer }) => ordersReducer.tableId)
   const dispatch = useDispatch()
 
-  const messaging = firebase.messaging()
-
   const { restaurantId, role } = admin
 
   useEffect(() => {
@@ -82,47 +81,42 @@ function Admin(props) {
 
     if (role === 'SuperAdmin')
       dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
+  }, [])
 
+  useEffect(() => {
     if (role !== 'SuperAdmin') {
-      messaging.getToken()
+      getToken(messaging, { vapidKey: "BPoOOkLxrmaJtxzYlo-ApajCHnlPXQ0HIIEjwzqcnrrdvyOB32Aq1YZhsoi1H45yResfQj-kiaLpNNZWXvNWJ1Y" })
         .then(fcmToken => dispatch(customisedAction(SET_FCM_TOKEN, { fcmToken })))
         .catch(error => console.log(error))
-  
-      messaging.onMessage(({ notification, data }) => {
-        console.log(data)
+
+      onMessage(messaging, ({ notification, data }) => {
+        console.log("data", data)
         if (notification)
           dispatch(customisedAction(SET_TOAST, { message: notification.body, type: 'success' }))
         else if (data) {
           try {
             let res = JSON.parse(data.body)
-            if (res.roles && res.roles.length && location.pathname.includes('/admin')) {
-              const { roles, type, restaurantId: restId, orderNumber } = res
-              if (restId && restId === restaurantId, roles.includes(role)) {
-                if (type === 'DASHBOARD') {
-                  if (role === 'Kitchen')
-                    dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
-                  else {
-                    dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
-                    console.log(tableId)
-                    if (orderNumber && location.pathname.includes('/orderDetails'))
-                      dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId, orderNumber }))
-                    else if ((location.pathname.includes('/tableOrders') || location.pathname.includes('/itemSplit')) && tableId)
-                      dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))
-                    dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
-                  }
-                } else dispatch(customisedAction(type, { restaurantId, noToast: true }))
-              }
+            const { roles, type, restaurantId: restId, orderNumber } = res
+            if (roles && roles.length && roles.includes(role) && restId && restId === restaurantId && location.pathname.includes('/admin')) {
+              if (type === 'DASHBOARD') {
+                if (role === 'Kitchen')
+                  dispatch(customisedAction(GET_KITCHEN_DASHBOARD, { restaurantId }))
+                else {
+                  dispatch(customisedAction(GET_RESTAURANT_DASHBOARD, { restaurantId }))
+                  console.log(tableId)
+                  if (orderNumber && location.pathname.includes('/orderDetails'))
+                    dispatch(customisedAction(GET_ORDER_DETAILS, { restaurantId, orderNumber }))
+                  else if ((location.pathname.includes('/tableOrders') || location.pathname.includes('/itemSplit')) && tableId)
+                    dispatch(customisedAction(GET_TABLE_ORDERS, { restaurantId, tableId }))
+                  dispatch(customisedAction(GET_ORDERS, { restaurantId, status: 1, noToast: true }))
+                }
+              } else dispatch(customisedAction(type, { restaurantId, noToast: true }))
             }
-          } catch (error) {
-            console.log("error", error)
-            console.log("data", data)
-          }
+          } catch (error) { console.log("error", error) }
         }
       })
     }
-
-    return () => messaging.onMessage(() => null)
-  }, [])
+  }, [admin])
 
   const openSidebar = () => {
     setSidebarOpen(true)

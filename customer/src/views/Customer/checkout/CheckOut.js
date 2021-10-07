@@ -56,33 +56,17 @@ function CheckOut(props) {
         setTimeout(() => {
             setOrderDetail(getItem('orderDetails'))
         }, [1000])
-        // if (orderDetail && orderDetail.type.toLowerCase() === 'take-away') {
         setProducts(getItem('cartMenu'))
-
-        // }
     }, [])
     useEffect(() => {
         setOrderDetail(getItem('orderDetails'))
     }, [orderDetails])
 
-
-
-
     useEffect(() => {
         if (orderDetail) {
-
-            let obj = {
-                restaurantId: orderDetail.restaurantId,
-                orderNumber: orderDetail.orderNumber,
-
-            }
-            // dispatch(customisedAction(GET_RESTAURANT_DETAILS, { restaurantId: orderDetail.restaurantId }))
-
-            dispatch(customisedAction(GET_ORDER_ITEMS, obj))
-        } else {
-            // setProducts(getItem("cartMenu"))
+            const { restaurantId, orderNumber } = orderDetail
+            dispatch(customisedAction(GET_ORDER_ITEMS, { restaurantId, orderNumber }))
         }
-
     }, [])
     useEffect(() => {
         if (orderDetail) {

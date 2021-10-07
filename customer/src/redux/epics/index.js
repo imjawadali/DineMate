@@ -1,27 +1,28 @@
 import { combineEpics } from 'redux-observable'
-import { loginEpic } from './admin/loginEpic'
-import { getAllRestaurantsEpic } from './admin/getAllRestaurantsEpic'
-import { getRestaurantDetailsEpic } from './admin/getRestaurantDetailsEpic'
-import { initializeOrderEpic } from './admin/initializeOrderEpic'
-import { getMenuEpic } from './admin/getMenuEpic'
-import { signUpEpic } from './admin/singUpEpic'
-import { forgotPsswordEpic } from './admin/forgetPassword'
-import { addOrderEpic } from './admin/addOrderEpic'
-import { submitOrderEpic } from './admin/submitOrder'
-import { callForServiceEpic } from './admin/callForServiceEpic'
-import { getOrderItemEpic } from './admin/getOrderItem'
-import { closeOrderViaCashEpic } from './admin/closeOrder'
-import { takeAwayOrderEpic } from './admin/takeAwayOrder'
-import { getOrderStatusEpic } from './admin/orderstatus'
-import { getAllOrdersEpic } from './admin/getAllOrders'
-import { searchResturantEpic } from './admin/searchResturant'
-import { getTakeAwayOrderItemEpic } from './admin/getTakeOrderItem'
-import { OrderDetailEpic } from './admin/getOrderDetailOrderEpic'
-import { getGenericDataEpic } from './admin/getGenericData'
-import { orderGetStatusEpic } from './admin/getOrderStatus'
+import { loginEpic } from './customer/loginEpic'
+import { getAllRestaurantsEpic } from './customer/getAllRestaurantsEpic'
+import { getRestaurantDetailsEpic } from './customer/getRestaurantDetailsEpic'
+import { initializeOrderEpic } from './customer/initializeOrderEpic'
+import { getMenuEpic } from './customer/getMenuEpic'
+import { signUpEpic } from './customer/singUpEpic'
+import { forgotPsswordEpic } from './customer/forgetPassword'
+import { addOrderEpic } from './customer/addOrderEpic'
+import { submitOrderEpic } from './customer/submitOrder'
+import { callForServiceEpic } from './customer/callForServiceEpic'
+import { getOrderItemEpic } from './customer/getOrderItem'
+import { closeOrderViaCashEpic } from './customer/closeOrder'
+import { takeAwayOrderEpic } from './customer/takeAwayOrder'
+import { getOrderStatusEpic } from './customer/orderstatus'
+import { getAllOrdersEpic } from './customer/getAllOrders'
+import { searchResturantEpic } from './customer/searchResturant'
+import { getTakeAwayOrderItemEpic } from './customer/getTakeOrderItem'
+import { OrderDetailEpic } from './customer/getOrderDetailOrderEpic'
+import { getGenericDataEpic } from './customer/getGenericData'
+import { orderGetStatusEpic } from './customer/getOrderStatus'
 
 export const epics = combineEpics(
     loginEpic.login,
+    loginEpic.setFcmToken,
     getAllRestaurantsEpic.getAllRestaurants,
     getGenericDataEpic.getGenericData,
     getRestaurantDetailsEpic.getRestaurantDetails,
@@ -45,6 +46,7 @@ export const epics = combineEpics(
     closeOrderViaCashEpic.closeOrderViaStripe,
     takeAwayOrderEpic.takeAwayOrder,
     getOrderStatusEpic.getOrderStatus,
+    getOrderStatusEpic.removeOrder,
     getAllOrdersEpic.getAllOrders,
     searchResturantEpic.searchResturant,
     getTakeAwayOrderItemEpic.getTakeAwayOrder,

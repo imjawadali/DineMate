@@ -4,30 +4,33 @@ import { ofType } from 'redux-observable'
 import { customisedAction } from '../../actions'
 import { generalizedEpic } from '../generalizedEpic'
 import {
-  SET_ORDER,
   API_ENDPOINTS,
-  SUBMIT_ORDER_ITEM,
-  SUBMIT_ORDER_ITEM_FAILED,
-  SET_ORDER_ITEM_SUCCESS
+  TAKIE_AWAY_ORDER,
+  TAKIE_AWAY_ORDER_FAILED,
+  GET_TAKE_ORDER_ITEMS
 } from '../../../constants'
 import { removeItem, setItem } from '../../../helpers'
 
-export class submitOrderEpic {
-  static submitOrder = action$ =>
+export class takeAwayOrderEpic {
+  static takeAwayOrder = action$ =>
     action$.pipe(
-      ofType(SUBMIT_ORDER_ITEM),
+      ofType(TAKIE_AWAY_ORDER),
       switchMap(
         async ({ payload: obj }) => {
           return generalizedEpic(
             'post',
-            API_ENDPOINTS.customer.submitOrder,
+            API_ENDPOINTS.customer.takeAwayOrder,
             obj,
             (resObj) => {
+              setItem('orderDetails', resObj.body)
               removeItem('cartMenu')
-              return customisedAction(SET_ORDER_ITEM_SUCCESS, { cartMenu:[] })
-
+              return customisedAction(GET_TAKE_ORDER_ITEMS, {
+                orderNumber: resObj.body.orderNumber,
+                restaurantId: resObj.body.restaurantId,
+                orderDetails: resObj.body
+              })
             },
-            SUBMIT_ORDER_ITEM_FAILED
+            TAKIE_AWAY_ORDER_FAILED
           )
         }
       )

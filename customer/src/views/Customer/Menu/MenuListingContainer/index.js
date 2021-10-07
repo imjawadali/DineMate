@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import MenuListItemComponent from '../../../../components/MenuListItemComponent'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { ALREADY_IN_CART, GET_ORDER_ITEMS, GET_ORDER_STATUS, GET_STATUS, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
+import { ALREADY_IN_CART, GET_ORDER_STATUS } from '../../../../constants';
 import { useParams, withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
 import ViewAddon from './ViewAddon'
+
+import '../../styles.css';
 
 const MenuListingContainer = props => {
 
@@ -32,7 +31,6 @@ const MenuListingContainer = props => {
                 "restaurantId": orderDetailsLocal.restaurantId,
                 "orderNumber": orderDetailsLocal.orderNumber
             }
-            // dispatch(customisedAction(GET_ORDER_ITEMS, obj))
         }
     }, [])
 
@@ -53,15 +51,7 @@ const MenuListingContainer = props => {
         setItem(mixItem)
     }, [orderItem, cartItemR])
 
-
-
-
-    useEffect(() => {
-
-    }, [restaurantId])
-
     const getOrderStatusReducer = useSelector(({ getOrderStatusReducer }) => getOrderStatusReducer.status)
-    console.log(getOrderStatusReducer, 'getOrderStatusReducer')
 
     useEffect(() => {
         let orderDetaillls = getItem('orderDetails')
@@ -77,18 +67,6 @@ const MenuListingContainer = props => {
 
     const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
     console.log(orderStatusDetails, 'orderStatus')
-
-    // useEffect(() => {
-    //     let orderDetaillls = getItem('orderDetails')
-    //     if (orderDetaillls) {
-
-    //         dispatch(customisedAction(GET_STATUS, {
-    //             "restaurantId": orderDetaillls.restaurantId,
-    //             "orderNumber": orderDetaillls.orderNumber
-    //         }))
-    //     }
-    // }, [])
-
 
     const opennAddOn = () => {
         if(getOrderStatusReducer && getOrderStatusReducer.closeRequested){

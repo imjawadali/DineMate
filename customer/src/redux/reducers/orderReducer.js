@@ -10,11 +10,12 @@ import {
   SET_ORDER_ITEM_SUCCESS,
   TAKIE_AWAY_ORDER,
   TAKIE_AWAY_ORDER_FAILED,
-  SET_TAKE_ORDER_ITEM_SUCCESS
+  SET_TAKE_ORDER_ITEM_SUCCESS,
+  GET_STATUS_FAILURE
 } from '../../constants'
 
 export default (state = {
-  initializingOrder: false, checkingOrder: true, checkingOrderStatus: false, orderDetails: null, settingOrder: false, setOrder: null, cartMenu: null,
+  initializingOrder: false, checkingOrder: true, orderDetails: null, settingOrder: false, setOrder: null, cartMenu: null,
   submitOrder: null, cartTakeItem: null, submitDetail: null
 }, { type, payload }) => {
   switch (type) {
@@ -25,13 +26,14 @@ export default (state = {
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, initializingOrder: false }
     case ORDER_CHECK_DONE:
+      return { ...state, checkingOrder: false, orderDetails: null, cartMenu: null, cartTakeItem: null }
+    case GET_STATUS_FAILURE:
       return { ...state, checkingOrder: false }
     case SET_ORDER_ITEM:
       return { ...state, initializingOrder: false, checkingOrder: false, setOrder: payload.orderDetails, }
     case SET_ORDER_ITEM_FAILED:
       return { ...state, settingOrder: false }
     case SET_ORDER_ITEM_SUCCESS:
-
       return { ...state, settingOrder: false, cartMenu: payload.cartMenu }
     case SET_TAKE_ORDER_ITEM_SUCCESS:
       return { ...state, settingOrder: false, cartTakeItem: payload }

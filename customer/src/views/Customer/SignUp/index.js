@@ -3,7 +3,7 @@ import './styles.css';
 import signup_icon from '../../../assets/signup_icon.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { customisedAction } from '../../../redux/actions';
-import { SIGN_IN, SIGN_UP } from '../../../constants';
+import { SIGN_UP } from '../../../constants';
 
 function SignUp(props) {
     let [firstName, setFirstName] = useState("")
@@ -21,29 +21,27 @@ function SignUp(props) {
 
     }, [window.location.search])
 
-
     useEffect(() => {
         if (signUp && redirect) {
             props.history.push(redirect)
         }
-        else if(!redirect && signUp){
+        else if (!redirect && signUp) {
             props.history.push('/customer/signin')
         }
     }, [signUp])
-    
+
 
 
     function singUp() {
-        let obj = {
-            "firstName": firstName,
-            "lastName": lastName,
-            "email": email,
-            "password": password,
-            "phoneNumber":phoneNumber
-        }
-
-        dispatch(customisedAction(SIGN_UP, obj))
+        dispatch(customisedAction(SIGN_UP, {
+            firstName,
+            lastName,
+            email,
+            password,
+            phoneNumber
+        }))
     }
+
     return (
         <div className="sign-up">
             <div className="content-div">

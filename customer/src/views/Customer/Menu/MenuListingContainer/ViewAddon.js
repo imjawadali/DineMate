@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import MenuListItemComponent from '../../../../components/MenuListItemComponent'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faPlus, faMinus, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
-import '../../styles.css';
 import { customisedAction } from '../../../../redux/actions';
-import { ALREADY_IN_CART, EDIT_ORDER_ITEM, INITIALIZE_ORDER, SET_ORDER, SET_ORDER_ITEM, SET_TOAST } from '../../../../constants';
-import { useParams, withRouter } from 'react-router-dom';
+import { ALREADY_IN_CART, EDIT_ORDER_ITEM, SET_ORDER_ITEM } from '../../../../constants';
+import { withRouter } from 'react-router-dom';
 import { getItem } from '../../../../helpers';
+
+import '../../styles.css';
 
 const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity, RestaurantDetails, ...props }) => {
 

@@ -2,7 +2,6 @@ import {
   SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
   GET_ALL_RESTAURANTS_FAILURE,
   GET_MENU_FAILURE,
-  GET_MENU,
   GET_RESTAURANT_DETAILS,
   GET_RESTAURANT_DETAILS_SUCCESS,
   GET_RESTAURANT_DETAILS_FAILURE,
@@ -32,7 +31,9 @@ import {
   FORGOT_PASSWORD_SUCCESS,
   FORGOT_PASSWORD_FAILURE,
   SET_NEW_PASSWORD_SUCCESS,
-  SET_NEW_PASSWORD_FAILURE
+  SET_NEW_PASSWORD_FAILURE,
+  SET_FCM_TOKEN_FAILURE,
+  ORDER_CHECK_DONE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -46,12 +47,16 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SIGN_IN:
       return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' } }
     case SIGN_UP:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Sign Up Succes', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Singing Up', type: 'success' } }
     case REGISTER_RESTURENT:
       return { ...state, toastSetDismiss: true, toast: { message: 'Resgistered Your Resturent Successfully', type: 'success' } }
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
+    case ORDER_CHECK_DONE:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case SIGN_IN_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case SET_FCM_TOKEN_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_ALL_RESTAURANTS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
@@ -67,7 +72,6 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload.toast }
     case ALREADY_IN_CART:
       return { ...state, toast: payload }
-
     case CALL_FOR_SERVICE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CALL_FOR_SERVICE_SUCCESS:
@@ -93,29 +97,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case TAKIE_AWAY_ORDER_FAILED:
       console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload }
-
     case CANT_SIGN_OUT:
       return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
-
     case CANT_PAY:
       return { ...state, toastSetDismiss: true, toast: { message: "Submit Order From Cart Before Pay", type: 'warning' } }
-
-
     case SIGN_UP_FAILURE:
       return { ...state, toastSetDismiss: true, toast: { message: "Sign Up Failed, Please Try Again", type: 'warning' } }
-
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
-
     case FORGOT_PASSWORD_SUCCESS:
       return { ...state, toast: payload }
-
     case FORGOT_PASSWORD_FAILURE:
       return { ...state, toast: payload }
-
     case SET_NEW_PASSWORD_SUCCESS:
       return { ...state, toast: payload }
-
     case SET_NEW_PASSWORD_FAILURE:
       return { ...state, toast: payload }
     default:

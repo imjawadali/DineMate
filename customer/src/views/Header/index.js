@@ -19,7 +19,6 @@ const Header = props => {
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const submitOrderDetail = useSelector(({ orderReducer }) => orderReducer.submitDetail)
     const match = useRouteMatch('/:restaurantId/:tableId');
-    console.log(match)
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
     const [updateState, setUpdateState] = useState(true)
@@ -41,7 +40,6 @@ const Header = props => {
     let cartItemR = useSelector(({ orderReducer }) => orderReducer.cartMenu)
     let OrderItems = useSelector(({ getOrderItemsReducer }) => getOrderItemsReducer.OrderItems)
     let takeOrderItems = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.takeOrderItems)
-    let takeOrderNumber = useSelector(({ getTakeOrderItemsReducer }) => getTakeOrderItemsReducer.orderNumber)
     let getOrderDetail = useSelector(({ getOrderDetail }) => getOrderDetail.orderDetails)
 
     useEffect(() => {
@@ -54,7 +52,6 @@ const Header = props => {
             setOrderNumberTake(getOrderDetail.orderNumber)
         }
     }, [getOrderDetail])
-    console.log(getOrderDetail, 'getOrderDetail')
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -62,23 +59,14 @@ const Header = props => {
         if (value) {
             setSearch(value)
         } else {
-
             setSearch('')
         }
     }, [window.location.search])
 
-
-
     useEffect(() => {
-        // setOrderDetail(getItem('orderDetails'))
-        if (takeOrderItems) {
+        if (getOrderDetail && getOrderDetail.type.toLowerCase() === 'take-away' && takeOrderItems)
             props.history.push('/customer/checkout');
-        }
-        // console.log(takeOrderItems,'takeOrderItems')
     }, [takeOrderItems])
-
-
-
 
     useEffect(() => {
         if (orderDetail && orderDetail.type.toLowerCase() === 'dine-in') {
@@ -90,9 +78,6 @@ const Header = props => {
             }
             dispatch(customisedAction(GET_ORDER_ITEMS, obj3))
         }
-
-
-
     }, [cartItemR])
 
     useEffect(() => {
@@ -114,21 +99,6 @@ const Header = props => {
         }
 
     }, [submitTakeOrder, orderDetail, updateState])
-
-    // const getOrderStatusReducer = useSelector(({ getOrderStatusReducer }) => getOrderStatusReducer.status)
-    // console.log(getOrderStatusReducer, 'getOrderStatusReducer')
-
-    // useEffect(() => {
-    //     let orderDetaillls = getItem('orderDetails')
-    //     if (orderDetaillls) {
-
-    //         dispatch(customisedAction(GET_ORDER_STATUS, {
-    //             "restaurantId": orderDetaillls.restaurantId,
-    //             "orderNumber": orderDetaillls.orderNumber
-    //         }))
-    //     }
-    // }, [])
-
 
     useEffect(() => {
         let arr = []
@@ -424,15 +394,8 @@ const Header = props => {
 
     }
 
-    function deleteItem(id, restId, i) {
-        // setSelectedItem(
-        let obj = menu.filter((a, i) => a.id === id)[0]
-        let obj2 = {
-
-        }
-
+    function deleteItem(i) {
         dispatch(customisedAction(DELETE_ORDER_ITEM, { i }))
-
     }
 
     const deleteAll = () => {
@@ -446,17 +409,15 @@ const Header = props => {
     }, [takeOrderItems, OrderItems])
     const orderStatusDetails = useSelector(({ orderStatusReducer }) => orderStatusReducer.status)
 
-
-
     useEffect(() => {
         setReturantNameTake(getItem('orderDetails') ? getItem('orderDetails').restaurantName : '')
         setOrderNumberTake(getItem('orderDetails') ? getItem('orderDetails').orderNumber : '')
     }, [items, orderDetail, orderDetails, takeOrderItems, orderStatusDetails])
 
-    //for generic data
     useEffect(() => {
         dispatch(customisedAction(GET_GENERIC_DATA))
     }, [])
+
     return (
         <>
             {props && props.location && props.location.pathname !== '/' ?
@@ -707,15 +668,6 @@ const Header = props => {
 
                                             </div>
                                         </div>
-
-                                        {/* {getOrderStatusReducer && getOrderStatusReducer.closeRequested ?
-                                            <div className="orderSubBtn">
-                                                <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : !orderDetail || (orderDetail.type.toLowerCase() === "take-away") ? `Process Payment` : `Submit Order`}</button>
-                                                {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
-                                                    <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout'); }} disabled={true}>Close Order</button>
-                                                    : null}
-                                            </div>
-                                            : */}
                                             <div className="orderSubBtn">
                                                 <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : !orderDetail || (orderDetail.type.toLowerCase() === "take-away") ? `Process Payment` : `Submit Order`}</button>
                                                 {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?

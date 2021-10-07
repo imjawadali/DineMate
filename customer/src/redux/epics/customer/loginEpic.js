@@ -13,15 +13,14 @@ import {
   GET_RPOFILE_SUCCESS,
   UPDATE_RPOFILE,
   UPDATE_RPOFILE_SUCCESS,
-  UPDATE_RPOFILE_FAILURE
+  UPDATE_RPOFILE_FAILURE,
+  SET_FCM_TOKEN,
+  SET_FCM_TOKEN_SUCCESS,
+  SET_FCM_TOKEN_FAILURE
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
-import { useDispatch } from 'react-redux'
 
-// let dispatch = useDispatch()
-
-let Authorization = '';
 export class loginEpic {
   static login = action$ =>
     action$.pipe(
@@ -75,13 +74,29 @@ export class loginEpic {
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
-              // dispatch(customisedAction(GET_RPOFILE))
               return customisedAction(UPDATE_RPOFILE_SUCCESS,{data: resObj.body, toast: { message: resObj.message, type: 'success' }} )
-              // return customisedAction(UPDATE_RPOFILE_SUCCESS,resObj.body )
             },
             UPDATE_RPOFILE_FAILURE
           )
         }
       )
     )
+
+    static setFcmToken = action$ =>
+      action$.pipe(
+        ofType(SET_FCM_TOKEN),
+        switchMap(
+          async ({ payload: { fcmToken } }) => {
+            return generalizedEpic(
+              'post', 
+              API_ENDPOINTS.customer.setFcmToken,
+              { fcmToken },
+              (resObj) => {
+                return customisedAction(SET_FCM_TOKEN_SUCCESS, { message: resObj.message, type: 'success' })
+              },
+              SET_FCM_TOKEN_FAILURE
+            )
+          }
+        )
+      )
 }

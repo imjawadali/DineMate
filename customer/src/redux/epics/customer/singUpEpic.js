@@ -8,7 +8,6 @@ import {
   API_ENDPOINTS,
   SIGN_UP,
   SIGN_UP_FAILURE,
-  SIGN_UP_SUCESS,
   REGISTER_RESTURENT,
   REGISTER_RESTURENT_SUCESS
 } from '../../../constants'
@@ -26,9 +25,9 @@ export class signUpEpic {
             API_ENDPOINTS.customer.signUp,
             obj,
             (resObj) => {
-              // setItem('customer', resObj.body)
-              // RestClient.setHeader('Authorization', resObj.body.id)
-              return customisedAction(SIGN_UP_SUCESS, { signUp: resObj })
+              setItem('customer', resObj.body)
+              RestClient.setHeader('Authorization', resObj.body.id)
+              return customisedAction(SET_SESSION, { customer: resObj.body })
             },
             SIGN_UP_FAILURE
           )

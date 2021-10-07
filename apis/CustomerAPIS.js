@@ -5,7 +5,7 @@ const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
 
-const URL = 'https://www.dinemate.com:8080'
+const URL = 'https://dinemate.com:8080'
 
 module.exports = app => {
     app.post('/customer/signUp', async (req, res) => {
@@ -43,7 +43,12 @@ module.exports = app => {
                         message: 'Signed-Up Successfully!',
                         body: {
                             id: result.insertId,
-                            email
+                            imageUrl: null,
+                            firstName,
+                            lastName,
+                            email,
+                            phoneNumber,
+                            address: null
                         }
                     })
                     else return res.send({
@@ -67,7 +72,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/login")
             console.log(req.body)
-            const { email, password } = req.body
+            const { email, password, fcmToken } = req.body
             if (!email) return res.send({
                 status: false,
                 message: 'Email is required!',
@@ -85,17 +90,55 @@ module.exports = app => {
                 null,
                 (data) => {
                     if (data.length)
-                        return res.send({
-                            status: true,
-                            message: 'Logged-In Successfully!',
-                            body: data[0]
-                        })
+                    return res.send({
+                        status: true,
+                        message: 'Logged-In Successfuly!',
+                        body: data[0]
+                    })
                     else
                         return res.send({
                             status: false,
                             message: 'Invalid Credentials Provided!',
                             errorCode: 422
                         })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/setFcmToken', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/setFcmToken")
+            console.log(req.body)
+            const { fcmToken } = req.body
+            const customerId = decrypt(req.header('authorization'))
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!fcmToken) return res.send({
+                status: false,
+                message: 'Invalid FCM Token!',
+                errorCode: 422
+            })
+            getSecureConnection(
+                res,
+                customerId,
+                `UPDATE customers SET ? WHERE id = ${customerId}`,
+                { fcmToken },
+                (result) => {
+                    return res.send({
+                        status: true,
+                        message: result.changedRows ? `FCM token set` : `FCM token already set`
+                    })
                 }
             )
         } catch (error) {
@@ -698,7 +741,6 @@ module.exports = app => {
                             })
                         }
                     }
-                    // menu = getGroupedList(menu, 'categoryName')
                     return res.send({
                         status: true,
                         message: 'Get Menu List Success!',
@@ -1642,7 +1684,7 @@ module.exports = app => {
                 } else {
                     return res.send({
                         status: false,
-                        message: 'Failed to get order status',
+                        message: 'Order has been cancelled by restaurant',
                         errorCode: 422
                     })
                 }
@@ -1876,18 +1918,6 @@ function capitalizeFirstLetter(string) {
 function includes(list, id) {
     var result = list.filter(item => item.id === id)
     return result.length
-}
-
-function getGroupedList(list, key) {
-    let groupedList = []
-    if (list && list.length) {
-        groupedList = list.reduce((r, a) => {
-            r[a[key]] = r[a[key]] || [];
-            r[a[key]].push(a);
-            return r;
-        }, Object.create(null));
-    }
-    return groupedList
 }
 
 function padding(num, size) {

@@ -4,7 +4,7 @@ const { sendEmail } = require('../services/mailer')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
 
-const URL = 'https://www.dinemate.com:8080'
+const URL = 'https://dinemate.com:8080'
 
 module.exports = app => {
     app.get('/secureTest', async (req, res) => {
@@ -1064,6 +1064,32 @@ module.exports = app => {
                                             })
                                         }
                                         tempDb.release()
+                                        getConnection(
+                                            res,
+                                            `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                                            null,
+                                            (result) => {
+                                                if (result.length) {
+                                                    const { id, fcmToken } = result[0]
+                                                    sendNotification({
+                                                        to: fcmToken,
+                                                        notification: {
+                                                            title: 'DineMate',
+                                                            body: `New Item(s) added to order # ${orderNumber}`
+                                                        },
+                                                        data: {
+                                                            title: 'DineMate',
+                                                            body: JSON.stringify({
+                                                                customerId: id,
+                                                                typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                                                                restaurantId,
+                                                                orderNumber
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        )
                                         return res.send({ 'msg': 'Order item(s) added successfully!' })
                                     })
                                 }
@@ -1104,7 +1130,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT orderNumber FROM orders WHERE restaurantID = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
+            `SELECT orderNumber FROM orders WHERE restaurantId = '${restaurantId}' ORDER BY createdAt DESC LIMIT 1`,
             null,
             (result) => {
                 const orderNumber = padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3)
@@ -1187,6 +1213,8 @@ module.exports = app => {
     })
 
     app.post('/admin/deleteItem', async (req, res) => {
+        console.log("\n\n>>> /admin/deleteItem")
+        console.log(req.body)
         const adminId = decrypt(req.header('authorization'))
         const { id } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
@@ -1194,16 +1222,59 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
+            `SELECT restaurantId, orderNumber FROM orderItems WHERE id = ${id}`,
             null,
-            () => {
+            (forFirebase) => {
                 getConnection(
                     res,
-                    `DELETE FROM orderItems WHERE id = ${id}`,
+                    `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
                     null,
-                    (result) => {
-                        if (result.affectedRows) return res.send({ 'msg': 'Item deleted successfully!' })
-                        else return res.status(422).send({ 'msg': 'Unable to delete item' })
+                    () => {
+                        getConnection(
+                            res,
+                            `DELETE FROM orderItems WHERE id = ${id}`,
+                            null,
+                            (result) => {
+                                if (result.affectedRows) {
+                                    console.log(forFirebase)
+                                    if (forFirebase && forFirebase.length) {
+                                        const { restaurantId, orderNumber } = forFirebase[0]
+                                        getConnection(
+                                            res,
+                                            `SELECT id, fcmToken FROM customers WHERE id IN 
+                                            (SELECT customerId FROM orders WHERE
+                                                orderNumber = '${orderNumber}' AND
+                                                restaurantId = '${restaurantId}'
+                                            )`,
+                                            null,
+                                            (result) => {
+                                                if (result.length) {
+                                                    const { id, fcmToken } = result[0]
+                                                    sendNotification({
+                                                        to: fcmToken,
+                                                        notification: {
+                                                            title: 'DineMate',
+                                                            body: `Item deleted from order # ${orderNumber}`
+                                                        },
+                                                        data: {
+                                                            title: 'DineMate',
+                                                            body: JSON.stringify({
+                                                                customerId: id,
+                                                                typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                                                                restaurantId,
+                                                                orderNumber
+                                                            })
+                                                        }
+                                                    })
+                                                }
+                                            }
+                                        )
+                                    }
+                                    return res.send({ 'msg': 'Item deleted successfully!' })
+                                }
+                                else return res.status(422).send({ 'msg': 'Unable to delete item' })
+                            }
+                        )
                     }
                 )
             }
@@ -1211,6 +1282,8 @@ module.exports = app => {
     })
 
     app.post('/admin/editItem', async (req, res) => {
+        console.log("\n\n>>> /admin/editItem")
+        console.log(req.body)
         const adminId = decrypt(req.header('authorization'))
         const { id, quantity, totalPrice, specialInstructions, addOns } = req.body
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
@@ -1230,35 +1303,113 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
+            `SELECT restaurantId, orderNumber FROM orderItems WHERE id = ${id}`,
             null,
-            () => {
+            (forFirebase) => {
                 getConnection(
                     res,
-                    `UPDATE orderItems SET ? WHERE id = ${id}`,
-                    { quantity, totalPrice, specialInstructions, status: 'P' },
-                    (result) => {
-                        if (result.changedRows) {
-                            if (addOns && addOns.length) {
-                                let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
-                                for (var j = 0; j < addOns.length; j++) {
-                                    query = query + ` ( '${id}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
-                                    if (j !== (addOns.length - 1))
-                                        query = query + ','
-                                }
-                                getConnection(
-                                    res,
-                                    query,
-                                    null,
-                                    (result) => {
-                                        if (result.affectedRows) return res.send({ 'msg': 'Item updated successfully!' })
-                                        else return res.status(422).send({ 'msg': 'Unable to update item' })
+                    `DELETE FROM orderItemAddOns WHERE orderItemId = ${id}`,
+                    null,
+                    () => {
+                        getConnection(
+                            res,
+                            `UPDATE orderItems SET ? WHERE id = ${id}`,
+                            { quantity, totalPrice, specialInstructions, status: 'P' },
+                            (result) => {
+                                if (result.changedRows) {
+                                    if (addOns && addOns.length) {
+                                        let query = 'INSERT INTO orderItemAddOns ( orderItemId, addOnId, addOnName, addOnOptionId, addOnOption, price ) VALUES'
+                                        for (var j = 0; j < addOns.length; j++) {
+                                            query = query + ` ( '${id}', '${addOns[j].addOnId}', '${addOns[j].addOnName}', '${addOns[j].addOnOptionId}', '${addOns[j].addOnOption}', '${addOns[j].price}' )`
+                                            if (j !== (addOns.length - 1))
+                                                query = query + ','
+                                        }
+                                        getConnection(
+                                            res,
+                                            query,
+                                            null,
+                                            (result) => {
+                                                if (result.affectedRows) {
+                                                    console.log(forFirebase)
+                                                    if (forFirebase && forFirebase.length) {
+                                                        const { restaurantId, orderNumber } = forFirebase[0]
+                                                        getConnection(
+                                                            res,
+                                                            `SELECT id, fcmToken FROM customers WHERE id IN 
+                                                            (SELECT customerId FROM orders WHERE
+                                                                orderNumber = '${orderNumber}' AND
+                                                                restaurantId = '${restaurantId}'
+                                                            )`,
+                                                            null,
+                                                            (result) => {
+                                                                if (result.length) {
+                                                                    const { id, fcmToken } = result[0]
+                                                                    sendNotification({
+                                                                        to: fcmToken,
+                                                                        notification: {
+                                                                            title: 'DineMate',
+                                                                            body: `Item editted of order # ${orderNumber}`
+                                                                        },
+                                                                        data: {
+                                                                            title: 'DineMate',
+                                                                            body: JSON.stringify({
+                                                                                customerId: id,
+                                                                                typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                                                                                restaurantId,
+                                                                                orderNumber
+                                                                            })
+                                                                        }
+                                                                    })
+                                                                }
+                                                            }
+                                                        )
+                                                    }
+                                                    return res.send({ 'msg': 'Item updated successfully!' })
+                                                }
+                                                else return res.status(422).send({ 'msg': 'Unable to update item' })
+                                            }
+                                        )
+                                    } else {
+                                        console.log(forFirebase)
+                                        if (forFirebase) {
+                                            const { restaurantId, orderNumber } = forFirebase[0]
+                                            getConnection(
+                                                res,
+                                                `SELECT id, fcmToken FROM customers WHERE id IN 
+                                                (SELECT customerId FROM orders WHERE
+                                                    orderNumber = '${orderNumber}' AND
+                                                    restaurantId = '${restaurantId}'
+                                                )`,
+                                                null,
+                                                (result) => {
+                                                    if (result.length) {
+                                                        const { id, fcmToken } = result[0]
+                                                        sendNotification({
+                                                            to: fcmToken,
+                                                            notification: {
+                                                                title: 'DineMate',
+                                                                body: `Item editted of order # ${orderNumber}`
+                                                            },
+                                                            data: {
+                                                                title: 'DineMate',
+                                                                body: JSON.stringify({
+                                                                    customerId: id,
+                                                                    typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                                                                    restaurantId,
+                                                                    orderNumber
+                                                                })
+                                                            }
+                                                        })
+                                                    }
+                                                }
+                                            )
+                                        }
+                                        return res.send({ 'msg': 'Item updated successfully!' })
                                     }
-                                )
-                            } else
-                                return res.send({ 'msg': 'Item updated successfully!' })
-                        }
-                        else return res.status(422).send({ 'msg': 'Unable to update item' })
+                                }
+                                else return res.status(422).send({ 'msg': 'Unable to update item' })
+                            }
+                        )
                     }
                 )
             }
@@ -1274,26 +1425,65 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `DELETE FROM orderItemAddOns WHERE orderItemId IN (
-                SELECT id FROM orderItems WHERE restaurantId = '${restaurantId}'
-                    AND orderNumber = '${orderNumber}'
-            )`,
+            `SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}'`,
             null,
-            () => {
+            (forFirebase) => {
                 getConnection(
                     res,
-                    `DELETE FROM orderItems WHERE restaurantId = '${restaurantId}'
-                        AND orderNumber = '${orderNumber}'`,
+                    `DELETE FROM orderItemAddOns WHERE orderItemId IN (
+                        SELECT id FROM orderItems WHERE restaurantId = '${restaurantId}'
+                            AND orderNumber = '${orderNumber}'
+                    )`,
                     null,
                     () => {
                         getConnection(
                             res,
-                            `DELETE FROM orders WHERE restaurantId = '${restaurantId}'
+                            `DELETE FROM orderItems WHERE restaurantId = '${restaurantId}'
                                 AND orderNumber = '${orderNumber}'`,
                             null,
-                            (result) => {
-                                if (result.affectedRows) return res.send({ 'msg': 'Order deleted successfully!' })
-                                else return res.status(422).send({ 'msg': 'Unable to delete order' })
+                            () => {
+                                getConnection(
+                                    res,
+                                    `DELETE FROM orders WHERE restaurantId = '${restaurantId}'
+                                        AND orderNumber = '${orderNumber}'`,
+                                    null,
+                                    (result) => {
+                                        if (result.affectedRows) {
+                                            console.log(forFirebase)
+                                            if (forFirebase && forFirebase.length) {
+                                                const { customerId } = forFirebase[0]
+                                                getConnection(
+                                                    res,
+                                                    `SELECT id, fcmToken FROM customers WHERE id = ${customerId}`,
+                                                    null,
+                                                    (result) => {
+                                                        if (result.length) {
+                                                            const { id, fcmToken } = result[0]
+                                                            sendNotification({
+                                                                to: fcmToken,
+                                                                notification: {
+                                                                    title: 'DineMate',
+                                                                    body: `Order # ${orderNumber} cancelled by ${restaurantId}`
+                                                                },
+                                                                data: {
+                                                                    title: 'DineMate',
+                                                                    body: JSON.stringify({
+                                                                        customerId: id,
+                                                                        typeArray: ['ORDER_CANCELLED'],
+                                                                        restaurantId,
+                                                                        orderNumber
+                                                                    })
+                                                                }
+                                                            })
+                                                        }
+                                                    }
+                                                )
+                                            }
+                                            return res.send({ 'msg': 'Order deleted successfully!' })
+                                        }
+                                        else return res.status(422).send({ 'msg': 'Unable to delete order' })
+                                    }
+                                )
                             }
                         )
                     }
@@ -1316,7 +1506,35 @@ module.exports = app => {
             `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
             { discount, discountType },
             (result) => {
-                if (result.changedRows) return res.send({ 'msg': 'Discount applied successfully!' })
+                if (result.changedRows) {
+                    getConnection(
+                        res,
+                        `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                        null,
+                        (result) => {
+                            if (result.length) {
+                                const { id, fcmToken } = result[0]
+                                sendNotification({
+                                    to: fcmToken,
+                                    notification: {
+                                        title: 'DineMate',
+                                        body: `Discount applied to order # ${orderNumber}`
+                                    },
+                                    data: {
+                                        title: 'DineMate',
+                                        body: JSON.stringify({
+                                            customerId: id,
+                                            typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                                            restaurantId,
+                                            orderNumber
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    )
+                    return res.send({ 'msg': 'Discount applied successfully!' })
+                }
                 else return res.status(422).send({ 'msg': 'Unable to apply discount!' })
             }
         )
@@ -1334,20 +1552,54 @@ module.exports = app => {
             `UPDATE orders SET status = false, closedAt = CURRENT_TIMESTAMP WHERE restaurantId = '${restaurantId}' && orderNumber = '${orderNumber}'`,
             { status: false },
             (result) => {
-                if (result.changedRows) return res.send({ 'msg': 'Order closed successfully!' })
+                if (result.changedRows) {
+                    getConnection(
+                        res,
+                        `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                        null,
+                        (result) => {
+                            if (result.length) {
+                                const { id, fcmToken } = result[0]
+                                sendNotification({
+                                    to: fcmToken,
+                                    notification: {
+                                        title: 'DineMate',
+                                        body: `Order # ${orderNumber} closed successfully!`
+                                    },
+                                    data: {
+                                        title: 'DineMate',
+                                        body: JSON.stringify({
+                                            customerId: id,
+                                            typeArray: ['ORDER_CLOSED_BY_ADMIN'],
+                                            restaurantId,
+                                            orderNumber
+                                        })
+                                    }
+                                })
+                            }
+                        }
+                    )
+                    return res.send({ 'msg': 'Order closed successfully!' })
+                }
                 else return res.status(422).send({ 'msg': 'Order closed already!' })
             }
         )
     })
 
     app.post('/admin/itemSplit', async (req, res) => {
+        console.log("\n\n>>> /admin/itemSplits")
+        console.log(req.body)
         const adminId = decrypt(req.header('authorization'))
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
         const { id, splittedItem } = req.body
+        let restId, orderNums = [], itemName
         if (!id) return res.status(422).send({ 'msg': 'Id is required!' })
         if (!splittedItem || !splittedItem.length) return res.status(422).send({ 'msg': 'No splitted item!' })
         for (var i = 0; i < splittedItem.length; i++) {
             const { restaurantId, orderNumber, name, status, totalPrice, quantity, splitted } = splittedItem[i]
+            restId = restaurantId
+            orderNums.push(orderNumber)
+            itemName = name
             if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
             if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
             if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
@@ -1394,6 +1646,39 @@ module.exports = app => {
                                             })
                                         }
                                         tempDb.release()
+                                        console.log(orderNums)
+                                        for (let index = 0; index < orderNums.length; index++) {
+                                            getConnection(
+                                                res,
+                                                `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNums[index]}' AND restaurantId = '${restId}')`,
+                                                null,
+                                                (result) => {
+                                                    if (result.length) {
+                                                        console.log(result[0])
+                                                        const { id, fcmToken } = result[0]
+                                                        if (fcmToken) {
+                                                            console.log(index, orderNums[index])
+                                                            sendNotification({
+                                                                to: fcmToken,
+                                                                notification: {
+                                                                    title: 'DineMate',
+                                                                    body: `${itemName} added to order # ${orderNums[index]}`
+                                                                },
+                                                                data: {
+                                                                    title: 'DineMate',
+                                                                    body: JSON.stringify({
+                                                                        customerId: id,
+                                                                        typeArray: ['GET_ORDER_ITEMS'],
+                                                                        restaurantId: restId,
+                                                                        orderNumber: orderNums[index]
+                                                                    })
+                                                                }
+                                                            })
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        }
                                         return res.send({ 'msg': 'Item splitted successfully!' })
                                     })
                                 } else tempDb.rollback(function () {

@@ -33,7 +33,7 @@ export default (state = {
     case GET_EXISTING_QRS_SUCCESS:
       return { ...state, fetchingQrs: false, qrs: payload }
     case GET_EXISTING_QRS_FAILURE:
-      return { ...state, fetchingQrs: false, qrs: payload.msg === "No QRs available!" ? [] : null }
+      return { ...state, fetchingQrs: false, qrs: payload && payload.message === "No QRs available!" ? [] : null }
     
     case GENERATE_QRS:
       return { ...state, generatingQrs: true }
