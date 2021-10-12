@@ -33,7 +33,10 @@ import {
   SET_NEW_PASSWORD_SUCCESS,
   SET_NEW_PASSWORD_FAILURE,
   SET_FCM_TOKEN_FAILURE,
-  ORDER_CHECK_DONE
+  ORDER_CHECK_DONE,
+  SUBMIT_RATING,
+  SUBMIT_RATING_FAILURE,
+  SUBMIT_RATING_SUCCESS
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -113,6 +116,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: payload }
     case SET_NEW_PASSWORD_FAILURE:
       return { ...state, toast: payload }
+    case SUBMIT_RATING:
+      return { ...state, toast: { message: "Submitting Rating" } }
+    case SUBMIT_RATING_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case SUBMIT_RATING_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state
   }

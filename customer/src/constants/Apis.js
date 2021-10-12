@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
         getAllRestaurants: 'customer/getAllRestaurants',
         getGenericData: 'customer/getGenericData',
         getRestaurantDetails: 'customer/getRestaurantDetails',
+        submitRating: 'customer/submitRating',
         initializeOrder: 'customer/initializeOrder',
         getMenuItems: 'customer/getMenuItems',
         signUp: 'customer/signUp',
