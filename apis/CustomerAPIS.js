@@ -90,11 +90,11 @@ module.exports = app => {
                 null,
                 (data) => {
                     if (data.length)
-                    return res.send({
-                        status: true,
-                        message: 'Logged-In Successfuly!',
-                        body: data[0]
-                    })
+                        return res.send({
+                            status: true,
+                            message: 'Logged-In Successfuly!',
+                            body: data[0]
+                        })
                     else
                         return res.send({
                             status: false,
@@ -526,7 +526,7 @@ module.exports = app => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         getConnection(
             res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -569,7 +569,7 @@ module.exports = app => {
     app.post('/customer/searchRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/searchRestaurants")
         const { searchBy } = req.body
-        let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+        let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
         CONCAT('[',
             GROUP_CONCAT(
                 DISTINCT CONCAT(
@@ -581,27 +581,12 @@ module.exports = app => {
         FROM restaurants R 
         JOIN categories c on c.restaurantId = R.restaurantId
         JOIN menu m on m.restaurantId = R.restaurantId
-        WHERE R.restaurantName LIKE '%${searchBy}%'
+        ${searchBy ? `WHERE R.restaurantName LIKE '%${searchBy}%'
         OR R.cuisine LIKE '%${searchBy}%'
         OR c.name LIKE '%${searchBy}%'
-        OR m.name LIKE '%${searchBy}%'
+        OR m.name LIKE '%${searchBy}%'` : ''}
         GROUP BY R.restaurantId
         ORDER BY R.createdAt DESC`
-        if (!searchBy)
-            query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
-            CONCAT('[',
-                GROUP_CONCAT(
-                    DISTINCT CONCAT(
-                        '{"id":',c.id,
-                        ',"name":"',c.name,'"}'
-                    ) ORDER BY c.createdAt DESC
-                ),
-            ']') as categories
-            FROM restaurants R 
-            JOIN categories c on c.restaurantId = R.restaurantId
-            JOIN menu m on m.restaurantId = R.restaurantId
-            GROUP BY R.restaurantId
-            ORDER BY R.createdAt DESC`
         getConnection(
             res,
             query,
@@ -642,7 +627,7 @@ module.exports = app => {
         })
         getConnection(
             res,
-            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.city, R.address,
+            `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -1747,6 +1732,110 @@ module.exports = app => {
                 return res.send({
                     status: true,
                     message: 'Do not disturb status changed!'
+                })
+            }
+        )
+    })
+
+    app.post('/customer/submitRating', async (req, res) => {
+        console.log("\n\n>>> /customer/submitRating")
+        console.log(req.body)
+        const customerId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber, rating } = req.body
+        if (!customerId) return res.send({
+            status: false,
+            message: 'Not Authorized!',
+            errorCode: 401
+        })
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        if (!rating && rating != 0) return res.send({
+            status: false,
+            message: 'Rating is required!',
+            errorCode: 422
+        })
+        if (typeof rating !== 'number') return res.send({
+            status: false,
+            message: 'Rating is invalid!',
+            errorCode: 422
+        })
+        getSecureConnection(
+            res,
+            customerId,
+            `SELECT * FROM ratings WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (ratings) => {
+                var alreadyRated
+                if (ratings && ratings.length) {
+                    alreadyRated = ratings.filter(
+                        rating => rating.customerId == customerId
+                            && rating.restaurantId == restaurantId
+                            && rating.orderNumber == orderNumber
+                    ).length
+                }
+                if (!alreadyRated) {
+                    getConnection(
+                        res,
+                        `INSERT INTO ratings SET ?
+                        ON DUPLICATE KEY UPDATE
+                        orderNumber = '${orderNumber}', rating = ${rating}`,
+                        { customerId, restaurantId, orderNumber, rating },
+                        (result) => {
+                            if (result.affectedRows) {
+                                var indexOfExistingRating
+                                var calculatedRating = rating
+                                if (ratings && ratings.length) {
+                                    indexOfExistingRating = ratings
+                                        .findIndex(rating => rating.customerId == customerId
+                                            && rating.restaurantId == restaurantId)
+                                    if (indexOfExistingRating >= 0) {
+                                        ratings[indexOfExistingRating] = {
+                                            customerId,
+                                            restaurantId,
+                                            orderNumber,
+                                            rating
+                                        }
+                                    } else ratings.push({
+                                        customerId,
+                                        restaurantId,
+                                        orderNumber,
+                                        rating
+                                    })
+                                    calculatedRating = (ratings
+                                        .map(rating => rating.rating)
+                                        .reduce((a, b) => a + b, 0)
+                                    ) / ratings.length
+                                }
+                                getConnection(
+                                    res,
+                                    `UPDATE restaurants SET ? WHERE restaurantId = '${restaurantId}'`,
+                                    { rating: Number(calculatedRating.toFixed(1)), ratingCounts: ratings ? ratings.length || 1 : 1 },
+                                    () => {
+                                        return res.send({
+                                            status: true,
+                                            message: 'Thank you for rating us!'
+                                        })
+                                    }
+                                )
+                            } else return res.send({
+                                status: false,
+                                message: 'Rating not sumbitted!',
+                                errorCode: 422
+                            })
+                        }
+                    )
+                } else return res.send({
+                    status: false,
+                    message: 'Rating already sumbitted, you can rate again at next order!',
+                    errorCode: 422
                 })
             }
         )

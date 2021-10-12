@@ -15,9 +15,9 @@ export class getRestaurantDetailsEpic {
     action$.pipe(
       ofType(GET_RESTAURANT_DETAILS),
       switchMap(
-        async ({ payload: { restaurantId }}) => {
+        async ({ payload: { restaurantId } }) => {
           return generalizedEpic(
-            'post', 
+            'post',
             API_ENDPOINTS.customer.getRestaurantDetails,
             { restaurantId },
             (resObj) => {

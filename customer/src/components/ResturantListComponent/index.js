@@ -1,11 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {faStar} from '@fortawesome/free-solid-svg-icons'
+import { faStar } from '@fortawesome/free-solid-svg-icons'
 
 import React from 'react'
 import './styles.css'
 
 const ResturantListComponent = props => {
-    const { title, price, cuisines, stars, image, favourite, onClick } = props
+    const { title, price, cuisines, stars, ratingCounts, image, favourite, onClick } = props
     return (
         <div onClick={onClick}>
             <div className="resturantListComponent-image">
@@ -20,10 +20,14 @@ const ResturantListComponent = props => {
                 </div>
                 <div className="resturantListComponent-info-right">
                     <div className="resturantListComponent-info-right-star">
-                        <h3>
-                            {stars }
-                        </h3>
-                        <FontAwesomeIcon icon={faStar} className="icon-star"/>
+                        {ratingCounts ?
+                            <>
+                                <FontAwesomeIcon icon={faStar} className="icon-star" />
+                                <h3 style={{ marginLeft: '2px' }}>{stars}/5</h3>
+                                <h3 style={{ marginLeft: '5px' }}>({ratingCounts})    </h3>
+                            </>
+                            : <h3 style={{ whiteSpace: 'nowrap' }}>No Rating</h3>
+                        }
                     </div>
                 </div>
             </div>

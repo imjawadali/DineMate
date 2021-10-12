@@ -1,4 +1,4 @@
-import { switchMap } from 'rxjs/operators'
+import { switchMap, filter } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 import { customisedAction } from '../../actions'
@@ -7,13 +7,25 @@ import {
   GET_ALL_RESTAURANTS,
   GET_ALL_RESTAURANTS_SUCCESS,
   GET_ALL_RESTAURANTS_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  SUBMIT_RATING_SUCCESS,
+  SUBMIT_RATING,
+  SUBMIT_RATING_FAILURE
 } from '../../../constants'
 
 export class getAllRestaurantsEpic {
   static getAllRestaurants = action$ =>
     action$.pipe(
-      ofType(GET_ALL_RESTAURANTS),
+      filter(({ type }) => {
+        switch (type) {
+          case GET_ALL_RESTAURANTS:
+            return true;
+          case SUBMIT_RATING_SUCCESS:
+            return true;
+          default:
+            return false;
+        }
+      }),
       switchMap(
         async () => {
           return generalizedEpic(
@@ -28,4 +40,22 @@ export class getAllRestaurantsEpic {
         }
       )
     )
+
+    static submitRating = action$ =>
+      action$.pipe(
+        ofType(SUBMIT_RATING),
+        switchMap(
+          async ({ payload: { restaurantId, orderNumber, rating } }) => {
+            return generalizedEpic(
+              'post',
+              API_ENDPOINTS.customer.submitRating,
+              { restaurantId, orderNumber, rating },
+              (resObj) => {
+                return customisedAction(SUBMIT_RATING_SUCCESS, { message: resObj.message, type: 'success' })
+              },
+              SUBMIT_RATING_FAILURE
+            )
+          }
+        )
+      )
 }

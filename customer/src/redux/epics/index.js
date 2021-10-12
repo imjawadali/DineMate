@@ -24,6 +24,7 @@ export const epics = combineEpics(
     loginEpic.login,
     loginEpic.setFcmToken,
     getAllRestaurantsEpic.getAllRestaurants,
+    getAllRestaurantsEpic.submitRating,
     getGenericDataEpic.getGenericData,
     getRestaurantDetailsEpic.getRestaurantDetails,
     initializeOrderEpic.initializeOrder,

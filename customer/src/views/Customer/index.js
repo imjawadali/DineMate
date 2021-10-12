@@ -15,6 +15,7 @@ import Profile from '../profile/Profile'
 import SetPassword from './Set-Password'
 import PastOrder from '../pastOrder/PastOrder'
 import Detail from '../pastOrder/details'
+import Rating from './Rating'
 
 export default function Customer(props) {
 
@@ -41,22 +42,21 @@ export default function Customer(props) {
 
   return (
     <div>
+      <Rating />
       <Switch>
         <Route exact path={path}>
           <Redirect to={`${path}/restaurants`} />
         </Route>
-        <Route path={`${path}/signin`} component={SignIn} />
-        <Route path={`${path}/signup`} component={SignUp} />
+        <NonCustomerLanding path={`${path}/signin`} component={SignIn} />
+        <NonCustomerLanding path={`${path}/signup`} component={SignUp} />
         <NonCustomerLanding path={`${path}/forgotPassword`} component={ForgotPassword} />
         <Route exact path={`${path}/restaurants`} component={Restaurants} />
-        {/* <Route exact path={`${path}/restaurants`} component={Restaurants} /> */}
         <Route exact path={`${path}/:restaurantId/menu`} component={Menu} />
         <Route exact path={`${path}/checkout`} component={CheckOut} />
         <Route exact path={`${path}/profile`} component={Profile} />
         <Route exact path={`${path}/setNewPassword/:email/:hashString`} component={SetPassword} />
         <Route exact path={`${path}/pastOrder`} component={PastOrder} />
         <Route exact path={`${path}/pastOrder/orderDetails`} component={Detail} />
-
         <Route component={NoRoute} />
       </Switch>
     </div>

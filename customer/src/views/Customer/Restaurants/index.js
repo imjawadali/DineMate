@@ -76,7 +76,7 @@ function Restaurants(props) {
       <div className="resturant-list-container">
         {resturants && resturants.length ?
           resturants.map((restaurant, index) => {
-            const { restaurantId, imageUrl, restaurantName: name, categories, rating } = restaurant
+            const { restaurantId, imageUrl, restaurantName: name, categories, rating, ratingCounts } = restaurant
             const imagesArray = [require("../../../assets/listingbg.png"), require("../../../assets/bgimage.png")]
             return (
               <div key={index} className="resturant-list-component">
@@ -87,6 +87,7 @@ function Restaurants(props) {
                     return `${category.name}${index !== (categories.length - 1) ? ' • ' : ''}`
                   }) : null}
                   stars={rating}
+                  ratingCounts={ratingCounts}
                   image={imageUrl || imagesArray[index % 2].default}
                   onClick={() => props.history.push(`/customer/${restaurantId}/menu`)}
                 />
