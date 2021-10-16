@@ -31,6 +31,17 @@ function CartItemsList(props) {
         } else return 0
     }
 
+    const getRedemptionAmount = () => {
+        if (existingOrder && existingOrder.pointsToRedeem) {
+            return existingOrder.redemptionAmount
+        } else return 0
+    }
+
+    const getTotalAmount = (subTotal, taxAmount, tipAmount, redemptionAmount) => {
+        const total = (subTotal + taxAmount + tipAmount) - redemptionAmount
+        return total > 0 ? total : 0
+    }
+
     return (
         <div className="TableDataContainer">
             <table >
@@ -134,22 +145,28 @@ function CartItemsList(props) {
                         <td style={{ textAlign: 'end', color: 'red' }}>- ${getDiscountAmount(sum).toFixed(2)}</td>
                         <td />
                     </tr> : null}
-                    <tr style={{ border: getTipAmount() ? 'none' : '' }}>
+                    <tr style={{ border: getTipAmount() || getRedemptionAmount() ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tax <span style={{ opacity: 0.5 }}>({taxPercentage}%)</span></td>
                         <td style={{ textAlign: 'end' }}>${getTaxAmount(getSubTotal(sum)).toFixed(2)}</td>
                         <td />
                     </tr>
-                    {getTipAmount() ? <tr>
+                    {getTipAmount() ? <tr style={{ border: getRedemptionAmount() ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tip</td>
                         <td style={{ textAlign: 'end' }}>${getTipAmount()}</td>
                         <td />
                     </tr> : null}
+                    {getRedemptionAmount() ? <tr>
+                        <td colSpan={2} />
+                        <td>Redemption <span style={{ opacity: 0.5 }}>({existingOrder.pointsToRedeem} Points)</span></td>
+                        <td style={{ textAlign: 'end', color: 'red' }}>- ${getRedemptionAmount()}</td>
+                        <td />
+                    </tr> : null}
                     <tr>
                         <td colSpan={2} />
                         <td style={{ fontWeight: 'bold' }}>Total</td>
-                        <td style={{ fontWeight: 'bold', textAlign: 'end' }}>${(getSubTotal(sum) + getTaxAmount(getSubTotal(sum)) + Number(getTipAmount())).toFixed(2)}</td>
+                        <td style={{ fontWeight: 'bold', textAlign: 'end' }}>${(getTotalAmount(getSubTotal(sum), getTaxAmount(getSubTotal(sum)), Number(getTipAmount()), Number(getRedemptionAmount()))).toFixed(2)}</td>
                         <td />
                     </tr>
                     <tr><td style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>

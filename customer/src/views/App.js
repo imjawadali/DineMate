@@ -22,6 +22,7 @@ import Others from './Others'
 import Registration from './Registration'
 import NoRoute from './NoRoute'
 import Footer from './Footer'
+import RewardPoints from './Customer/RewardPoints'
 
 import logo from '../assets/logo.png'
 import './styles.css'
@@ -102,6 +103,7 @@ export default function App() {
                 <ScrollToTop closeSidebar={closeSidebar}>
                     <SideNav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
                     <Header openSidebar={openSidebar} />
+                    <RewardPoints />
                     <Switch>
                         <Route exact path='/'>
                             <Home openSidebar={openSidebar} />

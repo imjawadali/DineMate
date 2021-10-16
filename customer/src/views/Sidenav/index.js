@@ -97,7 +97,7 @@ function SideNav(props) {
 
                                     <span className="reward-point-heading">Reward Points: </span>
 
-                                    <span className="reward-point">297</span>
+                                    <span className="reward-point">{profile && profile.rewardPoints || '0'}</span>
                                 </div>
                             </div>
 

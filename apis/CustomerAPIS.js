@@ -164,7 +164,7 @@ module.exports = app => {
             getSecureConnection(
                 res,
                 customerId,
-                `SELECT imageUrl, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                `SELECT imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
                 null,
                 (data) => {
                     if (data.length)
@@ -207,25 +207,31 @@ module.exports = app => {
                 `SELECT o.restaurantId, r.restaurantName,
                 CONVERT(o.orderNumber, CHAR) as orderNumber,
                 SUM(oi.totalPrice) as billAmount,
-                o.discount, o.discountType, o.tip, r.taxPercentage,
+                o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
                 o.status as active, o.type
                 FROM orders o
                 JOIN restaurants r ON r.restaurantId = o.restaurantId
                 LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
                 WHERE customerId = ${customerId}
+                AND (
+                    (o.type = 'Take-Away' AND o.customerStatus = 1)
+                    OR (o.type = 'Dine-In')
+                )
                 GROUP BY o.restaurantId, o.orderNumber
                 ORDER BY o.createdAt DESC`,
                 null,
                 (body) => {
                     if (body.length) {
                         for (let index = 0; index < body.length; index++) {
-                            const { discount, discountType, tip, taxPercentage, billAmount } = body[index]
+                            const { discount, discountType, tip, pointsToRedeem, taxPercentage, billAmount } = body[index]
                             let discountAmount = discount
                             if (discountType === '%')
                                 discountAmount = (billAmount * discount) / 100
                             const subtotal = discountAmount < billAmount ? billAmount - discountAmount : 0
                             const taxAmount = (subtotal * taxPercentage) / 100
-                            body[index].billAmount = Number((subtotal + taxAmount + tip).toFixed(2))
+                            const redemptionAmount = Number(((pointsToRedeem * 2) / 100).toFixed(2))
+                            const amount = (subtotal + taxAmount + tip) - redemptionAmount
+                            body[index].billAmount = Number((amount > 0 ? amount : 0).toFixed(2))
                         }
                         return res.send({
                             status: true,
@@ -527,6 +533,7 @@ module.exports = app => {
         getConnection(
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
+            R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -570,6 +577,7 @@ module.exports = app => {
         console.log("\n\n>>> /customer/searchRestaurants")
         const { searchBy } = req.body
         let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
+        R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
         CONCAT('[',
             GROUP_CONCAT(
                 DISTINCT CONCAT(
@@ -628,6 +636,7 @@ module.exports = app => {
         getConnection(
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
+            R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -1308,7 +1317,7 @@ module.exports = app => {
             (orderItems) => {
                 getConnection(
                     res,
-                    `SELECT o.discount, o.discountType, o.tip, r.taxPercentage
+                    `SELECT o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
                     WHERE o.restaurantId = '${restaurantId}'
@@ -1328,6 +1337,8 @@ module.exports = app => {
                                 discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
                             const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
+                            const redemptionAmount = Number(((data.pointsToRedeem * 2) / 100).toFixed(2))
+                            const amount = (subtotal + Number(taxAmount) + data.tip) - redemptionAmount
                             return res.send({
                                 status: true,
                                 message: '',
@@ -1339,7 +1350,9 @@ module.exports = app => {
                                     taxPercentage: data.taxPercentage + '%',
                                     taxAmount: Number(taxAmount),
                                     tip: Number(data.tip.toFixed(2)),
-                                    billAmount: Number((subtotal + Number(taxAmount) + data.tip).toFixed(2)),
+                                    pointsToRedeem: data.pointsToRedeem,
+                                    redemptionAmount,
+                                    billAmount: Number((amount > 0 ? amount : 0).toFixed(2)),
                                     orderItems
                                 }
                             })
@@ -1361,7 +1374,7 @@ module.exports = app => {
             console.log("\n\n>>> /customer/closeOrderViaCash")
             console.log(req.body)
             const customerId = decrypt(req.header('authorization'))
-            const { restaurantId, orderNumber, type, tip } = req.body
+            const { restaurantId, orderNumber, type, billAmount, tip } = req.body
             if (!customerId) return res.send({
                 status: false,
                 message: 'Not Authorized!',
@@ -1387,6 +1400,16 @@ module.exports = app => {
                 message: 'Tip can\'t be negative!',
                 errorCode: 422
             })
+            if (billAmount < 0) return res.send({
+                status: false,
+                message: 'Bill amount can\'t be negative!',
+                errorCode: 422
+            })
+            if (!billAmount && billAmount != 0) return res.send({
+                status: false,
+                message: 'Bill amount is required!',
+                errorCode: 422
+            })
             let data
             if (type.toLowerCase() === 'take-away')
                 data = { status: true, customerStatus: true }
@@ -1401,35 +1424,51 @@ module.exports = app => {
                 `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}' AND customerStatus = 0`,
                 data,
                 (result) => {
-                    if (result.changedRows) {
+                    if (result && result.changedRows) {
                         getConnection(
                             res,
-                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
+                            `UPDATE customers SET
+                            rewardPoints = rewardPoints + ${Number(Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)) / 2}
+                            WHERE id = ${customerId}`,
                             null,
-                            (result) => {
-                                if (result.length) {
-                                    var registration_ids = result.map(each => each['fcmToken'])
-                                    sendNotification({
-                                        registration_ids,
-                                        data: {
-                                            title: 'DineMate',
-                                            body: JSON.stringify({
-                                                roles: ['Admin', 'Staff', 'Kitchen'],
-                                                type: 'DASHBOARD',
-                                                restaurantId,
-                                                orderNumber
+                            (rewardResult) => {
+                                getConnection(
+                                    res,
+                                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
+                                    null,
+                                    (result) => {
+                                        if (result.length) {
+                                            var registration_ids = result.map(each => each['fcmToken'])
+                                            sendNotification({
+                                                registration_ids,
+                                                data: {
+                                                    title: 'DineMate',
+                                                    body: JSON.stringify({
+                                                        roles: ['Admin', 'Staff', 'Kitchen'],
+                                                        type: 'DASHBOARD',
+                                                        restaurantId,
+                                                        orderNumber
+                                                    })
+                                                }
                                             })
                                         }
-                                    })
-                                }
+                                    }
+                                )
+                                return res.send({
+                                    status: true,
+                                    message: type.toLowerCase() === 'take-away' ?
+                                        'Order Initialized Successfully'
+                                        : 'Order close request submitted',
+                                    body: {
+                                        restaurantId,
+                                        orderNumber,
+                                        pointsEarned: rewardResult && rewardResult.changedRows ?
+                                            Number(Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)) / 2
+                                            : 0
+                                    }
+                                })
                             }
                         )
-                        return res.send({
-                            status: true,
-                            message: type.toLowerCase() === 'take-away' ?
-                                'Order Initialized Successfully'
-                                : 'Order close request submitted'
-                        })
                     } else {
                         return res.send({
                             status: false,
@@ -1492,7 +1531,7 @@ module.exports = app => {
             })
             if (billAmount <= 0) return res.send({
                 status: false,
-                message: 'Bill amount must be greater than or equal to 0.01$',
+                message: 'Bill amount must be greater than or equal to $0.01',
                 errorCode: 422
             })
             if (!token) return res.send({
@@ -1547,17 +1586,13 @@ module.exports = app => {
                                                     })
                                                 })
                                             } else if (result2 && result2.changedRows) {
-                                                console.log("payment init")
-                                                const paymentSuccess = await postCharge(
-                                                    (Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)),
-                                                    token,
-                                                    email,
-                                                    result[0].stripeConnectedAccountId
-                                                )
-                                                console.log("paymentSuccess", paymentSuccess)
-                                                if (paymentSuccess)
-                                                    tempDb.commit(function (error) {
-                                                        if (error) {
+                                                tempDb.query(
+                                                    `UPDATE customers SET
+                                                    rewardPoints = rewardPoints + ${Number(Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)) / 2}
+                                                    WHERE id = ${customerId}`,
+                                                    null, async function (error, rewardResult) {
+                                                        if (!!error) {
+                                                            console.log('TableError', error.sqlMessage)
                                                             tempDb.rollback(function () {
                                                                 return res.send({
                                                                     status: false,
@@ -1565,46 +1600,80 @@ module.exports = app => {
                                                                     errorCode: 422
                                                                 })
                                                             })
-                                                        }
-                                                        tempDb.release()
-                                                        getConnection(
-                                                            res,
-                                                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
-                                                            null,
-                                                            (result) => {
-                                                                if (result.length) {
-                                                                    var registration_ids = result.map(each => each['fcmToken'])
-                                                                    sendNotification({
-                                                                        registration_ids,
-                                                                        data: {
-                                                                            title: 'DineMate',
-                                                                            body: JSON.stringify({
-                                                                                roles: ['Admin', 'Staff', 'Kitchen'],
-                                                                                type: 'DASHBOARD',
-                                                                                restaurantId,
-                                                                                orderNumber
+                                                        } else if (rewardResult && rewardResult.changedRows) {
+                                                            console.log("payment init")
+                                                            const paymentSuccess = await postCharge(
+                                                                (Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)),
+                                                                token,
+                                                                email,
+                                                                result[0].stripeConnectedAccountId
+                                                            )
+                                                            console.log("paymentSuccess", paymentSuccess)
+                                                            if (paymentSuccess)
+                                                                tempDb.commit(function (error) {
+                                                                    if (error) {
+                                                                        tempDb.rollback(function () {
+                                                                            return res.send({
+                                                                                status: false,
+                                                                                message: error.sqlMessage,
+                                                                                errorCode: 422
                                                                             })
+                                                                        })
+                                                                    }
+                                                                    tempDb.release()
+                                                                    getConnection(
+                                                                        res,
+                                                                        `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff' || role = 'Kitchen') AND active = 1`,
+                                                                        null,
+                                                                        (result) => {
+                                                                            if (result.length) {
+                                                                                var registration_ids = result.map(each => each['fcmToken'])
+                                                                                sendNotification({
+                                                                                    registration_ids,
+                                                                                    data: {
+                                                                                        title: 'DineMate',
+                                                                                        body: JSON.stringify({
+                                                                                            roles: ['Admin', 'Staff', 'Kitchen'],
+                                                                                            type: 'DASHBOARD',
+                                                                                            restaurantId,
+                                                                                            orderNumber
+                                                                                        })
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        }
+                                                                    )
+                                                                    return res.send({
+                                                                        status: true,
+                                                                        message: type.toLowerCase() === 'take-away' ?
+                                                                            'Order Initialized Successfully'
+                                                                            : 'Order close request submitted',
+                                                                        body: {
+                                                                            restaurantId,
+                                                                            orderNumber,
+                                                                            pointsEarned: Number(Number((Number(billAmount) + Number(tip)) * 100).toFixed(0)) / 2
                                                                         }
                                                                     })
-                                                                }
+                                                                })
+                                                            else {
+                                                                tempDb.rollback(function () { })
+                                                                tempDb.release()
+                                                                return res.send({
+                                                                    status: false,
+                                                                    message: 'Stripe payment failed!',
+                                                                    errorCode: 422
+                                                                })
                                                             }
-                                                        )
-                                                        return res.send({
-                                                            status: true,
-                                                            message: type.toLowerCase() === 'take-away' ?
-                                                                'Order Initialized Successfully'
-                                                                : 'Order close request submitted'
-                                                        })
+                                                        } else {
+                                                            tempDb.rollback(function () { })
+                                                            tempDb.release()
+                                                            return res.send({
+                                                                status: false,
+                                                                message: 'Reward calculation failed!',
+                                                                errorCode: 422
+                                                            })
+                                                        }
                                                     })
-                                                else {
-                                                    tempDb.rollback(function () { })
-                                                    tempDb.release()
-                                                    return res.send({
-                                                        status: false,
-                                                        message: 'Stripe payment failed!',
-                                                        errorCode: 422
-                                                    })
-                                                }
                                             } else {
                                                 tempDb.release()
                                                 return res.send({
@@ -1839,6 +1908,208 @@ module.exports = app => {
                 })
             }
         )
+    })
+
+    app.post('/customer/applyRewardPoints', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/applyRewardPoints")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, orderNumber, pointsToRedeem, billAmount } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!restaurantId) return res.send({
+                status: false,
+                message: 'Restuatant Id is required!',
+                errorCode: 422
+            })
+            if (!orderNumber) return res.send({
+                status: false,
+                message: 'Order number is required!',
+                errorCode: 422
+            })
+            if (!pointsToRedeem) return res.send({
+                status: false,
+                message: 'Reward points required to redeem!',
+                errorCode: 422
+            })
+            if (typeof pointsToRedeem !== 'number') return res.send({
+                status: false,
+                message: 'Invalid reward points!',
+                errorCode: 422
+            })
+            if (pointsToRedeem % 1 !== 0) return res.send({
+                status: false,
+                message: 'No fractional reward points are allowed!',
+                errorCode: 422
+            })
+            if (!billAmount) return res.send({
+                status: false,
+                message: 'Bill amount is required!',
+                errorCode: 422
+            })
+            if ((pointsToRedeem * 2) > (Number(billAmount) * 100)) {
+                const pointsCanBeRedeemed = ((Number(billAmount) * 100) / 2).toFixed(0)
+                return res.send({
+                    status: false,
+                    message: `Max '${pointsCanBeRedeemed} Points' can be redeemed for this order!`,
+                    errorCode: 422
+                })
+            }
+            getSecureConnection(
+                res,
+                customerId,
+                `SELECT c.rewardPoints,
+                o.pointsToRedeem
+                FROM customers c
+                JOIN orders o
+                ON o.customerId = c.id
+                AND o.restaurantId = '${restaurantId}'
+                AND o.orderNumber = '${orderNumber}'
+                AND (
+                    (o.type = 'Take-Away' AND o.status = 0 AND o.customerStatus = 0)
+                    OR (o.status = 1 AND o.customerStatus = 0)
+                )
+                WHERE c.id = ${customerId}`,
+                null,
+                (customerResult) => {
+                    if (customerResult && customerResult.length && customerResult[0].rewardPoints >= pointsToRedeem && !customerResult[0].pointsToRedeem) {
+                        getTransactionalConnection()
+                            .getConnection(function (error, tempDb) {
+                                if (!!error) {
+                                    console.log('DbConnectionError', error.sqlMessage)
+                                    return res.send({
+                                        status: false,
+                                        message: 'Unable to reach database!',
+                                        errorCode: 503
+                                    })
+                                }
+                                tempDb.beginTransaction(function (error) {
+                                    if (!!error) {
+                                        console.log('TransactionError', error.sqlMessage)
+                                        return res.send({
+                                            status: false,
+                                            message: error.sqlMessage,
+                                            errorCode: 422
+                                        })
+                                    } else {
+                                        tempDb.query(
+                                            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
+                                            { pointsToRedeem },
+                                            async function (error, redemptionResult) {
+                                                if (!!error) {
+                                                    console.log('TableError', error.sqlMessage)
+                                                    tempDb.rollback(function () {
+                                                        return res.send({
+                                                            status: false,
+                                                            message: error.sqlMessage,
+                                                            errorCode: 422
+                                                        })
+                                                    })
+                                                } else if (redemptionResult && redemptionResult.changedRows) {
+                                                    tempDb.query(
+                                                        `UPDATE customers SET rewardPoints = rewardPoints - ${pointsToRedeem} WHERE id = ${customerId}`,
+                                                        function (error, result) {
+                                                            if (!!error) {
+                                                                console.log('TableError', error.sqlMessage)
+                                                                tempDb.rollback(function () {
+                                                                    return res.send({
+                                                                        status: false,
+                                                                        message: 'Failed to apply redemption',
+                                                                        errorCode: 422
+                                                                    })
+                                                                })
+                                                            } else if (result && result.changedRows) {
+                                                                tempDb.commit(function (error) {
+                                                                    if (error) {
+                                                                        tempDb.rollback(function () {
+                                                                            return res.send({
+                                                                                status: false,
+                                                                                message: error.sqlMessage,
+                                                                                errorCode: 422
+                                                                            })
+                                                                        })
+                                                                    }
+                                                                    tempDb.release()
+                                                                    getConnection(
+                                                                        res,
+                                                                        `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
+                                                                        null,
+                                                                        (result) => {
+                                                                            if (result.length) {
+                                                                                var registration_ids = result.map(each => each['fcmToken'])
+                                                                                sendNotification({
+                                                                                    registration_ids,
+                                                                                    data: {
+                                                                                        title: 'DineMate',
+                                                                                        body: JSON.stringify({
+                                                                                            roles: ['Admin', 'Staff'],
+                                                                                            type: 'DASHBOARD',
+                                                                                            restaurantId,
+                                                                                            orderNumber
+                                                                                        })
+                                                                                    }
+                                                                                })
+                                                                            }
+                                                                        }
+                                                                    )
+                                                                    return res.send({
+                                                                        status: true,
+                                                                        message: `${pointsToRedeem} reward points redeemed successfully!`
+                                                                    })
+                                                                })
+                                                            } else {
+                                                                tempDb.rollback(function () { })
+                                                                tempDb.release()
+                                                                return res.send({
+                                                                    status: false,
+                                                                    message: 'Failed to apply redemption!',
+                                                                    errorCode: 422
+                                                                })
+                                                            }
+                                                        })
+                                                } else {
+                                                    tempDb.release()
+                                                    return res.send({
+                                                        status: false,
+                                                        message: 'Failed to apply redemption!',
+                                                        errorCode: 422
+                                                    })
+                                                }
+                                            })
+                                    }
+                                })
+                            })
+                    } else if (customerResult && customerResult.length) {
+                        if (customerResult[0].pointsToRedeem) return res.send({
+                            status: false,
+                            message: `Redemption already applied!`,
+                            errorCode: 422
+                        })
+                        else if (customerResult[0].rewardPoints < pointsToRedeem) return res.send({
+                            status: false,
+                            message: `You have insufficient redeem points!`,
+                            errorCode: 422
+                        })
+                    } else {
+                        return res.send({
+                            status: false,
+                            message: `You may have requested to close or Admin has closed your order!`,
+                            errorCode: 422
+                        })
+                    }
+                }
+            )
+        } catch (error) {
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
     })
 
     app.post('/customer/requestService', async (req, res) => {

@@ -8,9 +8,10 @@ import serviceIcon from './../../../assets/Group 6409.png'
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useSelector, useDispatch } from 'react-redux'
 import { customisedAction } from '../../../redux/actions'
-import { CALL_FOR_SERVICE, CANT_PAY, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS } from '../../../constants'
+import { CALL_FOR_SERVICE, CANT_PAY, CLOSE_ORDER, DONOTDISTURB, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, SHOW_REWARD_DIALOG } from '../../../constants'
 import { getItem, setItem, loadScript } from '../../../helpers'
 
+import badge from './../../../assets/badge.png'
 import StripeForm from './StripeForm'
 import './checkout.css'
 
@@ -20,28 +21,19 @@ function CheckOut(props) {
     const [stripeLoaded, setStripeLoaded] = useState({})
     const [products, setProducts] = useState([])
 
-    const [pickUpTime, setPickUpTime] = useState("")
     const [pickUpLocation, setPickUpLocation] = useState("")
     const [payment, setPayment] = useState("cash")
-    const [cardNumber, setCardNumber] = useState("")
-    const [cardName, setCardName] = useState("")
-    const [expiryDate, setExpiryDate] = useState("")
-    const [securityCode, setSecurityCode] = useState("")
-    const [zipCode, setZipCode] = useState("")
     const [openCall, setOpenCall] = useState(false)
     const [selectedServices, setSelectedServices] = useState([]);
     const [message, setMessage] = useState('')
     const [doNotDisturb, setDoNotDisturb] = useState(false)
     const [doNotDisturbActive, setDoNotDisturbActive] = useState()
-    const [testArr, setTestArr] = useState([])
     const [orderDetail, setOrderDetail] = useState("")
     const [TakeAwayOrder, setTakeAwayOrder] = useState("")
     const [tip, setTip] = useState("")
     const [data, setData] = useState("")
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
-
-    // const resDet = useSelector(({ menuReducer }) => menuReducer.restaurant)
 
     useEffect(() => {
         loadScript('https://js.stripe.com/v3/').then(result => setStripeLoaded(result))
@@ -82,11 +74,7 @@ function CheckOut(props) {
     let resturantDetail = useSelector(({ menuReducer }) => menuReducer.restaurant)
 
     useEffect(() => {
-
-
-        // setTimeout(() => {
         if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
-
             let data = dataOrder ? dataOrder : []
             if (data.orderItems) {
                 setProducts(data.orderItems)
@@ -97,11 +85,8 @@ function CheckOut(props) {
             if (data.length) {
                 setProducts(data)
                 setData(data)
-
             }
         }
-        // }, [500])
-
     }, [dataOrder, TakeAwayOrder, orderDetails])
 
     useEffect(() => {
@@ -136,15 +121,9 @@ function CheckOut(props) {
             }
             dispatch(customisedAction(DONOTDISTURB, obj))
         }
-
-        // if (products) {
-
-        // }
-
     }
 
     const callService = (msg) => {
-
         if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
             let obj = {
                 "restaurantId": orderDetails.restaurantId,
@@ -162,19 +141,7 @@ function CheckOut(props) {
             }
             dispatch(customisedAction(CALL_FOR_SERVICE, obj))
         }
-
     }
-
-    function totalAmount() {
-        let price = 0
-        if (products) {
-            products.map((a, i) => {
-                price += a.totalPrice
-            })
-        }
-        return price
-    }
-
 
     const payNow = () => {
         if (orderDetail && ((dataOrder && dataOrder.orderItems) || (takeOrderItems && takeOrderItems.orderItems))) {
@@ -183,6 +150,7 @@ function CheckOut(props) {
                 "restaurantId": orderDetail.restaurantId,
                 "orderNumber": orderDetail.orderNumber,
                 "type": orderDetail.type,
+                'billAmount': data ? data.billAmount : 0,
                 'tip': tip
             }
             dispatch(customisedAction(CLOSE_ORDER, obj))
@@ -249,10 +217,30 @@ function CheckOut(props) {
                             <p>${data.tip}</p>
                         </div> : null}
 
+                    {data && data.pointsToRedeem ?
+                        <div className="itemCart">
+                            <p>Redemption ({data.pointsToRedeem} Points)<img style={{ width: 15, marginLeft: 8 }} src={badge} /></p>
+                            <p>${data.redemptionAmount}</p>
+                        </div> : null}
+
                     <div className="totalCart">
                         <p onClick={() => console.log(data)}>Total</p>
                         <p>${data && data.billAmount}</p>
                     </div>
+
+                    {orderDetail && data && !!data.billAmount &&
+                        <button
+                            className="payBtn"
+                            style={{ width: '100%' }}
+                            onClick={() => dispatch(customisedAction(SHOW_REWARD_DIALOG, {
+                                restaurantId: orderDetail.restaurantId,
+                                orderNumber: orderDetail.orderNumber,
+                                billAmount: data.billAmount
+                            }))}>
+                            <img style={{ width: 23, marginRight: 8 }} src={badge} />
+                            Apply Reward Points
+                        </button>
+                    }
                 </div>
                 {orderDetail && orderDetail.type.toLowerCase() === 'take-away' ?
                     <div className="pickUpLocation">
@@ -278,7 +266,6 @@ function CheckOut(props) {
                                 <Elements>
                                     <StripeForm
                                         orderDetails={orderDetail || {}}
-                                        tip={tip}
                                         billAmount={data ? data.billAmount || 0 : 0}
                                         email={customer ? customer.email : ''}
                                     />
@@ -306,12 +293,12 @@ function CheckOut(props) {
                         }
 
                     </div>
-                                {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
+                    {orderDetail && orderDetail.type.toLowerCase() === 'dine-in' ?
 
-                                <div>
-                                    <img src={serviceIcon} onClick={() => setOpenCall(true)} />
-                                </div>
-                                : null}
+                        <div>
+                            <img src={serviceIcon} onClick={() => setOpenCall(true)} />
+                        </div>
+                        : null}
                 </div>
             </div>
             {

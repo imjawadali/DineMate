@@ -132,16 +132,22 @@ function ItemsList(props) {
                         <td style={{ textAlign: 'end', color: 'red' }}>- ${orderDetails.discountAmount}</td>
                         <td />
                     </tr>}
-                    <tr style={{ border: orderDetails.tip !== '0.00' ? 'none' : '' }}>
+                    <tr style={{ border: orderDetails.tip !== '0.00' || orderDetails.pointsToRedeem ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tax <span style={{ opacity: 0.5 }}>({orderDetails.taxPercentage})</span></td>
                         <td style={{ textAlign: 'end' }}>${orderDetails.taxAmount}</td>
                         <td />
                     </tr>
-                    {orderDetails.tip !== '0.00' && <tr>
+                    {orderDetails.tip !== '0.00' && <tr style={{ border: orderDetails.pointsToRedeem ? 'none' : '' }}>
                         <td colSpan={2} />
                         <td>Tip</td>
                         <td style={{ textAlign: 'end' }}>${orderDetails.tip}</td>
+                        <td />
+                    </tr>}
+                    {orderDetails.pointsToRedeem > 0 && <tr>
+                        <td colSpan={2} />
+                        <td>Redemption <span style={{ opacity: 0.5 }}>({orderDetails.pointsToRedeem} Points)</span></td>
+                        <td style={{ textAlign: 'end', color: 'red' }}>- ${orderDetails.redemptionAmount}</td>
                         <td />
                     </tr>}
                     <tr>

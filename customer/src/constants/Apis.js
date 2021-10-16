@@ -29,6 +29,7 @@ export const API_ENDPOINTS = {
         setNewPassword: '/customer/setNewPassword',
         getOrderStatus: '/customer/getOrderStatus',
         getAllOrders: '/customer/getMyOrders',
-        searchResturant: '/customer/searchRestaurants'
+        searchResturant: '/customer/searchRestaurants',
+        applyRewardPoints: '/customer/applyRewardPoints'
     }
 }

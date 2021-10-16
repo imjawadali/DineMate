@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { GET_ORDER_ITEMS } from '../../constants'
 import { customisedAction } from '../../redux/actions'
 
+import badge from './../../assets/badge.png'
 
 function Detail(props) {
 
@@ -69,27 +70,33 @@ function Detail(props) {
 
                     {products && products.discountAmount ?
                         <div className="itemCart">
-                            <p>Discount Amount</p>
+                            <p>Discount Amount ({products.discount})</p>
                             <p>${products.discountAmount}</p>
                         </div> : null}
+
+                    {products ?
+                        <div className="itemCart">
+                            <p>HST Amount ({products.taxPercentage})</p>
+                            <p>${products.taxAmount}</p>
+                        </div> : null}
+
                     {products && products.tip ?
                         <div className="itemCart">
                             <p>Tip Amount</p>
                             <p>${products.tip}</p>
                         </div> : null}
-                    {products && products.taxAmount ?
+
+                    {products && products.pointsToRedeem ?
                         <div className="itemCart">
-                            <p>HST Amount</p>
-                            <p>${products.taxAmount}</p>
-                        </div> : null
-                    }
+                            <p>Redemption ({products.pointsToRedeem} Points)<img style={{ width: 15, marginLeft: 8 }} src={badge} /></p>
+                            <p>${products.redemptionAmount}</p>
+                        </div> : null}
+
                     <div className="totalCart">
                         <p onClick={() => console.log(products)}>Total</p>
-                        {/* <p>$ {products.length ? products.reduce((a, b) => a.totalPrice + b.totalPrice) : 0}</p> */}
                         <p>${products && products.billAmount}</p>
                     </div>
                 </div>
-
             </div >
         </div >
     )

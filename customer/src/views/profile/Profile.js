@@ -90,7 +90,7 @@ function Profile() {
                 <h2>Name</h2>
                 <div className="profileName centerAb">
                     <h1>{firstName} {lastName}</h1>
-                    <p><span className="pointBadge"><img src={badge} /></span> Reward Point: <span className="point">297</span></p>
+                    <p><span className="pointBadge"><img src={badge} /></span> Reward Point: <span className="point">{profile && profile.rewardPoints || 0}</span></p>
                 </div>
             </div>
 

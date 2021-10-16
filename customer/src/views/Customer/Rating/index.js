@@ -9,38 +9,47 @@ import { Modal } from '../../../components';
 import { customisedAction } from '../../../redux/actions';
 import { HIDE_RATING_DIALOG, SUBMIT_RATING } from '../../../constants'
 
+import badge from '../../../assets/badge.png';
+
 function Rating() {
     const [rating, setrating] = useState(5);
 
-    const showRating = useSelector(({ ratingReducer }) => ratingReducer.showRating)
-    const orderDetails = useSelector(({ getOrderDetail }) => getOrderDetail.orderDetails)
+    const showRatingDialog = useSelector(({ ratingAndRewardReducer }) => ratingAndRewardReducer.showRatingDialog)
+    const reward = useSelector(({ ratingAndRewardReducer }) => ratingAndRewardReducer.reward)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        return dispatch(customisedAction(HIDE_RATING_DIALOG))
+        return () => dispatch(customisedAction(HIDE_RATING_DIALOG))
     }, [])
 
     const submitRating = () => {
-        const { restaurantId, orderNumber } = orderDetails
+        const { restaurantId, orderNumber } = reward
         dispatch(customisedAction(SUBMIT_RATING, { restaurantId, orderNumber, rating }))
     }
 
-    const cancelModal = () => {
-        dispatch(customisedAction(HIDE_RATING_DIALOG))
-    }
-
     return (
-        <Modal width={window.innerWidth < 480 ? '80%' : '40%'} display={showRating}>
+        <Modal width={window.innerWidth < 480 ? '80%' : '40%'} display={showRatingDialog}>
             <div style={{ padding: '20px' }}>
                 <div style={{ width: '100%', textAlign: 'end' }}>
                     <FontAwesomeIcon
+                        style={{ cursor: 'pointer' }}
                         icon={faTimes}
                         size={"2x"}
                         className="icon-star"
-                        onClick={cancelModal}
+                        onClick={() => dispatch(customisedAction(HIDE_RATING_DIALOG))}
                     />
                 </div>
-                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+                    {reward && reward.pointsEarned ?
+                    <>
+                    <h1 style={{ margin: '10px 0px'}}><img style={{ width: 23, marginRight: 8 }} src={badge} />Congragulations!</h1>
+                    <h2 style={{ marginBottom: '20px'}}>
+                        You have earned
+                        <span style={{ margin: '0 10px', color: 'red' }}>{reward.pointsEarned}</span>
+                        Reward Points
+                    </h2>
+                    </>
+                    : null}
                     <h1 style={{ margin: '10px 0px'}}>Rate Us Please</h1>
                     <StarRatings
                         value={rating}
