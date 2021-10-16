@@ -177,10 +177,10 @@ function EditOrderItem(props) {
                 }
                 <div className="NewOrderAddOnBottomOptions">
                     <div className="NewOrderAddOnQuantity">
-                        <i className="fa fa-plus-circle NewOrderAddOnText"
+                        <i className="fa fa-minus-circle NewOrderAddOnText"
                             onClick={() => setQuantity(itemToSubmit.quantity - 1 || 1)} />
                         <p className="NewOrderAddOnText" style={{ margin: '0px 10px', cursor: 'default' }}>{itemToSubmit.quantity}</p>
-                        <i className="fa fa-minus-circle NewOrderAddOnText"
+                        <i className="fa fa-plus-circle NewOrderAddOnText"
                             onClick={() => setQuantity(itemToSubmit.quantity + 1)} />
                     </div>
                     <p className="NewOrderItemHeading" style={{ marginLeft: '5px' }}>${(getTotalPrice() || 0).toFixed(2)}</p>

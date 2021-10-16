@@ -45,6 +45,7 @@ export const epics = combineEpics(
     getOrderItemEpic.getOrder,
     closeOrderViaCashEpic.closeOrderViaCash,
     closeOrderViaCashEpic.closeOrderViaStripe,
+    closeOrderViaCashEpic.applyRewardPoints,
     takeAwayOrderEpic.takeAwayOrder,
     getOrderStatusEpic.getOrderStatus,
     getOrderStatusEpic.removeOrder,

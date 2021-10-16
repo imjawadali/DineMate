@@ -86,7 +86,7 @@ export class getOrderStatusEpic {
               || type === ORDER_CANCELLED ?
               { message: 'Order has been cancelled by restaurant', type: 'error' }
             : type === ORDER_CLOSED_BY_ADMIN ?
-              { message: 'Admin has closed your order', type: 'success' }
+              { message: 'Your order has been closed', type: 'success' }
             : null }
           )
         }

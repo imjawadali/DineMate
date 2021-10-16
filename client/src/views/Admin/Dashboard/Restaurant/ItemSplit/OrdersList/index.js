@@ -4,6 +4,15 @@ function OrdersList(props) {
 
   const { tableOrders, fetchingTableOrders, splitItemId, splittedItem } = props
 
+  const getRedemptionAmount = (pointsToRedeem) => {
+      return (pointsToRedeem * 2) / 100
+  }
+
+  const getTotalAmount = (subTotal, taxAmount, tipAmount, redemptionAmount) => {
+      const total = (subTotal + taxAmount + tipAmount) - redemptionAmount
+      return total > 0 ? total : 0
+  }
+
   return (
     <div className="TableDataContainer">
       <table>
@@ -22,8 +31,8 @@ function OrdersList(props) {
               var foodTotal = 0
               var discountAmount = 0
               var subTotal = 0
-              var tax = 0
-              const { orderNumber, taxPercentage, discountType, discount, tip, firstName, lastName, items } = tableOrder
+              var taxAmount = 0
+              const { orderNumber, taxPercentage, discountType, discount, tip, pointsToRedeem, firstName, lastName, items } = tableOrder
               let orderItems
               try {
                 orderItems = items && JSON.parse(items)
@@ -45,10 +54,10 @@ function OrdersList(props) {
                           }
                           if (discountAmount < foodTotal) {
                             subTotal = foodTotal - discountAmount
-                            tax = (subTotal * taxPercentage) / 100
+                            taxAmount = (subTotal * taxPercentage) / 100
                           } else {
                             subTotal = 0
-                            tax = 0
+                            taxAmount = 0
                           }
                         }
                         return (
@@ -80,10 +89,10 @@ function OrdersList(props) {
                         }
                         if (discountAmount < foodTotal) {
                           subTotal = foodTotal - discountAmount
-                          tax = (subTotal * taxPercentage) / 100
+                          taxAmount = (subTotal * taxPercentage) / 100
                         } else {
                           subTotal = 0
-                          tax = 0
+                          taxAmount = 0
                         }
                         return (
                           <tr key={item.id}>
@@ -104,17 +113,22 @@ function OrdersList(props) {
                   <tr className="NoBorder">
                     <td colSpan="2" />
                     <td colSpan="2">Tax <span style={{ opacity: 0.5 }}>({taxPercentage}%)</span></td>
-                    <td style={{ textAlign: 'end' }}>${tax.toFixed(2)}</td>
+                    <td style={{ textAlign: 'end' }}>${taxAmount.toFixed(2)}</td>
                   </tr>
                   {tip ? <tr className="NoBorder">
                     <td colSpan="2" />
                     <td colSpan="2">Tip</td>
                     <td style={{ textAlign: 'end' }}>${tip.toFixed(2)}</td>
                   </tr> : null}
+                  {getRedemptionAmount(pointsToRedeem) ? <tr className="NoBorder">
+                    <td colSpan="2" />
+                    <td colSpan="2">Redemption <span style={{ opacity: 0.5 }}>({pointsToRedeem} Points)</span></td>
+                    <td style={{ textAlign: 'end', color: 'red' }}>- ${getRedemptionAmount(pointsToRedeem).toFixed(2)}</td>
+                  </tr> : null}
                   <tr>
                     <td colSpan="2" />
                     <td colSpan="2">Check Total</td>
-                    <td style={{ textAlign: 'end' }}>${(subTotal + tax + tip).toFixed(2)}</td>
+                    <td style={{ textAlign: 'end' }}>${(getTotalAmount(subTotal, taxAmount, tip, getRedemptionAmount(pointsToRedeem))).toFixed(2)}</td>
                   </tr>
                   <tr><td colSpan="5" style={{ backgroundColor: 'white', margin: '10px 0px' }} /></tr>
                 </>

@@ -256,9 +256,6 @@ const Header = props => {
                     "items": items
                 }
                 dispatch(customisedAction(SUBMIT_ORDER_ITEM, obj))
-                setTimeout(() => {
-                    // dispatch(customisedAction(GET_ORDER_ITEMS, obj))
-                }, [300])
                 setNetItems()
                 setUpdateState(true)
             } else {

@@ -36,7 +36,10 @@ import {
   ORDER_CHECK_DONE,
   SUBMIT_RATING,
   SUBMIT_RATING_FAILURE,
-  SUBMIT_RATING_SUCCESS
+  SUBMIT_RATING_SUCCESS,
+  APPLY_REWARD_POINTS_SUCCESS,
+  APPLY_REWARD_POINTS,
+  APPLY_REWARD_POINTS_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -48,11 +51,11 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_TOAST_DISMISSING:
       return { ...state, toastSetDismiss: payload }
     case SIGN_IN:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Singing You In!' } }
     case SIGN_UP:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Singing Up', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Singing Up' } }
     case REGISTER_RESTURENT:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Resgistered Your Resturent Successfully', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Requesting admin to resgistered Your Resturent!' } }
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
     case ORDER_CHECK_DONE:
@@ -66,7 +69,7 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_MENU_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_RESTAURANT_DETAILS:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Fetching restaurant data', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Fetching restaurant data' } }
     case GET_RESTAURANT_DETAILS_SUCCESS:
       return { ...state, toastSetDismiss: true }
     case GET_RESTAURANT_DETAILS_FAILURE:
@@ -88,9 +91,9 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case DONOTDISTURB_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CLOSE_ORDER:
-      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order", type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order" } }
     case CLOSE_ORDER_VIA_STRIPE:
-      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order", type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: "Closing your order" } }
     case CLOSE_ORDER_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CLOSE_ORDER_FAILURE:
@@ -101,11 +104,11 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       console.log(payload)
       return { ...state, toastSetDismiss: true, toast: payload }
     case CANT_SIGN_OUT:
-      return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: "You Can't Sign Out The Cart Need To Be Clear", type: 'error' } }
     case CANT_PAY:
-      return { ...state, toastSetDismiss: true, toast: { message: "Submit Order From Cart Before Pay", type: 'warning' } }
+      return { ...state, toastSetDismiss: true, toast: { message: "Submit Order From Cart Before Pay", type: 'error' } }
     case SIGN_UP_FAILURE:
-      return { ...state, toastSetDismiss: true, toast: { message: "Sign Up Failed, Please Try Again", type: 'warning' } }
+      return { ...state, toastSetDismiss: true, toast: payload }
     case INITIALIZE_ORDER_FAILURE:
       return { ...state, toast: payload }
     case FORGOT_PASSWORD_SUCCESS:
@@ -121,6 +124,12 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SUBMIT_RATING_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload }
     case SUBMIT_RATING_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case APPLY_REWARD_POINTS:
+      return { ...state, toast: { message: "Applying Reward Points" } }
+    case APPLY_REWARD_POINTS_SUCCESS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case APPLY_REWARD_POINTS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     default:
       return state

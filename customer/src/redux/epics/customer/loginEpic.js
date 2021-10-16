@@ -1,4 +1,4 @@
-import { switchMap } from 'rxjs/operators'
+import { switchMap, filter } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
 import { customisedAction } from '../../actions'
@@ -16,7 +16,8 @@ import {
   UPDATE_RPOFILE_FAILURE,
   SET_FCM_TOKEN,
   SET_FCM_TOKEN_SUCCESS,
-  SET_FCM_TOKEN_FAILURE
+  SET_FCM_TOKEN_FAILURE,
+  APPLY_REWARD_POINTS_SUCCESS
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
@@ -44,7 +45,16 @@ export class loginEpic {
     
     static getProfile = action$ =>
     action$.pipe(
-      ofType(GET_RPOFILE),
+      filter(({ type }) => {
+        switch (type) {
+          case GET_RPOFILE:
+            return true;
+          case APPLY_REWARD_POINTS_SUCCESS:
+            return true;
+          default:
+            return false;
+        }
+      }),
       switchMap(
         async () => {
           return generalizedEpic(

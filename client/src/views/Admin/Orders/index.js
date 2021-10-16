@@ -101,10 +101,8 @@ function Orders(props) {
               type="number"
               value={searchKey}
               onChange={({ target: { value } }) => {
-                if (value !== '0') {
                   setsearchKey(value < 0 ? `${value * -1}` : value)
                   setcurrentIndex(1)
-                }
               }}
             />
             <i

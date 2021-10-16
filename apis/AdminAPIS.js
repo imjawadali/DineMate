@@ -765,7 +765,7 @@ module.exports = app => {
                                     })
                                 } else {
                                     tempDb.query(`SELECT o.orderNumber, o.customerStatus, o.tableId,
-                                        o.discountType, o.discount, o.tip, r.taxPercentage,
+                                        o.discountType, o.discount, o.pointsToRedeem, o.tip, r.taxPercentage,
                                         o.customerId, c.firstName, c.lastName,
                                         CONCAT('[',
                                             GROUP_CONCAT(
@@ -856,7 +856,7 @@ module.exports = app => {
                 TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
             ) as time,
             SUM(oi.totalPrice) as billAmount,
-            o.discount, o.discountType, o.tip, r.taxPercentage,
+            o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
             GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff
             FROM orders o 
             JOIN restaurants r ON r.restaurantId = o.restaurantId
@@ -872,13 +872,15 @@ module.exports = app => {
             (data) => {
                 if (data.length) {
                     for (let index = 0; index < data.length; index++) {
-                        const { discount, discountType, tip, taxPercentage, billAmount } = data[index]
+                        const { discount, discountType, pointsToRedeem, tip, taxPercentage, billAmount } = data[index]
                         let discountAmount = discount
                         if (discountType === '%')
                             discountAmount = (billAmount * discount) / 100
                         const subtotal = discountAmount < billAmount ? billAmount - discountAmount : 0
                         const taxAmount = (subtotal * taxPercentage) / 100
-                        data[index].billAmount = Number((subtotal + taxAmount + tip).toFixed(2))
+                        const redemptionAmount = Number(((pointsToRedeem * 2) / 100).toFixed(2))
+                        const amount = (subtotal + taxAmount + tip) - redemptionAmount
+                        data[index].billAmount = Number((amount > 0 ? amount : 0).toFixed(2))
                     }
                     return res.send(data)
                 } else {
@@ -926,7 +928,7 @@ module.exports = app => {
                         TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
                     ) as duration,
                     o.customerStatus, o.status, o.ready,
-                    o.discount, o.discountType, o.tip, r.taxPercentage
+                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
                     WHERE o.restaurantId = '${restaurantId}'
@@ -946,6 +948,8 @@ module.exports = app => {
                                 discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
                             const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
+                            const redemptionAmount = ((data.pointsToRedeem * 2) / 100).toFixed(2)
+                            const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
                             return res.send({
                                 createdAt: data.createdAt,
                                 closedAt: data.closedAt,
@@ -962,7 +966,9 @@ module.exports = app => {
                                 taxPercentage: data.taxPercentage + '%',
                                 taxAmount,
                                 tip: data.tip.toFixed(2),
-                                billAmount: (subtotal + Number(taxAmount) + data.tip).toFixed(2),
+                                pointsToRedeem: data.pointsToRedeem,
+                                redemptionAmount,
+                                billAmount: (amount > 0 ? amount : 0).toFixed(2),
                                 items
                             })
                         } else {
