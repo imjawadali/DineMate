@@ -34,22 +34,32 @@ function Restaurants(props) {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     let value = urlParams.get("value")
-    if (value) {
-      let obj = {
-        "searchBy": value
-      }
-
-      dispatch(customisedAction(SEARCH_RESTURANT, obj))
-      setShowMore(false)
-      // setResturants(searchResturant)
-    } else {
-      dispatch(customisedAction(GET_ALL_RESTAURANTS))
-      setShowMore(true)
-
-      // setResturants(allRestaurants)
-
-    }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        if (position && position.coords) {
+          const { latitude, longitude } = position.coords
+          fetchRestaurants(value, latitude, longitude)
+        } else fetchRestaurants(value, null, null)
+      },
+      error => fetchRestaurants(value, null, null)
+    )
   }, [window.location.search])
+
+  function fetchRestaurants(value, latitude, longitude) {
+    if (value) {
+      dispatch(customisedAction(SEARCH_RESTURANT, {
+        searchBy: value
+      }, {
+        latitude, longitude
+      }))
+      setShowMore(false)
+    } else {
+      dispatch(customisedAction(GET_ALL_RESTAURANTS, {}, {
+        latitude, longitude
+      }))
+      setShowMore(true)
+    }
+  }
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -95,7 +105,7 @@ function Restaurants(props) {
           })
           : <div className="notFound">
             <p>
-            not result found
+              not result found
             </p>
           </div>
         }

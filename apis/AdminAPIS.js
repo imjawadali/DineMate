@@ -159,6 +159,7 @@ module.exports = app => {
         if (!address) return res.status(422).send({ 'msg': 'Address is required!' })
         if (!city) return res.status(422).send({ 'msg': 'City is required!' })
         if (!country) return res.status(422).send({ 'msg': 'Country is required!' })
+        if (!latitude || !longitude) return res.status(422).send({ 'msg': 'Map location is required!' })
         if (!taxId) return res.status(422).send({ 'msg': 'Tax Id is required!' })
         if (!taxPercentage) return res.status(422).send({ 'msg': 'Tax percentage is required!' })
         if (!primaryContact) return res.status(422).send({ 'msg': 'Primary Contact fields are required!' })
@@ -194,10 +195,8 @@ module.exports = app => {
                             restaurant.address = address
                             restaurant.city = city
                             restaurant.country = country
-                            if (latitude)
-                                restaurant.latitude = latitude
-                            if (longitude)
-                                restaurant.longitude = longitude
+                            restaurant.latitude = latitude
+                            restaurant.longitude = longitude
                             restaurant.taxId = taxId
                             restaurant.taxPercentage = taxPercentage
                             if (customMessage)

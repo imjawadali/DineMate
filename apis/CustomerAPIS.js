@@ -530,10 +530,16 @@ module.exports = app => {
 
     app.get('/customer/getAllRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/getAllRestaurants")
+        console.log(req.query)
+        const { latitude, longitude } = req.query
         getConnection(
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
             R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
+            ${latitude && longitude ? `
+            ( 3959 * acos( cos( radians(${latitude}) ) * cos( radians( R.latitude ) ) 
+            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,
+            ` : '0 as distance,'}
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -546,7 +552,7 @@ module.exports = app => {
             JOIN categories c on c.restaurantId = R.restaurantId
             JOIN menu m on m.restaurantId = R.restaurantId
             GROUP BY R.restaurantId
-            ORDER BY R.createdAt DESC`,
+            ORDER BY distance ASC, R.createdAt DESC`,
             null,
             (body) => {
                 if (body.length) {
@@ -575,9 +581,15 @@ module.exports = app => {
 
     app.post('/customer/searchRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/searchRestaurants")
+        console.log(req.body, req.query)
         const { searchBy } = req.body
+        const { latitude, longitude } = req.query
         let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
         R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
+        ${latitude && longitude ? `
+            ( 3959 * acos( cos( radians(${latitude}) ) * cos( radians( R.latitude ) ) 
+            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,
+            ` : '0 as distance,'}
         CONCAT('[',
             GROUP_CONCAT(
                 DISTINCT CONCAT(
@@ -591,10 +603,12 @@ module.exports = app => {
         JOIN menu m on m.restaurantId = R.restaurantId
         ${searchBy ? `WHERE R.restaurantName LIKE '%${searchBy}%'
         OR R.cuisine LIKE '%${searchBy}%'
+        OR R.city LIKE '%${searchBy}%'
+        OR R.country LIKE '%${searchBy}%'
         OR c.name LIKE '%${searchBy}%'
         OR m.name LIKE '%${searchBy}%'` : ''}
         GROUP BY R.restaurantId
-        ORDER BY R.createdAt DESC`
+        ORDER BY distance ASC, R.createdAt DESC`
         getConnection(
             res,
             query,
@@ -1810,7 +1824,7 @@ module.exports = app => {
         console.log("\n\n>>> /customer/submitRating")
         console.log(req.body)
         const customerId = decrypt(req.header('authorization'))
-        const { restaurantId, orderNumber, rating } = req.body
+        const { restaurantId, orderNumber, rating, feedback } = req.body
         if (!customerId) return res.send({
             status: false,
             message: 'Not Authorized!',
@@ -1836,6 +1850,11 @@ module.exports = app => {
             message: 'Rating is invalid!',
             errorCode: 422
         })
+        if (feedback && typeof feedback !== 'string') return res.send({
+            status: false,
+            message: 'Invalid feedback!',
+            errorCode: 422
+        })
         getSecureConnection(
             res,
             customerId,
@@ -1855,8 +1874,8 @@ module.exports = app => {
                         res,
                         `INSERT INTO ratings SET ?
                         ON DUPLICATE KEY UPDATE
-                        orderNumber = '${orderNumber}', rating = ${rating}`,
-                        { customerId, restaurantId, orderNumber, rating },
+                        orderNumber = '${orderNumber}', rating = ${rating} ${feedback ? `, feedback = '${feedback}'` : ''}`,
+                        { customerId, restaurantId, orderNumber, rating, feedback: feedback || null },
                         (result) => {
                             if (result.affectedRows) {
                                 var indexOfExistingRating

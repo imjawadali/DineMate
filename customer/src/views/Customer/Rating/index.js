@@ -24,7 +24,27 @@ function Rating() {
 
     const submitRating = () => {
         const { restaurantId, orderNumber } = reward
-        dispatch(customisedAction(SUBMIT_RATING, { restaurantId, orderNumber, rating }))
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                if (position && position.coords) {
+                    const { latitude, longitude } = position.coords
+                    dispatch(customisedAction(SUBMIT_RATING, {
+                        restaurantId, orderNumber, rating
+                    }, {
+                        latitude, longitude
+                    }))
+                } else dispatch(customisedAction(SUBMIT_RATING, {
+                    restaurantId, orderNumber, rating
+                }, {
+                    latitude: null, longitude: null
+                }))
+            },
+            error => dispatch(customisedAction(SUBMIT_RATING, {
+                restaurantId, orderNumber, rating
+            }, {
+                latitude: null, longitude: null
+            }))
+        )
     }
 
     return (
@@ -41,16 +61,16 @@ function Rating() {
                 </div>
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
                     {reward && reward.pointsEarned ?
-                    <>
-                    <h1 style={{ margin: '10px 0px'}}><img style={{ width: 23, marginRight: 8 }} src={badge} />Congragulations!</h1>
-                    <h2 style={{ marginBottom: '20px'}}>
-                        You have earned
-                        <span style={{ margin: '0 10px', color: 'red' }}>{reward.pointsEarned}</span>
-                        Reward Points
-                    </h2>
-                    </>
-                    : null}
-                    <h1 style={{ margin: '10px 0px'}}>Rate Us Please</h1>
+                        <>
+                            <h1 style={{ margin: '10px 0px' }}><img style={{ width: 23, marginRight: 8 }} src={badge} />Congragulations!</h1>
+                            <h2 style={{ marginBottom: '20px' }}>
+                                You have earned
+                                <span style={{ margin: '0 10px', color: 'red' }}>{reward.pointsEarned}</span>
+                                Reward Points
+                            </h2>
+                        </>
+                        : null}
+                    <h1 style={{ margin: '10px 0px' }}>Rate Us Please</h1>
                     <StarRatings
                         value={rating}
                         isHalf={true}

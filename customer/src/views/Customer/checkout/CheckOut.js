@@ -262,7 +262,7 @@ function CheckOut(props) {
                             </select>
                         </div>
                         {payment !== 'cash' && stripeLoaded.successful ?
-                            <StripeProvider apiKey={"pk_test_51JRhRhAYACBOiDJuv9pN6Hx9uhGJStNAHmEg6dEcbvMW4aMydVT7K7nFSMDO1vlLOSqUmZ7oCRH0yl1WcU6MuK8J00UvJgVvIi"}>
+                            <StripeProvider apiKey={process.env.REACT_APP_STRIPE_PUBLISHABLE_TEST_KEY}>
                                 <Elements>
                                     <StripeForm
                                         orderDetails={orderDetail || {}}

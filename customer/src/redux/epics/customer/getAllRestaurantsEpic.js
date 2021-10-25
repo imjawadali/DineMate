@@ -27,10 +27,10 @@ export class getAllRestaurantsEpic {
         }
       }),
       switchMap(
-        async () => {
+        async ({ extras: { latitude, longitude } }) => {
           return generalizedEpic(
-            'get', 
-            API_ENDPOINTS.customer.getAllRestaurants,
+            'get',
+            `${API_ENDPOINTS.customer.getAllRestaurants}?latitude=${latitude}&longitude=${longitude}`,
             null,
             (resObj) => {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)
@@ -41,21 +41,21 @@ export class getAllRestaurantsEpic {
       )
     )
 
-    static submitRating = action$ =>
-      action$.pipe(
-        ofType(SUBMIT_RATING),
-        switchMap(
-          async ({ payload: { restaurantId, orderNumber, rating } }) => {
-            return generalizedEpic(
-              'post',
-              API_ENDPOINTS.customer.submitRating,
-              { restaurantId, orderNumber, rating },
-              (resObj) => {
-                return customisedAction(SUBMIT_RATING_SUCCESS, { message: resObj.message, type: 'success' })
-              },
-              SUBMIT_RATING_FAILURE
-            )
-          }
-        )
+  static submitRating = action$ =>
+    action$.pipe(
+      ofType(SUBMIT_RATING),
+      switchMap(
+        async ({ payload: { restaurantId, orderNumber, rating }, extras: { latitude, longitude } }) => {
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.submitRating,
+            { restaurantId, orderNumber, rating },
+            (resObj) => {
+              return customisedAction(SUBMIT_RATING_SUCCESS, { message: resObj.message, type: 'success' }, { latitude, longitude })
+            },
+            SUBMIT_RATING_FAILURE
+          )
+        }
       )
+    )
 }

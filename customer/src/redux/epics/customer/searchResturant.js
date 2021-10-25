@@ -15,11 +15,11 @@ export class searchResturantEpic {
     action$.pipe(
       ofType(SEARCH_RESTURANT),
       switchMap(
-        async ({ payload: obj}) => {
+        async ({ payload: { searchBy }, extras: { latitude, longitude }}) => {
           return generalizedEpic(
             'post', 
-            API_ENDPOINTS.customer.searchResturant,
-            obj,
+            `${API_ENDPOINTS.customer.searchResturant}?latitude=${latitude}&longitude=${longitude}`,
+            { searchBy },
             (resObj) => {
               return customisedAction(SEARCH_RESTURANT_SUCCESS, { restaurants: resObj.body, toast: { message: resObj.message, type: 'success' }})
             },

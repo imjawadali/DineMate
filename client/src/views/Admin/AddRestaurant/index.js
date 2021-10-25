@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useJsApiLoader } from '@react-google-maps/api'
 
 import { customisedAction } from '../../../redux/actions'
 import { SET_TOAST, SET_TOAST_DISMISSING, ADD_RESTAURANT } from '../../../constants'
 
-import { Button, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
+import { Button, Input, Modal, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
 import './styles.css'
 import { capitalizeFirstLetter } from '../../../helpers'
+import Map from '../Map'
 
 function AddRestaurant(props) {
+
+  const [center, setcenter] = useState({})
+  const [autocomplete, setautocomplete] = useState(null)
+  const [showMapModal, setshowMapModal] = useState(false)
+  const [searchText, setsearchText] = useState('')
 
   const [restaurantId, setrestaurantId] = useState('')
   const [restaurantName, setrestaurantName] = useState('')
@@ -33,7 +40,24 @@ function AddRestaurant(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude: lat, longitude: lng } = position.coords
+        setcenter({ lat, lng })
+      },
+      error => {
+        dispatch(customisedAction(SET_TOAST, {
+          message: error.message, type: 'error'
+        }))
+      }
+    )
   }, [])
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
+    libraries: ['places']
+  })
 
   const setRestaurantNameAndId = (name) => {
     let tempRestaurantId
@@ -61,6 +85,8 @@ function AddRestaurant(props) {
       return 'Restaurant Country Required!'
     if (!address)
       return 'Detailed Address Required!'
+    if (!latitude || !longitude)
+      return 'Map Location Required!'
     if (!taxId)
       return 'Tax ID Required!'
     if (!taxPercentage)
@@ -217,8 +243,36 @@ function AddRestaurant(props) {
           <SectionHeading text="Location" />
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
-              <SmallTitle text="Map" />
-              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }} />
+              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }}>
+                {isLoaded
+                  ? <>
+                    <Modal width={'80%'} height={'80%'} display={showMapModal}>
+                      <Map
+                        expanded
+                        center={center}
+                        setcenter={setcenter}
+                        searchText={searchText}
+                        setsearchText={setsearchText}
+                        autocomplete={autocomplete}
+                        setautocomplete={setautocomplete}
+                        setshowMapModal={setshowMapModal}
+                        setlatitude={setlatitude}
+                        setlongitude={setlongitude} />
+                    </Modal>
+                    <Map
+                      center={center}
+                      setcenter={setcenter}
+                      searchText={searchText}
+                      setsearchText={setsearchText}
+                      autocomplete={autocomplete}
+                      setautocomplete={setautocomplete}
+                      setshowMapModal={setshowMapModal}
+                      setlatitude={setlatitude}
+                      setlongitude={setlongitude} />
+                  </>
+                  : null
+                }
+              </div>
             </div>
           </div>
         </div>

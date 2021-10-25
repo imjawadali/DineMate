@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useJsApiLoader } from '@react-google-maps/api'
 
 import { customisedAction } from '../../../redux/actions'
 import { SET_TOAST, SET_TOAST_DISMISSING, UPDATE_RESTAURANT } from '../../../constants'
 
-import { Button, Input, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
+import { Button, Input, Modal, SectionHeading, SmallTitle, TitleWithAction } from '../../../components'
 import { capitalizeFirstLetter } from '../../../helpers'
+import Map from '../Map'
 
 function EditRestaurant(props) {
+
+  const [center, setcenter] = useState({})
+  const [autocomplete, setautocomplete] = useState(null)
+  const [showMapModal, setshowMapModal] = useState(false)
+  const [searchText, setsearchText] = useState('')
 
   const [restaurantId, setrestaurantId] = useState('')
   const [restaurantName, setrestaurantName] = useState('')
@@ -37,6 +44,12 @@ function EditRestaurant(props) {
       setaddress(restaurantToEdit.address)
       setcity(restaurantToEdit.city)
       setcountry(restaurantToEdit.country)
+      if (restaurantToEdit.latitude && restaurantToEdit.longitude)
+        setTimeout(() => {
+          setcenter({
+            lat: restaurantToEdit.latitude, lng: restaurantToEdit.longitude
+          })
+        }, 500);
       setlatitude(restaurantToEdit.latitude)
       setlongitude(restaurantToEdit.longitude)
       settaxId(restaurantToEdit.taxId)
@@ -45,6 +58,12 @@ function EditRestaurant(props) {
       setstripeConnectedAccountId(restaurantToEdit.stripeConnectedAccountId)
     }
   }, [])
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_KEY,
+    libraries: ['places']
+  })
 
   const validate = () => {
     if (!restaurantName)
@@ -57,6 +76,8 @@ function EditRestaurant(props) {
       return 'Restaurant Country Required!'
     if (!address)
       return 'Detailed Address Required!'
+    if (!latitude || !longitude)
+      return 'Map Location Required!'
     if (!taxId)
       return 'Tax ID Required!'
     if (!taxPercentage)
@@ -105,7 +126,7 @@ function EditRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Name" />
-              <Input 
+              <Input
                 placeholder="ABC Restaurant"
                 value={restaurantName}
                 onChange={({ target: { value } }) => setrestaurantName(value)}
@@ -113,7 +134,7 @@ function EditRestaurant(props) {
             </div>
             <div className="InputsInnerContainer">
               <SmallTitle text="Cuisine(s)" />
-              <Input 
+              <Input
                 placeholder="Traditional, Continental, ..."
                 value={cuisine}
                 onChange={({ target: { value } }) => setcuisine(value)}
@@ -125,9 +146,9 @@ function EditRestaurant(props) {
           <SectionHeading text="Other Details" />
           <div className="InputsContainer">
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Tax ID #" />
-                <Input 
+                <Input
                   placeholder="NTN-111000"
                   value={taxId}
                   onChange={({ target: { value } }) => settaxId(value)}
@@ -135,7 +156,7 @@ function EditRestaurant(props) {
               </div>
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="Tax Percentage %" />
-                <Input 
+                <Input
                   placeholder="7.5"
                   type='number'
                   value={taxPercentage}
@@ -170,16 +191,16 @@ function EditRestaurant(props) {
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
               <SmallTitle text="Detailed Address" />
-              <Input 
+              <Input
                 placeholder="Block - A, Street, State"
                 value={address}
                 onChange={({ target: { value } }) => setaddress(value)}
               />
             </div>
             <div className="InputsInnerContainer" style={{ flexDirection: 'row', paddingTop: '0px' }}>
-              <div className="InputsInnerContainer"  style={{ width: '50%', paddingRight: '7px' }}>
+              <div className="InputsInnerContainer" style={{ width: '50%', paddingRight: '7px' }}>
                 <SmallTitle text="Country" />
-                <Input 
+                <Input
                   placeholder="Canada"
                   value={country}
                   onChange={({ target: { value } }) => setcountry(value)}
@@ -187,7 +208,7 @@ function EditRestaurant(props) {
               </div>
               <div className="InputsInnerContainer" style={{ width: '50%', paddingLeft: '7px' }}>
                 <SmallTitle text="City" />
-                <Input 
+                <Input
                   placeholder="Toronto"
                   value={city}
                   onChange={({ target: { value } }) => setcity(value)}
@@ -200,8 +221,36 @@ function EditRestaurant(props) {
           <SectionHeading text="Location" />
           <div className="InputsContainer">
             <div className="InputsInnerContainer">
-              <SmallTitle text="Map" />
-              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }}/>
+              <div style={{ marginTop: '10px', width: '100%', height: '140px', background: 'rgba(0, 0, 0, 0.5)' }}>
+                {isLoaded
+                  ? <>
+                    <Modal width={'80%'} height={'80%'} display={showMapModal}>
+                      <Map
+                        expanded
+                        center={center}
+                        setcenter={setcenter}
+                        searchText={searchText}
+                        setsearchText={setsearchText}
+                        autocomplete={autocomplete}
+                        setautocomplete={setautocomplete}
+                        setshowMapModal={setshowMapModal}
+                        setlatitude={setlatitude}
+                        setlongitude={setlongitude} />
+                    </Modal>
+                    <Map
+                      center={center}
+                      setcenter={setcenter}
+                      searchText={searchText}
+                      setsearchText={setsearchText}
+                      autocomplete={autocomplete}
+                      setautocomplete={setautocomplete}
+                      setshowMapModal={setshowMapModal}
+                      setlatitude={setlatitude}
+                      setlongitude={setlongitude} />
+                  </>
+                  : null
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -213,9 +262,10 @@ function EditRestaurant(props) {
           lightAction={() => {
             dispatch(customisedAction(SET_TOAST_DISMISSING))
             dispatch(customisedAction(SET_TOAST, {
-            message: validate() || 'Updating restaurant in progress',
-            type: validate() ? 'error' : 'success'
-          }))}}
+              message: validate() || 'Updating restaurant in progress',
+              type: validate() ? 'error' : 'success'
+            }))
+          }}
           iconLeft={<i className="fa fa-paper-plane" />}
           onClick={() => editRestuarant()}
         />
