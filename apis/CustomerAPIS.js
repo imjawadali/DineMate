@@ -44,6 +44,7 @@ module.exports = app => {
                         body: {
                             id: result.insertId,
                             imageUrl: null,
+                            rewardPoints: 0,
                             firstName,
                             lastName,
                             email,
@@ -85,7 +86,7 @@ module.exports = app => {
             })
             getConnection(
                 res,
-                `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers
+                `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers
                 WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}'`,
                 null,
                 (data) => {
@@ -289,7 +290,7 @@ module.exports = app => {
                     (result) => {
                         getConnection(
                             res,
-                            `SELECT id, imageUrl, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                            `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
                             null,
                             (data) => {
                                 if (data.length)
@@ -528,18 +529,23 @@ module.exports = app => {
         })
     })
 
-    app.get('/customer/getAllRestaurants', async (req, res) => {
+    app.post('/customer/getAllRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/getAllRestaurants")
-        console.log(req.query)
-        const { latitude, longitude } = req.query
+        console.log(req.body)
+        const { latitude, longitude, city, pageNumber } = req.body
+        if (!city) return res.send({
+            status: false,
+            message: 'City is required!',
+            errorCode: 422
+        })
         getConnection(
             res,
             `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
             R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
             ${latitude && longitude ? `
             ( 3959 * acos( cos( radians(${latitude}) ) * cos( radians( R.latitude ) ) 
-            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,
-            ` : '0 as distance,'}
+            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,`
+                : '0 as distance,'}
             CONCAT('[',
                 GROUP_CONCAT(
                     DISTINCT CONCAT(
@@ -551,8 +557,10 @@ module.exports = app => {
             FROM restaurants R 
             JOIN categories c on c.restaurantId = R.restaurantId
             JOIN menu m on m.restaurantId = R.restaurantId
+            WHERE R.city LIKE '%${city}%'
             GROUP BY R.restaurantId
-            ORDER BY distance ASC, R.createdAt DESC`,
+            ORDER BY distance ASC, R.createdAt DESC
+            ${pageNumber ? `LIMIT ${(pageNumber * 5) - 5},5` : 'LIMIT 0,5'}`,
             null,
             (body) => {
                 if (body.length) {
@@ -571,7 +579,9 @@ module.exports = app => {
                 } else {
                     return res.send({
                         status: false,
-                        message: 'No reastaurants available!',
+                        message: pageNumber && pageNumber > 1
+                            ? 'No more reastaurants available!'
+                            : 'No reastaurants available!',
                         errorCode: 422
                     })
                 }
@@ -581,15 +591,19 @@ module.exports = app => {
 
     app.post('/customer/searchRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/searchRestaurants")
-        console.log(req.body, req.query)
-        const { searchBy } = req.body
-        const { latitude, longitude } = req.query
+        console.log(req.body)
+        const { searchBy, latitude, longitude, city, pageNumber } = req.body
+        if (!city) return res.send({
+            status: false,
+            message: 'City is required!',
+            errorCode: 422
+        })
         let query = `SELECT R.restaurantId, R.imageUrl, R.restaurantName, R.cuisine, R.rating, R.ratingCounts, R.city, R.address,
         R.stripeConnectedAccountId IS NOT NULL as isCardPaymentAllowed,
         ${latitude && longitude ? `
             ( 3959 * acos( cos( radians(${latitude}) ) * cos( radians( R.latitude ) ) 
-            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,
-            ` : '0 as distance,'}
+            * cos( radians( R.longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin(radians(R.latitude)) ) ) AS distance,`
+                : '0 as distance,'}
         CONCAT('[',
             GROUP_CONCAT(
                 DISTINCT CONCAT(
@@ -601,14 +615,15 @@ module.exports = app => {
         FROM restaurants R 
         JOIN categories c on c.restaurantId = R.restaurantId
         JOIN menu m on m.restaurantId = R.restaurantId
-        ${searchBy ? `WHERE R.restaurantName LIKE '%${searchBy}%'
+        WHERE R.city LIKE '%${city}%'
+        ${searchBy ? `AND (R.restaurantName LIKE '%${searchBy}%'
         OR R.cuisine LIKE '%${searchBy}%'
-        OR R.city LIKE '%${searchBy}%'
         OR R.country LIKE '%${searchBy}%'
         OR c.name LIKE '%${searchBy}%'
-        OR m.name LIKE '%${searchBy}%'` : ''}
+        OR m.name LIKE '%${searchBy}%')` : ''}
         GROUP BY R.restaurantId
-        ORDER BY distance ASC, R.createdAt DESC`
+        ORDER BY distance ASC, R.createdAt DESC
+        ${pageNumber ? `LIMIT ${(pageNumber * 5) - 5},5` : 'LIMIT 0,5'}`
         getConnection(
             res,
             query,
@@ -630,7 +645,9 @@ module.exports = app => {
                 } else {
                     return res.send({
                         status: false,
-                        message: 'No match found!',
+                        message: pageNumber && pageNumber > 1
+                            ? 'No more reastaurants available!'
+                            : 'No match found!',
                         errorCode: 422
                     })
                 }
@@ -796,61 +813,73 @@ module.exports = app => {
                         `SELECT restaurantName FROM restaurants WHERE restaurantID = '${restaurantId}'`,
                         null,
                         (restuarantData) => {
-                            const restaurantName = restuarantData[0].restaurantName
-                            getConnection(
-                                res,
-                                `SELECT mergeId FROM restaurantsQrs WHERE value = '${tableId}' AND restaurantID = '${restaurantId}'`,
-                                null,
-                                (result2) => {
-                                    getConnection(
-                                        res,
-                                        `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
-                                        VALUES ( '${restaurantId}', '${result2.length && result2[0].mergeId ? result2[0].mergeId : tableId}', ${customerId}, 
-                                        'Dine-In', ${Number(result.length ? result[0].orderNumber : 0) + 1})`,
-                                        null,
-                                        (result3) => {
-                                            if (result3.affectedRows) {
-                                                getConnection(
-                                                    res,
-                                                    `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
-                                                    null,
-                                                    (result) => {
-                                                        if (result.length) {
-                                                            var registration_ids = result.map(each => each['fcmToken'])
-                                                            sendNotification({
-                                                                registration_ids,
-                                                                data: {
-                                                                    title: 'DineMate',
-                                                                    body: JSON.stringify({
-                                                                        roles: ['Admin', 'Staff'],
-                                                                        type: 'DASHBOARD',
-                                                                        restaurantId
+                            if (restuarantData && restuarantData.length) {
+                                const restaurantName = restuarantData[0].restaurantName
+                                getConnection(
+                                    res,
+                                    `SELECT mergeId FROM restaurantsQrs WHERE value = '${tableId}' AND restaurantID = '${restaurantId}'`,
+                                    null,
+                                    (result2) => {
+                                        if (result2 && result2.length) {
+                                            getConnection(
+                                                res,
+                                                `INSERT INTO orders ( restaurantId, tableId, customerId, type, orderNumber ) 
+                                            VALUES ( '${restaurantId}', '${result2.length && result2[0].mergeId ? result2[0].mergeId : tableId}', ${customerId}, 
+                                            'Dine-In', ${Number(result.length ? result[0].orderNumber : 0) + 1})`,
+                                                null,
+                                                (result3) => {
+                                                    if (result3.affectedRows) {
+                                                        getConnection(
+                                                            res,
+                                                            `SELECT fcmToken FROM users WHERE restaurantId = '${restaurantId}' AND (role = 'Admin' || role = 'Staff') AND active = 1`,
+                                                            null,
+                                                            (result) => {
+                                                                if (result.length) {
+                                                                    var registration_ids = result.map(each => each['fcmToken'])
+                                                                    sendNotification({
+                                                                        registration_ids,
+                                                                        data: {
+                                                                            title: 'DineMate',
+                                                                            body: JSON.stringify({
+                                                                                roles: ['Admin', 'Staff'],
+                                                                                type: 'DASHBOARD',
+                                                                                restaurantId
+                                                                            })
+                                                                        }
                                                                     })
                                                                 }
-                                                            })
-                                                        }
-                                                    }
-                                                )
-                                                return res.send({
-                                                    status: true,
-                                                    message: 'Order Initialized Successfully!',
-                                                    body: {
-                                                        orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
-                                                        restaurantId,
-                                                        restaurantName,
-                                                        tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId,
-                                                        type: 'Dine-In'
-                                                    }
-                                                })
-                                            } else return res.send({
-                                                status: false,
-                                                message: 'Failed to initialize order!',
-                                                errorCode: 422
-                                            })
-                                        }
-                                    )
-                                }
-                            )
+                                                            }
+                                                        )
+                                                        return res.send({
+                                                            status: true,
+                                                            message: 'Order Initialized Successfully!',
+                                                            body: {
+                                                                orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
+                                                                restaurantId,
+                                                                restaurantName,
+                                                                tableId: result2.length && result2[0].mergeId ? result2[0].mergeId : tableId,
+                                                                type: 'Dine-In'
+                                                            }
+                                                        })
+                                                    } else return res.send({
+                                                        status: false,
+                                                        message: 'Failed to initialize order!',
+                                                        errorCode: 422
+                                                    })
+                                                }
+                                            )
+                                        } else return res.send({
+                                            status: false,
+                                            message: 'Invalid QR!',
+                                            errorCode: 422
+                                        })
+                                    }
+                                )
+                            } else return res.send({
+                                status: false,
+                                message: 'This restaurant don\'t exist in our system!',
+                                errorCode: 422
+                            })
                         }
                     )
                 }

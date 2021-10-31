@@ -39,7 +39,8 @@ import {
   SUBMIT_RATING_SUCCESS,
   APPLY_REWARD_POINTS_SUCCESS,
   APPLY_REWARD_POINTS,
-  APPLY_REWARD_POINTS_FAILURE
+  APPLY_REWARD_POINTS_FAILURE,
+  SEARCH_RESTURANT_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -65,6 +66,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case SET_FCM_TOKEN_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_ALL_RESTAURANTS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case SEARCH_RESTURANT_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_MENU_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }

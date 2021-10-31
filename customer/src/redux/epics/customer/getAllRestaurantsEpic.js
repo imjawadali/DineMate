@@ -27,11 +27,11 @@ export class getAllRestaurantsEpic {
         }
       }),
       switchMap(
-        async ({ extras: { latitude, longitude } }) => {
+        async ({ payload: { pageNumber }, extras: { latitude, longitude, city } }) => {
           return generalizedEpic(
-            'get',
-            `${API_ENDPOINTS.customer.getAllRestaurants}?latitude=${latitude}&longitude=${longitude}`,
-            null,
+            'post',
+            `${API_ENDPOINTS.customer.getAllRestaurants}`,
+            { latitude, longitude, city, pageNumber },
             (resObj) => {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)
             },
@@ -45,13 +45,13 @@ export class getAllRestaurantsEpic {
     action$.pipe(
       ofType(SUBMIT_RATING),
       switchMap(
-        async ({ payload: { restaurantId, orderNumber, rating }, extras: { latitude, longitude } }) => {
+        async ({ payload: { restaurantId, orderNumber, rating }, extras: { latitude, longitude, city } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.submitRating,
             { restaurantId, orderNumber, rating },
             (resObj) => {
-              return customisedAction(SUBMIT_RATING_SUCCESS, { message: resObj.message, type: 'success' }, { latitude, longitude })
+              return customisedAction(SUBMIT_RATING_SUCCESS, { message: resObj.message, type: 'success' }, { latitude, longitude, city })
             },
             SUBMIT_RATING_FAILURE
           )

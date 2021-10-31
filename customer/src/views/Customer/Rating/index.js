@@ -14,6 +14,9 @@ import badge from '../../../assets/badge.png';
 function Rating() {
     const [rating, setrating] = useState(5);
 
+    const latitude = useSelector(({ restaurantsReducer }) => restaurantsReducer.latitude)
+    const longitude = useSelector(({ restaurantsReducer }) => restaurantsReducer.longitude)
+    const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
     const showRatingDialog = useSelector(({ ratingAndRewardReducer }) => ratingAndRewardReducer.showRatingDialog)
     const reward = useSelector(({ ratingAndRewardReducer }) => ratingAndRewardReducer.reward)
     const dispatch = useDispatch()
@@ -24,27 +27,7 @@ function Rating() {
 
     const submitRating = () => {
         const { restaurantId, orderNumber } = reward
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                if (position && position.coords) {
-                    const { latitude, longitude } = position.coords
-                    dispatch(customisedAction(SUBMIT_RATING, {
-                        restaurantId, orderNumber, rating
-                    }, {
-                        latitude, longitude
-                    }))
-                } else dispatch(customisedAction(SUBMIT_RATING, {
-                    restaurantId, orderNumber, rating
-                }, {
-                    latitude: null, longitude: null
-                }))
-            },
-            error => dispatch(customisedAction(SUBMIT_RATING, {
-                restaurantId, orderNumber, rating
-            }, {
-                latitude: null, longitude: null
-            }))
-        )
+        dispatch(customisedAction(SUBMIT_RATING, { restaurantId, orderNumber, rating }, { latitude, longitude, city }))
     }
 
     return (

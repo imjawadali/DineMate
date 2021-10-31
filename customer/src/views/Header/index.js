@@ -7,17 +7,19 @@ import { useRouteMatch } from 'react-router-dom';
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_ORDER_STATUS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, INITIALIZE_ORDER, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, LOCATION_REQUIRED, SET_LOCATION, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
 import HeaderImg from '../../assets/header.png';
+import { RestClient } from '../../services/network';
 
 const Header = props => {
 
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const submitOrderDetail = useSelector(({ orderReducer }) => orderReducer.submitDetail)
+    const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
     const match = useRouteMatch('/:restaurantId/:tableId');
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
@@ -412,6 +414,26 @@ const Header = props => {
     }, [items, orderDetail, orderDetails, takeOrderItems, orderStatusDetails])
 
     useEffect(() => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                if (position && position.coords) {
+                    const { latitude, longitude } = position.coords
+                    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_KEY}`)
+                        .then(r => r.json().then(data => ({ status: r.status, body: data })))
+                        .then(response => {
+                            if (response.status === 200 && response.body && response.body.plus_code && response.body.plus_code.compound_code) {
+                                const { compound_code } = response.body.plus_code
+                                const city = compound_code.split(',')[1].trim()
+                                dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city }))
+                            } else {
+                                console.log(response)
+                                dispatch(customisedAction(LOCATION_REQUIRED))
+                            }
+                        })
+                } else dispatch(customisedAction(LOCATION_REQUIRED))
+            },
+            () => dispatch(customisedAction(LOCATION_REQUIRED))
+        )
         dispatch(customisedAction(GET_GENERIC_DATA))
     }, [])
 
@@ -432,7 +454,9 @@ const Header = props => {
                                         <img className="HeaderInputIcon" src={require('../../assets/marker.png').default} />
                                         <input
                                             className="HeaderInput"
-                                            placeholder="Mississauga"
+                                            placeholder="Location required"
+                                            defaultValue={city}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
@@ -665,12 +689,12 @@ const Header = props => {
 
                                             </div>
                                         </div>
-                                            <div className="orderSubBtn">
-                                                <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : !orderDetail || (orderDetail.type.toLowerCase() === "take-away") ? `Process Payment` : `Submit Order`}</button>
-                                                {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
-                                                    <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout'); }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
-                                                    : null}
-                                            </div>
+                                        <div className="orderSubBtn">
+                                            <button className="submitOrder" onClick={() => { orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? submitOrder() : submitTakeAway() }} disabled={getItem('cartMenu') ? false : true}>{OrderItems && orderDetail && orderDetail.type.toLowerCase() === "dine-in" ? `Add to Order` : !orderDetail || (orderDetail.type.toLowerCase() === "take-away") ? `Process Payment` : `Submit Order`}</button>
+                                            {orderDetail && orderDetail.type.toLowerCase() === "dine-in" ?
+                                                <button className="addItem" onClick={() => { toggleCartModal(); props.history.push('/customer/checkout'); }} disabled={getItem('cartMenu') ? true : false}>Close Order</button>
+                                                : null}
+                                        </div>
                                         {/* // } */}
                                     </div>
                                 </div>

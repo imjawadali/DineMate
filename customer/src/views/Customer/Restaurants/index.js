@@ -11,15 +11,16 @@ import './styles.css'
 
 function Restaurants(props) {
 
+  const [value, setValue] = useState(null)
+  const [resturants, setResturants] = useState([])
+  const [pageNumber, setpageNumber] = useState(1)
+
+  const latitude = useSelector(({ restaurantsReducer }) => restaurantsReducer.latitude)
+  const longitude = useSelector(({ restaurantsReducer }) => restaurantsReducer.longitude)
+  const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
   const fetchingRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.fetchingRestaurants)
   const allRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurants)
-  const searchResturant = useSelector(({ serachResturantReducer }) => serachResturantReducer.restaurants)
-  const [resturants, setResturants] = useState([])
-  const [showMore, setShowMore] = useState(true)
   const dispatch = useDispatch()
-
-  useEffect(() => {
-  }, [])
 
   useEffect(() => {
     const OrderDetails = getItem('orderDetails')
@@ -28,58 +29,38 @@ function Restaurants(props) {
         props.history.push(`/customer/${OrderDetails.restaurantId}/menu`)
       }
     }
-
   }, [])
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    let value = urlParams.get("value")
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        if (position && position.coords) {
-          const { latitude, longitude } = position.coords
-          fetchRestaurants(value, latitude, longitude)
-        } else fetchRestaurants(value, null, null)
-      },
-      error => fetchRestaurants(value, null, null)
-    )
+    const searchText = urlParams.get("value")
+    setResturants([])
+    setpageNumber(1)
+    setValue(searchText)
   }, [window.location.search])
 
-  function fetchRestaurants(value, latitude, longitude) {
-    if (value) {
-      dispatch(customisedAction(SEARCH_RESTURANT, {
-        searchBy: value
-      }, {
-        latitude, longitude
-      }))
-      setShowMore(false)
-    } else {
-      dispatch(customisedAction(GET_ALL_RESTAURANTS, {}, {
-        latitude, longitude
-      }))
-      setShowMore(true)
+  useEffect(() => {
+    if (city) {
+      if (value) {
+        dispatch(customisedAction(SEARCH_RESTURANT, { searchBy: value, pageNumber }, { latitude, longitude, city }))
+      } else {
+        dispatch(customisedAction(GET_ALL_RESTAURANTS, { pageNumber }, { latitude, longitude, city }))
+      }
     }
-  }
+  }, [city, value, pageNumber])
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    let value = urlParams.get("value")
-    if (value) {
-      setResturants(searchResturant)
-    } else {
-      setResturants(allRestaurants)
-
-    }
-  }, [window.location.search, searchResturant, allRestaurants])
+    if (pageNumber && pageNumber > 1) {
+      const restaurants = [...resturants, ...allRestaurants]
+      setResturants(restaurants)
+    } else setResturants(allRestaurants)
+  }, [allRestaurants])
 
   return (
     <div>
       <div className="image_holder">
         <img src={require("../../../assets/bgimage.png").default} style={{ width: '100%', marginTop: -60 }} />
       </div>
-
-
-
       <div className="heading-container">
         <Title text="All Restaurants" />
       </div>
@@ -105,17 +86,17 @@ function Restaurants(props) {
           })
           : <div className="notFound">
             <p>
-              not result found
+              {fetchingRestaurants ? 'Fetching Restaurants . . .' : !city ? 'Trying to get location to fetch restaurants' : 'No result found'}
             </p>
           </div>
         }
       </div>
-
-
-
-      {showMore ?
+      {resturants && resturants.length ?
         <div style={{ display: 'flex', justifyContent: 'center', }} className="button-container-resturant">
-          <button className="resturant-button">Show More</button>
+          <button onClick={() => !fetchingRestaurants
+            ? setpageNumber(pageNumber + 1)
+            : null
+          } className="resturant-button">Show More</button>
         </div>
         : null}
     </div>

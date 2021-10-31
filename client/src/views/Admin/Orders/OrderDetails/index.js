@@ -258,7 +258,8 @@ function OrderDetails(props) {
                   || deletingOrder
                   || applyingDiscount ?
                   0.5 : ''
-              }}>
+              }}
+              onClick={() => window.open("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", "PRINT", "height=400,width=600")}>
               <td style={{ color: 'white', padding: '0px' }}>Print</td>
             </div>
           </div>

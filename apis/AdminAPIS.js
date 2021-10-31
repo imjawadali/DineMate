@@ -576,7 +576,10 @@ module.exports = app => {
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             } else {
                                 for (let i = 0; i < array.length; i++) {
-                                    tempDb.query(`UPDATE genericData SET value = '${array[i].value}' WHERE name = '${array[i].key}'`, function (error) {
+                                    tempDb.query(`INSERT INTO genericData SET ?
+                                        ON DUPLICATE KEY UPDATE value = '${array[i].value}'`,
+                                        { name: array[i].key, value: array[i].value },
+                                        function (error) {
                                         if (!!error) {
                                             console.log('TableError', error.sqlMessage)
                                             tempDb.rollback(function () {
