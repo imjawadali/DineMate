@@ -7,7 +7,10 @@ import {
   CLOSE_ORDER,
   CLOSE_ORDER_SUCCESS,
   CLOSE_ORDER_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  GENERATE_RECEIPT,
+  GENERATE_RECEIPT_SUCCESS,
+  GENERATE_RECEIPT_FAILURE
 } from '../../../constants'
 
 export class closeOrderEpic {
@@ -28,4 +31,25 @@ export class closeOrderEpic {
         }
       )
     )
+
+    static generateReceipt = action$ =>
+      action$.pipe(
+        ofType(GENERATE_RECEIPT),
+        switchMap(
+          async ({ payload: { restaurantId, orderNumber, history } }) => {
+            return generalizedEpic(
+              'post', 
+              API_ENDPOINTS.admin.generateReceipt,
+              { restaurantId, orderNumber },
+              (resObj) => {
+                setTimeout(() => {
+                  window.open(resObj.receiptUrl, "PRINT", "height='100%'")
+                }, 0);
+                return customisedAction(GENERATE_RECEIPT_SUCCESS)
+              },
+              GENERATE_RECEIPT_FAILURE
+            )
+          }
+        )
+      )
 }

@@ -39,7 +39,6 @@ import {
   DELETE_USER_FAILURE,
   GET_RESTAURANT_DASHBOARD,
   MERGE_TABLES,
-  GET_SERVICES_QUE_FAILURE,
   UN_MERGE_TABLES,
   MERGE_TABLES_FAILURE,
   UN_MERGE_TABLES_FAILURE,
@@ -121,7 +120,12 @@ import {
   SPLIT_ITEM,
   DELETE_QRS,
   DELETE_QRS_SUCCESS,
-  DELETE_QRS_FAILURE
+  DELETE_QRS_FAILURE,
+  GENERATE_RECEIPT,
+  GENERATE_RECEIPT_SUCCESS,
+  SPLIT_ITEM_SUCCESS,
+  SPLIT_ITEM_FAILURE,
+  GENERATE_RECEIPT_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -268,11 +272,16 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case CLOSE_ORDER_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+    case GENERATE_RECEIPT:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Generating print receipt', type: 'success' } }
+    case GENERATE_RECEIPT_SUCCESS:
+      return { ...state, toastSetDismiss: true }
+    case GENERATE_RECEIPT_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case SPLIT_ITEM:
       return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted item', type: 'success' } }
-    case CLOSE_ORDER_SUCCESS:
-      return { ...state, toastSetDismiss: true, toast: payload }
-    case CLOSE_ORDER_FAILURE:
+    case SPLIT_ITEM_SUCCESS:
+    case SPLIT_ITEM_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case MERGE_TABLES:
       return { ...state, toast: { message: 'Merging Tables', type: 'success' } }

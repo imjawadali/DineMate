@@ -1,9 +1,12 @@
 const uuid = require('uuid').v4
+const path = require('path')
+var fs = require("fs");
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlCustomer')
 const { sendEmail } = require('../services/mailer')
 const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
+const { generaterReceipt } = require('../services/receiptGenerator')
 
 const URL = 'https://dinemate.com'
 
@@ -2306,6 +2309,176 @@ module.exports = app => {
             }
         })
     })
+
+    app.post('/customer/generateReceipt', async (req, res) => {
+        console.log("\n\n>>> /customer/generateReceipt")
+        console.log(req.body)
+        const customerId = decrypt(req.header('authorization'))
+        const { restaurantId, orderNumber } = req.body
+        if (!customerId) return res.send({
+            status: false,
+            message: 'Not Authorized!',
+            errorCode: 401
+        })
+        if (!restaurantId) return res.send({
+            status: false,
+            message: 'Restuatant Id is required!',
+            errorCode: 422
+        })
+        if (!orderNumber) return res.send({
+            status: false,
+            message: 'Order number is required!',
+            errorCode: 422
+        })
+        getSecureConnection(
+            res,
+            customerId,
+            `SELECT receiptUrl from orders WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
+            null,
+            (result) => {
+                if (result && result.length) {
+                    const { receiptUrl } = result[0]
+                    if (!receiptUrl) {
+                        getConnection(
+                            res,
+                            `SELECT oi.name, oi.quantity, oi.totalPrice,
+                            CONCAT('[',
+                                GROUP_CONCAT(
+                                    CONCAT(
+                                        '{"addOnName":"',oia.addOnName,
+                                        '","addOnOption":"',oia.addOnOption,
+                                        '","price":',oia.price,'}'
+                                    ) ORDER BY oi.createdAt DESC
+                                ),
+                            ']') as addOns,
+                            oi.specialInstructions
+                            FROM orderItems oi
+                            LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+                            WHERE oi.restaurantId = '${restaurantId}'
+                            AND oi.orderNumber = '${orderNumber}'
+                            GROUP BY oi.id`,
+                            null,
+                            (items) => {
+                                if (items && items.length) {
+                                    for (let index = 0; index < items.length; index++) {
+                                        const { addOns, totalPrice } = items[index]
+                                        items[index].totalPrice = totalPrice.toFixed(2)
+                                        items[index].addOns = formatAddOns(addOns)
+                                    }
+                                }
+                                getConnection(
+                                    res,
+                                    `SELECT r.restaurantName, r.address, r.city, r.customMessage, r.taxId,
+                                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
+                                    GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff,
+                                    o.closedAt, o.type, o.tableId,
+                                    SUM(oi.totalPrice) as foodTotal
+                                    FROM orders o
+                                    JOIN restaurants r ON o.restaurantId = r.restaurantId
+                                    LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
+                                    LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
+                                    LEFT JOIN users u ON u.id = sat.staffId
+                                    WHERE o.restaurantId = '${restaurantId}'
+                                    AND o.orderNumber = '${orderNumber}'`,
+                                    null,
+                                    (result) => {
+                                        const data = result[0]
+                                        let discountAmount = data.discount.toFixed(2)
+                                        if (data.discountType === '%')
+                                            discountAmount = ((data.foodTotal * data.discount) / 100).toFixed(2)
+                                        const subtotal = discountAmount < data.foodTotal ? data.foodTotal - discountAmount : 0
+                                        const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
+                                        const redemptionAmount = ((data.pointsToRedeem * 2) / 100).toFixed(2)
+                                        const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
+
+                                        const receipt = {
+                                            restaurantId,
+                                            orderNumber,
+                                            restaurantName: data.restaurantName,
+                                            address: data.address,
+                                            city: data.city,
+                                            state: data.state,
+                                            postalCode: data.postalCode,
+                                            phoneNumber: data.phoneNumber,
+                                            staff: data.staff,
+                                            closingTime: data.closedAt,
+                                            type: data.type,
+                                            tableId: data.tableId,
+                                            items,
+                                            foodTotal: (data.foodTotal || 0).toFixed(2),
+                                            discount: data.discount + `${data.discountType}`,
+                                            discountAmount,
+                                            subtotal: subtotal.toFixed(2),
+                                            taxPercentage: data.taxPercentage + '%',
+                                            taxAmount,
+                                            checkTotal: (subtotal + Number(taxAmount)).toFixed(2),
+                                            tip: data.tip.toFixed(2),
+                                            pointsToRedeem: data.pointsToRedeem,
+                                            redemptionAmount,
+                                            billAmount: (amount > 0 ? amount : 0).toFixed(2),
+                                            customMessage: data.customMessage,
+                                            taxId: data.taxId
+                                        }
+                                        generaterReceipt(
+                                            receipt,
+                                            () => {
+                                                fs.readFile(path.resolve(__dirname, '../services/receipt', `${restaurantId}_${orderNumber}.pdf`), function (error, data) {
+                                                    if (error) return res.send({
+                                                        status: false,
+                                                        message: error.message,
+                                                        errorCode: 422
+                                                    })
+                                                    const params = {
+                                                        Bucket: process.env.AWS_BUCKET_NAME,
+                                                        Key: `${restaurantId}_${orderNumber}.pdf`,
+                                                        Body: data,
+                                                        ContentDisposition: "inline",
+                                                        ContentType: "application/pdf"
+                                                    }
+
+                                                    s3.upload(params, (error, data) => {
+                                                        fs.unlinkSync(path.resolve(__dirname, '../services/receipt', `${restaurantId}_${orderNumber}.pdf`))
+                                                        if (error) return res.send({
+                                                            status: false,
+                                                            message: error.message,
+                                                            errorCode: 422
+                                                        })
+                                                        getConnection(
+                                                            res,
+                                                            `UPDATE orders SET ? WHERE restaurantId = '${restaurantId}' AND orderNumber = '${orderNumber}'`,
+                                                            { receiptUrl: data.Location },
+                                                            () => res.send({
+                                                                status: true,
+                                                                message: 'Receipt generated successfully!',
+                                                                body: { receiptUrl: data.Location }
+                                                            })
+                                                        )
+                                                    })
+                                                })
+                                            },
+                                            (error) => res.send({
+                                                status: false,
+                                                message: error.message,
+                                                errorCode: 422
+                                            })
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    } else return res.send({
+                        status: true,
+                        message: 'Receipt already generated!',
+                        body: { receiptUrl }
+                    })
+                } else return res.send({
+                    status: false,
+                    message: 'No Order details available!',
+                    errorCode: 422
+                })
+            }
+        )
+    })
 }
 
 function decrypt(token) {
@@ -2347,4 +2520,13 @@ function registerRestaurantMessage(data) {
 
 function forgotPasswordMessage(link) {
     return `Welcome Back!\n\nVisit the following link to reset your login password:\n${link}`
+}
+
+function formatAddOns(addOnsString) {
+    const addOns = JSON.parse(addOnsString)
+    let formattedAddOnsString
+    if (addOns && addOns.length)
+        formattedAddOnsString = addOns.map(addOn => `${addOn.addOnOption && addOn.addOnOption !== 'null' && addOn.addOnOption !== 'undefined' ? addOn.addOnOption : addOn.addOnName}${addOn.price ? ` ($${addOn.price})` : ''}`)
+            .join(', ')
+    return formattedAddOnsString;
 }

@@ -46,7 +46,9 @@ function ItemsList(props) {
                                         <p>{addOnsArray && addOnsArray.length ?
                                             addOnsArray.map((addon, index) => {
                                                 return (`
-                                                    ${addon.addOnOption && addon.addOnOption !== 'null' ?
+                                                    ${addon.addOnOption
+                                                        && addon.addOnOption !== 'null'
+                                                        && addon.addOnOption !== 'undefined' ?
                                                         addon.addOnOption : addon.addOnName}
                                                     ${addon.price ? '($' + addon.price.toFixed(2) + ')' : ''}
                                                     ${index !== addOnsArray.length - 1 ? ',' : ''}

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useReactToPrint } from 'react-to-print'
 import QRCode from "qrcode.react";
 
 import { CUSTOMER_APP_URL, SET_TABLE_NAME } from '../../../../constants'
@@ -9,6 +10,7 @@ import './styles.css'
 
 function TableDetails(props) {
 
+  const qrRef = useRef()
   const [selectedTable, setselectedTable] = useState(null)
   const [tableName, settableName] = useState('')
   
@@ -39,6 +41,10 @@ function TableDetails(props) {
     document.body.removeChild(downloadLink);
   }
 
+  const print = useReactToPrint({
+    content: () => qrRef.current
+  })
+
   return (
     <div className="Container">
       <TitleWithAction
@@ -50,7 +56,7 @@ function TableDetails(props) {
         />}
         button={<div className="QrButtonsContainer">
           <i className="fa fa-download fa-2x" onClick={() => downloadQR()}/>
-          <i className="fa fa-print fa-2x" onClick={() => window.print()}/>
+          <i className="fa fa-print fa-2x" onClick={() => print()}/>
         </div>}
       />
       {selectedTable ?
@@ -99,7 +105,7 @@ function TableDetails(props) {
               : null}
             </div>
           </div>
-          <div className="QrInnerContainer">
+          <div ref={qrRef} className="QrInnerContainer">
             <QRCode
               id={selectedTable.id}
               value={CUSTOMER_APP_URL+state.restaurantId+"/"+selectedTable.value}

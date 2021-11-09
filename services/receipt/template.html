@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>DineMate Receipt</title>
+  <style>
+    * {
+      font-size: 8px;
+    }
+
+    body {
+      width: 70mm;
+      /* border: solid 1px black; */
+      text-align: center;
+    }
+
+    p {
+      line-height: 0.1;
+    }
+    
+    tr.spacingUp td {
+      padding-top: 10px;
+    }
+    
+    tr.spacingDown td {
+      padding-bottom: 10px;
+    }
+
+    .red {
+      color: red;
+    }
+
+    .bold {
+      font-weight: bold !important;
+    }
+
+    .spaceAround {
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="invoice">
+    <p class="red">DineMate Receipt</p>
+    <br />
+
+    <p class="bold">{{receipt.restaurantName}}</p>
+    <p>{{receipt.address}}</p>
+    <p>{{receipt.city}}, {{receipt.state}} {{receipt.postalCode}}</p>
+    <p>{{receipt.phoneNumber}}</p>
+    <p>https://www.dinemate.com/customer/{{receipt.restaurantId}}/menu</p>
+    <br />
+
+    <p class="bold" style="font-weight: bolder;">Check # {{receipt.orderNumber}}</p>
+    <p style="text-align:left;">
+      Staff: {{receipt.staff}}
+      <span style="float:right;">
+        Time: {{receipt.closingTime}}
+      </span>
+    </p>
+    <br />
+
+    <table style="width: 100%;">
+      <thead>
+        <tr>
+          <th class="bold">Qty</th>
+          <th />
+          <th class="bold spaceAround" style="text-align:left;">Item</th>
+          <th class="bold">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each receipt.items}}
+        <tr>
+          <td>{{this.quantity}}</td>
+          <th>x</th>
+          <td class="spaceAround" style="text-align:left;">
+            <span>{{this.name}}</span>
+            <span style="display: block; color: grey;">{{this.addOns}}</span>
+            <span style="display: block; color: lightcoral; font-style: italic;">{{this.specialInstructions}}</span>
+          </td>
+          <td style="text-align:right;">${{this.totalPrice}}</td>
+        </tr>
+        {{/each}}
+        <tr class="spacingUp">
+          <td style="text-align:right;" colspan="3">Food Total:</td>
+          <td style="text-align:right;">${{receipt.foodTotal}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;" colspan="3">Discount ({{receipt.discount}}):</td>
+          <td class="red" style="text-align:right; border-bottom: solid 1px;">-${{receipt.discountAmount}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;" colspan="3">Sub Total:</td>
+          <td style="text-align:right;">${{receipt.subtotal}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;" colspan="3">Tax ({{receipt.taxPercentage}}):</td>
+          <td style="text-align:right; border-bottom: solid 1px;">+${{receipt.taxAmount}}</td>
+        </tr>
+        <tr class="spacingDown">
+          <td class="bold" style="text-align:right;" colspan="3">Check Total:</td>
+          <td class="bold" style="text-align:right;">${{receipt.checkTotal}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;" colspan="3">Tip:</td>
+          <td style="text-align:right;">+${{receipt.tip}}</td>
+        </tr>
+        <tr>
+          <td style="text-align:right;" colspan="3">{{receipt.pointsToRedeem}} Reward Points:</td>
+          <td class="red" style="text-align:right; border-bottom: solid 1px;">-${{receipt.redemptionAmount}}</td>
+        </tr>
+        <tr>
+          <td class="bold" style="text-align:right;" colspan="3">Total Payable:</td>
+          <td class="bold" style="text-align:right;">${{receipt.billAmount}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+
+    <p>Thank you</p>
+    <p>{{receipt.customMessage}}</p>
+    <p>HST # {{receipt.taxId}}</p>
+  </div>
+</body>
+
+</html>

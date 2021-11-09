@@ -90,6 +90,7 @@ export const epics = combineEpics(
     getOrdersEpic.getOrders,
     getOrderDetailsEpic.getOrderDetails,
     closeOrderEpic.closeOrder,
+    closeOrderEpic.generateReceipt,
     splitItemEpic.splitItem,
     mergeTablesEpic.mergeTables,
     unMergeTablesEpic.unMergeTables,

@@ -68,7 +68,7 @@ function CartItemsList(props) {
                                         <p>{addOns && addOns.length ?
                                             addOns.map((addon, index) => {
                                                 return (`
-                                                    ${addon.addOnOption && addon.addOnOption !== 'null' ?
+                                                    ${addon.addOnOption ?
                                                         addon.addOnOption : addon.addOnName}
                                                     ${addon.price ? '($' + addon.price.toFixed(2) + ')' : ''}
                                                     ${index !== addOns.length - 1 ? ',' : ''}
@@ -113,8 +113,10 @@ function CartItemsList(props) {
                                             <p>{addOnsArray && addOnsArray.length ?
                                                 addOnsArray.map((addon, index) => {
                                                     return (`
-                                                    ${addon.addOnOption && addon.addOnOption !== 'null' ?
-                                                            addon.addOnOption : addon.addOnName}
+                                                    ${addon.addOnOption
+                                                        && addon.addOnOption !== 'null' 
+                                                        && addon.addOnOption !== 'undefined' ?
+                                                        addon.addOnOption : addon.addOnName}
                                                     ${addon.price ? '($' + addon.price.toFixed(2) + ')' : ''}
                                                     ${index !== addOnsArray.length - 1 ? ',' : ''}
                                                 `)

@@ -3,7 +3,7 @@ export const PUBLIC_URL = 'https://dinemate.com/dev/'
 export const CUSTOMER_APP_URL = 'https://dinemate.com/'
 export const BUCKET_URL = 'https://dinematebucket.s3.amazonaws.com/'
 export const BUCKET_URL_2 = 'https://dinematebucket.s3.us-east-2.amazonaws.com/'
-export const BASE_URL = PUBLIC_URL
+export const BASE_URL = LOCAL_URL
 
 export const API_ENDPOINTS = {
     admin: {
@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
         deleteOrder: 'admin/deleteOrder',
         applyDiscount: 'admin/applyDiscount',
         closeOrder: 'admin/closeOrder',
+        generateReceipt: 'admin/generateReceipt',
         itemSplit: 'admin/itemSplit',
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',

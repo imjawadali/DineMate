@@ -5,7 +5,6 @@ var fcm = new FCM(serverKey);
 
 exports.sendNotification = async function (message) {
     console.log("message", message)
-    debugger
     fcm.send(message, function(err, response) {
         if (err) {
             console.log("Something has gone wrong!", err);

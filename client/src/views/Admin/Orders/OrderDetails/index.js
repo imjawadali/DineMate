@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { TitleWithAction, Button, OrderTimer } from '../../../../components'
-import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, EDIT_ITEM, GET_MENU, GET_ORDER_DETAILS } from '../../../../constants'
+import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, EDIT_ITEM, GENERATE_RECEIPT, GET_MENU, GET_ORDER_DETAILS, SET_TOAST } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 import { getFormatedDateTime } from '../../../../helpers'
 
@@ -29,6 +29,7 @@ function OrderDetails(props) {
   const edittingItemId = useSelector(({ ordersReducer }) => ordersReducer.edittingItemId)
   const deletingOrder = useSelector(({ ordersReducer }) => ordersReducer.deletingOrder)
   const applyingDiscount = useSelector(({ ordersReducer }) => ordersReducer.applyingDiscount)
+  const generatingReceipt = useSelector(({ ordersReducer }) => ordersReducer.generatingReceipt)
   const dispatch = useDispatch()
 
   const { location: { state }, history } = props
@@ -251,16 +252,12 @@ function OrderDetails(props) {
             </div>
             <div className="OrderDetailsBottomButtons"
               style={{
-                opacity: fetchingOrderDetails
-                  || closingId === orderNumber
-                  || deletingItemId
-                  || edittingItemId
-                  || deletingOrder
-                  || applyingDiscount ?
-                  0.5 : ''
+                opacity: orderDetails.status || generatingReceipt ? 0.5 : ''
               }}
-              onClick={() => window.open("https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", "PRINT", "height=400,width=600")}>
-              <td style={{ color: 'white', padding: '0px' }}>Print</td>
+              onClick={() => generatingReceipt ? null : orderDetails.status
+                ? dispatch(customisedAction(SET_TOAST, { message: 'Close this order first!', type: 'warning'}))
+                : dispatch(customisedAction(GENERATE_RECEIPT, { restaurantId, orderNumber }))}>
+              <td style={{ color: 'white', padding: '0px' }}>Receipt</td>
             </div>
           </div>
         </div>

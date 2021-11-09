@@ -18,12 +18,15 @@ import {
   EDIT_ITEM_FAILURE,
   SPLIT_ITEM,
   SPLIT_ITEM_SUCCESS,
-  SPLIT_ITEM_FAILURE
+  SPLIT_ITEM_FAILURE,
+  GENERATE_RECEIPT,
+  GENERATE_RECEIPT_SUCCESS,
+  GENERATE_RECEIPT_FAILURE
 } from '../../constants'
   
 export default (state = { 
   fetchingTableOrders: false, fetchingOrderItemDetails: false, fetchingOrders: false, fetchingOrderDetails: false,
-  addingUpdatingOrder: false, deletingItemId: null, edittingItemId: null, deletingOrder: false, applyingDiscount: false,
+  addingUpdatingOrder: false, deletingItemId: null, edittingItemId: null, deletingOrder: false, applyingDiscount: false, generatingReceipt: false,
   tableId: null, tableOrders: null, orderItemDetails: null, closingId: null, orders: null, orderDetails: null, splitId: null
 }, { type, payload }) => {
   switch (type) {
@@ -104,6 +107,12 @@ export default (state = {
       return { ...state, closingId: payload.orderNumber }
     case CLOSE_ORDER_FAILURE:
       return { ...state, closingId: null }
+    
+    case GENERATE_RECEIPT:
+      return { ...state, generatingReceipt: true }
+    case GENERATE_RECEIPT_SUCCESS:
+    case GENERATE_RECEIPT_FAILURE:
+      return { ...state, generatingReceipt: false }
     
     case SPLIT_ITEM:
       return { ...state, splitId: payload.id }
