@@ -49,6 +49,8 @@
     padding: 10px;
     border-radius: 3px;
     margin-bottom: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .sidebar_disabled_link, .sidebar_disabled_link > a {

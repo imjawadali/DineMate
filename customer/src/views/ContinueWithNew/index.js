@@ -26,22 +26,14 @@ function ContinueWith(props) {
     const dispatch = useDispatch()
 
     let { restaurantId, tableId } = useParams();
-
-    // useEffect(() => {
-    //     if (tableId && !checkingOrder && !initializingOrder && !orderDetails){
-    //         dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
-    //     }
-    // }, [])
-    const initOrder = () => {
-        if (tableId && !checkingOrder && !initializingOrder && !orderDetails) {
-            dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
-        }
-    }
+    
     const redirect = () => {
         let loginCustomer = getItem('customer') ? getItem('customer') : false;
         if (loginCustomer) {
-            props.history.push(`/customer/${restaurantId}/menu`)
-            initOrder();
+            if (tableId && !checkingOrder && !initializingOrder && !orderDetails) {
+                dispatch(customisedAction(INITIALIZE_ORDER, { restaurantId, tableId }))
+                props.history.push(`/customer/${restaurantId}/menu`)
+            }
         } else {
             props.history.push(`/customer/signin/?redirect=/${restaurantId}/${tableId}`)
         }
@@ -74,7 +66,7 @@ function ContinueWith(props) {
 
                     <div style={{ marginBottom: 20, fontSize: 34, fontWeight: 'bolder', textTransform: "uppercase", color: "white" }}>Or</div>
                     <div style={{ display: 'flex', marginBottom: 20, cursor: 'pointer', background: '#FFFFFF', padding: 3, borderRadius: 5, alignItems: 'center' }} className="TheWebAppBtn"
-                        onClick={() => { redirect(); }}>
+                        onClick={() => redirect()}>
                         <div style={{ display: 'flex', borderRadius: 5, alignItems: 'center', border: "0.5px solid black", padding: 6, }}>
                             <img className="computer-img" src={computer} />
                             <div className="TheWebAppBtnTextDIv">
@@ -87,7 +79,7 @@ function ContinueWith(props) {
             </div>
             <div className="global-footer-bottom" style={{ width: "75%", margin: "auto" }}>
                 <div className="footer-bottom-left">
-                    <p style={{ color: "black" }}> © 2021 Dine Mate. All Rights Are Reserved.</p>
+                    <p style={{ color: "black" }}> © 2021 DineMate. All Rights Are Reserved.</p>
                 </div>
                 <div className="footer-bottom-right">
                     <a href={genericData && genericData.facebookLink} className="footer-bottom-right-logo">

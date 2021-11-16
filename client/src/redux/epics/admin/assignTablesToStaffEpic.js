@@ -20,8 +20,8 @@ export class assignTablesToStaffEpic {
             'post', 
             API_ENDPOINTS.admin.assignTablesToStaff,
             { selectedStaff, assignedTables, restaurantId },
-            () => {
-              return customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId })
+            (resObj) => {
+              return customisedAction(GET_STAFF_ASSIGNED_TABLES, { restaurantId, toast: { message: resObj.msg, type: 'success' }})
             },
             ASSIGN_TABLES_TO_STAFF_FAILURE
           )

@@ -91,6 +91,14 @@ function SuperAdmin() {
           onChange={({ target: { value } }) => updateValue('email', value)}
         />
       </div>
+      <div>
+        <p>Redemption value:</p>
+        <Input
+          placeholder="'5' (i.e 5 cents = 1 point)"
+          value={updatedData.redemptionValue}
+          onChange={({ target: { value } }) => updateValue('redemptionValue', value)}
+        />
+      </div>
       <div className="ButtonContainer">
         <Button
           text="Submit"

@@ -153,7 +153,7 @@ function CheckOut(props) {
                 'billAmount': data ? data.billAmount : 0,
                 'tip': tip
             }
-            dispatch(customisedAction(CLOSE_ORDER, obj))
+            dispatch(customisedAction(CLOSE_ORDER, obj, { history: props.history }))
             if (orderDetails && orderDetails.type.toLowerCase() === 'dine-in') {
                 setTimeout(() => {
                     props.history.push(`/customer/${orderDetail.restaurantId}/menu`)
@@ -195,7 +195,7 @@ function CheckOut(props) {
                         return (
                             <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
-                                <p>${a.totalPrice}</p>
+                                <p>${(a.totalPrice || 0).toFixed(2)}</p>
                             </div>
                         )
                     }) : null}
@@ -203,29 +203,29 @@ function CheckOut(props) {
                     {data && data.discountAmount ?
                         <div className="itemCart">
                             <p>Discount Amount ({data.discount})</p>
-                            <p>${data.discountAmount}</p>
+                            <p>-${data.discountAmount.toFixed(2)}</p>
                         </div> : null}
 
                     {data ? <div className="itemCart">
                         <p>HST Amount ({data.taxPercentage})</p>
-                        <p>${data.taxAmount}</p>
+                        <p>${data.taxAmount.toFixed(2)}</p>
                     </div> : null}
 
                     {data && data.tip ?
                         <div className="itemCart">
                             <p>Tip Amount</p>
-                            <p>${data.tip}</p>
+                            <p>${data.tip.toFixed(2)}</p>
                         </div> : null}
 
                     {data && data.pointsToRedeem ?
                         <div className="itemCart">
                             <p>Redemption ({data.pointsToRedeem} Points)<img style={{ width: 15, marginLeft: 8 }} src={badge} /></p>
-                            <p>${data.redemptionAmount}</p>
+                            <p>-${data.redemptionAmount.toFixed(2)}</p>
                         </div> : null}
 
                     <div className="totalCart">
                         <p onClick={() => console.log(data)}>Total</p>
-                        <p>${data && data.billAmount}</p>
+                        <p>${data && data.billAmount.toFixed(2)}</p>
                     </div>
 
                     {orderDetail && data && !!data.billAmount &&
@@ -268,6 +268,7 @@ function CheckOut(props) {
                                         orderDetails={orderDetail || {}}
                                         billAmount={data ? data.billAmount || 0 : 0}
                                         email={customer ? customer.email : ''}
+                                        history={props.history}
                                     />
                                 </Elements>
                             </StripeProvider>

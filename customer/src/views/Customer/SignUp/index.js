@@ -6,31 +6,20 @@ import { customisedAction } from '../../../redux/actions';
 import { SIGN_UP } from '../../../constants';
 
 function SignUp(props) {
-    let [firstName, setFirstName] = useState("")
-    let [lastName, setLastName] = useState("")
-    let [email, setEmail] = useState("")
-    let [password, setPassword] = useState("")
-    let [phoneNumber, setPhoneNumber] = useState("")
+    const [firstName, setFirstName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [phoneNumber, setPhoneNumber] = useState("")
     const [redirect, setRedirect] = useState('');
-    let dispatch = useDispatch()
-    const signUp = useSelector(({ sessionReducer }) => sessionReducer.signUp)
+    const dispatch = useDispatch()
+
+    const { history } = props
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         setRedirect(urlParams.get("redirect"))
-
     }, [window.location.search])
-
-    useEffect(() => {
-        if (signUp && redirect) {
-            props.history.push(redirect)
-        }
-        else if (!redirect && signUp) {
-            props.history.push('/customer/signin')
-        }
-    }, [signUp])
-
-
 
     function singUp() {
         dispatch(customisedAction(SIGN_UP, {
@@ -39,7 +28,7 @@ function SignUp(props) {
             email,
             password,
             phoneNumber
-        }))
+        }, { history, redirect }))
     }
 
     return (

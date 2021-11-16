@@ -45,7 +45,7 @@ function Rating() {
                 <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
                     {reward && reward.pointsEarned ?
                         <>
-                            <h1 style={{ margin: '10px 0px' }}><img style={{ width: 23, marginRight: 8 }} src={badge} />Congragulations!</h1>
+                            <h1 style={{ margin: '10px 0px' }}><img style={{ width: 23, marginRight: 8 }} src={badge} />Congratulations!</h1>
                             <h2 style={{ marginBottom: '20px' }}>
                                 You have earned
                                 <span style={{ margin: '0 10px', color: 'red' }}>{reward.pointsEarned}</span>
@@ -53,7 +53,7 @@ function Rating() {
                             </h2>
                         </>
                         : null}
-                    <h1 style={{ margin: '10px 0px' }}>Rate Us Please</h1>
+                    <h1 style={{ margin: '10px 0px' }}>Rate your experience</h1>
                     <StarRatings
                         value={rating}
                         isHalf={true}

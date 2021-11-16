@@ -11,7 +11,7 @@ import { customisedAction } from '../../../redux/actions'
 import { CLOSE_ORDER_VIA_STRIPE, SET_TOAST } from '../../../constants'
 import './stripe.scss'
 
-function StripeForm({ orderDetails, billAmount, stripe, email }) {
+function StripeForm({ orderDetails, billAmount, stripe, email, history }) {
 
   const [tip, setTip] = React.useState('')
   const dispatch = useDispatch()
@@ -32,7 +32,7 @@ function StripeForm({ orderDetails, billAmount, stripe, email }) {
         billAmount,
         token: token.id,
         email
-      }))
+      }, { history }))
     }
   }
 

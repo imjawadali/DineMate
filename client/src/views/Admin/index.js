@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Switch, Route, useRouteMatch, Redirect, useLocation } from 'react-router-dom'
 import { customisedAction } from '../../redux/actions'
-import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_ORDER_DETAILS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_TABLE_ORDERS, GET_USERS, SET_FCM_TOKEN, SET_TOAST } from '../../constants'
+import { CHECK_PASSWORD_EXPIRY, GET_CATEGORIES, GET_EXISTING_QRS, GET_FEEDBACKS, GET_GENERIC_DATA, GET_KITCHEN_DASHBOARD, GET_MENU, GET_ORDERS, GET_ORDER_DETAILS, GET_RESTAURANT_DASHBOARD, GET_RESTAURANT_SCHEDULE, GET_RESTAURANT_SETTINGS, GET_STAFF_ASSIGNED_TABLES, GET_TABLE_ORDERS, GET_USERS, SET_FCM_TOKEN, SET_TOAST } from '../../constants'
 
 import { getToken, onMessage } from "firebase/messaging"
 import messaging from '../../services/firebase'
@@ -37,6 +37,7 @@ import SuperAdminSettings from './Settings/SuperAdmin'
 import RestaurantSettings from './Settings/Restaurant'
 import UpdatePassword from './UpdatePassword'
 import Schedule from './Schedule'
+import Feedbacks from './Feedbacks'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -71,6 +72,7 @@ function Admin(props) {
         dispatch(customisedAction(GET_MENU, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_USERS, { restaurantId, noToast: true }))
         dispatch(customisedAction(GET_RESTAURANT_SCHEDULE, { restaurantId, noToast: true }))
+        dispatch(customisedAction(GET_FEEDBACKS, { restaurantId, noToast: true }))
       }
       dispatch(customisedAction(GET_CATEGORIES, { restaurantId, noToast: true }))
       dispatch(customisedAction(GET_RESTAURANT_SETTINGS, { restaurantId, noToast: true }))
@@ -79,9 +81,7 @@ function Admin(props) {
 
   useEffect(() => {
     dispatch(customisedAction(CHECK_PASSWORD_EXPIRY, { noToast: true }))
-
-    if (role === 'SuperAdmin')
-      dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
+    dispatch(customisedAction(GET_GENERIC_DATA, { noToast: true }))
   }, [])
 
   useEffect(() => {
@@ -248,6 +248,7 @@ function Admin(props) {
             <SuperAdminRoutes path={`${path}/updatePassword`} component={UpdatePassword} />
             <Route path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
             <RestaurantAdminRoutes path={`${path}/scheduleManagement`} component={Schedule} />
+            <RestaurantAdminRoutes path={`${path}/feedbacks`} component={Feedbacks} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

@@ -72,7 +72,7 @@ function Categories() {
     let filteredRestaurants = categories
     if (filterKey && filterKey.length && categories) {
       filteredRestaurants = categories.filter(
-        (restaurant) => restaurant.name.toLowerCase().includes(filterKey.toLowerCase())
+        (category) => category.name.toLowerCase().includes(filterKey.toLowerCase())
       )
     }
     return filteredRestaurants
@@ -108,7 +108,7 @@ function Categories() {
           <div className="TopRightContainer">
             <Input 
               style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
-              placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
+              placeholder="Search Category (by Name)"
               value={filterKey}
               onChange={({ target: { value } }) => setfilterKey(value)}
             />

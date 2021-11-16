@@ -13,56 +13,15 @@ function SignIn(props) {
     const [isEmailSignIn, setIsEmailSignIn] = useState(false);
     const [email, setemail] = useState('');
     const [password, setpassword] = useState('');
-    const [redirect, setRedirect] = useState('');
+    const [redirect, setRedirect] = useState(null);
     const dispatch = useDispatch()
+
     const { history } = props
-
-    const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
-
-    // const signInSuccess = useSelector(({ sessionReducer }) => sessionReducer.customer)
-    // const [resturantId, setResturantId] = useState('')
-    // const [tableId, setTableId] = useState('')
-
-
-    // useEffect(() => {
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     setResturantId(urlParams.get("resturantId"))
-    //     setTableId(urlParams.get("tableId"))
-
-    // }, [window.location.search])
-
-    // useEffect(() => {
-    //     if (signInSuccess) {
-
-    //         console.log('signInSuccess')
-    //         dispatch(customisedAction(INITIALIZE_ORDER, { resturantId, tableId }))
-    //     }
-
-    // }, [
-    //     signInSuccess
-    // ])
-
-
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         setRedirect(urlParams.get("redirect"))
-
     }, [window.location.search])
-
-
-    useEffect(() => {
-        if (customer && redirect) {
-            props.history.push(redirect)
-        }
-        else if (!redirect && customer) {
-            props.history.push('/')
-        }
-    }, [customer])
-
-    const redirectFn = () => {
-        dispatch(customisedAction(SIGN_IN, { email, password }))
-    }
 
     return (
         <>
@@ -97,7 +56,7 @@ function SignIn(props) {
                         </div>
 
                         <div className="login-div">
-                            <div className="login-text" onClick={() => redirectFn()}>
+                            <div className="login-text" onClick={() => dispatch(customisedAction(SIGN_IN, { email, password }, { history, redirect }))}>
                                 Log In
                             </div>
                         </div>

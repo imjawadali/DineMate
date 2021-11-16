@@ -211,11 +211,12 @@ module.exports = app => {
                 `SELECT o.restaurantId, r.restaurantName,
                 CONVERT(o.orderNumber, CHAR) as orderNumber,
                 SUM(oi.totalPrice) as billAmount,
-                o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
+                o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
                 o.status as active, o.type
                 FROM orders o
                 JOIN restaurants r ON r.restaurantId = o.restaurantId
                 LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
+                LEFT JOIN genericData g ON g.name = 'redemptionValue'
                 WHERE customerId = ${customerId}
                 AND (
                     (o.type = 'Take-Away' AND o.customerStatus = 1)
@@ -227,13 +228,13 @@ module.exports = app => {
                 (body) => {
                     if (body.length) {
                         for (let index = 0; index < body.length; index++) {
-                            const { discount, discountType, tip, pointsToRedeem, taxPercentage, billAmount } = body[index]
+                            const { discount, discountType, tip, pointsToRedeem, taxPercentage, billAmount, redemptionValue } = body[index]
                             let discountAmount = discount
                             if (discountType === '%')
                                 discountAmount = (billAmount * discount) / 100
                             const subtotal = discountAmount < billAmount ? billAmount - discountAmount : 0
                             const taxAmount = (subtotal * taxPercentage) / 100
-                            const redemptionAmount = Number(((pointsToRedeem * 2) / 100).toFixed(2))
+                            const redemptionAmount = Number(((pointsToRedeem * Number(redemptionValue || 0)) / 100).toFixed(2))
                             const amount = (subtotal + taxAmount + tip) - redemptionAmount
                             body[index].billAmount = Number((amount > 0 ? amount : 0).toFixed(2))
                         }
@@ -855,7 +856,7 @@ module.exports = app => {
                                                         )
                                                         return res.send({
                                                             status: true,
-                                                            message: 'Order Initialized Successfully!',
+                                                            message: 'Order initialized successfully!',
                                                             body: {
                                                                 orderNumber: padding(Number(result.length ? result[0].orderNumber : 0) + 1, 3),
                                                                 restaurantId,
@@ -1306,7 +1307,7 @@ module.exports = app => {
                                                         tempDb.release()
                                                         return res.send({
                                                             status: true,
-                                                            message: 'Order item(s) added successfully!',
+                                                            message: 'Order initialized successfully!',
                                                             body: {
                                                                 orderNumber,
                                                                 restaurantId,
@@ -1363,9 +1364,10 @@ module.exports = app => {
             (orderItems) => {
                 getConnection(
                     res,
-                    `SELECT o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage
+                    `SELECT o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
+                    LEFT JOIN genericData g ON g.name = 'redemptionValue'
                     WHERE o.restaurantId = '${restaurantId}'
                     AND o.orderNumber = '${orderNumber}'`,
                     null,
@@ -1383,7 +1385,7 @@ module.exports = app => {
                                 discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
                             const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
-                            const redemptionAmount = Number(((data.pointsToRedeem * 2) / 100).toFixed(2))
+                            const redemptionAmount = Number(((data.pointsToRedeem * Number(data.redemptionValue || 0)) / 100).toFixed(2))
                             const amount = (subtotal + Number(taxAmount) + data.tip) - redemptionAmount
                             return res.send({
                                 status: true,
@@ -1503,7 +1505,7 @@ module.exports = app => {
                                 return res.send({
                                     status: true,
                                     message: type.toLowerCase() === 'take-away' ?
-                                        'Order Initialized Successfully'
+                                        'Order submitted successfully'
                                         : 'Order close request submitted',
                                     body: {
                                         restaurantId,
@@ -1518,7 +1520,7 @@ module.exports = app => {
                     } else {
                         return res.send({
                             status: false,
-                            message: 'Request already in que!',
+                            message: 'Request already in queue!',
                             errorCode: 422
                         })
                     }
@@ -1692,8 +1694,8 @@ module.exports = app => {
                                                                     return res.send({
                                                                         status: true,
                                                                         message: type.toLowerCase() === 'take-away' ?
-                                                                            'Order Initialized Successfully'
-                                                                            : 'Order close request submitted',
+                                                                            'Order submitted successfully'
+                                                                            : 'Order closed successfully',
                                                                         body: {
                                                                             restaurantId,
                                                                             orderNumber,
@@ -1724,7 +1726,7 @@ module.exports = app => {
                                                 tempDb.release()
                                                 return res.send({
                                                     status: false,
-                                                    message: 'Request already in que!',
+                                                    message: 'Request already in queue!',
                                                     errorCode: 422
                                                 })
                                             }
@@ -2369,7 +2371,7 @@ module.exports = app => {
                                 getConnection(
                                     res,
                                     `SELECT r.restaurantName, r.address, r.city, r.customMessage, r.taxId,
-                                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
+                                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
                                     GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff,
                                     o.closedAt, o.type, o.tableId,
                                     SUM(oi.totalPrice) as foodTotal
@@ -2378,6 +2380,7 @@ module.exports = app => {
                                     LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
                                     LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
                                     LEFT JOIN users u ON u.id = sat.staffId
+                                    LEFT JOIN genericData g ON g.name = 'redemptionValue'
                                     WHERE o.restaurantId = '${restaurantId}'
                                     AND o.orderNumber = '${orderNumber}'`,
                                     null,
@@ -2388,7 +2391,7 @@ module.exports = app => {
                                             discountAmount = ((data.foodTotal * data.discount) / 100).toFixed(2)
                                         const subtotal = discountAmount < data.foodTotal ? data.foodTotal - discountAmount : 0
                                         const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
-                                        const redemptionAmount = ((data.pointsToRedeem * 2) / 100).toFixed(2)
+                                        const redemptionAmount = ((data.pointsToRedeem * Number(data.redemptionValue || 0)) / 100).toFixed(2)
                                         const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
 
                                         const receipt = {

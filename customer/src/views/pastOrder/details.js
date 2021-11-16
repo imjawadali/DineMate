@@ -62,7 +62,7 @@ function Detail(props) {
                         return (
                             <div className="itemCart">
                                 <p>{a.quantity}x {a.name}</p>
-                                <p>${a.totalPrice}</p>
+                                <p>${(a.totalPrice || 0).toFixed(2)}</p>
                             </div>
                         )
                     }) : null}
@@ -71,30 +71,30 @@ function Detail(props) {
                     {products && products.discountAmount ?
                         <div className="itemCart">
                             <p>Discount Amount ({products.discount})</p>
-                            <p>${products.discountAmount}</p>
+                            <p>-${(products.discountAmount || 0).toFixed(2)}</p>
                         </div> : null}
 
                     {products ?
                         <div className="itemCart">
                             <p>HST Amount ({products.taxPercentage})</p>
-                            <p>${products.taxAmount}</p>
+                            <p>${(products.taxAmount || 0).toFixed(2)}</p>
                         </div> : null}
 
                     {products && products.tip ?
                         <div className="itemCart">
                             <p>Tip Amount</p>
-                            <p>${products.tip}</p>
+                            <p>${(products.tip || 0).toFixed(2)}</p>
                         </div> : null}
 
                     {products && products.pointsToRedeem ?
                         <div className="itemCart">
                             <p>Redemption ({products.pointsToRedeem} Points)<img style={{ width: 15, marginLeft: 8 }} src={badge} /></p>
-                            <p>${products.redemptionAmount}</p>
+                            <p>-${(products.redemptionAmount || 0).toFixed(2)}</p>
                         </div> : null}
 
                     <div className="totalCart">
-                        <p onClick={() => console.log(products)}>Total</p>
-                        <p>${products && products.billAmount}</p>
+                        <p>Total</p>
+                        <p>${(products?.billAmount || 0).toFixed(2)}</p>
                     </div>
                 </div>
             </div >

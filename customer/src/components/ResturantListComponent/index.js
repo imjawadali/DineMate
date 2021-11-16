@@ -5,7 +5,7 @@ import React from 'react'
 import './styles.css'
 
 const ResturantListComponent = props => {
-    const { title, price, cuisines, stars, ratingCounts, image, favourite, onClick } = props
+    const { title, cuisines, stars, ratingCounts, image, favourite, onClick } = props
     return (
         <div onClick={onClick}>
             <div className="resturantListComponent-image">
@@ -16,7 +16,7 @@ const ResturantListComponent = props => {
                     <h3>
                         {title}
                     </h3>
-                    <h4>{price} {cuisines}</h4>
+                    <h4>$$ {cuisines}</h4>
                 </div>
                 <div className="resturantListComponent-info-right">
                     <div className="resturantListComponent-info-right-star">

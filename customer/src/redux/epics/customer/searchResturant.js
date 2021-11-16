@@ -18,7 +18,7 @@ export class searchResturantEpic {
         async ({ payload: { searchBy, pageNumber }, extras: { latitude, longitude, city }}) => {
           return generalizedEpic(
             'post', 
-            `${API_ENDPOINTS.customer.searchResturant}`,
+            API_ENDPOINTS.customer.searchResturant,
             { searchBy, latitude, longitude, city, pageNumber },
             (resObj) => {
               return customisedAction(SEARCH_RESTURANT_SUCCESS, resObj.body)

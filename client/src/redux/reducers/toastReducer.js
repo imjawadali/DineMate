@@ -125,7 +125,9 @@ import {
   GENERATE_RECEIPT_SUCCESS,
   SPLIT_ITEM_SUCCESS,
   SPLIT_ITEM_FAILURE,
-  GENERATE_RECEIPT_FAILURE
+  GENERATE_RECEIPT_FAILURE,
+  GET_STAFF_ASSIGNED_TABLES,
+  GET_FEEDBACKS_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -291,8 +293,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toast: { message: 'Un-Merging Tables', type: 'warning' } }
     case UN_MERGE_TABLES_FAILURE:
       return { ...state, toast: payload }
-    case GET_STAFF_ASSIGNED_TABLES_SUCCESS:
-      return { ...state, toastSetDismiss: true}
+    case GET_STAFF_ASSIGNED_TABLES:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
     case GET_STAFF_ASSIGNED_TABLES_FAILURE:
       return { ...state, toast: payload }
     case ASSIGN_TABLES_TO_STAFF_FAILURE:
@@ -380,6 +382,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_RESTAURANT_SCHEDULE:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case GET_RESTAURANT_SCHEDULE_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_FEEDBACKS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case UPDATE_RESTAURANT_SCHEDULE:
       return { ...state, toastSetDismiss: true, toast: { message: 'Updating Restaurant Schedule', type: 'success' } }

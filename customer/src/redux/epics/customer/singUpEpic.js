@@ -19,14 +19,16 @@ export class signUpEpic {
     action$.pipe(
       ofType(SIGN_UP),
       switchMap(
-        async ({ payload: obj }) => {
+        async ({ payload, extras: { history, redirect } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.signUp,
-            obj,
+            payload,
             (resObj) => {
               setItem('customer', resObj.body)
               RestClient.setHeader('Authorization', resObj.body.id)
+              if (history && redirect) history.push(redirect)
+              else if (history) history.push('/')
               return customisedAction(SET_SESSION, { customer: resObj.body })
             },
             SIGN_UP_FAILURE
@@ -38,15 +40,13 @@ export class signUpEpic {
     action$.pipe(
       ofType(REGISTER_RESTURENT),
       switchMap(
-        async ({ payload: obj }) => {
-          let { data, reset } = obj
+        async ({ payload: { data, reset }}) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.registerRestuarant,
             data,
             (resObj) => {
               reset()
-              // RestClient.setHeader('Authorization', resObj.body.id)
               return customisedAction(REGISTER_RESTURENT_SUCESS, { signUp: resObj })
             },
             SIGN_UP_FAILURE

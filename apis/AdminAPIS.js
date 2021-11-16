@@ -861,13 +861,14 @@ module.exports = app => {
                 TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
             ) as time,
             SUM(oi.totalPrice) as foodTotal,
-            o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
+            o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
             GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff
             FROM orders o 
             JOIN restaurants r ON r.restaurantId = o.restaurantId
             LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
             LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
             LEFT JOIN users u ON u.id = sat.staffId
+            LEFT JOIN genericData g ON g.name = 'redemptionValue'
             WHERE o.restaurantId = '${restaurantId}'
             ${type ? 'AND type = ' + `'${type}'` : ''}
             AND o.status = ${active}
@@ -877,13 +878,13 @@ module.exports = app => {
             (data) => {
                 if (data.length) {
                     for (let index = 0; index < data.length; index++) {
-                        const { discount, discountType, pointsToRedeem, tip, taxPercentage, foodTotal } = data[index]
+                        const { discount, discountType, pointsToRedeem, tip, taxPercentage, foodTotal, redemptionValue } = data[index]
                         let discountAmount = discount
                         if (discountType === '%')
                             discountAmount = (foodTotal * discount) / 100
                         const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                         const taxAmount = (subtotal * taxPercentage) / 100
-                        const redemptionAmount = Number(((pointsToRedeem * 2) / 100).toFixed(2))
+                        const redemptionAmount = Number(((pointsToRedeem * Number(redemptionValue || 0)) / 100).toFixed(2))
                         const amount = (subtotal + taxAmount + tip) - redemptionAmount
                         data[index].billAmount = Number((amount > 0 ? amount : 0).toFixed(2))
                     }
@@ -933,9 +934,10 @@ module.exports = app => {
                         TIMESTAMPDIFF(SECOND, o.createdAt, CURRENT_TIMESTAMP)
                     ) as duration,
                     o.customerStatus, o.status, o.ready,
-                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage
+                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue
                     FROM orders o
                     JOIN restaurants r on o.restaurantId = r.restaurantId
+                    LEFT JOIN genericData g ON g.name = 'redemptionValue'
                     WHERE o.restaurantId = '${restaurantId}'
                     AND o.orderNumber = '${orderNumber}'`,
                     null,
@@ -953,7 +955,7 @@ module.exports = app => {
                                 discountAmount = ((foodTotal * data.discount) / 100).toFixed(2)
                             const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
                             const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
-                            const redemptionAmount = ((data.pointsToRedeem * 2) / 100).toFixed(2)
+                            const redemptionAmount = ((data.pointsToRedeem * Number(data.redemptionValue || 0)) / 100).toFixed(2)
                             const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
                             return res.send({
                                 createdAt: data.createdAt,
@@ -2570,6 +2572,27 @@ module.exports = app => {
         )
     })
 
+    app.post('/admin/getFeedbacks', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant\'s ID is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT r.rating, r.feedback, 
+            c.firstName, c.lastName
+            FROM ratings r
+            JOIN customers c ON c.id = r.customerId
+            WHERE restaurantId = '${restaurantId}'`,
+            null,
+            (data) => {
+                if (data && data.length) return res.send(data)
+                else return res.status(422).send({ 'msg': 'No ratings and feedbacks submitted!' })
+            }
+        )
+    })
+
     app.post('/admin/updateRestaurantSchedule', async (req, res) => {
         const adminId = decrypt(req.header('authorization'))
         const { restaurantId, schedule } = req.body
@@ -2695,7 +2718,7 @@ module.exports = app => {
                                 getConnection(
                                     res,
                                     `SELECT r.restaurantName, r.address, r.city, r.customMessage, r.taxId,
-                                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage,
+                                    o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
                                     GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff,
                                     o.closedAt, o.type, o.tableId,
                                     SUM(oi.totalPrice) as foodTotal
@@ -2704,6 +2727,7 @@ module.exports = app => {
                                     LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
                                     LEFT JOIN staffAssignedTables sat ON sat.restaurantId = o.restaurantId AND sat.tableNumber = o.tableId
                                     LEFT JOIN users u ON u.id = sat.staffId
+                                    LEFT JOIN genericData g ON g.name = 'redemptionValue'
                                     WHERE o.restaurantId = '${restaurantId}'
                                     AND o.orderNumber = '${orderNumber}'`,
                                     null,
@@ -2714,7 +2738,7 @@ module.exports = app => {
                                             discountAmount = ((data.foodTotal * data.discount) / 100).toFixed(2)
                                         const subtotal = discountAmount < data.foodTotal ? data.foodTotal - discountAmount : 0
                                         const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
-                                        const redemptionAmount = ((data.pointsToRedeem * 2) / 100).toFixed(2)
+                                        const redemptionAmount = ((data.pointsToRedeem * Number(data.redemptionValue || 0)) / 100).toFixed(2)
                                         const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
     
                                         const receipt = {

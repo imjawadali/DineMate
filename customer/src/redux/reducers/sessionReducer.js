@@ -6,7 +6,6 @@ import {
 
 export default (state = {
   checkingSignIn: true,
-  registerResturentMessage: null,
   customer: null, fetchingDashboard: false, adminDashboard: null
 }, { type, payload }) => {
   switch (type) {
@@ -16,8 +15,6 @@ export default (state = {
       return { ...state, checkingSignIn: false }
     case LOGOUT:
       return { ...state, customer: null }
-    case REGISTER_RESTURENT_SUCESS:
-      return { ...state, registerResturentMessage: payload.signUp }
     default:
       return state
   }

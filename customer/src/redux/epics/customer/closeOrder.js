@@ -21,7 +21,7 @@ export class closeOrderViaCashEpic {
     action$.pipe(
       ofType(CLOSE_ORDER),
       switchMap(
-        async ({ payload }) => {
+        async ({ payload, extras: { history } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.closeOrderViaCash,
@@ -29,6 +29,10 @@ export class closeOrderViaCashEpic {
             (resObj) => {
               if (resObj.body && resObj.body.pointsEarned)
                 store.dispatch(customisedAction(GET_RPOFILE))
+              if (history)
+                setTimeout(() => {
+                  history.push(`/customer/${payload.restaurantId}/menu`)
+                }, 1000)
               return customisedAction(CLOSE_ORDER_SUCCESS, { reward: resObj.body, toast: { message: 'Please Wait Manager Will Respond You Soon', type: 'success' } })
             },
             CLOSE_ORDER_FAILURE
@@ -41,7 +45,7 @@ export class closeOrderViaCashEpic {
     action$.pipe(
       ofType(CLOSE_ORDER_VIA_STRIPE),
       switchMap(
-        async ({ payload }) => {
+        async ({ payload, extras: { history } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.closeOrderViaStripe,
@@ -49,6 +53,9 @@ export class closeOrderViaCashEpic {
             (resObj) => {
               if (resObj.body && resObj.body.pointsEarned)
                 store.dispatch(customisedAction(GET_RPOFILE))
+              setTimeout(() => {
+                history.push(`/customer/restaurants`)
+              }, 1000)
               return customisedAction(CLOSE_ORDER_SUCCESS, { reward: resObj.body, toast: { message: resObj.message, type: 'success' } })
             },
             CLOSE_ORDER_FAILURE

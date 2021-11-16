@@ -17,7 +17,8 @@ import {
   SET_FCM_TOKEN,
   SET_FCM_TOKEN_SUCCESS,
   SET_FCM_TOKEN_FAILURE,
-  APPLY_REWARD_POINTS_SUCCESS
+  APPLY_REWARD_POINTS_SUCCESS,
+  ORDER_CLOSED_BY_ADMIN
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
@@ -27,14 +28,16 @@ export class loginEpic {
     action$.pipe(
       ofType(SIGN_IN),
       switchMap(
-        async ({ payload: { email, password } }) => {
+        async ({ payload: { email, password }, extras: { history, redirect }}) => {
           return generalizedEpic(
-            'post', 
+            'post',
             API_ENDPOINTS.customer.login,
             { email, password },
             (resObj) => {
               setItem('customer', resObj.body)
               RestClient.setHeader('Authorization', resObj.body.id)
+              if (history && redirect) history.push(redirect)
+              else if (history) history.push('/')
               return customisedAction(SET_SESSION, { customer: resObj.body })
             },
             SIGN_IN_FAILURE
@@ -42,14 +45,16 @@ export class loginEpic {
         }
       )
     )
-    
-    static getProfile = action$ =>
+
+  static getProfile = action$ =>
     action$.pipe(
       filter(({ type }) => {
         switch (type) {
           case GET_RPOFILE:
             return true;
           case APPLY_REWARD_POINTS_SUCCESS:
+            return true;
+          case ORDER_CLOSED_BY_ADMIN:
             return true;
           default:
             return false;
@@ -58,13 +63,13 @@ export class loginEpic {
       switchMap(
         async () => {
           return generalizedEpic(
-            'get', 
+            'get',
             API_ENDPOINTS.customer.getProfile,
             null,
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
-              return customisedAction(GET_RPOFILE_SUCCESS,resObj.body )
+              return customisedAction(GET_RPOFILE_SUCCESS, resObj.body)
             },
             GET_RPOFILE_FAILURE
           )
@@ -72,19 +77,19 @@ export class loginEpic {
       )
     )
 
-    static updateProfile = action$ =>
+  static updateProfile = action$ =>
     action$.pipe(
       ofType(UPDATE_RPOFILE),
       switchMap(
         async (obj) => {
           return generalizedEpic(
-            'post', 
+            'post',
             API_ENDPOINTS.customer.updateProfile,
             obj.payload,
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
-              return customisedAction(UPDATE_RPOFILE_SUCCESS,{data: resObj.body, toast: { message: resObj.message, type: 'success' }} )
+              return customisedAction(UPDATE_RPOFILE_SUCCESS, { data: resObj.body, toast: { message: resObj.message, type: 'success' } })
             },
             UPDATE_RPOFILE_FAILURE
           )
@@ -92,21 +97,21 @@ export class loginEpic {
       )
     )
 
-    static setFcmToken = action$ =>
-      action$.pipe(
-        ofType(SET_FCM_TOKEN),
-        switchMap(
-          async ({ payload: { fcmToken } }) => {
-            return generalizedEpic(
-              'post', 
-              API_ENDPOINTS.customer.setFcmToken,
-              { fcmToken },
-              (resObj) => {
-                return customisedAction(SET_FCM_TOKEN_SUCCESS, { message: resObj.message, type: 'success' })
-              },
-              SET_FCM_TOKEN_FAILURE
-            )
-          }
-        )
+  static setFcmToken = action$ =>
+    action$.pipe(
+      ofType(SET_FCM_TOKEN),
+      switchMap(
+        async ({ payload: { fcmToken } }) => {
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.setFcmToken,
+            { fcmToken },
+            (resObj) => {
+              return customisedAction(SET_FCM_TOKEN_SUCCESS, { message: resObj.message, type: 'success' })
+            },
+            SET_FCM_TOKEN_FAILURE
+          )
+        }
       )
+    )
 }

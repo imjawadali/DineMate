@@ -30,7 +30,7 @@ export class getAllRestaurantsEpic {
         async ({ payload: { pageNumber }, extras: { latitude, longitude, city } }) => {
           return generalizedEpic(
             'post',
-            `${API_ENDPOINTS.customer.getAllRestaurants}`,
+            API_ENDPOINTS.customer.getAllRestaurants,
             { latitude, longitude, city, pageNumber },
             (resObj) => {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)

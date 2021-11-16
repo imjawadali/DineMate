@@ -33,7 +33,7 @@ const Footer = props => {
                         <div className="footer-top-right">
                             <div className="ftr-left">
                                 <p>
-                                    About Dine Mate
+                                    About DineMate
                                 </p>
                                 <p>
                                     Read our blog
@@ -63,7 +63,7 @@ const Footer = props => {
                     </div>
                     <div className="global-footer-bottom">
                         <div className="footer-bottom-left">
-                            <p> © 2021 Dine Mate. All Rights Are Reserved.</p>
+                            <p> © 2021 DineMate. All Rights Are Reserved.</p>
                         </div>
                         <div className="footer-bottom-right">
                             <a href={genericData && genericData.facebookLink} className="footer-bottom-right-logo">

@@ -11,7 +11,7 @@ export default (state = { fetchingStaffAssignedTables: false, staffAssignedTable
     case GET_STAFF_ASSIGNED_TABLES_SUCCESS:
       return { ...state, fetchingStaffAssignedTables: false, staffAssignedTables: payload }
     case GET_STAFF_ASSIGNED_TABLES_FAILURE:
-      return { ...state, fetchingStaffAssignedTables: false }
+      return { ...state, fetchingStaffAssignedTables: false, staffAssignedTables: [] }
     
     case ASSIGN_TABLES_TO_STAFF:
       return { ...state, assigningTablesToStaff: true }

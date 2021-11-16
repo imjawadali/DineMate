@@ -73,7 +73,6 @@ function Restaurants(props) {
               <div key={index} className="resturant-list-component">
                 <ResturantListComponent
                   title={name}
-                  price={"$$"}
                   cuisines={categories && categories.length ? categories.map((category, index) => {
                     return `${category.name}${index !== (categories.length - 1) ? ' • ' : ''}`
                   }) : null}

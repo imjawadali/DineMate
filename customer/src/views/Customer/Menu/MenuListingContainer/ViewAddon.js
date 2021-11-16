@@ -11,22 +11,14 @@ import '../../styles.css';
 
 const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restaurantId, edit, addedAddons, editInded, editedQuantity, RestaurantDetails, ...props }) => {
 
-    const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
-    const dispatch = useDispatch()
-
-
     const [itemCount, setItemCount] = useState(1);
-    const [itemToAdd, setItemToAdd] = useState({ addOns: [] });
     const [totalPrice, setTotalPrice] = useState(0);
     const [updateComponent, setUpdateComponent] = useState(true);
     const [updatePrice, setupdatePrice] = useState(false)
-    const [initOrder, setInitOrder] = useState(false)
-
     const [specialInstructions, setSpecialIntstruction] = useState("")
+    const [obj, setObj] = useState({})
+    const dispatch = useDispatch()
 
-
-    let [obj, setObj] = useState({
-    })
     useEffect(() => {
         if (addedAddons) {
             setObj(addedAddons)
@@ -40,6 +32,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     }, [editedQuantity])
 
     let [price, setPrice] = useState(selectedItem.price);
+    
     useEffect(() => {
         let arr = []
         let total = 0
@@ -49,10 +42,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
         arr.map((a, i) => price += Number(a.price))
         total += price * itemCount
 
-        setTotalPrice(Number(total.toFixed(2).split('.')[1]) > 0 ? (total.toFixed(2)) : (total + '.00'))
-        // setTotalPrice(total)
+        setTotalPrice((total || 0).toFixed(2))
         setupdatePrice(false)
-    }, [itemToAdd, itemCount, obj, price, updatePrice]);
+    }, [itemCount, obj, price, updatePrice]);
 
     const saveCart = (obj) => {
 
@@ -63,7 +55,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
 
     }
-    // FINAL CALL
+
     const addToCart = e => {
         e.preventDefault();
         if (!edit) {
@@ -74,20 +66,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 arr.push(obj[keys])
             }
 
-            let objItem = {
-                ...selectedItem,
-                addOns: arr,
-                quantity: itemCount,
-                totalPrice: totalPrice,
-                restaurantId: restaurantId,
-                orderNumber: "000000032",
-                addOnObj: obj,
-                specialInstructions,
-                RestaurantName: RestaurantDetails.restaurantName,
-                itemId: selectedItem.id
-            }
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
-
                 let objItem = {
                     ...selectedItem,
                     addOns: arr,
@@ -100,18 +79,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     RestaurantName: RestaurantDetails.restaurantName,
                     itemId: selectedItem.id
                 }
-                // let cartMenu = (JSON.parse(localStorage.getItem('orderDetails')) ? JSON.parse(localStorage.getItem('orderDetails')) : []);
-                // if (cartMenu) {
-                //     if (cartMenu.restaurantId === restaurantId) {
-                //         saveCart(objItem)
-                //     } else if (cartMenu.restaurantId != restaurantId) {
-                //         dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
-                //     }
-                // } else {
-
                 saveCart(objItem)
-
-                // }
             } else {
                 let objItem = {
                     ...selectedItem,
@@ -132,11 +100,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                     } else if (cartMenu[0].restaurantId != restaurantId) {
                         dispatch(customisedAction(ALREADY_IN_CART, { message: `You can't order from different resturants at a time`, type: 'warning' }))
                     }
-                } else {
-
-                    saveCart(objItem)
-
-                }
+                } else saveCart(objItem)
             }
         } else {
             let arr = []
@@ -153,34 +117,17 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                 orderNumber: "000000032",
                 addOnObj: obj,
                 specialInstructions,
-                itemId :selectedItem.id
-
-                // RestaurantName:RestaurantDetails.restaurantName
+                itemId: selectedItem.id
             }
             dispatch(customisedAction(EDIT_ORDER_ITEM, { objItem: objItem, i: editInded }))
             setViewAddons(false)
-
         }
 
     }
-    let arrr = []
-
-    useEffect(() => {
-        setInitOrder(getItem("orderDetails"))
-
-    }, [])
-
-    // this is order initializing api for QR CODE
-
-
-
 
     useEffect(() => {
         setSpecialIntstruction(props.specialInstructions)
     }, [selectedItem])
-
-
-
 
     return (
         <div className="add-on-dialog">
@@ -275,7 +222,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                     </div>
 
                                                                     <div className="addon-info">
-                                                                        <span className="addon-price">+${addOnOption.price}</span>
+                                                                        <span className="addon-price">+${(addOnOption.price || 0).toFixed(2)}</span>
                                                                     </div>
                                                                 </div>
                                                             </React.Fragment>
@@ -355,7 +302,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                     </div>
 
                                                                     <div className="addon-info">
-                                                                        <span className="addon-price">+${addOnOption.price}</span>
+                                                                        <span className="addon-price">+${(addOnOption.price || 0).toFixed(2)}</span>
                                                                     </div>
                                                                 </div>
                                                             </React.Fragment>
@@ -436,7 +383,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                 </div>
 
                                                 <div className="addon-info">
-                                                    <span className="addon-price">+${addOn.price}</span>
+                                                    <span className="addon-price">+${(addOn.price || 0).toFixed(2)}</span>
                                                 </div>
                                             </div>
                                         </div>

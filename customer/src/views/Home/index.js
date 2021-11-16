@@ -40,7 +40,7 @@ function Home(props) {
         <div className="HomeTopContentContainer">
           <p className="HomeTopText">You prepare the food, we handle the rest</p>
           <div className="HomeTopContentInnerContainer">
-            <p className="HomeTopInnerTextTitle">List your restaurant on Dine Mate</p>
+            <p className="HomeTopInnerTextTitle">List your restaurant on DineMate</p>
             <p className="HomeTopInnerText">Would you like thousands of new customers to taste your amazing food? So would we!</p>
             <p className="HomeTopInnerText">It's simple: we list your menu online, help you process orders so that you deliver them to your mates!</p>
             <p className="HomeTopInnerText">Interested? Let's start today!</p>

@@ -136,7 +136,7 @@ function Registration(props) {
 
       <div className="why-dine-mate-div">
         <div className="why-dine-mate-title">
-          Why Dine Mate?
+          Why DineMate?
         </div>
 
         <img className="dine-mate-logo" src={logo} />
