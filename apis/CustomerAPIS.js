@@ -536,7 +536,7 @@ module.exports = app => {
     app.post('/customer/getAllRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         console.log(req.body)
-        const { latitude, longitude, city, pageNumber } = req.body
+        const { latitude, longitude, city, pageNumber, limit } = req.body
         if (!city) return res.send({
             status: false,
             message: 'City is required!',
@@ -564,7 +564,7 @@ module.exports = app => {
             WHERE R.city LIKE '%${city}%'
             GROUP BY R.restaurantId
             ORDER BY distance ASC, R.createdAt DESC
-            ${pageNumber ? `LIMIT ${(pageNumber * 5) - 5},5` : 'LIMIT 0,5'}`,
+            ${pageNumber ? `LIMIT ${(pageNumber * (limit || 5)) - (limit || 5)},${(limit || 5)}` : `LIMIT 0,${(limit || 5)}`}`,
             null,
             (body) => {
                 if (body.length) {
@@ -596,7 +596,7 @@ module.exports = app => {
     app.post('/customer/searchRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/searchRestaurants")
         console.log(req.body)
-        const { searchBy, latitude, longitude, city, pageNumber } = req.body
+        const { searchBy, latitude, longitude, city, pageNumber, limit } = req.body
         if (!city) return res.send({
             status: false,
             message: 'City is required!',
@@ -627,7 +627,7 @@ module.exports = app => {
         OR m.name LIKE '%${searchBy}%')` : ''}
         GROUP BY R.restaurantId
         ORDER BY distance ASC, R.createdAt DESC
-        ${pageNumber ? `LIMIT ${(pageNumber * 5) - 5},5` : 'LIMIT 0,5'}`
+        ${pageNumber ? `LIMIT ${(pageNumber * (limit || 5)) - (limit || 5)},${(limit || 5)}` : `LIMIT 0,${(limit || 5)}`}`
         getConnection(
             res,
             query,
