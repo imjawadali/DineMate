@@ -15,7 +15,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/signUp")
             console.log(req.body)
-            const { firstName, lastName, email, password, phoneNumber } = req.body
+            const { firstName, lastName, email, password, phoneNumber, authType, socialAuthToken } = req.body
             if (!firstName) return res.send({
                 status: false,
                 message: 'FirstName is required!',
@@ -31,15 +31,25 @@ module.exports = app => {
                 message: 'Email is required!',
                 errorCode: 422
             })
-            if (!password) return res.send({
+            if (!authType) return res.send({
+                status: false,
+                message: 'Auth type is required!',
+                errorCode: 422
+            })
+            if (lowerCased(authType) === 'email' && !password) return res.send({
                 status: false,
                 message: 'Password is required!',
+                errorCode: 422
+            })
+            if (lowerCased(authType) !== 'email' && !socialAuthToken) return res.send({
+                status: false,
+                message: 'Social auth token is required!',
                 errorCode: 422
             })
             getConnection(
                 res,
                 `INSERT INTO customers SET ?`,
-                { firstName, lastName, email, password, phoneNumber },
+                { firstName, lastName, email, password, phoneNumber, authType: lowerCased(authType), socialAuthToken },
                 (result) => {
                     if (result.affectedRows) return res.send({
                         status: true,
@@ -52,7 +62,8 @@ module.exports = app => {
                             lastName,
                             email,
                             phoneNumber,
-                            address: null
+                            address: null,
+                            authType
                         }
                     })
                     else return res.send({
@@ -89,8 +100,8 @@ module.exports = app => {
             })
             getConnection(
                 res,
-                `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers
-                WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}'`,
+                `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address, authType FROM customers
+                WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}' AND authType = 'email'`,
                 null,
                 (data) => {
                     if (data.length)
@@ -155,20 +166,30 @@ module.exports = app => {
         }
     })
 
-    app.get('/customer/getProfile', async (req, res) => {
+    app.post('/customer/getProfile', async (req, res) => {
         try {
             console.log("\n\n>>> /customer/getProfile")
             console.log(req.body)
             const customerId = decrypt(req.header('authorization'))
-            if (!customerId) return res.send({
+            const { authType, socialAuthToken } = req.body
+            if (!customerId && !authType) return res.send({
                 status: false,
                 message: 'Not Authorized!',
                 errorCode: 401
             })
+            if (authType && lowerCased(authType) !== 'email' && !socialAuthToken) return res.send({
+                status: false,
+                message: 'Social auth token is required!',
+                errorCode: 422
+            })
+            let query = 'SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address, authType FROM customers'
+            if (customerId)
+                query += ` WHERE id = ${customerId}`
+            else query += ` WHERE authType = '${authType}' AND socialAuthToken = '${socialAuthToken}'`
             getSecureConnection(
                 res,
                 customerId,
-                `SELECT imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                query,
                 null,
                 (data) => {
                     if (data.length)
@@ -294,7 +315,7 @@ module.exports = app => {
                     (result) => {
                         getConnection(
                             res,
-                            `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address FROM customers WHERE id = ${customerId}`,
+                            `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address, authType FROM customers WHERE id = ${customerId}`,
                             null,
                             (data) => {
                                 if (data.length)
@@ -1330,6 +1351,83 @@ module.exports = app => {
                                 )
                         }
                     )
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/getReOrderDetails', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/getOrderItems")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, orderNumber, type } = req.body
+            if (!customerId) return res.send({
+                status: false,
+                message: 'Not Authorized!',
+                errorCode: 401
+            })
+            if (!restaurantId) return res.send({
+                status: false,
+                message: 'Restuatant Id is required!',
+                errorCode: 422
+            })
+            if (!orderNumber) return res.send({
+                status: false,
+                message: 'Order number is required!',
+                errorCode: 422
+            })
+            if (!type) return res.send({
+                status: false,
+                message: 'Order type is required!',
+                errorCode: 422
+            })
+            if (lowerCased(type) === lowerCased("Dine-In")) return res.send({
+                status: false,
+                message: 'Re-order is not supported for Dine-In orders!',
+                errorCode: 422
+            })
+            getSecureConnection(
+                res,
+                customerId,
+                `SELECT oi.itemId, oi.name, oi.quantity, oi.specialInstructions,
+                CONCAT('[',
+                    GROUP_CONCAT(
+                        CONCAT(
+                            '{"addOnId":',oia.addOnId,
+                            ',"addOnName":"',oia.addOnName,
+                            '","addOnOptionId":',oia.addOnOptionId,
+                            ',"addOnOption":"',oia.addOnOption,'"}'
+                        ) ORDER BY oi.createdAt DESC
+                    ),
+                ']') as addOns
+                FROM orderItems oi
+                LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
+                WHERE oi.restaurantId = '${restaurantId}'
+                    AND oi.orderNumber = '${orderNumber}'`,
+                null,
+                (result) => {
+                    if (result && result.length) {
+                        for (let index = 0; index < result.length; index++) {
+                            result[index].addOns = JSON.parse(result[index].addOns)
+                        }
+                        return res.send({
+                            status: true,
+                            message: 'Kindly review your cart!',
+                            body: result
+                        })
+                    } else return res.send({
+                        status: false,
+                        message: `Unable to re-order for order # ${orderNumber}`,
+                        errorCode: 422
+                    })
                 }
             )
         } catch (error) {
