@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { ToastProvider } from 'react-toast-notifications'
 
-import messaging from '../services/firebase'
+import { messaging } from '../services/firebase'
 import { getToken, onMessage } from "firebase/messaging"
 
 import { customisedAction } from '../redux/actions'

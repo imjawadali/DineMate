@@ -186,9 +186,8 @@ module.exports = app => {
             if (customerId)
                 query += ` WHERE id = ${customerId}`
             else query += ` WHERE authType = '${authType}' AND socialAuthToken = '${socialAuthToken}'`
-            getSecureConnection(
+            getConnection(
                 res,
-                customerId,
                 query,
                 null,
                 (data) => {

@@ -5,6 +5,7 @@ import './styles.css';
 import fb from '../../../assets/fb.png';
 import enter from '../../../assets/enter.png';
 import { customisedAction } from '../../../redux/actions';
+import { FacebookAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
 import { SIGN_IN } from '../../../constants';
 
@@ -16,12 +17,65 @@ function SignIn(props) {
     const [redirect, setRedirect] = useState(null);
     const dispatch = useDispatch()
 
+    const fbAuthprovider = new FacebookAuthProvider();
+    fbAuthprovider.setCustomParameters({ display: 'popup' })
+
+    const googleAuthprovider = new GoogleAuthProvider();
+    googleAuthprovider.addScope('https://www.googleapis.com/auth/contacts.readonly')
+    googleAuthprovider.setCustomParameters({ login_hint: 'user@example.com' })
+
     const { history } = props
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         setRedirect(urlParams.get("redirect"))
     }, [window.location.search])
+
+    const fbLogin = () => {
+        const auth = getAuth();
+        signInWithPopup(auth, fbAuthprovider)
+            .then((result) => {
+                const user = result.user;
+                const credential = FacebookAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                console.log("user", user)
+                console.log("credential", credential)
+                console.log("accessToken", accessToken)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const email = error.email;
+                const credential = FacebookAuthProvider.credentialFromError(error);
+                console.log("errorCode", errorCode)
+                console.log("errorMessage", errorMessage)
+                console.log("email", email)
+                console.log("credential", credential)
+            });
+    }
+
+    const googleLogin = () => {
+        const auth = getAuth();
+        signInWithPopup(auth, googleAuthprovider)
+            .then((result) => {
+                const user = result.user;
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
+                console.log("user", user)
+                console.log("credential", credential)
+                console.log("accessToken", accessToken)
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const email = error.email;
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                console.log("errorCode", errorCode)
+                console.log("errorMessage", errorMessage)
+                console.log("email", email)
+                console.log("credential", credential)
+            });
+    }
 
     return (
         <>
@@ -82,16 +136,17 @@ function SignIn(props) {
                                 <img className="fb-logo" src={fb} />
                             </div>
 
-                            <div className="facebook-text" style={{ margin: 'auto' }}>
+                            <div className="facebook-text" style={{ margin: 'auto' }}
+                                onClick={() => fbLogin()}>
                                 CONTINUE WITH FACEBOOK
                             </div>
                         </div>
 
                         <div className="or">or</div>
 
-                        <div className="email-div" onClick={() => setIsEmailSignIn(!isEmailSignIn)}>
+                        <div className="email-div" onClick={() => googleLogin()}>
                             <div className="email-text">
-                                CONTINUE WITH EMAIL
+                                CONTINUE WITH GOOGLE
                             </div>
                         </div>
 
