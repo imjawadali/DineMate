@@ -23,6 +23,7 @@ import { orderGetStatusEpic } from './customer/getOrderStatus'
 export const epics = combineEpics(
     loginEpic.login,
     loginEpic.setFcmToken,
+    loginEpic.logout,
     getAllRestaurantsEpic.getAllRestaurants,
     getAllRestaurantsEpic.submitRating,
     getGenericDataEpic.getGenericData,

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 import './styles.css';
 import fb from '../../../assets/fb.png';
+import google from '../../../assets/googl.png';
 import enter from '../../../assets/enter.png';
 import { customisedAction } from '../../../redux/actions';
-import { FacebookAuthProvider, GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
+import { FacebookAuthProvider, GoogleAuthProvider, getAuth, deleteUser, signInWithPopup } from "firebase/auth";
 
-import { SIGN_IN } from '../../../constants';
+import { GET_RPOFILE, SET_TOAST, SIGN_IN } from '../../../constants';
 
 function SignIn(props) {
 
@@ -35,22 +36,20 @@ function SignIn(props) {
         const auth = getAuth();
         signInWithPopup(auth, fbAuthprovider)
             .then((result) => {
-                const user = result.user;
-                const credential = FacebookAuthProvider.credentialFromResult(result);
-                const accessToken = credential.accessToken;
-                console.log("user", user)
-                console.log("credential", credential)
-                console.log("accessToken", accessToken)
+                const { user } = result;
+                console.log("fbLoginUser", user)
+                const splittedName = user.displayName.split(' ')
+                dispatch(customisedAction(GET_RPOFILE, {
+                    firstName: splittedName[0],
+                    lastName: splittedName[1],
+                    email: user.email,
+                    authType: 'facebook',
+                    socialAuthToken: user.uid
+                }, { history, redirect }))
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                const email = error.email;
-                const credential = FacebookAuthProvider.credentialFromError(error);
-                console.log("errorCode", errorCode)
-                console.log("errorMessage", errorMessage)
-                console.log("email", email)
-                console.log("credential", credential)
+                console.log("fbLoginError", error)
+                dispatch(customisedAction(SET_TOAST, { message: 'Failed to authorize', type: 'error' }))
             });
     }
 
@@ -58,22 +57,20 @@ function SignIn(props) {
         const auth = getAuth();
         signInWithPopup(auth, googleAuthprovider)
             .then((result) => {
-                const user = result.user;
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const accessToken = credential.accessToken;
-                console.log("user", user)
-                console.log("credential", credential)
-                console.log("accessToken", accessToken)
+                const { user } = result;
+                console.log("googleLoginUser", user)
+                const splittedName = user.displayName.split(' ')
+                dispatch(customisedAction(GET_RPOFILE, {
+                    firstName: splittedName[0],
+                    lastName: splittedName[1],
+                    email: user.email,
+                    authType: 'google',
+                    socialAuthToken: user.uid
+                }, { history, redirect }))
             })
             .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                const email = error.email;
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                console.log("errorCode", errorCode)
-                console.log("errorMessage", errorMessage)
-                console.log("email", email)
-                console.log("credential", credential)
+                console.log("googleLoginError", error)
+                dispatch(customisedAction(SET_TOAST, { message: 'Failed to authorize', type: 'error' }))
             });
     }
 
@@ -142,11 +139,22 @@ function SignIn(props) {
                             </div>
                         </div>
 
+                        <div className="facebook-div" style={{ padding: 11, marginTop: '15px', backgroundColor: '#e93936' }}>
+                            <div>
+                                <img className="fb-logo" src={google} />
+                            </div>
+
+                            <div className="facebook-text" style={{ margin: 'auto' }}
+                                onClick={() => googleLogin()}>
+                                CONTINUE WITH GOOGLE
+                            </div>
+                        </div>
+
                         <div className="or">or</div>
 
-                        <div className="email-div" onClick={() => googleLogin()}>
+                        <div className="email-div" onClick={() => setIsEmailSignIn(!isEmailSignIn)}>
                             <div className="email-text">
-                                CONTINUE WITH GOOGLE
+                                CONTINUE WITH EMAIL
                             </div>
                         </div>
 

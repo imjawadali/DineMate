@@ -18,7 +18,9 @@ import {
   SET_FCM_TOKEN_SUCCESS,
   SET_FCM_TOKEN_FAILURE,
   APPLY_REWARD_POINTS_SUCCESS,
-  ORDER_CLOSED_BY_ADMIN
+  ORDER_CLOSED_BY_ADMIN,
+  LOGOUT,
+  SESSION_CHECK_DONE
 } from '../../../constants'
 import { RestClient } from '../../../services/network'
 import { getItem, setItem } from '../../../helpers'
@@ -28,7 +30,7 @@ export class loginEpic {
     action$.pipe(
       ofType(SIGN_IN),
       switchMap(
-        async ({ payload: { email, password }, extras: { history, redirect }}) => {
+        async ({ payload: { email, password }, extras: { history, redirect } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.login,
@@ -61,14 +63,16 @@ export class loginEpic {
         }
       }),
       switchMap(
-        async () => {
+        async ({ payload, extras: { history, redirect } }) => {
           return generalizedEpic(
-            'get',
+            'post',
             API_ENDPOINTS.customer.getProfile,
-            null,
+            { ...payload, history, redirect },
             (resObj) => {
-              let id = getItem('customer').id
-              RestClient.setHeader('Authorization', id)
+              setItem('customer', resObj.body)
+              RestClient.setHeader('Authorization', resObj.body.id)
+              if (history && redirect) history.push(redirect)
+              else if (history) history.push('/')
               return customisedAction(GET_RPOFILE_SUCCESS, resObj.body)
             },
             GET_RPOFILE_FAILURE
@@ -81,11 +85,11 @@ export class loginEpic {
     action$.pipe(
       ofType(UPDATE_RPOFILE),
       switchMap(
-        async (obj) => {
+        async ({ payload }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.updateProfile,
-            obj.payload,
+            payload,
             (resObj) => {
               let id = getItem('customer').id
               RestClient.setHeader('Authorization', id)
@@ -111,6 +115,17 @@ export class loginEpic {
             },
             SET_FCM_TOKEN_FAILURE
           )
+        }
+      )
+    )
+
+  static logout = action$ =>
+    action$.pipe(
+      ofType(LOGOUT),
+      switchMap(
+        async () => {
+          RestClient.setHeader('Authorization', '')
+          return customisedAction(SESSION_CHECK_DONE)
         }
       )
     )

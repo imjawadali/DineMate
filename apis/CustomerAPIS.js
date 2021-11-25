@@ -1396,32 +1396,134 @@ module.exports = app => {
             getSecureConnection(
                 res,
                 customerId,
-                `SELECT oi.itemId, oi.name, oi.quantity, oi.specialInstructions,
+                `SELECT oi.itemId, oi.quantity, oi.specialInstructions,
                 CONCAT('[',
                     GROUP_CONCAT(
                         CONCAT(
                             '{"addOnId":',oia.addOnId,
-                            ',"addOnName":"',oia.addOnName,
-                            '","addOnOptionId":',oia.addOnOptionId,
-                            ',"addOnOption":"',oia.addOnOption,'"}'
+                            ',"addOnOptionId":',oia.addOnOptionId,'}'
                         ) ORDER BY oi.createdAt DESC
                     ),
-                ']') as addOns
+                ']') as reOrderAddOns
                 FROM orderItems oi
                 LEFT JOIN orderItemAddOns oia ON oi.id = oia.orderItemId
                 WHERE oi.restaurantId = '${restaurantId}'
-                    AND oi.orderNumber = '${orderNumber}'`,
+                    AND oi.orderNumber = '${orderNumber}'
+                GROUP BY oi.id`,
                 null,
-                (result) => {
-                    if (result && result.length) {
-                        for (let index = 0; index < result.length; index++) {
-                            result[index].addOns = JSON.parse(result[index].addOns)
+                (reOrderResult) => {
+                    if (reOrderResult && reOrderResult.length) {
+                        for (let index = 0; index < reOrderResult.length; index++) {
+                            reOrderResult[index].reOrderAddOns = JSON.parse(reOrderResult[index].reOrderAddOns)
                         }
-                        return res.send({
-                            status: true,
-                            message: 'Kindly review your cart!',
-                            body: result
-                        })
+                        getConnection(
+                            res,
+                            `SELECT m.id, m.imageUrl, m.name, m.shortDescription, m.price, m.categoryId,
+                            ao.id as addOn_id, ao.name as addOn_name, ao.price as addOn_price, ao.mandatory,
+                            aoo.id as addOnOption_id, aoo.name as addOnOption_name, aoo.price as addOnOption_price,
+                            c.name as categoryName
+                            FROM menu m 
+                            LEFT JOIN addOns ao ON ao.menuId = m.id
+                            LEFT JOIN addOnOptions aoo ON aoo.addOnID = ao.id
+                            LEFT JOIN categories c on c.id = m.categoryId
+                            WHERE m.restaurantId = '${restaurantId}'`,
+                            null,
+                            (data) => {
+                                if (data.length) {
+                                    let menu = []
+                                    for (let i = 0; i < data.length; i++) {
+                                        let addOns = []
+                                        for (let j = 0; j < data.length; j++) {
+                                            let addOnOptions = []
+                                            for (let k = 0; k < data.length; k++) {
+                                                if (data[k].addOnOption_id && !includes(addOnOptions, data[k].addOnOption_id) && data[k].addOn_id === data[j].addOn_id) {
+                                                    addOnOptions.push({
+                                                        id: data[k].addOnOption_id,
+                                                        name: data[k].addOnOption_name,
+                                                        price: data[k].addOnOption_price
+                                                    })
+                                                }
+                                            }
+                                            if (data[j].addOn_id && !includes(addOns, data[j].addOn_id) && data[j].id === data[i].id) {
+                                                addOns.push({
+                                                    id: data[j].addOn_id,
+                                                    name: data[j].addOn_name,
+                                                    price: data[j].addOn_price,
+                                                    mandatory: data[j].mandatory,
+                                                    isradio: !!addOnOptions.length,
+                                                    addOnOptions
+                                                })
+                                            }
+                                        }
+                                        const result = !includes(menu, data[i].id)
+                                        if (result) {
+                                            menu.push({
+                                                id: data[i].id,
+                                                imageUrl: data[i].imageUrl,
+                                                name: data[i].name,
+                                                shortDescription: data[i].shortDescription,
+                                                price: data[i].price,
+                                                categoryId: data[i].categoryId,
+                                                categoryName: data[i].categoryName,
+                                                addOns
+                                            })
+                                        }
+                                    }
+                                    let items = []
+                                    for (let index = 0; index < reOrderResult.length; index++) {
+                                        const { itemId, quantity, specialInstructions, reOrderAddOns } = reOrderResult[index]
+                                        const menuItem = menu.filter(item => item.id === itemId)
+                                        if (!!menuItem.length) {
+                                            const { name, price, addOns } = menuItem[0]
+                                            const item = {
+                                                itemId, name, price, quantity, specialInstructions
+                                            }
+                                            if (reOrderAddOns && reOrderAddOns.length
+                                                && addOns && addOns.length) {
+                                                for (let index2 = 0; index2 < reOrderAddOns.length; index2++) {
+                                                    const { addOnId, addOnOptionId } = reOrderAddOns[index2]
+                                                    const menuAddOn = addOns.filter(item => item.id === addOnId)
+                                                    if (!!menuAddOn.length) {
+                                                        const { name: addOnName, price, addOnOptions } = menuAddOn[0]
+                                                        const addOn = {
+                                                            addOnId,
+                                                            addOnName,
+                                                            addOnOptionId: null,
+                                                            addOnOption: null,
+                                                            price,
+                                                        }
+                                                        if (addOnOptionId && addOnOptions && addOnOptions.length) {
+                                                            const menuAddOnOption = addOnOptions.filter(item => item.id === addOnOptionId)
+                                                            if (!!menuAddOnOption.length) {
+                                                                addOn.addOnOptionId = menuAddOnOption[0].id
+                                                                addOn.addOnOption = menuAddOnOption[0].name
+                                                                addOn.price = menuAddOnOption[0].price
+                                                            }
+                                                        }
+                                                        if (!item.addOns) {
+                                                            item.addOns = []
+                                                        }
+                                                        item.addOns.push(addOn)
+                                                    }
+                                                }
+                                            }
+                                            item.totalPrice = (price + getAddOnsSum(item.addOns)) * quantity
+                                            items.push(item)
+                                        }
+                                    }
+                                    return res.send({
+                                        status: true,
+                                        message: 'Kindly review your cart!',
+                                        body: { restaurantId, items }
+                                    })
+                                }
+                                else return res.send({
+                                    status: false,
+                                    message: 'No menu items available!',
+                                    errorCode: 422
+                                })
+                            }
+                        )
                     } else return res.send({
                         status: false,
                         message: `Unable to re-order for order # ${orderNumber}`,
@@ -2629,4 +2731,10 @@ function formatAddOns(addOnsString) {
         formattedAddOnsString = addOns.map(addOn => `${addOn.addOnOption && addOn.addOnOption !== 'null' && addOn.addOnOption !== 'undefined' ? addOn.addOnOption : addOn.addOnName}${addOn.price ? ` ($${addOn.price})` : ''}`)
             .join(', ')
     return formattedAddOnsString;
+}
+
+function getAddOnsSum(addOns) {
+    if (addOns && addOns.length) {
+        return addOns.reduce((a, b) => a + (b.price || 0), 0)
+    } else return 0
 }

@@ -12,12 +12,13 @@ import { getItem } from '../../helpers'
 function Profile() {
     const [email, setEmail] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
-    const [password, setPassword] = useState('sdaddsd')
+    const [password, setPassword] = useState('')
     const [address, setAddress] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [imgUrl, setImgUrl] = useState('')
     const [selectedImage, setSelectedImage] = useState(null)
+
     const profile = useSelector(({ profileReducer }) => profileReducer.profile)
     const dispatch = useDispatch()
 
@@ -61,9 +62,9 @@ function Profile() {
             "updatedData": {
                 "address": address,
                 "email": email,
-                "firstName": "test",
-                "imageUrl": null,
-                "lastName": "test",
+                "firstName": firstName,
+                // "imageUrl": imgUrl,
+                "lastName": lastName,
                 "phoneNumber": phoneNumber
             }
         }
@@ -97,7 +98,7 @@ function Profile() {
             <div className="profileImageDiv profileInputDIv">
                 <h2>Password</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={password} type='password' />
+                    <input value={password} onChange={(ev) => setPassword(ev.target.value)} type='password' placeholder="Set New Password" />
                 </div>
             </div>
 
@@ -105,21 +106,21 @@ function Profile() {
             <div className="profileImageDiv profileInputDIv">
                 <h2>Email Address</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={email} onChange={(ev) => setEmail(ev.target.value)} />
+                    <input value={email} onChange={(ev) => setEmail(ev.target.value)} placeholder="Enter Email" />
                 </div>
             </div>
 
             <div className="profileImageDiv profileInputDIv">
                 <h2>Phone Number</h2>
                 <div className=" inputDiv centerAb">
-                    <input value={phoneNumber} onChange={(ev) => setPhoneNumber(ev.target.value)} />
+                    <input value={phoneNumber} onChange={(ev) => setPhoneNumber(ev.target.value)} placeholder="Enter Phone Number" />
                 </div>
             </div>
 
             <div className="profileImageDiv profileInputDIv">
                 <h2>Address</h2>
                 <div className="inputDiv centerAb">
-                    <input value={address} onChange={(ev) => setAddress(ev.target.value)} />
+                    <input value={address} onChange={(ev) => setAddress(ev.target.value)} placeholder="Enter Address" />
                 </div>
             </div>
 
