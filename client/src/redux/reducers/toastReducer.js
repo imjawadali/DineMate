@@ -127,7 +127,11 @@ import {
   SPLIT_ITEM_FAILURE,
   GENERATE_RECEIPT_FAILURE,
   GET_STAFF_ASSIGNED_TABLES,
-  GET_FEEDBACKS_FAILURE
+  GET_FEEDBACKS_FAILURE,
+  GET_RESERVATIONS_FAILURE,
+  GET_RESERVATIONS,
+  UPDATE_RESERVATION_FAILURE,
+  UPDATE_RESERVATION
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -384,6 +388,14 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case GET_RESTAURANT_SCHEDULE_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case GET_FEEDBACKS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case GET_RESERVATIONS:
+      return { ...state, toastSetDismiss: true, toast: payload.toast }
+    case GET_RESERVATIONS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+    case UPDATE_RESERVATION:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Updating Reservation Status' } }
+    case UPDATE_RESERVATION_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
     case UPDATE_RESTAURANT_SCHEDULE:
       return { ...state, toastSetDismiss: true, toast: { message: 'Updating Restaurant Schedule', type: 'success' } }

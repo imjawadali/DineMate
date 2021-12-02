@@ -37,6 +37,7 @@ import SuperAdminSettings from './Settings/SuperAdmin'
 import RestaurantSettings from './Settings/Restaurant'
 import UpdatePassword from './UpdatePassword'
 import Schedule from './Schedule'
+import Reservations from './Reservations'
 import Feedbacks from './Feedbacks'
 import Others from './Others'
 import NoRoute from '../NoRoute'
@@ -248,6 +249,7 @@ function Admin(props) {
             <SuperAdminRoutes path={`${path}/updatePassword`} component={UpdatePassword} />
             <Route path={`${path}/restaurant/updatePassword`} component={UpdatePassword} />
             <RestaurantAdminRoutes path={`${path}/scheduleManagement`} component={Schedule} />
+            <RestaurantAdminRoutes path={`${path}/reservations`} component={Reservations} />
             <RestaurantAdminRoutes path={`${path}/feedbacks`} component={Feedbacks} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?

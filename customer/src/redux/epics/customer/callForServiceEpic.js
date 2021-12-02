@@ -4,11 +4,7 @@ import { ofType } from 'redux-observable'
 import { customisedAction } from '../../actions'
 import { generalizedEpic } from '../generalizedEpic'
 import {
-  INITIALIZE_ORDER,
-  SET_ORDER_ITEM,
-  INITIALIZE_ORDER_FAILURE,
   API_ENDPOINTS,
-  SET_ORDER_ITEM_FAILED,
   CALL_FOR_SERVICE,
   CALL_FOR_SERVICE_SUCCESS,
   CALL_FOR_SERVICE_FAILURE,

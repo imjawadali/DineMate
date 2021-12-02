@@ -40,7 +40,10 @@ import {
   APPLY_REWARD_POINTS_SUCCESS,
   APPLY_REWARD_POINTS,
   APPLY_REWARD_POINTS_FAILURE,
-  SEARCH_RESTURANT_FAILURE
+  SEARCH_RESTURANT_FAILURE,
+  RESERVATION,
+  RESERVATION_SUCCESS,
+  RESERVATION_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -128,12 +131,20 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: payload }
     case SUBMIT_RATING_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+
     case APPLY_REWARD_POINTS:
       return { ...state, toast: { message: "Applying Reward Points" } }
     case APPLY_REWARD_POINTS_SUCCESS:
       return { ...state, toastSetDismiss: true, toast: payload.toast }
     case APPLY_REWARD_POINTS_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+
+    case RESERVATION:
+      return { ...state, toast: { message: "Requesting Reservation" } }
+    case RESERVATION_SUCCESS:
+    case RESERVATION_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+
     default:
       return state
   }

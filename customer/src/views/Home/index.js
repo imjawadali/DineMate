@@ -27,6 +27,7 @@ function Home(props) {
           </div>
 
           <button className="takeAwayBtn" onClick={() => props.history.push('/customer/restaurants')}>Take-Away</button>
+          <button className="enrollBtn" onClick={() => props.openReservationModal()}>Reserve Your Table</button>
           <button className="enrollBtn" onClick={() => props.history.push('/registration')}>Enroll Your Restaurant</button>
           {!customer ?
             <HeaderButton

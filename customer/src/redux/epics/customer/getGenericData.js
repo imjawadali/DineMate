@@ -7,7 +7,10 @@ import {
   GET_GENERIC_DATA,
   GET_GENERIC_DATA_SUCCESS,
   GET_GENERIC_DATA_FAILURE,
-  API_ENDPOINTS
+  API_ENDPOINTS,
+  RESERVATION,
+  RESERVATION_SUCCESS,
+  RESERVATION_FAILURE
 } from '../../../constants'
 
 export class getGenericDataEpic {
@@ -17,13 +20,31 @@ export class getGenericDataEpic {
       switchMap(
         async () => {
           return generalizedEpic(
-            'get', 
+            'get',
             API_ENDPOINTS.customer.getGenericData,
             null,
             (resObj) => {
               return customisedAction(GET_GENERIC_DATA_SUCCESS, resObj.body)
             },
             GET_GENERIC_DATA_FAILURE
+          )
+        }
+      )
+    )
+
+  static reservation = action$ =>
+    action$.pipe(
+      ofType(RESERVATION),
+      switchMap(
+        async ({ payload }) => {
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.reservation,
+            payload,
+            (resObj) => {
+              return customisedAction(RESERVATION_SUCCESS, { message: resObj.message, type: 'success' })
+            },
+            RESERVATION_FAILURE
           )
         }
       )

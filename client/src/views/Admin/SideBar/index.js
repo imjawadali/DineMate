@@ -79,6 +79,10 @@ function SideBar(props) {
                             <i style={{ width: '20px' }} className="fa fa-archive" />
                             <Link to={`${url}/ordersManagement`}>Order Management</Link>
                         </div>
+                        <div className={`sidebar__link ${pathname.includes('/reservations') ? 'active_menu_link' : null}`}>
+                            <i style={{ width: '20px' }} className="fa fa-book" />
+                            <Link to={`${url}/reservations`}>Reservations</Link>
+                        </div>
                         <div className={`sidebar__link ${pathname.includes('/staffManagement') ? 'active_menu_link' : null}`}>
                             <i style={{ width: '20px' }} className="fa fa-user" />
                             <Link to={`${url}/staffManagement`}>Staff Management</Link>

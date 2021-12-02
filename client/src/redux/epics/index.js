@@ -54,6 +54,7 @@ import { getRestaurantSettingsEpic } from './admin/getRestaurantSettingsEpic'
 import { updateRestaurantSettingsEpic } from './admin/updateRestaurantSettingsEpic'
 import { getRestaurantScheduleEpic } from './admin/getRestaurantScheduleEpic'
 import { getFeedbacksEpic } from './admin/getFeedbacksEpic'
+import { ReservationsEpic } from './admin/ReservationsEpic'
 import { updateRestaurantScheduleEpic } from './admin/updateRestaurantScheduleEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
@@ -116,6 +117,8 @@ export const epics = combineEpics(
     getRestaurantScheduleEpic.getRestaurantSchedule,
     updateRestaurantScheduleEpic.updateRestaurantSchedule,
     getFeedbacksEpic.getFeedbacks,
+    ReservationsEpic.getReservations,
+    ReservationsEpic.updateReservation,
     uploadToS3Epic.uploadToS3,
     deleteFromS3Epic.deleteFromS3
 )

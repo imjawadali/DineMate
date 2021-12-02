@@ -1,15 +1,21 @@
 import { switchMap } from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 
+import { generalizedEpic } from '../generalizedEpic'
 import { customisedAction } from '../../actions'
 import {
   SET_ORDER_ITEM,
   SET_ORDER_ITEM_SUCCESS,
   EDIT_ORDER_ITEM,
   DELETE_ORDER_ITEM,
-  DELETE_ALL_ORDER_ITEM
+  DELETE_ALL_ORDER_ITEM,
+  GET_RE_ORDER_DETAILS,
+  GET_RE_ORDER_DETAILS_FAILURE,
+  GET_RE_ORDER_DETAILS_SUCCESS,
+  API_ENDPOINTS
 } from '../../../constants'
 import { getItem, removeItem } from '../../../helpers'
+import store from '../../store'
 
 export class addOrderEpic {
   static addOrder = action$ =>
@@ -99,6 +105,41 @@ export class addOrderEpic {
         async () => {
           removeItem('cartMenu')
           return customisedAction(SET_ORDER_ITEM_SUCCESS, { cartMenu: [] })
+        }
+      )
+    )
+
+  static getReOrderDetails = action$ =>
+    action$.pipe(
+      ofType(GET_RE_ORDER_DETAILS),
+      switchMap(
+        async ({ payload: { restaurantId, orderNumber, type }, extras: { history } }) => {
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.getReOrderDetails,
+            { restaurantId, orderNumber, type },
+            (resObj) => {
+              console.log(resObj.body.items)
+              if (history) {
+                history.push(`/customer/${restaurantId}/menu`)
+              }
+              if (resObj.body.items && resObj.body.items.length) {
+                resObj.body.items.forEach(item => {
+                  if (item.addOns && item.addOns.length) {
+                    item.addOnObj = {}
+                    item.addOns.forEach(addOn => {
+                      item.addOnObj[addOn.addOnName] = addOn
+                    });
+                  }
+                  item.restaurantId = restaurantId
+                  item.id = item.itemId
+                  store.dispatch(customisedAction(SET_ORDER_ITEM, item))
+                })
+              }
+              return customisedAction(GET_RE_ORDER_DETAILS_SUCCESS)
+            },
+            GET_RE_ORDER_DETAILS_FAILURE
+          )
         }
       )
     )

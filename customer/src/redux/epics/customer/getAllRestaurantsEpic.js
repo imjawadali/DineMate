@@ -27,11 +27,11 @@ export class getAllRestaurantsEpic {
         }
       }),
       switchMap(
-        async ({ payload: { pageNumber }, extras: { latitude, longitude, city } }) => {
+        async ({ payload: { pageNumber, limit }, extras: { latitude, longitude, city } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.getAllRestaurants,
-            { latitude, longitude, city, pageNumber },
+            { latitude, longitude, city, pageNumber, limit },
             (resObj) => {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)
             },

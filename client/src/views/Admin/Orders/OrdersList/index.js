@@ -36,17 +36,20 @@ function OrdersList(props) {
                                             <TableActionicons
                                                 icon="fa fa-info"
                                                 onClick={() => {
-                                                  dispatch(customisedAction(CLEAR_ORDER_DETAILS))
-                                                  history.push({
-                                                    pathname: '/client/admin/ordersManagement/orderDetails',
-                                                    state: { restaurantId, orderNumber }
-                                                  })
+                                                    dispatch(customisedAction(CLEAR_ORDER_DETAILS))
+                                                    history.push({
+                                                        pathname: '/client/admin/ordersManagement/orderDetails',
+                                                        state: { restaurantId, orderNumber }
+                                                    })
                                                 }}
                                             />
-                                            <TableActionicons
-                                                icon="fa fa-print"
-                                                onClick={() => null}
-                                            />
+                                            {!status
+                                                ? <TableActionicons
+                                                    icon="fa fa-print"
+                                                    onClick={() => null}
+                                                />
+                                                : null
+                                            }
                                         </div>
                                     </td>
                                     <td style={{ color: tableId ? '' : 'blue' }}>

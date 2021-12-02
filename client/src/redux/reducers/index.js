@@ -9,6 +9,7 @@ import usersReducer from './usersReducer'
 import ordersReducer from './ordersReducer'
 import staffReducer from './staffReducer'
 import feedbacksReducer from './feedbacksReducer'
+import reservationsReducer from './reservationsReducer'
 import genericDataReducer from './genericDataReducer'
 import scheduleReducer from './scheduleReducer'
 import fileUploadReducer from './fileUploadReducer'
@@ -25,6 +26,7 @@ export default combineReducers({
     ordersReducer,
     staffReducer,
     feedbacksReducer,
+    reservationsReducer,
     genericDataReducer,
     scheduleReducer,
     fileUploadReducer,

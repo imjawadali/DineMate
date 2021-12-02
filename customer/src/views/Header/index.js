@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { useRouteMatch } from 'react-router-dom';
@@ -12,7 +12,6 @@ import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
 import HeaderImg from '../../assets/header.png';
-import { RestClient } from '../../services/network';
 
 const Header = props => {
 
@@ -414,29 +413,6 @@ const Header = props => {
     }, [items, orderDetail, orderDetails, takeOrderItems, orderStatusDetails])
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                if (position && position.coords) {
-                    const { latitude, longitude } = position.coords
-                    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_KEY}`)
-                        .then(r => r.json().then(data => ({ status: r.status, body: data })))
-                        .then(response => {
-                            if (response.status === 200 && response.body && response.body.plus_code && response.body.plus_code.compound_code) {
-                                const { compound_code } = response.body.plus_code
-                                console.log("compound_code", compound_code)
-                                let city = compound_code.split(',')[1].trim()
-                                if (city.length === 2)
-                                    city = (compound_code.split(',')[0].trim()).split(' ')[1]
-                                dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city }))
-                            } else {
-                                console.log(response)
-                                dispatch(customisedAction(LOCATION_REQUIRED))
-                            }
-                        })
-                } else dispatch(customisedAction(LOCATION_REQUIRED))
-            },
-            () => dispatch(customisedAction(LOCATION_REQUIRED))
-        )
         dispatch(customisedAction(GET_GENERIC_DATA))
     }, [])
 

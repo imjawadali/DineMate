@@ -29,8 +29,8 @@ export class getAllOrdersEpic {
       switchMap(
         async () => {
           return generalizedEpic(
-            'get', 
-            API_ENDPOINTS.customer.getAllOrders,
+            'get',
+            API_ENDPOINTS.customer.getMyOrders,
             null,
             (resObj) => {
               return customisedAction(GET_ALL_ORDERS_SUCCESS, resObj.body)

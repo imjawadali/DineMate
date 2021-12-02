@@ -32,7 +32,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     }, [editedQuantity])
 
     let [price, setPrice] = useState(selectedItem.price);
-    
+
     useEffect(() => {
         let arr = []
         let total = 0
@@ -59,12 +59,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
     const addToCart = e => {
         e.preventDefault();
         if (!edit) {
-
-
             let arr = []
-            for (let keys in obj) {
+            for (let keys in obj)
                 arr.push(obj[keys])
-            }
 
             if (JSON.parse(localStorage.getItem('orderDetails')) && JSON.parse(localStorage.getItem('orderDetails')).type.toLowerCase() === 'dine-in') {
                 let objItem = {
@@ -209,7 +206,7 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
 
                                                                                 let objj = { ...obj }
                                                                                 objj[addOn.name] = {
-                                                                                    "addOnId": addOnOption.id,
+                                                                                    "addOnId": addOn.id,
                                                                                     "addOnName": addOn.name,
                                                                                     "addOnOptionId": addOnOption.id,
                                                                                     "addOnOption": addOnOption.name,
@@ -283,9 +280,9 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                                                     objj[addOnOption.name] = {
                                                                                         "addOnId": addOn.id,
                                                                                         "addOnName": addOn.name,
-                                                                                        "addOnOptionId": addOn.id,
-                                                                                        "addOnOption": addOn.name,
-                                                                                        "price": addOnOption.price
+                                                                                        "addOnOptionId": null,
+                                                                                        "addOnOption": null,
+                                                                                        "price": addOn.price
                                                                                     }
                                                                                     setObj(objj)
                                                                                 } else {
@@ -360,21 +357,16 @@ const ViewAddon = ({ setViewAddons, selectedItem, updateCart, history, restauran
                                                             setupdatePrice(true)
 
                                                             if (!obj[addOn.name]) {
-
                                                                 let objj = { ...obj }
                                                                 objj[addOn.name] = {
                                                                     "addOnId": addOn.id,
                                                                     "addOnName": addOn.name,
-                                                                    "addOnOptionId": addOn.id,
-                                                                    "addOnOption": addOn.name,
+                                                                    "addOnOptionId": null,
+                                                                    "addOnOption": null,
                                                                     "price": addOn.price
                                                                 }
                                                                 setObj(objj)
-                                                            } else {
-                                                                let objj = { ...obj }
-
-                                                                delete obj[addOn.name]
-                                                            }
+                                                            } else delete obj[addOn.name]
                                                         }}
                                                         name={addOn.name}
                                                         className="check"

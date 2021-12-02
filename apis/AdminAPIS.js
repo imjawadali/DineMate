@@ -2360,7 +2360,7 @@ module.exports = app => {
             FROM users u
             JOIN restaurants r ON u.restaurantId = r.restaurantId
             WHERE u.restaurantId = '${restaurantId}'
-            ORDER BY u.createdAt DESC `,
+            ORDER BY u.createdAt DESC`,
             null,
             (data) => {
                 if (data.length) {
@@ -2589,6 +2589,47 @@ module.exports = app => {
             (data) => {
                 if (data && data.length) return res.send(data)
                 else return res.status(422).send({ 'msg': 'No ratings and feedbacks submitted!' })
+            }
+        )
+    })
+
+    app.post('/admin/getReservations', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT id, customerId, name, phoneNumber, email, seats, date, time, comments, status
+            FROM reservations WHERE restaurantId = '${restaurantId}'
+            ORDER BY createdAt ASC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No reservations available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/updateReservation', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { id, status, customerId } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!id) return res.status(422).send({ 'msg': 'Reservation Id is required!' })
+        if (!status) return res.status(422).send({ 'msg': 'Staus is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `UPDATE reservations SET ? WHERE id = ${id}`,
+            { status },
+            (result) => {
+                if (result.changedRows)
+                    return res.send({ 'msg': 'Reservation status updated successfully!' })
+                else return res.status(422).send({ 'msg': 'Failed to update reservation status' })
             }
         )
     })

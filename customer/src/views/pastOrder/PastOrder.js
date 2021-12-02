@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { GET_ALL_ORDERS } from '../../constants'
+import { GET_ALL_ORDERS, GET_RE_ORDER_DETAILS } from '../../constants'
 import { customisedAction } from '../../redux/actions'
 import './pastOrder.css'
 function PastOrder(props) {
@@ -55,7 +55,15 @@ function PastOrder(props) {
                                 </div>
                                 <div className="detailDiv">
                                     <h3>${Number(a.billAmount).toFixed(2)}</h3>
-                                    <button onClick={()=>props.history.push(`/customer/pastOrder/orderDetails?restaurantId=${a.restaurantId}&restaurantName=${a.restaurantName}&orderNumber=${a.orderNumber}`)}>View Detail</button>
+                                    {a.active === 0 && a.type.toLowerCase() === 'take-away'
+                                        ? <button style={{ marginRight: '15px' }} onClick={() => dispatch(customisedAction(GET_RE_ORDER_DETAILS, {
+                                            restaurantId: a.restaurantId,
+                                            orderNumber: a.orderNumber,
+                                            type: a.type
+                                        }, { history: props.history }))}>Re-Order</button>
+                                        : null
+                                    }
+                                    <button onClick={() => props.history.push(`/customer/pastOrder/orderDetails?restaurantId=${a.restaurantId}&restaurantName=${a.restaurantName}&orderNumber=${a.orderNumber}`)}>View Detail</button>
                                 </div>
                             </div>
 

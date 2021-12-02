@@ -7,7 +7,7 @@ import { messaging } from '../services/firebase'
 import { getToken, onMessage } from "firebase/messaging"
 
 import { customisedAction } from '../redux/actions'
-import { SESSION_CHECK_DONE, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS, SET_TOAST, SET_FCM_TOKEN } from '../constants'
+import { SESSION_CHECK_DONE, SET_SESSION, ORDER_CHECK_DONE, GET_STATUS, SET_TOAST, SET_FCM_TOKEN, SET_LOCATION, LOCATION_REQUIRED } from '../constants'
 import { RestClient } from '../services/network'
 import { getItem } from '../helpers'
 
@@ -22,20 +22,22 @@ import Others from './Others'
 import Registration from './Registration'
 import NoRoute from './NoRoute'
 import Footer from './Footer'
+import Reservation from './Reservation'
 import RewardPoints from './Customer/RewardPoints'
 
 import logo from '../assets/logo.png'
 import './styles.css'
 
-
-
 export default function App() {
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [isReservationModalVisible, setisReservationModalVisible] = useState(false)
+
     const checkingSignIn = useSelector(({ sessionReducer }) => sessionReducer.checkingSignIn)
     const customer = useSelector(({ sessionReducer }) => sessionReducer.customer)
     const checkingOrder = useSelector(({ orderReducer }) => orderReducer.checkingOrder)
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
+    const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -57,6 +59,32 @@ export default function App() {
                 }, 300)
             } else
                 setTimeout(() => dispatch(customisedAction(ORDER_CHECK_DONE)), 300)
+        }
+
+        if (!city) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    if (position && position.coords) {
+                        const { latitude, longitude } = position.coords
+                        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_KEY}`)
+                            .then(r => r.json().then(data => ({ status: r.status, body: data })))
+                            .then(response => {
+                                if (response.status === 200 && response.body && response.body.plus_code && response.body.plus_code.compound_code) {
+                                    const { compound_code } = response.body.plus_code
+                                    console.log("compound_code", compound_code)
+                                    let city = compound_code.split(',')[1].trim()
+                                    if (city.length === 2)
+                                        city = (compound_code.split(',')[0].trim()).split(' ')[1]
+                                    dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city }))
+                                } else {
+                                    console.log(response)
+                                    dispatch(customisedAction(LOCATION_REQUIRED))
+                                }
+                            })
+                    } else dispatch(customisedAction(LOCATION_REQUIRED))
+                },
+                () => dispatch(customisedAction(LOCATION_REQUIRED))
+            )
         }
     }, [])
 
@@ -104,9 +132,16 @@ export default function App() {
                     <SideNav sidebarOpen={sidebarOpen} closeSidebar={closeSidebar} />
                     <Header openSidebar={openSidebar} />
                     <RewardPoints />
+                    <Reservation
+                        isReservationModalVisible={isReservationModalVisible}
+                        closeReservationModal={() => setisReservationModalVisible(false)}
+                    />
                     <Switch>
                         <Route exact path='/'>
-                            <Home openSidebar={openSidebar} />
+                            <Home
+                                openSidebar={openSidebar}
+                                openReservationModal={() => setisReservationModalVisible(true)}
+                            />
                         </Route>
                         <Route path='/customer' component={Customer} />
                         <Route exact path='/:restaurantId/:tableId' component={ContinueWith} />
