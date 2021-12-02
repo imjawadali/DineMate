@@ -2681,6 +2681,110 @@ module.exports = app => {
             }
         )
     })
+
+    app.post('/customer/reservation', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/reservation")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { restaurantId, name, phoneNumber, email, seats, date, time, comments } = req.body
+            if (!restaurantId) return res.send({
+                status: false,
+                message: 'Restuatant Id is required!',
+                errorCode: 422
+            })
+            if (!name) return res.send({
+                status: false,
+                message: 'Name is required!',
+                errorCode: 422
+            })
+            if (!phoneNumber) return res.send({
+                status: false,
+                message: 'Phone Number is required!',
+                errorCode: 422
+            })
+            if (!email) return res.send({
+                status: false,
+                message: 'Email is required!',
+                errorCode: 422
+            })
+            if (!seats) return res.send({
+                status: false,
+                message: 'Seats is required!',
+                errorCode: 422
+            })
+            if (!date) return res.send({
+                status: false,
+                message: 'Name is required!',
+                errorCode: 422
+            })
+            if (!time) return res.send({
+                status: false,
+                message: 'Name is required!',
+                errorCode: 422
+            })
+            getConnection(
+                res,
+                `INSERT INTO reservations SET ?`,
+                { restaurantId, customerId, name, phoneNumber, email, seats, date, time, comments },
+                (result) => {
+                    if (result.affectedRows) return res.send({
+                        status: true,
+                        message: 'Reservation request submitted!'
+                    })
+                    else return res.send({
+                        status: false,
+                        message: 'Reservation request failed!',
+                        errorCode: 422
+                    })
+                }
+            )
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
+
+    app.post('/customer/testNotification', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/testNotification")
+            console.log(req.body)
+            const customerId = decrypt(req.header('authorization'))
+            const { fcmToken } = req.body
+            if (!fcmToken) return res.send({
+                status: false,
+                message: 'Invalid FCM Token!',
+                errorCode: 422
+            })
+            sendNotification({
+                to: fcmToken,
+                notification: {
+                    title: 'DineMate',
+                    body: `This is a test notification`
+                },
+                data: {
+                    title: 'DineMate',
+                    body: JSON.stringify({
+                        customerId,
+                        typeArray: ['GET_ORDER_ITEMS', 'GET_TAKE_ORDER_ITEMS'],
+                        restaurantId: "any",
+                        orderNumber: "any"
+                    })
+                }
+            })
+        } catch (error) {
+            console.log(error)
+            return res.send({
+                status: false,
+                message: 'Service not Available!',
+                errorCode: 422
+            })
+        }
+    })
 }
 
 function decrypt(token) {
