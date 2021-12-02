@@ -2775,7 +2775,11 @@ module.exports = app => {
                         orderNumber: "any"
                     })
                 }
-            })
+            },
+            () => res.send({
+                status: true,
+                message: 'You will receive a test notification!'
+            }))
         } catch (error) {
             console.log(error)
             return res.send({
