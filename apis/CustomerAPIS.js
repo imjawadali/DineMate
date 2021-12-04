@@ -2779,6 +2779,11 @@ module.exports = app => {
             () => res.send({
                 status: true,
                 message: 'You will receive a test notification!'
+            }),
+            (message) => res.send({
+                status: false,
+                message,
+                errorCode: 422
             }))
         } catch (error) {
             console.log(error)
