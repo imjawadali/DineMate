@@ -3,6 +3,7 @@ const path = require('path')
 var fs = require("fs");
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlCustomer')
 const { sendEmail } = require('../services/mailer')
+const { sendTextMessage } = require('../services/messenger')
 const { postCharge } = require('../services/stripe')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
@@ -2776,15 +2777,48 @@ module.exports = app => {
                     })
                 }
             },
-            () => res.send({
-                status: true,
-                message: 'You will receive a test notification!'
-            }),
-            (message) => res.send({
+                () => res.send({
+                    status: true,
+                    message: 'You will receive a test notification!'
+                }),
+                (message) => res.send({
+                    status: false,
+                    message,
+                    errorCode: 422
+                }))
+        } catch (error) {
+            console.log(error)
+            return res.send({
                 status: false,
-                message,
+                message: 'Service not Available!',
                 errorCode: 422
-            }))
+            })
+        }
+    })
+
+    app.post('/customer/testSMS', async (req, res) => {
+        try {
+            console.log("\n\n>>> /customer/testNotification")
+            console.log(req.body)
+            const { phoneNumber } = req.body
+            if (!phoneNumber) return res.send({
+                status: false,
+                message: 'Phone Number is required!',
+                errorCode: 422
+            })
+            sendTextMessage(
+                phoneNumber,
+                "Hi . . .",
+                () => res.send({
+                    status: true,
+                    message: 'You will soon receive a text message'
+                }),
+                (message) => res.send({
+                    status: false,
+                    message,
+                    errorCode: 422
+                })
+            )
         } catch (error) {
             console.log(error)
             return res.send({

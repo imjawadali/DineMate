@@ -3,6 +3,7 @@ const path = require('path')
 var fs = require("fs");
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
+const { sendTextMessage } = require('../services/messenger')
 const { uploader, s3 } = require('../services/uploader')
 const { sendNotification } = require('../services/firebase')
 const { generaterReceipt } = require('../services/receiptGenerator')
@@ -1079,12 +1080,12 @@ module.exports = app => {
                                         tempDb.release()
                                         getConnection(
                                             res,
-                                            `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                                            `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
                                             null,
                                             (result) => {
                                                 if (result.length) {
-                                                    const { id, fcmToken } = result[0]
-                                                    sendNotification({
+                                                    const { id, fcmToken, email, phoneNumber } = result[0]
+                                                    if (fcmToken) sendNotification({
                                                         to: fcmToken,
                                                         notification: {
                                                             title: 'DineMate',
@@ -1100,6 +1101,15 @@ module.exports = app => {
                                                             })
                                                         }
                                                     })
+                                                    if (email) sendEmail(
+                                                        email,
+                                                        "DineMate Notification",
+                                                            `New Item(s) added to order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                    )
+                                                    if (phoneNumber) sendTextMessage(
+                                                        phoneNumber,
+                                                        `New Item(s) added to order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                    )
                                                 }
                                             }
                                         )
@@ -1254,7 +1264,7 @@ module.exports = app => {
                                         const { restaurantId, orderNumber } = forFirebase[0]
                                         getConnection(
                                             res,
-                                            `SELECT id, fcmToken FROM customers WHERE id IN 
+                                            `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN 
                                             (SELECT customerId FROM orders WHERE
                                                 orderNumber = '${orderNumber}' AND
                                                 restaurantId = '${restaurantId}'
@@ -1262,8 +1272,8 @@ module.exports = app => {
                                             null,
                                             (result) => {
                                                 if (result.length) {
-                                                    const { id, fcmToken } = result[0]
-                                                    sendNotification({
+                                                    const { id, fcmToken, email, phoneNumber } = result[0]
+                                                    if (fcmToken) sendNotification({
                                                         to: fcmToken,
                                                         notification: {
                                                             title: 'DineMate',
@@ -1279,6 +1289,15 @@ module.exports = app => {
                                                             })
                                                         }
                                                     })
+                                                    if (email) sendEmail(
+                                                        email,
+                                                        "DineMate Notification",
+                                                            `Item deleted from order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                    )
+                                                    if (phoneNumber) sendTextMessage(
+                                                        phoneNumber,
+                                                        `Item deleted from order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                    )
                                                 }
                                             }
                                         )
@@ -1348,7 +1367,8 @@ module.exports = app => {
                                                         const { restaurantId, orderNumber } = forFirebase[0]
                                                         getConnection(
                                                             res,
-                                                            `SELECT id, fcmToken FROM customers WHERE id IN 
+                                                            `SELECT id, fcmToken, email, phoneNumber
+                                                            FROM customers WHERE id IN 
                                                             (SELECT customerId FROM orders WHERE
                                                                 orderNumber = '${orderNumber}' AND
                                                                 restaurantId = '${restaurantId}'
@@ -1356,8 +1376,8 @@ module.exports = app => {
                                                             null,
                                                             (result) => {
                                                                 if (result.length) {
-                                                                    const { id, fcmToken } = result[0]
-                                                                    sendNotification({
+                                                                    const { id, fcmToken, email, phoneNumber } = result[0]
+                                                                    if (fcmToken) sendNotification({
                                                                         to: fcmToken,
                                                                         notification: {
                                                                             title: 'DineMate',
@@ -1373,6 +1393,15 @@ module.exports = app => {
                                                                             })
                                                                         }
                                                                     })
+                                                                    if (email) sendEmail(
+                                                                        email,
+                                                                        "DineMate Notification",
+                                                                            `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                                    )
+                                                                    if (phoneNumber) sendTextMessage(
+                                                                        phoneNumber,
+                                                                        `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                                    )
                                                                 }
                                                             }
                                                         )
@@ -1388,7 +1417,8 @@ module.exports = app => {
                                             const { restaurantId, orderNumber } = forFirebase[0]
                                             getConnection(
                                                 res,
-                                                `SELECT id, fcmToken FROM customers WHERE id IN 
+                                                `SELECT id, fcmToken, email, phoneNumber
+                                                FROM customers WHERE id IN 
                                                 (SELECT customerId FROM orders WHERE
                                                     orderNumber = '${orderNumber}' AND
                                                     restaurantId = '${restaurantId}'
@@ -1396,8 +1426,8 @@ module.exports = app => {
                                                 null,
                                                 (result) => {
                                                     if (result.length) {
-                                                        const { id, fcmToken } = result[0]
-                                                        sendNotification({
+                                                        const { id, fcmToken, email, phoneNumber } = result[0]
+                                                        if (fcmToken) sendNotification({
                                                             to: fcmToken,
                                                             notification: {
                                                                 title: 'DineMate',
@@ -1413,6 +1443,15 @@ module.exports = app => {
                                                                 })
                                                             }
                                                         })
+                                                        if (email) sendEmail(
+                                                            email,
+                                                            "DineMate Notification",
+                                                                `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                        )
+                                                        if (phoneNumber) sendTextMessage(
+                                                            phoneNumber,
+                                                            `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                        )
                                                     }
                                                 }
                                             )
@@ -1467,16 +1506,16 @@ module.exports = app => {
                                                 const { customerId } = forFirebase[0]
                                                 getConnection(
                                                     res,
-                                                    `SELECT id, fcmToken FROM customers WHERE id = ${customerId}`,
+                                                    `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id = ${customerId}`,
                                                     null,
                                                     (result) => {
                                                         if (result.length) {
-                                                            const { id, fcmToken } = result[0]
-                                                            sendNotification({
+                                                            const { id, fcmToken, email, phoneNumber } = result[0]
+                                                            if (fcmToken) sendNotification({
                                                                 to: fcmToken,
                                                                 notification: {
                                                                     title: 'DineMate',
-                                                                    body: `Order # ${orderNumber} cancelled by ${restaurantId}`
+                                                                    body: `Order # ${orderNumber} cancelled by ${upperCased(restaurantId)}`
                                                                 },
                                                                 data: {
                                                                     title: 'DineMate',
@@ -1488,6 +1527,15 @@ module.exports = app => {
                                                                     })
                                                                 }
                                                             })
+                                                            if (email) sendEmail(
+                                                                email,
+                                                                "DineMate Notification",
+                                                                    `Order # ${orderNumber} cancelled by ${upperCased(restaurantId)}`
+                                                            )
+                                                            if (phoneNumber) sendTextMessage(
+                                                                phoneNumber,
+                                                                `Order # ${orderNumber} cancelled by ${upperCased(restaurantId)}`
+                                                            )
                                                         }
                                                     }
                                                 )
@@ -1522,12 +1570,12 @@ module.exports = app => {
                 if (result.changedRows) {
                     getConnection(
                         res,
-                        `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                        `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
                         null,
                         (result) => {
                             if (result.length) {
-                                const { id, fcmToken } = result[0]
-                                sendNotification({
+                                const { id, fcmToken, email, phoneNumber } = result[0]
+                                if (fcmToken) sendNotification({
                                     to: fcmToken,
                                     notification: {
                                         title: 'DineMate',
@@ -1543,6 +1591,15 @@ module.exports = app => {
                                         })
                                     }
                                 })
+                                if (email) sendEmail(
+                                    email,
+                                    "DineMate Notification",
+                                        `Discount applied to order # ${orderNumber}`
+                                )
+                                if (phoneNumber) sendTextMessage(
+                                    phoneNumber,
+                                    `Discount applied to order # ${orderNumber}`
+                                )
                             }
                         }
                     )
@@ -1568,12 +1625,12 @@ module.exports = app => {
                 if (result.changedRows) {
                     getConnection(
                         res,
-                        `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
+                        `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNumber}' AND restaurantId = '${restaurantId}')`,
                         null,
                         (result) => {
                             if (result.length) {
-                                const { id, fcmToken } = result[0]
-                                sendNotification({
+                                const { id, fcmToken, email, phoneNumber } = result[0]
+                                if (fcmToken) sendNotification({
                                     to: fcmToken,
                                     notification: {
                                         title: 'DineMate',
@@ -1589,6 +1646,15 @@ module.exports = app => {
                                         })
                                     }
                                 })
+                                if (email) sendEmail(
+                                    email,
+                                    "DineMate Notification",
+                                        `Order # ${orderNumber} closed successfully!`
+                                )
+                                if (phoneNumber) sendTextMessage(
+                                    phoneNumber,
+                                    `Order # ${orderNumber} closed successfully!`
+                                )
                             }
                         }
                     )
@@ -1663,31 +1729,37 @@ module.exports = app => {
                                         for (let index = 0; index < orderNums.length; index++) {
                                             getConnection(
                                                 res,
-                                                `SELECT id, fcmToken FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNums[index]}' AND restaurantId = '${restId}')`,
+                                                `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNums[index]}' AND restaurantId = '${restId}')`,
                                                 null,
                                                 (result) => {
                                                     if (result.length) {
                                                         console.log(result[0])
-                                                        const { id, fcmToken } = result[0]
-                                                        if (fcmToken) {
-                                                            console.log(index, orderNums[index])
-                                                            sendNotification({
-                                                                to: fcmToken,
-                                                                notification: {
-                                                                    title: 'DineMate',
-                                                                    body: `${itemName} added to order # ${orderNums[index]}`
-                                                                },
-                                                                data: {
-                                                                    title: 'DineMate',
-                                                                    body: JSON.stringify({
-                                                                        customerId: id,
-                                                                        typeArray: ['GET_ORDER_ITEMS'],
-                                                                        restaurantId: restId,
-                                                                        orderNumber: orderNums[index]
-                                                                    })
-                                                                }
-                                                            })
-                                                        }
+                                                        const { id, fcmToken, email, phoneNumber } = result[0]
+                                                        if (fcmToken) sendNotification({
+                                                            to: fcmToken,
+                                                            notification: {
+                                                                title: 'DineMate',
+                                                                body: `${itemName} added to order # ${orderNums[index]}`
+                                                            },
+                                                            data: {
+                                                                title: 'DineMate',
+                                                                body: JSON.stringify({
+                                                                    customerId: id,
+                                                                    typeArray: ['GET_ORDER_ITEMS'],
+                                                                    restaurantId: restId,
+                                                                    orderNumber: orderNums[index]
+                                                                })
+                                                            }
+                                                        })
+                                                        if (email) sendEmail(
+                                                            email,
+                                                            "DineMate Notification",
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
+                                                        if (phoneNumber) sendTextMessage(
+                                                            phoneNumber,
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
                                                     }
                                                 }
                                             )
@@ -2781,7 +2853,7 @@ module.exports = app => {
                                         const taxAmount = (((subtotal) * data.taxPercentage) / 100).toFixed(2)
                                         const redemptionAmount = ((data.pointsToRedeem * Number(data.redemptionValue || 0)) / 100).toFixed(2)
                                         const amount = (subtotal + Number(taxAmount) + data.tip) - Number(redemptionAmount)
-    
+
                                         const receipt = {
                                             restaurantId,
                                             orderNumber,
@@ -2819,10 +2891,10 @@ module.exports = app => {
                                                         Bucket: process.env.AWS_BUCKET_NAME,
                                                         Key: `${restaurantId}_${orderNumber}.pdf`,
                                                         Body: data,
-                                                        ContentDisposition:"inline",
-                                                        ContentType:"application/pdf"
+                                                        ContentDisposition: "inline",
+                                                        ContentType: "application/pdf"
                                                     }
-    
+
                                                     s3.upload(params, (error, data) => {
                                                         fs.unlinkSync(path.resolve(__dirname, '../services/receipt', `${restaurantId}_${orderNumber}.pdf`))
                                                         if (error)
@@ -2864,6 +2936,10 @@ function decrypt(token) {
 
 function lowerCased(string) {
     return string.toLowerCase()
+}
+
+function upperCased(string) {
+    return string.toUpperCase()
 }
 
 function includes(list, id) {
