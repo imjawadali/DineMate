@@ -1104,7 +1104,7 @@ module.exports = app => {
                                                     if (email) sendEmail(
                                                         email,
                                                         "DineMate Notification",
-                                                            `New Item(s) added to order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                        `New Item(s) added to order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
                                                     )
                                                     if (phoneNumber) sendTextMessage(
                                                         phoneNumber,
@@ -1292,7 +1292,7 @@ module.exports = app => {
                                                     if (email) sendEmail(
                                                         email,
                                                         "DineMate Notification",
-                                                            `Item deleted from order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
+                                                        `Item deleted from order # ${orderNumber}, restaurant ${upperCased(restaurantId)}`
                                                     )
                                                     if (phoneNumber) sendTextMessage(
                                                         phoneNumber,
@@ -1396,7 +1396,7 @@ module.exports = app => {
                                                                     if (email) sendEmail(
                                                                         email,
                                                                         "DineMate Notification",
-                                                                            `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                                        `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
                                                                     )
                                                                     if (phoneNumber) sendTextMessage(
                                                                         phoneNumber,
@@ -1446,7 +1446,7 @@ module.exports = app => {
                                                         if (email) sendEmail(
                                                             email,
                                                             "DineMate Notification",
-                                                                `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
+                                                            `Item editted of order # ${orderNumber}, restaurantId ${upperCased(restaurantId)}`
                                                         )
                                                         if (phoneNumber) sendTextMessage(
                                                             phoneNumber,
@@ -1530,7 +1530,7 @@ module.exports = app => {
                                                             if (email) sendEmail(
                                                                 email,
                                                                 "DineMate Notification",
-                                                                    `Order # ${orderNumber} cancelled by ${upperCased(restaurantId)}`
+                                                                `Order # ${orderNumber} cancelled by ${upperCased(restaurantId)}`
                                                             )
                                                             if (phoneNumber) sendTextMessage(
                                                                 phoneNumber,
@@ -1594,7 +1594,7 @@ module.exports = app => {
                                 if (email) sendEmail(
                                     email,
                                     "DineMate Notification",
-                                        `Discount applied to order # ${orderNumber}`
+                                    `Discount applied to order # ${orderNumber}`
                                 )
                                 if (phoneNumber) sendTextMessage(
                                     phoneNumber,
@@ -1649,7 +1649,7 @@ module.exports = app => {
                                 if (email) sendEmail(
                                     email,
                                     "DineMate Notification",
-                                        `Order # ${orderNumber} closed successfully!`
+                                    `Order # ${orderNumber} closed successfully!`
                                 )
                                 if (phoneNumber) sendTextMessage(
                                     phoneNumber,
