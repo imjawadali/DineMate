@@ -16,6 +16,8 @@ import Kitchen from './Dashboard/Kitchen'
 import TableOrders from './Dashboard/Restaurant/TableOrders'
 import OrderItemDetails from './Dashboard/Restaurant/TableOrders/ItemDetails'
 import ItemSplit from './Dashboard/Restaurant/ItemSplit'
+import OrderSplit from './Dashboard/Restaurant/OrderSplit'
+import TableSplit from './Dashboard/Restaurant/TableSplit'
 import Orders from './Orders'
 import OrderDetails from './Orders/OrderDetails'
 import NewOrder from './Orders/NewOrder'
@@ -185,6 +187,8 @@ function Admin(props) {
                   <Switch>
                     <OthersRoutes exact path={`${path}/dashboard/restaurant`} component={Restaurant} />
                     <OthersRoutes path={`${path}/dashboard/restaurant/itemSplit`} component={ItemSplit} />
+                    <OthersRoutes path={`${path}/dashboard/restaurant/orderSplit`} component={OrderSplit} />
+                    <OthersRoutes path={`${path}/dashboard/restaurant/tableSplit`} component={TableSplit} />
                     <Route path={`${path}/dashboard/restaurant/tableOrders`}>
                       <Switch>
                         <OthersRoutes exact path={`${path}/dashboard/restaurant/tableOrders`} component={TableOrders} />

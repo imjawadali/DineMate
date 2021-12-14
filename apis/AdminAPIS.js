@@ -1666,7 +1666,7 @@ module.exports = app => {
     })
 
     app.post('/admin/itemSplit', async (req, res) => {
-        console.log("\n\n>>> /admin/itemSplits")
+        console.log("\n\n>>> /admin/itemSplit")
         console.log(req.body)
         const adminId = decrypt(req.header('authorization'))
         if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
@@ -1702,6 +1702,238 @@ module.exports = app => {
                                 return res.status(422).send({ 'msg': error.sqlMessage })
                             }
                             tempDb.query(`UPDATE orderItems SET totalPrice = 0, vanished = 1 WHERE id = ${id}`, null, function (error, result) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function () {
+                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                    })
+                                } else if (result.changedRows) {
+                                    for (var i = 0; i < splittedItem.length; i++) {
+                                        tempDb.query('INSERT INTO orderItems SET ?', splittedItem[i], function (error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function () {
+                                                    return res.status(422).send({ 'msg': "Failed to split Items" })
+                                                })
+                                            }
+                                        })
+                                    }
+                                    tempDb.commit(function (error) {
+                                        if (error) {
+                                            tempDb.rollback(function () {
+                                                return res.status(422).send({ 'msg': "Failed to split Items" })
+                                            })
+                                        }
+                                        tempDb.release()
+                                        console.log(orderNums)
+                                        for (let index = 0; index < orderNums.length; index++) {
+                                            getConnection(
+                                                res,
+                                                `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNums[index]}' AND restaurantId = '${restId}')`,
+                                                null,
+                                                (result) => {
+                                                    if (result.length) {
+                                                        console.log(result[0])
+                                                        const { id, fcmToken, email, phoneNumber } = result[0]
+                                                        if (fcmToken) sendNotification({
+                                                            to: fcmToken,
+                                                            notification: {
+                                                                title: 'DineMate',
+                                                                body: `${itemName} added to order # ${orderNums[index]}`
+                                                            },
+                                                            data: {
+                                                                title: 'DineMate',
+                                                                body: JSON.stringify({
+                                                                    customerId: id,
+                                                                    typeArray: ['GET_ORDER_ITEMS'],
+                                                                    restaurantId: restId,
+                                                                    orderNumber: orderNums[index]
+                                                                })
+                                                            }
+                                                        })
+                                                        if (email) sendEmail(
+                                                            email,
+                                                            "DineMate Notification",
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
+                                                        if (phoneNumber) sendTextMessage(
+                                                            phoneNumber,
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        }
+                                        return res.send({ 'msg': 'Item splitted successfully!' })
+                                    })
+                                } else tempDb.rollback(function () {
+                                    return res.status(422).send({ 'msg': "Failed to update splitted item totalPrice" })
+                                })
+                            })
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
+            })
+    })
+
+    app.post('/admin/orderSplit', async (req, res) => {
+        console.log("\n\n>>> /admin/orderSplit")
+        console.log(req.body)
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { splitRestaurantId, splitOrderNumber, splittedItem } = req.body
+        let restId, orderNums = [], itemName
+        if (!splitRestaurantId) return res.status(422).send({ 'msg': 'RestaurantId is required!' })
+        if (!splitOrderNumber) return res.status(422).send({ 'msg': 'OrderNumber is required!' })
+        if (!splittedItem || !splittedItem.length) return res.status(422).send({ 'msg': 'No splitted item!' })
+        for (var i = 0; i < splittedItem.length; i++) {
+            const { restaurantId, orderNumber, name, status, totalPrice, quantity, splitted } = splittedItem[i]
+            restId = restaurantId
+            orderNums.push(orderNumber)
+            itemName = name
+            if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+            if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
+            if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+            if (status !== 'R') return res.status(422).send({ 'msg': 'Invalid item status!' })
+            if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Total price is required!' })
+            if (!quantity && quantity !== 0) return res.status(422).send({ 'msg': 'Quantity is required!' })
+            if (!splitted) return res.status(422).send({ 'msg': 'Invalid split status!' })
+        }
+        getTransactionalConnection()
+            .getConnection(function (error, tempDb) {
+                if (!!error) {
+                    console.log('DbConnectionError', error.sqlMessage)
+                    return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                }
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin' || role = 'Staff') AND active = 1`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            tempDb.query(`UPDATE orderItems SET totalPrice = 0, vanished = 1 WHERE restaurantId = '${splitRestaurantId}' AND orderNumber = '${splitOrderNumber}'`, null, function (error, result) {
+                                if (!!error) {
+                                    console.log('TableError', error.sqlMessage)
+                                    tempDb.rollback(function () {
+                                        return res.status(422).send({ 'msg': error.sqlMessage })
+                                    })
+                                } else if (result.changedRows) {
+                                    for (var i = 0; i < splittedItem.length; i++) {
+                                        tempDb.query('INSERT INTO orderItems SET ?', splittedItem[i], function (error, result) {
+                                            if (!!error) {
+                                                console.log('TableError', error.sqlMessage)
+                                                tempDb.rollback(function () {
+                                                    return res.status(422).send({ 'msg': "Failed to split Items" })
+                                                })
+                                            }
+                                        })
+                                    }
+                                    tempDb.commit(function (error) {
+                                        if (error) {
+                                            tempDb.rollback(function () {
+                                                return res.status(422).send({ 'msg': "Failed to split Items" })
+                                            })
+                                        }
+                                        tempDb.release()
+                                        console.log(orderNums)
+                                        for (let index = 0; index < orderNums.length; index++) {
+                                            getConnection(
+                                                res,
+                                                `SELECT id, fcmToken, email, phoneNumber FROM customers WHERE id IN (SELECT customerId FROM orders WHERE orderNumber = '${orderNums[index]}' AND restaurantId = '${restId}')`,
+                                                null,
+                                                (result) => {
+                                                    if (result.length) {
+                                                        console.log(result[0])
+                                                        const { id, fcmToken, email, phoneNumber } = result[0]
+                                                        if (fcmToken) sendNotification({
+                                                            to: fcmToken,
+                                                            notification: {
+                                                                title: 'DineMate',
+                                                                body: `${itemName} added to order # ${orderNums[index]}`
+                                                            },
+                                                            data: {
+                                                                title: 'DineMate',
+                                                                body: JSON.stringify({
+                                                                    customerId: id,
+                                                                    typeArray: ['GET_ORDER_ITEMS'],
+                                                                    restaurantId: restId,
+                                                                    orderNumber: orderNums[index]
+                                                                })
+                                                            }
+                                                        })
+                                                        if (email) sendEmail(
+                                                            email,
+                                                            "DineMate Notification",
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
+                                                        if (phoneNumber) sendTextMessage(
+                                                            phoneNumber,
+                                                            `${itemName} added to order # ${orderNums[index]}`
+                                                        )
+                                                    }
+                                                }
+                                            )
+                                        }
+                                        return res.send({ 'msg': 'Item splitted successfully!' })
+                                    })
+                                } else tempDb.rollback(function () {
+                                    return res.status(422).send({ 'msg': "Failed to update splitted item totalPrice" })
+                                })
+                            })
+                        })
+                    }
+                    else return res.status(401).send({ 'msg': 'Invalid Session!' })
+                })
+            })
+    })
+
+    app.post('/admin/tableSplit', async (req, res) => {
+        console.log("\n\n>>> /admin/tableSplit")
+        console.log(req.body)
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        const { splitRestaurantId, splitTableId, splittedItem } = req.body
+        let restId, orderNums = [], itemName
+        if (!splitRestaurantId) return res.status(422).send({ 'msg': 'RestaurantId is required!' })
+        if (!splitTableId) return res.status(422).send({ 'msg': 'TableId is required!' })
+        if (!splittedItem || !splittedItem.length) return res.status(422).send({ 'msg': 'No splitted item!' })
+        for (var i = 0; i < splittedItem.length; i++) {
+            const { restaurantId, orderNumber, name, status, totalPrice, quantity, splitted } = splittedItem[i]
+            restId = restaurantId
+            orderNums.push(orderNumber)
+            itemName = name
+            if (!restaurantId) return res.status(422).send({ 'msg': 'Restuatant Id is required!' })
+            if (!orderNumber) return res.status(422).send({ 'msg': 'Order number is required!' })
+            if (!name) return res.status(422).send({ 'msg': 'Item name is required!' })
+            if (status !== 'R') return res.status(422).send({ 'msg': 'Invalid item status!' })
+            if (!totalPrice && totalPrice !== 0) return res.status(422).send({ 'msg': 'Total price is required!' })
+            if (!quantity && quantity !== 0) return res.status(422).send({ 'msg': 'Quantity is required!' })
+            if (!splitted) return res.status(422).send({ 'msg': 'Invalid split status!' })
+        }
+        getTransactionalConnection()
+            .getConnection(function (error, tempDb) {
+                if (!!error) {
+                    console.log('DbConnectionError', error.sqlMessage)
+                    return res.status(503).send({ 'msg': 'Unable to reach database!' })
+                }
+                tempDb.query(`SELECT * FROM users WHERE id = '${adminId}' AND (role = 'Admin' || role = 'SuperAdmin' || role = 'Staff') AND active = 1`, (error, authResult) => {
+                    if (!!error) return res.status(422).send({ 'msg': error.sqlMessage })
+                    if (authResult.length) {
+                        tempDb.beginTransaction(function (error) {
+                            if (!!error) {
+                                console.log('TransactionError', error.sqlMessage)
+                                return res.status(422).send({ 'msg': error.sqlMessage })
+                            }
+                            tempDb.query(`UPDATE orderItems SET totalPrice = 0, vanished = 1
+                            WHERE restaurantId = '${splitRestaurantId}' AND orderNumber IN (
+                                SELECT orderNumber FROM orders
+                                WHERE restaurantId = '${splitRestaurantId}'
+                                AND tableId = '${splitTableId}'
+                                AND status = 1
+                            )`, null, function (error, result) {
                                 if (!!error) {
                                     console.log('TableError', error.sqlMessage)
                                     tempDb.rollback(function () {

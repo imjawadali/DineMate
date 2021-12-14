@@ -43,6 +43,8 @@ export const API_ENDPOINTS = {
         closeOrder: 'admin/closeOrder',
         generateReceipt: 'admin/generateReceipt',
         itemSplit: 'admin/itemSplit',
+        orderSplit: 'admin/orderSplit',
+        tableSplit: 'admin/tableSplit',
         mergeTables: 'admin/mergeTables',
         unMergeTables: 'admin/unMergeTables',
         getServicesQue: 'admin/getServicesQue',

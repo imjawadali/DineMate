@@ -21,7 +21,13 @@ import {
   SPLIT_ITEM_FAILURE,
   GENERATE_RECEIPT,
   GENERATE_RECEIPT_SUCCESS,
-  GENERATE_RECEIPT_FAILURE
+  GENERATE_RECEIPT_FAILURE,
+  SPLIT_ORDER,
+  SPLIT_ORDER_SUCCESS,
+  SPLIT_ORDER_FAILURE,
+  SPLIT_TABLE,
+  SPLIT_TABLE_SUCCESS,
+  SPLIT_TABLE_FAILURE
 } from '../../constants'
   
 export default (state = { 
@@ -119,6 +125,20 @@ export default (state = {
     case SPLIT_ITEM_SUCCESS:
       return { ...state, splitId: null }
     case SPLIT_ITEM_FAILURE:
+      return { ...state, splitId: null }
+    
+    case SPLIT_ORDER:
+      return { ...state, splitId: payload.splitOrderNumber }
+    case SPLIT_ORDER_SUCCESS:
+      return { ...state, splitId: null }
+    case SPLIT_ORDER_FAILURE:
+      return { ...state, splitId: null }
+    
+    case SPLIT_TABLE:
+      return { ...state, splitId: payload.splitTableId }
+    case SPLIT_TABLE_SUCCESS:
+      return { ...state, splitId: null }
+    case SPLIT_TABLE_FAILURE:
       return { ...state, splitId: null }
     
     case RESET_RESTAURANT:

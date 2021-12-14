@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { TitleWithAction, Button, OrderTimer } from '../../../../components'
-import { APPLY_DISCOUNT, CLOSE_ORDER, DELETE_ORDER, EDIT_ITEM, GENERATE_RECEIPT, GET_MENU, GET_ORDER_DETAILS, SET_TOAST } from '../../../../constants'
+import { APPLY_DISCOUNT, CLEAR_TABLE_ORDERS, CLOSE_ORDER, DELETE_ORDER, EDIT_ITEM, GENERATE_RECEIPT, GET_MENU, GET_ORDER_DETAILS, SET_TOAST } from '../../../../constants'
 import { customisedAction } from '../../../../redux/actions'
 import { getFormatedDateTime } from '../../../../helpers'
 
@@ -75,6 +75,10 @@ function OrderDetails(props) {
       discountType
     }))
     cancelDiscountModal()
+  }
+
+  function getOrderTotal () {
+    return orderDetails.items.reduce((a, b) => a + b.totalPrice, 0)
   }
 
   return (
@@ -194,8 +198,20 @@ function OrderDetails(props) {
                   || deletingItemId
                   || edittingItemId
                   || deletingOrder
-                  || applyingDiscount ?
+                  || applyingDiscount
+                  || !getOrderTotal() ?
                   0.5 : ''
+              }}
+              onClick={() => {
+                if (getOrderTotal() && !fetchingOrderDetails && orderDetails.status && closingId !== orderNumber && !deletingItemId && !edittingItemId && !deletingOrder && !applyingDiscount) {
+                  dispatch(customisedAction(CLEAR_TABLE_ORDERS))
+                  history.push({
+                    pathname: '/client/admin/dashboard/restaurant/orderSplit', state: {
+                      tableId: orderDetails.tableId,
+                      orderToSplit: { orderNumber, quantity: 1, totalPrice: getOrderTotal() }
+                    }
+                  })
+                }
               }}>
               <td style={{ color: 'white', padding: '0px' }}>Split</td>
             </div>

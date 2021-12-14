@@ -131,7 +131,13 @@ import {
   GET_RESERVATIONS_FAILURE,
   GET_RESERVATIONS,
   UPDATE_RESERVATION_FAILURE,
-  UPDATE_RESERVATION
+  UPDATE_RESERVATION,
+  SPLIT_ORDER,
+  SPLIT_ORDER_SUCCESS,
+  SPLIT_ORDER_FAILURE,
+  SPLIT_TABLE,
+  SPLIT_TABLE_SUCCESS,
+  SPLIT_TABLE_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -284,13 +290,27 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true }
     case GENERATE_RECEIPT_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+
     case SPLIT_ITEM:
-      return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted item', type: 'success' } }
+      return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted item' } }
     case SPLIT_ITEM_SUCCESS:
     case SPLIT_ITEM_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
+
+    case SPLIT_ORDER:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted order' } }
+    case SPLIT_ORDER_SUCCESS:
+    case SPLIT_ORDER_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+
+    case SPLIT_TABLE:
+      return { ...state, toastSetDismiss: true, toast: { message: 'Submitting splitted table' } }
+    case SPLIT_TABLE_SUCCESS:
+    case SPLIT_TABLE_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+
     case MERGE_TABLES:
-      return { ...state, toast: { message: 'Merging Tables', type: 'success' } }
+      return { ...state, toast: { message: 'Merging Tables' } }
     case MERGE_TABLES_FAILURE:
       return { ...state, toast: payload }
     case UN_MERGE_TABLES:
