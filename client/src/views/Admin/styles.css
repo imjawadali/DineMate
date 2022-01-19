@@ -82,6 +82,51 @@
     color: rgb(101, 168, 59);
 }
 
+.TableButtonGrey {
+    border-color: rgb(192,192,192);
+    background-color: rgb(192,192,192);
+}
+
+.TableButtonGrey:hover {
+    background-color: white;
+    color: rgb(192,192,192);
+}
+
+.RevenueButtonGreen {
+    border-color: rgb(51,111,39);
+    background-color: rgb(51,111,39);
+}
+
+.RevenueButtonRed {
+    border-color: rgb(192,192,192);
+    background-color: rgb(136,8,28);
+}
+
+.RevenueButtonBrown {
+    border-color: rgb(192,192,192);
+    background-color: rgb(147,106,51);
+}
+
+.RevenueButtonOrange {
+    border-color: rgb(192,192,192);
+    background-color: rgb(145,40,9);
+}
+
+.RevenueButtonBlue {
+    border-color: rgb(192,192,192);
+    background-color: rgb(14,65,104);
+}
+
+.RevenueButtonSeaBlue {
+    border-color: rgb(192,192,192);
+    background-color: rgb(17,119,119);
+}
+
+.RevenueButtonPurple {
+    border-color: rgb(192,192,192);
+    background-color: rgb(67,42,95);
+}
+
 .TableButtonOrange {
     border-color: rgb(234, 113, 28);
     background-color: rgb(234, 113, 28);

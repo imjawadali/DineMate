@@ -1,4 +1,4 @@
-import { 
+import {
   GET_ALL_RESTAURANTS,
   GET_ALL_RESTAURANTS_SUCCESS,
   GET_ALL_RESTAURANTS_FAILURE,
@@ -6,16 +6,23 @@ import {
   SEARCH_RESTURANT_SUCCESS,
   SEARCH_RESTURANT_FAILURE,
   SET_LOCATION,
-  LOCATION_REQUIRED
+  LOCATION_REQUIRED,
+  GET_CITIES_SUCCESS,
+  SET_CITY
 } from '../../constants'
 
-export default (state = { locationRequired: false, latitude: null, longitude: null, city: null, fetchingRestaurants: false, restaurants: null }, { type, payload }) => {
+export default (state = { locationRequired: false, latitude: null, longitude: null, city: null, cities: [], fetchingRestaurants: false, restaurants: null }, { type, payload }) => {
   switch (type) {
 
     case SET_LOCATION:
       return { ...state, locationRequired: false, latitude: payload.latitude, longitude: payload.longitude, city: payload.city }
     case LOCATION_REQUIRED:
       return { ...state, locationRequired: true }
+
+    case GET_CITIES_SUCCESS:
+      return { ...state, cities: payload }
+    case SET_CITY:
+      return { ...state, city: payload }
 
     case GET_ALL_RESTAURANTS:
       return { ...state, fetchingRestaurants: true }

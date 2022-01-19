@@ -1,7 +1,7 @@
 export const LOCAL_URL = 'http://localhost:8000/'
 export const PUBLIC_URL = 'https://dinemate.com/dev/'
 export const CUSTOMER_APP_URL = 'https://dinemate.com/'
-export const BASE_URL = '/dev/'
+export const BASE_URL = LOCAL_URL
 
 export const API_ENDPOINTS = {
     customer: {
@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
         getReOrderDetails: '/customer/getReOrderDetails',
         searchResturant: '/customer/searchRestaurants',
         applyRewardPoints: '/customer/applyRewardPoints',
-        reservation: '/customer/reservation'
+        reservation: '/customer/reservation',
+        getAvailableCities: '/customer/getAvailableCities'
     }
 }

@@ -1,4 +1,4 @@
-import { 
+import {
   SET_TOAST, RESET_TOAST, SET_TOAST_DISMISSING,
   ADMIN_SIGN_IN_FAILURE,
   FORGOT_PASSWORD_SUCCESS,
@@ -42,7 +42,7 @@ import {
   UN_MERGE_TABLES,
   MERGE_TABLES_FAILURE,
   UN_MERGE_TABLES_FAILURE,
-  GET_ORDERS,  
+  GET_ORDERS,
   GET_ORDERS_FAILURE,
   GET_TABLE_ORDERS,
   GET_TABLE_ORDERS_FAILURE,
@@ -137,7 +137,11 @@ import {
   SPLIT_ORDER_FAILURE,
   SPLIT_TABLE,
   SPLIT_TABLE_SUCCESS,
-  SPLIT_TABLE_FAILURE
+  SPLIT_TABLE_FAILURE,
+  GET_RESTAURANTS_REPORTS_FAILURE,
+  GET_ORDERS_REPORTS_FAILURE,
+  GET_ORDERS_REPORTS_BY_INTERVAL_FAILURE,
+  GET_MENU_ITEMS_REPORTS_FAILURE
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -346,7 +350,7 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
     case ADD_USER:
       return { ...state, toast: { message: 'Adding User', type: 'success' } }
     case UPDATE_USER:
-      return { ...state, toast: { message: 'Updating User', type: 'warning' }}
+      return { ...state, toast: { message: 'Updating User', type: 'warning' } }
     case DELETE_USER:
       return { ...state, toast: { message: 'Deleting User', type: 'error' } }
     case ADD_USER_FAILURE:
@@ -421,7 +425,13 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: 'Updating Restaurant Schedule', type: 'success' } }
     case UPDATE_RESTAURANT_SCHEDULE_FAILURE:
       return { ...state, toastSetDismiss: true, toast: payload }
-    
+
+    case GET_RESTAURANTS_REPORTS_FAILURE:
+    case GET_ORDERS_REPORTS_FAILURE:
+    case GET_ORDERS_REPORTS_BY_INTERVAL_FAILURE:
+    case GET_MENU_ITEMS_REPORTS_FAILURE:
+      return { ...state, toastSetDismiss: true, toast: payload }
+
     case RESET_RESTAURANT:
       return { ...state, users: null }
     default:

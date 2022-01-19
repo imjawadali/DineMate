@@ -203,6 +203,7 @@ module.exports = app => {
                             restaurant.longitude = longitude
                             restaurant.taxId = taxId
                             restaurant.taxPercentage = taxPercentage
+                            restaurant.createdBy = adminId
                             if (customMessage)
                                 restaurant.customMessage = customMessage
                             if (stripeConnectedAccountId)
@@ -3065,7 +3066,7 @@ module.exports = app => {
                                     `SELECT r.restaurantName, r.address, r.city, r.customMessage, r.taxId,
                                     o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
                                     GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff,
-                                    o.closedAt, o.type, o.tableId,
+                                    DATE_FORMAT(o.closedAt, '%d/%m/%Y %H:%i:%s') as closedAt, o.type, o.tableId,
                                     SUM(oi.totalPrice) as foodTotal
                                     FROM orders o
                                     JOIN restaurants r ON o.restaurantId = r.restaurantId
@@ -3159,6 +3160,157 @@ module.exports = app => {
             }
         )
     })
+
+    app.get('/admin/reports/restaurants', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT R.restaurantName, R.cuisine, R.address, R.city, R.country, R.taxId, R.taxPercentage, R.stripeConnectedAccountId as stripeId,
+            (SELECT COUNT(*) FROM restaurantsQrs RQ WHERE RQ.restaurantId = R.restaurantId) as qRCodesAssigned,
+            R.customMessage, DATE_FORMAT(R.createdAt,'%d/%m/%Y') as createdAt, U.name as createdBy,
+            (SELECT COUNT(*) FROM users UA WHERE UA.restaurantId = R.restaurantId AND UA.role = 'Admin') as admins,
+            (SELECT COUNT(*) FROM users UK WHERE UK.restaurantId = R.restaurantId AND UK.role = 'Kitchen') as kitchen,
+            (SELECT COUNT(*) FROM users US WHERE US.restaurantId = R.restaurantId AND US.role = 'Staff') as staff
+            FROM restaurants R 
+            LEFT JOIN users U ON U.id = R.createdBy
+            ORDER BY R.createdAt DESC`,
+            null,
+            (data) => {
+                if (data.length) {
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': 'No reastaurants available!' })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/reports/orders', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, startDate, endDate } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!startDate) return res.status(422).send({ 'msg': 'Start date is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT CONVERT(o.orderNumber, CHAR) as checkNumber, u.name as staff,
+            SUM(oi.totalPrice) as foodTotal,
+            o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
+            DATE_FORMAT(o.createdAt, '%d/%m/%Y %H:%i:%s') as createdAt, DATE_FORMAT(o.closedAt, '%d/%m/%Y %H:%i:%s') as closedAt, 
+            TIMESTAMPDIFF(SECOND, o.createdAt, o.closedAt) as duration,
+            o.tableId, o.status, o.paymentMethod, c.firstName, c.lastName
+            FROM orders o 
+            JOIN restaurants r ON r.restaurantId = o.restaurantId
+            LEFT JOIN orderItems oi ON oi.restaurantId = o.restaurantId AND oi.orderNumber = o.orderNumber
+            LEFT JOIN users u ON u.id = o.staff
+            LEFT JOIN customers c ON c.id = o.customerId
+            LEFT JOIN genericData g ON g.name = 'redemptionValue'
+            WHERE o.restaurantId = '${restaurantId}'
+            AND o.createdAt >= '${startDate}'
+            AND ${endDate ? `o.createdAt < '${endDate}'` : 'o.createdAt < CURRENT_TIMESTAMP'}
+            AND o.status <> 1
+            GROUP BY o.orderNumber
+            ORDER BY o.createdAt DESC `,
+            null,
+            (data) => {
+                if (data.length) {
+                    const report = []
+                    for (let index = 0; index < data.length; index++) {
+                        const { discount, discountType, pointsToRedeem, tip, taxPercentage, foodTotal, redemptionValue } = data[index]
+                        let discountAmount = discount
+                        if (discountType === '%')
+                            discountAmount = (foodTotal * discount) / 100
+                        const subtotal = discountAmount < foodTotal ? foodTotal - discountAmount : 0
+                        const taxAmount = (subtotal * taxPercentage) / 100
+                        const redemptionAmount = Number(((pointsToRedeem * Number(redemptionValue || 0)) / 100).toFixed(2))
+                        const amount = (subtotal + taxAmount + tip) - redemptionAmount
+                        const duration = getTimeObject(data[index].duration)
+                        report.push({
+                            checkNumber: data[index].checkNumber,
+                            staff: data[index].staff || "-",
+                            subtotal: (foodTotal || 0).toFixed(2),
+                            taxAmount: taxAmount.toFixed(2),
+                            discountAmount: discountAmount.toFixed(2),
+                            tipAmount: tip.toFixed(2),
+                            redemption: redemptionAmount.toFixed(2),
+                            checkTotal: (amount > 0 ? amount : 0).toFixed(2),
+                            checkOpen: data[index].createdAt,
+                            checkClose: data[index].closedAt,
+                            checkDuration: `${duration.days ? duration.days + 'day(s), ' : ''}
+                            ${duration.hrs || 0} hr(s) ${duration.mints || 0} mint(s)`,
+                            source: data[index].tableId ? `Table # ${data[index].tableId}` : "Take-Away",
+                            status: data[index].status ? "Void" : "Closed",
+                            paymentMethod: data[index].staff || "-",
+                            guestName: data[index].firstName + " " + data[index].lastName
+                        })
+                    }
+                    return res.send(report)
+                } else {
+                    return res.status(422).send({ 'msg': `No orders found in given range!` })
+                }
+            }
+        )
+    })
+
+    app.post('/admin/reports/menuItems', async (req, res) => {
+        const adminId = decrypt(req.header('authorization'))
+        const { restaurantId, startDate, endDate } = req.body
+        if (!adminId) return res.status(401).send({ 'msg': 'Not Authorized!' })
+        if (!restaurantId) return res.status(422).send({ 'msg': 'Restaurant Id is required!' })
+        if (!startDate) return res.status(422).send({ 'msg': 'Start date is required!' })
+        getSecureConnection(
+            res,
+            adminId,
+            `SELECT u.name as kitchen,
+            m.name as itemName, m.price,
+            c.name as category,
+            DATE_FORMAT(oi.createdAt, '%d/%m/%Y') as lastSoldOn,
+            oi.quantity,
+            oi.price as avgSales,
+            TIMESTAMPDIFF(SECOND, oi.createdAt, oi.preparedAt) as preparationTime
+            FROM menu m 
+            LEFT JOIN categories c ON c.id = m.categoryId
+            LEFT JOIN orderItems oi ON oi.itemId = m.id
+                AND oi.createdAt >= '${startDate}'
+                AND ${endDate ? `oi.createdAt < '${endDate}'` : 'oi.createdAt < CURRENT_TIMESTAMP'}
+            LEFT JOIN orders o ON o.orderNumber = oi.orderNumber
+                AND o.restaurantId = '${restaurantId}'
+                AND o.status <> 1
+            LEFT JOIN users u ON u.id = oi.preparedBy
+            WHERE m.restaurantId = '${restaurantId}'
+            GROUP BY m.id`,
+            null,
+            (data) => {
+                if (data.length) {
+                    for (let index = 0; index < data.length; index++) {
+                        const duration = getTimeObject(data[index])
+                        data[index].price = (data[index].price).toFixed(2)
+                        data[index].preparationTime = `${duration.hrs || 0} hr(s) ${duration.mints || 0} mint(s) ${duration.secs || 0} sec(s)`
+                        data[index].avgSales = (data[index].quantity * Number(data[index].avgSales)).toFixed(2)
+                    }
+                    return res.send(data)
+                } else {
+                    return res.status(422).send({ 'msg': `No menu items available!` })
+                }
+            }
+        )
+    })
+}
+
+function getTimeObject(timeStamp) {
+    var time = {}
+    var days = Math.floor(timeStamp / 86400)
+    var hrs = Math.floor((timeStamp % 86400) / 3600)
+    var mints = Math.floor(((timeStamp % 86400) % 3600) / 60)
+    var secs = ((timeStamp % 86400) % 3600) % 60
+    if (days) time.days = days
+    if (hrs) time.hrs = hrs
+    if (mints) time.mints = mints
+    time.secs = secs
+    return time
 }
 
 function decrypt(token) {

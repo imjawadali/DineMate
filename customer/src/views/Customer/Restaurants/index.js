@@ -22,6 +22,8 @@ function Restaurants(props) {
   const allRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurants)
   const dispatch = useDispatch()
 
+  const [previousCity, setpreviousCity] = useState(city)
+
   useEffect(() => {
     const OrderDetails = getItem('orderDetails')
     if (OrderDetails && OrderDetails.type.toLowerCase() === 'dine-in') {
@@ -41,12 +43,15 @@ function Restaurants(props) {
 
   useEffect(() => {
     if (city) {
+      if (previousCity != city)
+        setpageNumber(1)
       if (value) {
         dispatch(customisedAction(SEARCH_RESTURANT, { searchBy: value, pageNumber }, { latitude, longitude, city }))
       } else {
         dispatch(customisedAction(GET_ALL_RESTAURANTS, { pageNumber }, { latitude, longitude, city }))
       }
     }
+    setpreviousCity(city)
   }, [city, value, pageNumber])
 
   useEffect(() => {

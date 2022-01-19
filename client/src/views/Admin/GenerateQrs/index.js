@@ -81,7 +81,7 @@ function GenerateQrs(props) {
   return (
     <div className="Container">
       <TitleWithAction
-        text="QRs Management"
+        text="QR Management"
         icon={<i
           className="fa fa-arrow-left fa-lg"
           style={{ cursor: 'pointer', marginRight: '10px' }}

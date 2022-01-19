@@ -7,7 +7,7 @@ import { useRouteMatch } from 'react-router-dom';
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, LOCATION_REQUIRED, SET_LOCATION, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER } from '../../constants';
+import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, GET_ALL_RESTAURANTS, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER, SET_CITY } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -19,6 +19,7 @@ const Header = props => {
     const orderDetails = useSelector(({ orderReducer }) => orderReducer.orderDetails)
     const submitOrderDetail = useSelector(({ orderReducer }) => orderReducer.submitDetail)
     const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
+    const cities = useSelector(({ restaurantsReducer }) => restaurantsReducer.cities)
     const match = useRouteMatch('/:restaurantId/:tableId');
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
@@ -431,12 +432,14 @@ const Header = props => {
                                 <div className="HeaderInputContainer">
                                     <div className="HeaderLocationBarContainer">
                                         <img className="HeaderInputIcon" src={require('../../assets/marker.png').default} />
-                                        <input
-                                            className="HeaderInput"
-                                            placeholder="Location required"
-                                            defaultValue={city}
-                                            disabled={true}
-                                        />
+                                        <select className="HeaderInput" value={city}
+                                            onChange={({ target: { value } }) => {
+                                                if (value)
+                                                    dispatch(customisedAction(SET_CITY, value))
+                                            }}>
+                                            <option value="" defaultValue>{"Location required"}</option>
+                                            {cities.map(item => <option key={item.city} value={item.city}>{item.city}</option>)}
+                                        </select>
                                     </div>
                                 </div>
                             </div>

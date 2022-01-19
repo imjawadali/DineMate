@@ -103,7 +103,7 @@ function Schedule() {
   return (
     <div className="Container">
       <TitleWithAction
-        text="Schedule Management"
+        text="Schedule Management (Format: 24 Hr)"
         noMargin
         button={<Button
           text={fetchingRestaurantSchedule || updatingRestaurantSchedule ? 'Syncing' : 'Refresh'}

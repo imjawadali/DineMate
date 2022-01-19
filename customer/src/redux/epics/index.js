@@ -26,6 +26,7 @@ export const epics = combineEpics(
     loginEpic.logout,
     getAllRestaurantsEpic.getAllRestaurants,
     getAllRestaurantsEpic.submitRating,
+    getAllRestaurantsEpic.getCities,
     getGenericDataEpic.getGenericData,
     getGenericDataEpic.reservation,
     getRestaurantDetailsEpic.getRestaurantDetails,

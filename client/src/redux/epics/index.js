@@ -58,6 +58,7 @@ import { ReservationsEpic } from './admin/ReservationsEpic'
 import { updateRestaurantScheduleEpic } from './admin/updateRestaurantScheduleEpic'
 import { uploadToS3Epic } from './admin/uploadToS3Epic'
 import { deleteFromS3Epic } from './admin/deleteFromS3Epic'
+import { ReportsEpic } from './admin/ReportsEpic'
 export const epics = combineEpics(
     loginEpic.login,
     setFcmTokenEpic.setFcmToken,
@@ -122,5 +123,9 @@ export const epics = combineEpics(
     ReservationsEpic.getReservations,
     ReservationsEpic.updateReservation,
     uploadToS3Epic.uploadToS3,
-    deleteFromS3Epic.deleteFromS3
+    deleteFromS3Epic.deleteFromS3,
+    ReportsEpic.getRestaurants,
+    ReportsEpic.getOrders,
+    ReportsEpic.getOrdersByInterval,
+    ReportsEpic.getMenuItems
 )

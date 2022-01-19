@@ -10,7 +10,10 @@ import {
   API_ENDPOINTS,
   SUBMIT_RATING_SUCCESS,
   SUBMIT_RATING,
-  SUBMIT_RATING_FAILURE
+  SUBMIT_RATING_FAILURE,
+  SET_LOCATION,
+  GET_CITIES_SUCCESS,
+  GET_CITIES_FAILURE
 } from '../../../constants'
 
 export class getAllRestaurantsEpic {
@@ -36,6 +39,24 @@ export class getAllRestaurantsEpic {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)
             },
             GET_ALL_RESTAURANTS_FAILURE
+          )
+        }
+      )
+    )
+
+  static getCities = action$ =>
+    action$.pipe(
+      ofType(SET_LOCATION),
+      switchMap(
+        async ({ payload: { country }}) => {
+          return generalizedEpic(
+            'post',
+            API_ENDPOINTS.customer.getAvailableCities,
+            { country },
+            (resObj) => {
+              return customisedAction(GET_CITIES_SUCCESS, resObj.body)
+            },
+            GET_CITIES_FAILURE
           )
         }
       )

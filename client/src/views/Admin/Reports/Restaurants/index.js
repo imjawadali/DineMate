@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { customisedAction } from '../../../redux/actions'
-import { GET_ALL_RESTAURANTS, PER_PAGE_COUNTS } from '../../../constants'
+import { customisedAction } from '../../../../redux/actions'
+import { GET_RESTAURANTS_REPORTS, PER_PAGE_COUNTS } from '../../../../constants'
 
-import { Pagination, Input } from '../../../components'
+import { Pagination, Input, ExcelExport } from '../../../../components'
 
-import RestaurantsList from './RestaurantsList'
+import List from './List'
 
-function Restaurants(props) {
+function Restaurants() {
 
   const [restaurantsFetchCalled, setrestaurantsFetchCalled] = useState(false)
   const [filterKey, setfilterKey] = useState('')
   const [currentIndex, setcurrentIndex] = useState(1)
 
-  const fetchingRestaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.fetchingRestaurants)
-  const restaurants = useSelector(({ restaurantsReducer }) => restaurantsReducer.restaurants)
+  const fetchingRestaurantsReports = useSelector(({ reportsReducer }) => reportsReducer.fetchingRestaurantsReports)
+  const restaurantsReports = useSelector(({ reportsReducer }) => reportsReducer.restaurantsReports)
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!restaurantsFetchCalled && !fetchingRestaurants && !restaurants) {
+    if (!restaurantsFetchCalled && !fetchingRestaurantsReports && !restaurantsReports) {
       setrestaurantsFetchCalled(true)
-      dispatch(customisedAction(GET_ALL_RESTAURANTS))
+      dispatch(customisedAction(GET_RESTAURANTS_REPORTS))
     }
   }, [])
 
   const getFilteredList = () => {
-    let filteredRestaurants = restaurants
-    if (filterKey && filterKey.length && restaurants) {
-      filteredRestaurants = restaurants.filter(
+    let filteredRestaurants = restaurantsReports
+    if (filterKey && filterKey.length && restaurantsReports) {
+      filteredRestaurants = restaurantsReports.filter(
         (restaurant) => restaurant.restaurantName.toLowerCase().includes(filterKey.toLowerCase())
-        || restaurant.restaurantId.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.cuisine.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.city.toLowerCase().includes(filterKey.toLowerCase())
+        || restaurant.country.toLowerCase().includes(filterKey.toLowerCase())
         || restaurant.qrCounts == filterKey
       )
     }
@@ -49,15 +49,16 @@ function Restaurants(props) {
 
   return (
     <div className="Container">
-      <h2>Restaurant Management</h2>
+      <h2>Restaurant Summary Report</h2>
       <div className="TabularContentContainer">
         <div className="TableTopContainer">
           <div className="TopLeftContainer">
+            <ExcelExport sheetName={"Restaurants"} data={getFilteredList()} />
           </div>
           <div className="TopRightContainer">
             <Input 
               style={{ border: 'none', borderBottom: '1px solid black', background: filterKey ? 'white' : 'transparent' }}
-              placeholder="Search Restaurants (by Name, Cuisine, City or Qr counts)"
+              placeholder="Search Restaurants (by Name, Cuisine, City or Country)"
               value={filterKey}
               onChange={({ target: { value } }) => {
                 setfilterKey(value)
@@ -66,11 +67,11 @@ function Restaurants(props) {
             />
             <i
               style={{ margin: '0px 10px', color: filterKey ? 'red' : '' }}
-              className={`fa fa-${filterKey ? 'times-circle' : fetchingRestaurants ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
-              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_ALL_RESTAURANTS))}/>
+              className={`fa fa-${filterKey ? 'times-circle' : fetchingRestaurantsReports ? 'refresh fa-pulse' : 'refresh'} fa-lg`}
+              onClick={() => filterKey ? setfilterKey('') : dispatch(customisedAction(GET_RESTAURANTS_REPORTS))}/>
           </div>
         </div>
-        <RestaurantsList history={props.history} fetchingRestaurants={fetchingRestaurants} restaurants={paginate(getFilteredList())} />
+        <List fetchingRestaurantsReports={fetchingRestaurantsReports} restaurantsReports={paginate(getFilteredList())} />
         {getFilteredList() && getFilteredList().length && getFilteredList().length > PER_PAGE_COUNTS ? 
           <Pagination
             currentIndex={currentIndex}

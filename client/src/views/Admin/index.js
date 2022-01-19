@@ -24,6 +24,7 @@ import NewOrder from './Orders/NewOrder'
 import AddRestaurant from './AddRestaurant'
 import EditRestaurant from './EditRestaurant'
 import Restaurants from './Restaurants'
+import RestaurantsReports from './Reports/Restaurants'
 import GenerateQrs from './GenerateQrs'
 import AllUsers from './Users/AllUsers'
 import Staff from './Staff'
@@ -41,6 +42,10 @@ import UpdatePassword from './UpdatePassword'
 import Schedule from './Schedule'
 import Reservations from './Reservations'
 import Feedbacks from './Feedbacks'
+import OrdersReports from './Reports/Orders'
+import OrdersReportsByInterval from './Reports/OrdersByInterval'
+import MenuItemsReports from './Reports/MenuItems'
+import MenuItemsReportsByKitchen from './Reports/MenuItemsByKitchen'
 import Others from './Others'
 import NoRoute from '../NoRoute'
 
@@ -203,6 +208,7 @@ function Admin(props) {
             <SuperAdminRoutes path={`${path}/addRestaurant`} component={AddRestaurant} />
             <SuperAdminRoutes path={`${path}/editRestaurant`} component={EditRestaurant} />
             <SuperAdminRoutes path={`${path}/restaurants`} component={Restaurants} />
+            <SuperAdminRoutes path={`${path}/reports/restaurant`} component={RestaurantsReports} />
             <Route path={`${path}/usersManagement`}>
               <Switch>
                 <Route exact path={`${path}/usersManagement`}>
@@ -255,6 +261,10 @@ function Admin(props) {
             <RestaurantAdminRoutes path={`${path}/scheduleManagement`} component={Schedule} />
             <RestaurantAdminRoutes path={`${path}/reservations`} component={Reservations} />
             <RestaurantAdminRoutes path={`${path}/feedbacks`} component={Feedbacks} />
+            <RestaurantAdminRoutes path={`${path}/reports/orders`} component={OrdersReports} />
+            <RestaurantAdminRoutes path={`${path}/reports/ordersByInyerval`} component={OrdersReportsByInterval} />
+            <RestaurantAdminRoutes path={`${path}/reports/menuItems`} component={MenuItemsReports} />
+            <RestaurantAdminRoutes path={`${path}/reports/menuItemsByKitchen`} component={MenuItemsReportsByKitchen} />
             <KitchenAdminRoutes path={`${path}/others`} component={Others} />
             {restaurantId ?
               <SuperAdminRoutes component={NoRoute} />

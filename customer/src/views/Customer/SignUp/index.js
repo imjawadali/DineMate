@@ -27,7 +27,8 @@ function SignUp(props) {
             lastName,
             email,
             password,
-            phoneNumber
+            phoneNumber,
+            authType: 'email'
         }, { history, redirect }))
     }
 
@@ -57,7 +58,7 @@ function SignUp(props) {
                 </div>
 
                 <div>
-                    <input onChange={(ev) => setPhoneNumber(ev.target.value)} type="text" className="form-field" placeholder="Phone Number" />
+                    <input onChange={(ev) => setPhoneNumber(ev.target.value)} type="text" className="form-field" placeholder="+1 647 111 1111" />
                 </div>
 
                 <div className="signup-div" onClick={singUp}>

@@ -41,12 +41,12 @@ function SideBar(props) {
                     </div>
                     <div className={`sidebar__link ${pathname.includes('/restaurants') ? 'active_menu_link' : null}`}>
                         <i style={{ width: '20px' }} className="fa fa-cutlery" />
-                        <Link to={`${url}/restaurants`}>Restaurants Management</Link>
+                        <Link to={`${url}/restaurants`}>Restaurant Management</Link>
                     </div>
                     {pathname.includes('/qrsManagement') ?
                         <div className={`sidebar__link ${pathname.includes('/qrsManagement') ? 'active_menu_link' : null}`}>
                             <i style={{ width: '20px' }} className="fa fa-qrcode" />
-                            <Link to={pathname}>QRs Management</Link>
+                            <Link to={pathname}>QR Management</Link>
                         </div>
                         : null}
                     {pathname.includes('/editRestaurant') ?
@@ -55,6 +55,10 @@ function SideBar(props) {
                             <Link to={pathname}>Edit Restaurant</Link>
                         </div>
                         : null}
+                    <div className={`sidebar__link ${pathname.includes('/reports') ? 'active_menu_link' : null}`}>
+                        <i style={{ width: '20px' }} className="fa fa-file" />
+                        <Link to={`${url}/reports/restaurant`}>Restaurants Report</Link>
+                    </div>
                     <div className={`sidebar__link ${pathname.includes('/usersManagement') ? 'active_menu_link' : null}`}>
                         <i style={{ width: '20px' }} className="fa fa-users" />
                         <Link to={`${url}/usersManagement`}>User Management</Link>
@@ -122,6 +126,22 @@ function SideBar(props) {
                         <div className={`sidebar__link ${pathname.includes('/feedbacks') ? 'active_menu_link' : null}`}>
                             <i style={{ width: '20px' }} className="fa fa-comments" />
                             <Link to={`${url}/feedbacks`}>Feedbacks</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/reports') ? 'active_menu_link' : null}`}>
+                            <i style={{ width: '20px' }} className="fa fa-file" />
+                            <Link to={`${url}/reports/orders`}>Revenue Report</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/reports') ? 'active_menu_link' : null}`}>
+                            <i style={{ width: '20px' }} className="fa fa-file" />
+                            <Link to={`${url}/reports/menuItems`}>Menu Item Report</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/reports') ? 'active_menu_link' : null}`}>
+                            <i style={{ width: '20px' }} className="fa fa-file" />
+                            <Link to={`${url}/reports/menuItemsByKitchen`}>Menu Report by Kitchen Staff</Link>
+                        </div>
+                        <div className={`sidebar__link ${pathname.includes('/reports') ? 'active_menu_link' : null}`}>
+                            <i style={{ width: '20px' }} className="fa fa-file" />
+                            <Link to={`${url}/reports/ordersByInyerval`}>Sales by Hourly Interval</Link>
                         </div>
                     </> : role === 'Staff' ?
                         <>

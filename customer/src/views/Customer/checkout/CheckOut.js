@@ -258,7 +258,9 @@ function CheckOut(props) {
                             <p>Select Payment Method</p>
                             <select defaultValue={payment} onChange={(ev) => { setPayment(ev.target.value); }} >
                                 <option value="cash">Cash</option>
-                                <option value="Credit Card">Credit Card</option>
+                                {resturantDetail && resturantDetail.isCardPaymentAllowed ?
+                                    <option value="Credit Card">Credit Card</option>
+                                    : null}
                             </select>
                         </div>
                         {payment !== 'cash' && stripeLoaded.successful ?

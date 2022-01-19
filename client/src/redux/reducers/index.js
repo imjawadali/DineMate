@@ -14,6 +14,7 @@ import genericDataReducer from './genericDataReducer'
 import scheduleReducer from './scheduleReducer'
 import fileUploadReducer from './fileUploadReducer'
 import toastReducer from './toastReducer'
+import reportsReducer from './reportsReducer'
 
 export default combineReducers({
     sessionReducer,
@@ -30,5 +31,6 @@ export default combineReducers({
     genericDataReducer,
     scheduleReducer,
     fileUploadReducer,
-    toastReducer
+    toastReducer,
+    reportsReducer
 })

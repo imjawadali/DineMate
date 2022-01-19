@@ -554,6 +554,39 @@ module.exports = app => {
         })
     })
 
+    app.post('/customer/getAvailableCities', async (req, res) => {
+        console.log("\n\n>>> /customer/getAvailableCities")
+        console.log(req.body)
+        const { country } = req.body
+        if (!country) return res.send({
+            status: false,
+            message: 'Country is required!',
+            errorCode: 422
+        })
+        getConnection(
+            res,
+            `SELECT city FROM restaurants
+            WHERE country = '${country}'
+            GROUP BY city ORDER BY city ASC`,
+            null,
+            (body) => {
+                if (body.length) {
+                    return res.send({
+                        status: true,
+                        message: '',
+                        body
+                    })
+                } else {
+                    return res.send({
+                        status: false,
+                        message: 'No cities available of restaurants in your country!',
+                        errorCode: 422
+                    })
+                }
+            }
+        )
+    })
+
     app.post('/customer/getAllRestaurants', async (req, res) => {
         console.log("\n\n>>> /customer/getAllRestaurants")
         console.log(req.body)
@@ -2573,7 +2606,7 @@ module.exports = app => {
                                     `SELECT r.restaurantName, r.address, r.city, r.customMessage, r.taxId,
                                     o.discount, o.discountType, o.pointsToRedeem, o.tip, r.taxPercentage, g.value as redemptionValue,
                                     GROUP_CONCAT(DISTINCT u.name SEPARATOR ', ') as staff,
-                                    o.closedAt, o.type, o.tableId,
+                                    DATE_FORMAT(o.closedAt, '%d/%m/%Y %H:%i:%s') as closedAt, o.type, o.tableId,
                                     SUM(oi.totalPrice) as foodTotal
                                     FROM orders o
                                     JOIN restaurants r ON o.restaurantId = r.restaurantId

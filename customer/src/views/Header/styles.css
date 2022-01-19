@@ -62,6 +62,17 @@ input.HeaderInput {
     box-sizing: border-box; /* Opera/IE 8+ */
 }
 
+select.HeaderInput {
+    border: none !important;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box; /* Firefox, other Gecko */
+    box-sizing: border-box; /* Opera/IE 8+ */
+}
+
+.HeaderInput:focus {
+    outline: none !important;
+}
+
 .HeaderRight {
     width: 65%;
     display: flex;
@@ -269,30 +280,6 @@ input.HeaderInput {
 }
 .orderSubBtn button:disabled {
     opacity: 0.7;
-}
-.takeAwayBtn {
-    padding: 12px 14px;
-    font-size: 16px;
-    color: white;
-    font-weight: bold;
-    background: #36c8b8;
-    border: none;
-    border-radius: 29px;
-    margin-right: 10px;
-    outline: none;
-    cursor: pointer;
-}
-.enrollBtn {
-    padding: 12px 14px;
-    font-size: 16px;
-    color: white;
-    font-weight: bold;
-    background: #36c8b8;
-    border: none;
-    border-radius: 29px;
-    margin-right: 10px;
-    outline: none;
-    cursor: pointer;
 }
 @media only screen and (max-width: 978px) {
     .HeaderContainer {

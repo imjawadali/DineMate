@@ -26,9 +26,33 @@ function Home(props) {
             <Logo src={require('../../assets/logo2.png').default} />
           </div>
 
-          <button className="takeAwayBtn" onClick={() => props.history.push('/customer/restaurants')}>Take-Away</button>
-          <button className="enrollBtn" onClick={() => props.openReservationModal()}>Reserve Your Table</button>
-          <button className="enrollBtn" onClick={() => props.history.push('/registration')}>Enroll Your Restaurant</button>
+          <HeaderButton
+            style={{
+              background: '#36c8b8',
+              color: 'white',
+              marginRight: '10px'
+            }}
+            text="Take-Away"
+            onClick={() => props.history.push('/customer/restaurants')}
+          />
+          <HeaderButton
+            style={{
+              background: '#36c8b8',
+              color: 'white',
+              marginRight: '10px'
+            }}
+            text="Reserve Table"
+            onClick={() => props.openReservationModal()}
+          />
+          <HeaderButton
+            style={{
+              background: '#36c8b8',
+              color: 'white',
+              marginRight: '10px'
+            }}
+            text="Enroll Now"
+            onClick={() => props.history.push('/registration')}
+          />
           {!customer ?
             <HeaderButton
               src={require('../../assets/signin_icon.png').default}

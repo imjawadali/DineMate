@@ -73,9 +73,10 @@ export default function App() {
                                     const { compound_code } = response.body.plus_code
                                     console.log("compound_code", compound_code)
                                     let city = compound_code.split(',')[1].trim()
+                                    let country = compound_code.split(',')[2].trim()
                                     if (city.length === 2)
                                         city = (compound_code.split(',')[0].trim()).split(' ')[1]
-                                    dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city }))
+                                    dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city, country }))
                                 } else {
                                     console.log(response)
                                     dispatch(customisedAction(LOCATION_REQUIRED))

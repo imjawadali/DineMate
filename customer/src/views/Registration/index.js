@@ -35,6 +35,8 @@ function Registration(props) {
   const [businessType, setBusinessType] = useState("")
   const [city, setCity] = useState("")
   const [country, setCountry] = useState("")
+  const [state, setState] = useState("")
+  const [postalCode, setPostalCode] = useState("")
   const genericData = useSelector(({ serviceReducer }) => serviceReducer.genericData)
   let dispatch = useDispatch()
 
@@ -58,6 +60,8 @@ function Registration(props) {
         setRestuarantAddress("")
         setCity("")
         setCountry("")
+        setState("")
+        setPostalCode("")
         setFirstame("")
         setLastName("")
         setEmail("")
@@ -87,12 +91,16 @@ function Registration(props) {
             <div className="form-title">Get Started</div>
 
             <div className="restaurant-info-fields">
-              <input value={restuarantName} onChange={(ev) => setRestuarantName(ev.target.value)} className="form-input" placeholder="Tim hortins" type="text" />
-              <input value={restuarantAddress} onChange={(ev) => setRestuarantAddress(ev.target.value)} className="form-input" placeholder="Store Address" type="text" />
+              <input value={restuarantName} onChange={(ev) => setRestuarantName(ev.target.value)} className="form-input" placeholder="Restaurant Name" type="text" />
+              <input value={restuarantAddress} onChange={(ev) => setRestuarantAddress(ev.target.value)} className="form-input" placeholder="Address" type="text" />
               {/* <input className="form-input" placeholder="Floor / Suite (Optional)" type="text" /> */}
               <div className="names-div">
                 <input value={city} onChange={(ev) => setCity(ev.target.value)} className="form-input" placeholder="City" type="text" />
                 <input value={country} onChange={(ev) => setCountry(ev.target.value)} className="form-input" placeholder="Country" type="text" />
+              </div>
+              <div className="names-div">
+                <input value={state} onChange={(ev) => setState(ev.target.value)} className="form-input" placeholder="State" type="text" />
+                <input value={postalCode} onChange={(ev) => setPostalCode(ev.target.value)} className="form-input" placeholder="Postal Code" type="text" />
               </div>
             </div>
 
@@ -105,19 +113,11 @@ function Registration(props) {
               <input value={ContactNumber} onChange={(ev) => setContactNumber(ev.target.value)} className="form-input mobile-number" placeholder="Mobile Phone Number" type="tel" />
 
               <select className="country-select">
-                <option>PK</option>
-                <option>IN</option>
-                <option>SA</option>
+                <option>CD</option>
+                <option>US</option>
               </select>
 
               <div className="selected-country">+1</div>
-            </div>
-
-            <div className="persoanl-info-fields" style={{ marginTop: -14 }}>
-              <select value={businessType} onChange={(ev) => setBusinessType(ev.target.value)} className="form-input" placeholder="Business type">
-                <option>Business Type</option>
-                <option>No Business</option>
-              </select>
             </div>
 
             <div className="policy-text">
