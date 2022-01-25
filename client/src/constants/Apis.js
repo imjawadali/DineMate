@@ -1,9 +1,7 @@
-export const LOCAL_URL = 'http://localhost:8000/'
-export const PUBLIC_URL = 'https://dinemate.com/dev/'
 export const CUSTOMER_APP_URL = 'https://dinemate.com/'
 export const BUCKET_URL = 'https://dinematebucket.s3.amazonaws.com/'
 export const BUCKET_URL_2 = 'https://dinematebucket.s3.us-east-2.amazonaws.com/'
-export const BASE_URL = LOCAL_URL
+export const BASE_URL = process.env.REACT_APP_BASE_URL || '/dev/'
 
 export const API_ENDPOINTS = {
     admin: {
