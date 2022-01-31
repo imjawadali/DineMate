@@ -501,7 +501,7 @@ module.exports = app => {
     app.post('/customer/registerRestuarant', async (req, res) => {
         console.log("\n\n>>> /customer/registerRestuarant")
         console.log(req.body)
-        const { restaurantName, address, city, country, firstName, lastName, email, phoneNumber, businessType } = req.body
+        const { restaurantName, address, city, country, firstName, lastName, email, phoneNumber } = req.body
         if (!restaurantName) return res.send({
             status: false,
             message: 'Restaurant Name is required!',
@@ -540,17 +540,12 @@ module.exports = app => {
             message: 'Phone Number is required!',
             errorCode: 422
         })
-        if (!businessType) return res.send({
-            status: false,
-            message: 'Business Type is required!',
-            errorCode: 422
-        })
 
         const emailStatus = await sendEmail(
             'console.dinemate@gmail.com',
             'Register Restaurant',
             registerRestaurantMessage({
-                restaurantName, address, city, country, name, email, phoneNumber, businessType
+                restaurantName, address, city, country, name, email, phoneNumber
             })
         )
         if (emailStatus && emailStatus.accepted.length)
