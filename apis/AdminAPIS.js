@@ -35,7 +35,7 @@ module.exports = app => {
             R.restaurantName
             FROM users U
             LEFT JOIN restaurants R on U.restaurantId = R.restaurantId
-            WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY '${password}' AND active = 1`,
+            WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY md5('${password}') AND active = 1`,
             null,
             (data) => {
                 if (data.length)
@@ -118,13 +118,16 @@ module.exports = app => {
         if (!email) return res.status(422).send({ 'msg': 'Email is required!' })
         if (!password) return res.status(422).send({ 'msg': 'Password is required!' })
         if (!hashString) return res.status(422).send({ 'msg': 'Invalid hashString!' })
-        let sql = `UPDATE users SET ? WHERE email = '${lowerCased(email)}' `
+        let sql = `UPDATE users SET
+        password = md5('${password}'), passwordForgotten = 0,
+        passwordLastUpdated = CURRENT_TIMESTAMP
+        WHERE email = '${lowerCased(email)}' `
         sql += `AND passwordForgotten = 1 `
         sql += `AND hashString = '${hashString}'`
         getConnection(
             res,
             sql,
-            { password, passwordForgotten: 0, passwordLastUpdated: new Date() },
+            null,
             (result) => {
                 if (result.changedRows)
                     return res.send({ 'msg': 'Password Updated Successfully!' })
@@ -2755,7 +2758,7 @@ module.exports = app => {
         if (userUpdatedData.restaurantId) return res.status(422).send({ 'msg': 'Can\'t update user\'s restaurantId!' })
         let query = `UPDATE users SET ? WHERE id = ${id}`
         if (userUpdatedData.password)
-            query = `UPDATE users SET password = '${userUpdatedData.password}', passwordLastUpdated = CURRENT_TIMESTAMP WHERE id = ${id}`
+            query = `UPDATE users SET password = md5('${userUpdatedData.password}'), passwordLastUpdated = CURRENT_TIMESTAMP WHERE id = ${id}`
         getSecureConnection(
             res,
             adminId,

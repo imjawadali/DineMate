@@ -25,6 +25,7 @@
     "nodemailer": "^6.4.18",
     "nodemon": "^2.0.3",
     "pdf-creator-node": "^2.2.4",
+    "phantomjs-prebuilt": "^2.1.16",
     "react-datepicker": "^4.6.0",
     "react-to-print": "^2.14.0",
     "stripe": "^8.174.0",

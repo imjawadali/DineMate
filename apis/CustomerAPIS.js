@@ -49,8 +49,12 @@ module.exports = app => {
             })
             getConnection(
                 res,
-                `INSERT INTO customers SET ?`,
-                { firstName, lastName, email, password, phoneNumber, authType: lowerCased(authType), socialAuthToken },
+                `INSERT INTO customers (
+                    firstName, lastName, email, password, phoneNumber, authType, socialAuthToken
+                ) VALUES (
+                    '${firstName}', '${lastName}', '${email}', md5('${password}'), '${phoneNumber}', '${lowerCased(authType)}', '${socialAuthToken}'
+                )`,
+                null,
                 (result) => {
                     if (result.affectedRows) return res.send({
                         status: true,
@@ -88,7 +92,7 @@ module.exports = app => {
         try {
             console.log("\n\n>>> /customer/login")
             console.log(req.body)
-            const { email, password, fcmToken } = req.body
+            const { email, password } = req.body
             if (!email) return res.send({
                 status: false,
                 message: 'Email is required!',
@@ -102,7 +106,7 @@ module.exports = app => {
             getConnection(
                 res,
                 `SELECT id, imageUrl, rewardPoints, firstName, lastName, email, phoneNumber, address, authType FROM customers
-                WHERE email = '${lowerCased(email)}' AND password = BINARY '${password}' AND authType = 'email'`,
+                WHERE email = '${lowerCased(email)}' AND password = BINARY md5('${password}') AND authType = 'email'`,
                 null,
                 (data) => {
                     if (data.length)
@@ -299,11 +303,15 @@ module.exports = app => {
                 message: 'No data provided to update!',
                 errorCode: 422
             })
+            if (updatedData.password) return res.send({
+                status: false,
+                message: 'Cannot Change Password',
+                errorCode: 422
+            })
 
             if (updatedData.imageUrl
                 || updatedData.firstName
                 || updatedData.lastName
-                || updatedData.password
                 || updatedData.email
                 || updatedData.phoneNumber
                 || updatedData.address) {
@@ -419,13 +427,16 @@ module.exports = app => {
                 message: 'Invalid hashString!',
                 errorCode: 422
             })
-            let sql = `UPDATE customers SET ? WHERE email = '${lowerCased(email)}' `
+            let sql = `UPDATE customers SET
+            password = md5('${password}'),
+            passwordForgotten = 0
+            WHERE email = '${lowerCased(email)}' `
             sql += `AND passwordForgotten = 1 `
             sql += `AND hashString = '${hashString}'`
             getConnection(
                 res,
                 sql,
-                { password, passwordForgotten: 0 },
+                null,
                 (result) => {
                     if (result.changedRows)
                         return res.send({
