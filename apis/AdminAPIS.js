@@ -1,6 +1,7 @@
 const uuid = require('uuid').v4
 const path = require('path')
-var fs = require("fs");
+const fs = require("fs")
+const CryptoJS = require("crypto-js")
 const { getSecureConnection, getConnection, getTransactionalConnection } = require('../services/mySqlAdmin')
 const { sendEmail } = require('../services/mailer')
 const { sendTextMessage } = require('../services/messenger')
@@ -17,7 +18,7 @@ module.exports = app => {
         getSecureConnection(
             res,
             adminId,
-            `SELECT * FROM users WHERE id = 1`,
+            `SELECT name FROM users WHERE id = 1`,
             null,
             (data) => {
                 return res.send(data[0])
@@ -38,9 +39,11 @@ module.exports = app => {
             WHERE U.email = '${lowerCased(email)}' AND U.password = BINARY md5('${password}') AND active = 1`,
             null,
             (data) => {
-                if (data.length)
-                    return res.send(data[0])
-                else
+                if (data.length) {
+                    const session = data[0]
+                    session.id = encrypt(session.id)
+                    return res.send(session)
+                } else
                     return res.status(422).send({ 'msg': `Invalid credentials provided or, User is in-active` })
             }
         )
@@ -337,7 +340,7 @@ module.exports = app => {
                 if (data.length) {
                     return res.send(data[0])
                 } else {
-                    return res.status(422).send({ 'msg': 'Reastaurant not available!' })
+                    return res.status(422).send({ 'msg': 'Restaurant not available!' })
                 }
             }
         )
@@ -358,7 +361,7 @@ module.exports = app => {
                 if (result.changedRows) {
                     return res.send({ msg: 'Restaurant Updated Successfully!' })
                 } else {
-                    return res.status(422).send({ 'msg': 'Failed to update reastaurant!' })
+                    return res.status(422).send({ 'msg': 'Failed to update restaurant!' })
                 }
             }
         )
@@ -379,7 +382,7 @@ module.exports = app => {
                 if (data.length) {
                     return res.send(data)
                 } else {
-                    return res.status(422).send({ 'msg': 'No reastaurants available!' })
+                    return res.status(422).send({ 'msg': 'No restaurants available!' })
                 }
             }
         )
@@ -3184,7 +3187,7 @@ module.exports = app => {
                 if (data.length) {
                     return res.send(data)
                 } else {
-                    return res.status(422).send({ 'msg': 'No reastaurants available!' })
+                    return res.status(422).send({ 'msg': 'No restaurants available!' })
                 }
             }
         )
@@ -3316,9 +3319,20 @@ function getTimeObject(timeStamp) {
     return time
 }
 
-function decrypt(token) {
-    const decryptedToken = token
-    return decryptedToken
+function encrypt(text) {
+    // console.log("encrypt", text)
+    var ciphertext = CryptoJS.AES.encrypt(text.toString(), process.env.ENCRYPTION_SECRET).toString();
+    // console.log("ciphertext", ciphertext)
+    return ciphertext
+}
+
+function decrypt(text) {
+    // console.log("decrypt", text)
+    var bytes  = CryptoJS.AES.decrypt(text, process.env.ENCRYPTION_SECRET);
+    // console.log("bytes", bytes)
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    // console.log("originalText", originalText)
+    return originalText
 }
 
 function lowerCased(string) {

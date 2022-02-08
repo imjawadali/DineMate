@@ -17,6 +17,7 @@
     "aws-sdk": "^2.889.0",
     "concurrently": "^5.2.0",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fcm-node": "^1.6.1",

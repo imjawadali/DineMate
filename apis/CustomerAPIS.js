@@ -644,8 +644,8 @@ module.exports = app => {
                     return res.send({
                         status: false,
                         message: pageNumber && pageNumber > 1
-                            ? 'No more reastaurants available!'
-                            : 'No reastaurants available!',
+                            ? 'No more restaurants available!'
+                            : 'No restaurants available!',
                         errorCode: 422
                     })
                 }
@@ -710,7 +710,7 @@ module.exports = app => {
                     return res.send({
                         status: false,
                         message: pageNumber && pageNumber > 1
-                            ? 'No more reastaurants available!'
+                            ? 'No more restaurants available!'
                             : 'No match found!',
                         errorCode: 422
                     })
@@ -760,7 +760,7 @@ module.exports = app => {
                 } else {
                     return res.send({
                         status: false,
-                        message: 'No reastaurants details available!',
+                        message: 'No restaurants details available!',
                         errorCode: 422
                     })
                 }

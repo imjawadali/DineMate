@@ -47,7 +47,7 @@ export class signUpEpic {
             data,
             (resObj) => {
               reset()
-              return customisedAction(REGISTER_RESTURENT_SUCESS, { signUp: resObj })
+              return customisedAction(REGISTER_RESTURENT_SUCESS, { message: resObj.message, type: 'success' })
             },
             SIGN_UP_FAILURE
           )

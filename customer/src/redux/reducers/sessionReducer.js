@@ -1,7 +1,6 @@
 import {
   SET_SESSION, SESSION_CHECK_DONE,
   LOGOUT,
-  REGISTER_RESTURENT_SUCESS,
   GET_RPOFILE_SUCCESS
 } from '../../constants'
 

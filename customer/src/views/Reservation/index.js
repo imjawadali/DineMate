@@ -28,7 +28,7 @@ function Reservation({ isReservationModalVisible, closeReservationModal }) {
 
     useEffect(() => {
         if (city)
-            dispatch(customisedAction(GET_ALL_RESTAURANTS, { limit: 100 }, { latitude, longitude, city }))
+            dispatch(customisedAction(GET_ALL_RESTAURANTS, { limit: 100, noToast: true }, { latitude, longitude, city }))
     }, [city])
 
     const submit = () => {

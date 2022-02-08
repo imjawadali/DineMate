@@ -48,7 +48,7 @@ function Restaurants(props) {
       if (value) {
         dispatch(customisedAction(SEARCH_RESTURANT, { searchBy: value, pageNumber }, { latitude, longitude, city }))
       } else {
-        dispatch(customisedAction(GET_ALL_RESTAURANTS, { pageNumber }, { latitude, longitude, city }))
+        dispatch(customisedAction(GET_ALL_RESTAURANTS, { pageNumber, limit: 3 }, { latitude, longitude, city }))
       }
     }
     setpreviousCity(city)

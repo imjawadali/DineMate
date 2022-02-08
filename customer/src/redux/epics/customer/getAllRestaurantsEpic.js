@@ -30,7 +30,7 @@ export class getAllRestaurantsEpic {
         }
       }),
       switchMap(
-        async ({ payload: { pageNumber, limit }, extras: { latitude, longitude, city } }) => {
+        async ({ payload: { pageNumber, limit, noToast }, extras: { latitude, longitude, city } }) => {
           return generalizedEpic(
             'post',
             API_ENDPOINTS.customer.getAllRestaurants,
@@ -38,7 +38,8 @@ export class getAllRestaurantsEpic {
             (resObj) => {
               return customisedAction(GET_ALL_RESTAURANTS_SUCCESS, resObj.body)
             },
-            GET_ALL_RESTAURANTS_FAILURE
+            GET_ALL_RESTAURANTS_FAILURE,
+            noToast
           )
         }
       )

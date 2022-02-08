@@ -43,7 +43,8 @@ import {
   SEARCH_RESTURANT_FAILURE,
   RESERVATION,
   RESERVATION_SUCCESS,
-  RESERVATION_FAILURE
+  RESERVATION_FAILURE,
+  REGISTER_RESTURENT_SUCESS
 } from '../../constants'
 
 export default (state = { toast: null, toastSetDismiss: false }, { type, payload }) => {
@@ -60,6 +61,8 @@ export default (state = { toast: null, toastSetDismiss: false }, { type, payload
       return { ...state, toastSetDismiss: true, toast: { message: 'Singing Up' } }
     case REGISTER_RESTURENT:
       return { ...state, toastSetDismiss: true, toast: { message: 'Requesting admin to resgistered Your Resturent!' } }
+    case REGISTER_RESTURENT_SUCESS:
+      return { ...state, toastSetDismiss: true, toast: payload }
     case SET_SESSION:
       return { ...state, toastSetDismiss: true }
     case ORDER_CHECK_DONE:

@@ -72,11 +72,11 @@ export default function App() {
                                 if (response.status === 200 && response.body && response.body.plus_code && response.body.plus_code.compound_code) {
                                     const { compound_code } = response.body.plus_code
                                     console.log("compound_code", compound_code)
-                                    let city = compound_code.split(',')[1].trim()
-                                    let country = compound_code.split(',')[2].trim()
+                                    let city = compound_code.split(',')[1]?.trim()
+                                    let country = compound_code.split(',')[2]?.trim()
                                     if (city.length === 2)
-                                        city = (compound_code.split(',')[0].trim()).split(' ')[1]
-                                    dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city, country }))
+                                        city = (compound_code.split(',')[0]?.trim())?.split(' ')[1]
+                                    dispatch(customisedAction(SET_LOCATION, { latitude, longitude, city, country: country || 'canada' }))
                                 } else {
                                     console.log(response)
                                     dispatch(customisedAction(LOCATION_REQUIRED))

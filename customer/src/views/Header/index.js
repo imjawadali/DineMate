@@ -7,7 +7,7 @@ import { useRouteMatch } from 'react-router-dom';
 import "./styles.css"
 import { HeaderButton, Logo, MenuIcon } from '../../components';
 import { useEffect } from 'react';
-import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, GET_ALL_RESTAURANTS, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER, SET_CITY } from '../../constants';
+import { DELETE_ALL_ORDER_ITEM, DELETE_ORDER_ITEM, GET_GENERIC_DATA, GET_MENU, GET_ORDER_DETAIL, GET_ORDER_ITEMS, GET_RESTAURANT_DETAILS, GET_TAKE_ORDER_ITEMS, SUBMIT_ORDER_ITEM, TAKIE_AWAY_ORDER, SET_CITY } from '../../constants';
 import { customisedAction } from '../../redux/actions';
 import { getItem } from '../../helpers';
 import ViewAddon from './../Customer/Menu/MenuListingContainer/ViewAddon'
@@ -21,6 +21,8 @@ const Header = props => {
     const city = useSelector(({ restaurantsReducer }) => restaurantsReducer.city)
     const cities = useSelector(({ restaurantsReducer }) => restaurantsReducer.cities)
     const match = useRouteMatch('/:restaurantId/:tableId');
+
+    const [citiesList, setcitiesList] = useState([])
     const [items, setItems] = useState([]);
     const [search, setSearch] = useState("")
     const [updateState, setUpdateState] = useState(true)
@@ -47,6 +49,15 @@ const Header = props => {
     useEffect(() => {
         dispatch(customisedAction(GET_ORDER_DETAIL))
     }, [])
+
+    useEffect(() => {
+        if (cities && cities.length) {
+            const includesCity = cities.filter(x => x.city.toLowerCase() == city.toLowerCase()).length
+            if (includesCity)
+                setcitiesList(cities)
+            else setcitiesList([{ city }, ...cities])
+        }
+    }, [cities])
 
     useEffect(() => {
         if (getOrderDetail) {
@@ -438,7 +449,7 @@ const Header = props => {
                                                     dispatch(customisedAction(SET_CITY, value))
                                             }}>
                                             <option value="" defaultValue>{"Location required"}</option>
-                                            {cities.map(item => <option key={item.city} value={item.city}>{item.city}</option>)}
+                                            {citiesList?.map(item => <option key={item.city} value={item.city}>{item.city}</option>)}
                                         </select>
                                     </div>
                                 </div>
