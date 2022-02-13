@@ -118,7 +118,7 @@ module.exports = app => {
                     else
                         return res.send({
                             status: false,
-                            message: 'Invalid Credentials Provided!',
+                            message: 'You entered an incorrect email address or password. Please try again or try resetting your password!',
                             errorCode: 422
                         })
                 }
@@ -272,7 +272,7 @@ module.exports = app => {
                     else
                         return res.send({
                             status: false,
-                            message: 'No past or active orders!',
+                            message: 'No order history found. Create your first order today!',
                             errorCode: 422
                         })
                 }
@@ -645,7 +645,7 @@ module.exports = app => {
                         status: false,
                         message: pageNumber && pageNumber > 1
                             ? 'No more restaurants available!'
-                            : 'No restaurants available!',
+                            : 'Oops! Looks like we’re not servicing any restaurants in your area yet. Please check again soon!',
                         errorCode: 422
                     })
                 }
