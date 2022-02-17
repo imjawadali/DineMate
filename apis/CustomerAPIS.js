@@ -58,7 +58,7 @@ module.exports = app => {
                 (result) => {
                     if (result.affectedRows) return res.send({
                         status: true,
-                        message: 'Signed-Up Successfully!',
+                        message: 'You’re all set! You can now create a personalized dining experience.',
                         body: {
                             id: result.insertId,
                             imageUrl: null,
@@ -74,6 +74,13 @@ module.exports = app => {
                     else return res.send({
                         status: false,
                         message: 'Customer Sign-Up Failed!',
+                        errorCode: 422
+                    })
+                },
+                () => {
+                    return res.send({
+                        status: false,
+                        message: 'Email is already taken, try to login with credentials or social authentication!',
                         errorCode: 422
                     })
                 }
@@ -118,7 +125,7 @@ module.exports = app => {
                     else
                         return res.send({
                             status: false,
-                            message: 'You entered an incorrect email address or password. Please try again or try resetting your password!',
+                            message: 'You entered an incorrect email address or password. Please try resetting your password or social login!',
                             errorCode: 422
                         })
                 }
@@ -202,12 +209,18 @@ module.exports = app => {
                             message: 'Profile data fetched successfully!',
                             body: data[0]
                         })
-                    else
+                    else {
+                        let message = ""
+                        if (lowerCased(authType) === 'email')
+                            message = "Failed to get profile"
+                        else
+                            message = "This account was registered with email and password, or another type of social login"
                         return res.send({
                             status: false,
-                            message: 'Failed to get profile!',
+                            message,
                             errorCode: 422
                         })
+                    }
                 }
             )
         } catch (error) {

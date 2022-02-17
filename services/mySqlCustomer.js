@@ -4,7 +4,7 @@ const { mySQLConfig } = require('../config')
 
 const db = mysql.createPool(mySQLConfig)
 
-exports.getSecureConnection = function (res, token, query, data, callBack) {
+exports.getSecureConnection = function (res, token, query, data, callBack, failureCallBack) {
     db.getConnection(function (error, tempDb) {
         if (!!error) {
             console.log('DbConnectionError', error.sqlMessage)
@@ -19,7 +19,7 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
                 if (authResult && authResult.length) {
                     tempDb.query(query, data, (error, result) => {
                         tempDb.release()
-                        return response(error, result, res, callBack)
+                        return response(error, result, res, callBack, failureCallBack)
                     })
                 }
                 else return res.send({
@@ -32,7 +32,7 @@ exports.getSecureConnection = function (res, token, query, data, callBack) {
     })
 }
 
-exports.getConnection = function (res, query, data, callBack) {
+exports.getConnection = function (res, query, data, callBack, failureCallBack) {
     db.getConnection(function (error, tempDb) {
         if (!!error) {
             console.log('DbConnectionError', error)
@@ -45,7 +45,7 @@ exports.getConnection = function (res, query, data, callBack) {
         else {
             tempDb.query(query, data, (error, result) => {
                 tempDb.release()
-                return response(error, result, res, callBack)
+                return response(error, result, res, callBack, failureCallBack)
             })
         }
     })
@@ -55,10 +55,12 @@ exports.getTransactionalConnection = function () {
     return db
 }
 
-function response (error, result, res, callBack) {
+function response (error, result, res, callBack, failureCallBack) {
     if (!!error) {
         console.log('TableError', error.sqlMessage)
-        return res.send({
+        if (error.sqlMessage.includes('Duplicate') && !!failureCallBack)
+            return failureCallBack()
+        else return res.send({
             status: false,
             message: error && error.sqlMessage ? error.sqlMessage.includes('Duplicate') ? 'Record already exists' : error.sqlMessage : 'Unknown error at database',
             errorCode: 422
