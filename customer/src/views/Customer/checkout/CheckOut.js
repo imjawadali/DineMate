@@ -346,7 +346,7 @@ function CheckOut(props) {
                                     style={{ position: 'relative' }}
                                 >
                                     <div>
-                                        <img src={require("../../../assets/Path 7705.png").default} className="service-icon" />
+                                        <img src={require("../../../assets/Group 4691.png").default} className="service-icon" />
                                     </div>
                                     <div style={{ position: 'absolute', bottom: 8 }}>Help</div>
                                 </div>
@@ -363,7 +363,7 @@ function CheckOut(props) {
                                     }}
                                 >
                                     <div>
-                                        <img src={require("../../../assets/Group 4691.png").default} className="service-icon" />
+                                        <img src={require("../../../assets/Path 7705.png").default} className="service-icon" />
                                     </div>
                                     Do not Disturb
                                 </div>
