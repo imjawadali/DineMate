@@ -1,0 +1,2874 @@
+{
+	"info": {
+		"_postman_id": "55b239b3-ec16-4001-916b-1556952833fd",
+		"name": "DineMate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "secureTest",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/secureTest",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"secureTest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahads62426@gmail.com\",\n    \"password\": \"ahad1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/login",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkPasswordExpiry",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "183",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/checkPasswordExpiry",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"checkPasswordExpiry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addRestuarant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"restaurantName\": \"XYZ Restaurant\",\n    \"address\": {\n        \"address\": \"XYZ\",\n        \"city\": \"Karachi\",\n        \"country\": \"Pakistan\"\n    },\n    \"primaryContact\": {\n        \"adminName\": \"Jawad\",\n        \"email\": \"asdf62426@gmail.com\"\n    },\n    \"secondaryContact\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/addRestuarant",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"addRestuarant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generateQrs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"abc_restaurant\",\n    \"values\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/generateQrs",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"generateQrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteQrs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "258",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"limit\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/deleteQrs",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"deleteQrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRestaurantToEdit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getRestaurantToEdit",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getRestaurantToEdit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllRestaurants",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getAllRestaurants",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getAllRestaurants"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getExistingQrs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getExistingQrs",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getExistingQrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"amad@amad.com\",\n    \"password\": \"ahad1234\",\n    \"hashString\": \"8ki5pbq49d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/createPassword",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"createPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"ahads62426@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/forgotPassword",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setTableName",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 51,\n    \"tableName\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/setTableName",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"setTableName"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateGenericData",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"updatedData\": {\n        \"instagramLink\": \"https://www.instagram.com/\",\n        \"email\": \"consoles.dinemate@gmail.com\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/updateGenericData",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"updateGenericData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGenericData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "1",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getGenericData",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getGenericData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getSuperAdminDashboard",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getSuperAdminDashboard",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getSuperAdminDashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRestaurantDashboard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getRestaurantDashboard",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getRestaurantDashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStaffDashboard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "221"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getStaffDashboard",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getStaffDashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getKitchenDashboard",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getKitchenDashboard",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getKitchenDashboard"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "markItemReady",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 12\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/markItemReady",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"markItemReady"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "markOrderReady",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"orderNumber\": \"000000027\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/markOrderReady",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"markOrderReady"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getTableOrders",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"tableId\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getTableOrders",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getTableOrders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderItemDetails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "50"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getOrderItemDetails",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getOrderItemDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrders",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"status\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getOrders",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getOrders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderDetails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"008\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getOrderDetails",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getOrderDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addItemsToOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"fine_tune_restaurant\",\n    \"orderNumber\": \"50\",\n    \"items\": [\n        {\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 7,\n            \"totalPrice\": 10,\n            \"specialInstructions\": \". . .\",\n            \"addOns\": [\n                {\n                    \"addOnId\": 42,\n                    \"addOnName\": \"Flavour\",\n                    \"addOnOptionId\": 49,\n                    \"addOnOption\": \"Cheesy\",\n                    \"price\": 0\n                },\n                {\n                    \"addOnId\": 43,\n                    \"addOnName\": \"Extra American Cheese\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 2\n                },\n                {\n                    \"addOnId\": 48,\n                    \"addOnName\": \"Extra Mayo\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 0.44\n                },\n                {\n                    \"addOnId\": 38,\n                    \"addOnName\": \"Combo\",\n                    \"addOnOptionId\": 40,\n                    \"addOnOption\": \"Medium\",\n                    \"price\": 0.66\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/addItemsToOrder",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"addItemsToOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submitNewOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"fine_tune_restaurant\",\n    \"type\": \"Take-Away\",\n    \"items\": [\n        {\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 7,\n            \"totalPrice\": 10,\n            \"specialInstructions\": \". . .\",\n            \"addOns\": [\n                {\n                    \"addOnId\": 42,\n                    \"addOnName\": \"Flavour\",\n                    \"addOnOptionId\": 49,\n                    \"addOnOption\": \"Cheesy\",\n                    \"price\": 0\n                },\n                {\n                    \"addOnId\": 43,\n                    \"addOnName\": \"Extra American Cheese\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 2\n                },\n                {\n                    \"addOnId\": 48,\n                    \"addOnName\": \"Extra Mayo\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 0.44\n                },\n                {\n                    \"addOnId\": 38,\n                    \"addOnName\": \"Combo\",\n                    \"addOnOptionId\": 40,\n                    \"addOnOption\": \"Medium\",\n                    \"price\": 0.66\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/submitNewOrder",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"submitNewOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "closeOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"fine_tune_restaurant\",\n    \"orderNumber\": \"047\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/closeOrder",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"closeOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getStaffAssignedTables",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getStaffAssignedTables",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getStaffAssignedTables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "assignTablesToStaff",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"selectedStaff\": 221,\n    \"assignedTables\": [\"1\",\"10\",\"5\"],\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/assignTablesToStaff",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"assignTablesToStaff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mergeTables",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"mergeId\": \"xyz_restaurant/7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/unMergeTables",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"unMergeTables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unMergeTables",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"selectedTables\": [118,102],\n    \"mergeId\": \"xyz_restaurant/7\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/mergeTables",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"mergeTables"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getServicesQue",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getServicesQue",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getServicesQue"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Burger\",\n    \"restaurantId\": \"abc_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/addCategory",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"addCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getCategories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getCategories",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getCategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 4,\n    \"name\": \"Burgers\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/updateCategory",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"updateCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCategory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/deleteCategory",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"deleteCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addMenuItem",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"imageUrl\": \"https://dinematebucket.s3.us-east-2.amazonaws.com/27ef3c90-6d9c-4efb-b215-d21a83ab95e5.png\",\n    \"name\": \"Pizza\",\n    \"price\": 20,\n    \"categoryId\": 5,\n    \"addOns\": [\n        {\n            \"name\": \"Select Size\",\n            \"price\": 0,\n            \"mandatory\": false,\n            \"variations\": [\n                {\n                    \"name\": \"10 inch\",\n                    \"price\": 0\n                },{\n                    \"name\": \"13 inch\",\n                    \"price\": 0.33\n                },{\n                    \"name\": \"20 inch\",\n                    \"price\": 0.66\n                }\n            ]\n        },\n        {\n            \"name\": \"Select Flavour\",\n            \"price\": 0,\n            \"mandatory\": true,\n            \"variations\": [\n                {\n                    \"name\": \"BBQ\",\n                    \"price\": 0\n                },{\n                    \"name\": \"Afghani Tikka\",\n                    \"price\": 0\n                },{\n                    \"name\": \"Wicked Blend\",\n                    \"price\": 0\n                }\n            ]\n        },\n        {\n            \"name\": \"Extra Cheese\",\n            \"price\": 2,\n            \"mandatory\": false\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/addMenuItem",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"addMenuItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMenuItems",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/getMenuItems",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"getMenuItems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateMenuItem",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 22,\n    \"updatedData\": {\n        \"name\": \"Pizza\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/updateMenuItem",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"updateMenuItem"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addAddOn",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"addOn\": {\n        \"mandatory\": 1,\n        \"name\": \"Combo\",\n        \"price\": 0,\n        \"menuId\": 22,\n        \"addOnOptions\": [{\n            \"name\": \"Small\",\n            \"price\": 0\n        }]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/addAddOn",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"addAddOn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateAddOn",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 38,\n    \"updatedAddOn\": {\n        \"mandatory\": 1,\n        \"name\": \"Combo\",\n        \"price\": 0,\n        \"addOnOptions\": [{\n            \"name\": \"Small\",\n            \"price\": 0\n        }]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/updateAddOn",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"updateAddOn"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllUsers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getAllUsers",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getAllUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRestaurantUsers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getRestaurantUsers",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getRestaurantUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test\",\n    \"email\": \"xyz@gmail.com\",\n    \"role\": \"Kitchen\",\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/addUser",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"addUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 50,\n    \"userUpdatedData\": {\n        \"active\": 0\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/updateUser",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"updateUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteUser",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/deleteUser",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"deleteUser"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRestaurantSchedule",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getRestaurantSchedule",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getRestaurantSchedule"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "uploadToS3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/avanza/Documents/Jawad_Ali_Resume(v2).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/uploadToS3",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"uploadToS3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteFromS3",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "22"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fileName\": \"db9621eb-9443-4d77-bafa-a2690f3de811.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/deleteFromS3",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"deleteFromS3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generateReceipt",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"008\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/generateReceipt",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"generateReceipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getFeedbacks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"ginsoy\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/admin/getFeedbacks",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"admin",
+								"getFeedbacks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrdersReport",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/reports/orders",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"reports",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMenuItemsReports",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{ADMIN_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/admin/reports/menuItems",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"admin",
+								"reports",
+								"menuItems"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "getAvailableCities",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"country\": \"Pakistan\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/getAvailableCities",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"getAvailableCities"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "testNotification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fcmToken\": \"dffdhNik9OzWz1s3aEKY0_:APA91bG0_ylQWSdZqdMqY-JcqW0A_V4Kx8cT0hjymOUMa62ebsNEEMtVJz0UXBr6JPQJgDsP__u0Q-mTUmm0GNWOIWxb4KpGdZddZ5xR6ssUBk7p3MUuOWdFnnNhNNRbqrMccjZgJGUO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/testNotification",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"testNotification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reservation",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"name\": \"Jawad Ali\",\n    \"phoneNumber\": \"mandatory\",\n    \"email\": \"mandatory\",\n    \"seats\": 4,\n    \"date\": \"12-12-2021\",\n    \"time\": \"07:30 PM\",\n    \"comments\": \"optional\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/reservation",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"reservation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProfile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authType\": \"facebook\",\n    \"socialAuthToken\": \"4FYJpDoydEfiyxCoMH4GBWVlv3u1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getProfile",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signUp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"Jawad\",\n    \"lastName\": \"Ali\",\n    \"email\": \"jawads@gmail.com\",\n    \"phoneNumber\": \"+923158731014\",\n    \"authType\": \"google\",\n    \"socialAuthToken\": \"abc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/signUp",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jawads62426@gmail.com\",\n    \"password\": \"ahad1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/login",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getReOrderDetails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"025\",\n    \"type\": \"Take-Away\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/getReOrderDetails",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"getReOrderDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generateReceipt",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"008\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/generateReceipt",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"generateReceipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchRestaurants",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"searchBy\": \"t\",\n    \"city\": \"toronto\",\n    \"pageNumber\": 1,\n    \"limit\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/searchRestaurants",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"searchRestaurants"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "24.9266176",
+									"disabled": true
+								},
+								{
+									"key": "longitude",
+									"value": "67.0695424",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllRestaurants",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitude\": null,\n    \"longitude\": null,\n    \"city\": \"karachi\",\n    \"pageNumber\": 1,\n    \"limit\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getAllRestaurants",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getAllRestaurants"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "24.9266176",
+									"disabled": true
+								},
+								{
+									"key": "longitude",
+									"value": "67.0695424",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "closeOrderViaCash",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"fine_tune_restaurant\",\n    \"orderNumber\": \"36\",\n    \"type\": \"Take-Away\",\n    \"tip\": 15,\n    \"billAmount\": 2.5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/closeOrderViaCash",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"closeOrderViaCash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderItems",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"013\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getOrderItems",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getOrderItems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "applyRewardPoints",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"pizza_max_-_airport\",\n    \"orderNumber\": \"013\",\n    \"pointsToRedeem\": 200,\n    \"billAmount\": 4.6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/applyRewardPoints",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"applyRewardPoints"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submitRating",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"orderNumber\": \"082\",\n    \"rating\": 5,\n    \"feedback\": \"Some text message\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/submitRating",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"submitRating"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setFcmToken",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"fcmToken\": \"dffdhNik9OzWz1s3aEKY0_:APA91bG0_ylQWSdZqdMqY-JcqW0A_V4Kx8cT0hjymOUMa62ebsNEEMtVJz0UXBr6JPQJgDsP__u0Q-mTUmm0GNWOIWxb4KpGdZddZ5xR6ssUBk7p3MUuOWdFnnNhNNRbqrMccjZgJGUO\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/setFcmToken",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"setFcmToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getRestaurantDetails",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getRestaurantDetails",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getRestaurantDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateProfileImage",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/updateProfileImage",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"updateProfileImage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "closeOrderViaStripe",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"fine_tune_restaurant\",\n    \"orderNumber\": \"36\",\n    \"type\": \"Take-Away\",\n    \"tip\": 15,\n    \"billAmount\": 2.5,\n    \"token\": \"ghvgvgvggggv\",\n    \"email\": \"jawads62426@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/closeOrderViaStripe",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"closeOrderViaStripe"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "registerRestuarant",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantName\": \"xyz_restaurant\",\n    \"address\": \"1\",\n    \"city\": \"033\",\n    \"country\": \". . .  \",\n    \"firstName\": \". . .  \",\n    \"lastName\": \". . .  \",\n    \"email\": \". . .  \",\n    \"phoneNumber\": \". . .  \",\n    \"businessType\": \". . .  \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/registerRestuarant",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"registerRestuarant"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getGenericData",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "183",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getGenericData",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getGenericData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "requestService",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"tableId\": \"4\",\n    \"orderNumber\": \"053\",\n    \"text\": \". . .  \"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/requestService",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"requestService"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "doNotDisturb",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"orderNumber\": \"133\",\n    \"enabled\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/doNotDisturb",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"doNotDisturb"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderStatus",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"orderNumber\": \"033\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/getOrderStatus",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"getOrderStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "takeAwayOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"items\": [\n        {\n            \"itemId\": 32,\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 20,\n            \"totalPrice\": 20,\n            \"specialInstructions\": \". . .\"\n        },\n        {\n            \"itemId\": 32,\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 20,\n            \"totalPrice\": 23.66,\n            \"specialInstructions\": \". . .\",\n            \"addOns\": [\n                {\n                    \"addOnId\": 42,\n                    \"addOnName\": \"Flavour\",\n                    \"addOnOptionId\": 49,\n                    \"addOnOption\": \"Cheesy\",\n                    \"price\": 0\n                },\n                {\n                    \"addOnId\": 43,\n                    \"addOnName\": \"Extra American Cheese\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 2\n                },\n                {\n                    \"addOnId\": 48,\n                    \"addOnName\": \"Extra Mayo\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 1\n                },\n                {\n                    \"addOnId\": 38,\n                    \"addOnName\": \"Combo\",\n                    \"addOnOptionId\": 40,\n                    \"addOnOption\": \"Medium\",\n                    \"price\": 0.66\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/takeAwayOrder",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"takeAwayOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submitOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\",\n    \"orderNumber\": \"288\",\n    \"items\": [\n        {\n            \"itemId\": 32,\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 20,\n            \"totalPrice\": 20,\n            \"specialInstructions\": \". . .\"\n        },\n        {\n            \"itemId\": 32,\n            \"quantity\": 1,\n            \"name\": \"Test\",\n            \"price\": 20,\n            \"totalPrice\": 23.66,\n            \"specialInstructions\": \". . .\",\n            \"addOns\": [\n                {\n                    \"addOnId\": 42,\n                    \"addOnName\": \"Flavour\",\n                    \"addOnOptionId\": 49,\n                    \"addOnOption\": \"Cheesy\",\n                    \"price\": 0\n                },\n                {\n                    \"addOnId\": 43,\n                    \"addOnName\": \"Extra American Cheese\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 2\n                },\n                {\n                    \"addOnId\": 48,\n                    \"addOnName\": \"Extra Mayo\",\n                    \"addOnOptionId\": null,\n                    \"addOnOption\": null,\n                    \"price\": 1\n                },\n                {\n                    \"addOnId\": 38,\n                    \"addOnName\": \"Combo\",\n                    \"addOnOptionId\": 40,\n                    \"addOnOption\": \"Medium\",\n                    \"price\": 0.66\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/submitOrder",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"submitOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "initializeOrder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"tim_hortons\",\n    \"tableId\": \"1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/initializeOrder",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"initializeOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMenuItems",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "1",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"restaurantId\": \"xyz_restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/getMenuItems",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"getMenuItems"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateProfile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"updatedData\": {\n        \"firstName\": \"Jawad\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/updateProfile",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMyOrders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "{{CUSTOMER_ID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/getMyOrders",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"getMyOrders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "setNewPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jawads62426@gmail.com\",\n    \"password\": \"ahad1234\",\n    \"hashString\": \"sxj6i3506\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PUBLIC_URL}}/customer/setNewPassword",
+							"host": [
+								"{{PUBLIC_URL}}"
+							],
+							"path": [
+								"customer",
+								"setNewPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"jawads62426@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/forgotPassword",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "testSMS",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "127",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"phoneNumber\": \"+923222337930\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{LOCAL_URL}}/customer/testSMS",
+							"host": [
+								"{{LOCAL_URL}}"
+							],
+							"path": [
+								"customer",
+								"testSMS"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "PUBLIC_URL",
+			"value": "http://ec2-52-15-148-90.us-east-2.compute.amazonaws.com/dev"
+		},
+		{
+			"key": "LOCAL_URL",
+			"value": "http://localhost:8000"
+		}
+	]
+}
